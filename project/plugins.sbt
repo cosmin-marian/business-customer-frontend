@@ -13,3 +13,7 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.4")
 addSbtPlugin("uk.gov.hmrc" % "sbt-utils" % "2.0.2")
 
 addSbtPlugin("uk.gov.hmrc" % "hmrc-resolvers" % "0.2.0")
+
+addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.7.1")
+
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
