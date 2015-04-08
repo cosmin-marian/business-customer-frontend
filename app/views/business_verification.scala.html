@@ -1,0 +1,18 @@
+@()
+@import uk.gov.hmrc.play.views.html.helpers._
+
+<h1 id="business-verification-header">Business verification</h1>
+<h2 id="business-lookup">Business Lookup</h2>
+<p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
+
+@form(action = controllers.routes.IndexController.authorisedOnSubmit) {
+<div class="form-group">
+    @inputRadioGroup(
+    atsYear("year"),
+    Seq(),
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
+    )
+</div>
+<button class="button" type="submit">Continue</button>
+}

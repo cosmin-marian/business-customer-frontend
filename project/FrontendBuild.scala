@@ -42,7 +42,8 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.1" % scope,
         "org.pegdown" % "pegdown" % "1.4.2" % scope,
         "org.jsoup" % "jsoup" % "1.7.2" % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "0.4.0"
       )
     }.test
   }
