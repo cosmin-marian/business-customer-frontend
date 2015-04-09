@@ -26,8 +26,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
 
-    "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.6",
-    "com.codahale.metrics" % "metrics-graphite" % "3.0.1"
+    "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8",
+    "com.codahale.metrics" % "metrics-graphite" % "3.0.2"
   )
 
   trait TestDependencies {
