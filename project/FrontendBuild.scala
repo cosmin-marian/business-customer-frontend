@@ -41,9 +41,10 @@ private object AppDependencies {
         "uk.gov.hmrc" %% "play-frontend" % playFrontendVersion % scope classifier "tests",
         "org.scalatest" %% "scalatest" % "2.2.1" % scope,
         "org.pegdown" % "pegdown" % "1.4.2" % scope,
-        "org.jsoup" % "jsoup" % "1.7.2" % scope,
+        "org.jsoup" % "jsoup" % "1.7.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "uk.gov.hmrc" %% "hmrctest" % "0.4.0"
+        "uk.gov.hmrc" %% "hmrctest" % "0.4.0",
+        "org.pegdown" % "pegdown" % "1.4.2"
       )
     }.test
   }

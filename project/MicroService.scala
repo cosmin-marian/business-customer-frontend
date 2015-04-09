@@ -7,7 +7,6 @@ trait MicroService {
   import uk.gov.hmrc._
   import DefaultBuildSettings._
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
-  import scoverage.ScoverageSbtPlugin._
   import TestPhases._
 
   val appName: String
@@ -18,12 +17,12 @@ trait MicroService {
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
   lazy val scoverageSettings = {
-    instrumentSettings ++ Seq(
-      ScoverageKeys.excludedPackages in ScoverageCompile := "<empty>;Reverse.*;views.html.*;app.Routes.*;prod.*;uk.gov.hmrc.*;testOnlyDoNotUseInAppConf.*;forms.*;",
-      ScoverageKeys.minimumCoverage := 100,
-      ScoverageKeys.failOnMinimumCoverage := true,
-      ScoverageKeys.highlighting := true,
-      parallelExecution in ScoverageTest := false
+    import scoverage.ScoverageSbtPlugin.ScoverageKeys._
+    Seq(
+      coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;models/.data/..*;view.*;.*BuildInfo.*;prod.Routes;tcs.Routes;app.Routes.*;testOnlyDoNotUseInAppConf.Routes;connectors.AuditConnector",
+      coverageMinimum := 50,
+      coverageFailOnMinimum := false,
+      coverageHighlighting := true
     )
   }
 
