@@ -1,0 +1,19 @@
+@(businessDetailsForm: Form[models.BusinessDetails])(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html.helpers._
+
+<h1 id="business-verification-header">Business verification</h1>
+<h2 id="business-lookup">Business Lookup</h2>
+<p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
+
+@form(action = controllers.routes.BusinessVerification.submit) {
+<div class="form-group">
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("UIB" -> "Unincorporated Body","LTD" -> "Limited Company","SOP" -> "Sole Proprietor","LLP" -> "Limited Liability Partnership","PRT" -> "Partnership"),
+    '_legend -> "What type of business is it?",
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
+    )
+</div>
+<button class="button" type="submit">Continue</button>
+}
