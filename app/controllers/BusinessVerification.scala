@@ -4,9 +4,7 @@ import controllers.common.BaseController
 import forms.BusinessVerificationForms._
 import play.api.mvc._
 
-object BusinessVerification extends BusinessVerification{
-
-}
+object BusinessVerification extends BusinessVerification
 
 trait BusinessVerification extends BaseController{
    def show = Action { implicit request =>
