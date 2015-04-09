@@ -31,11 +31,12 @@ class BusinessVerificationTest extends UnitSpec with WithFakeApplication {
       val document = Jsoup.parse(contentAsString(result))
       document.getElementById("business-verification-header").text() shouldBe "Business verification"
       document.getElementById("business-lookup").text() shouldBe "Business Lookup"
-      document.getElementsByAttribute(".block-label").text() shouldBe "Unincorporated body"
-      document.getElementsByAttribute(".block-label").text() shouldBe "Limited company"
-      document.getElementsByAttribute(".block-label").text() shouldBe "Sole proprietor"
-      document.getElementsByAttribute(".block-label").text() shouldBe "Limited liability partnership"
-      document.getElementsByAttribute(".block-label").text() shouldBe "Partnership"
+      document.select(".block-label").text() should include ("Unincorporated Body")
+      document.select(".block-label").text() should include ("Limited Company")
+      document.select(".block-label").text() should include ("Sole Proprietor")
+      document.select(".block-label").text() should include ("Limited Liability Partnership")
+      document.select(".block-label").text() should include ("Partnership")
+      document.select("button").text() shouldBe "Continue"
     }
   }
 }
