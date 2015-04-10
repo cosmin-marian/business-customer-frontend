@@ -1,5 +1,7 @@
 # microservice specific routes
 
-GET        /                         controllers.BusinessVerification.show
-POST       /                         controllers.BusinessVerification.submit
-GET        /hello                    controllers.BusinessVerification.helloWorld
+GET         /assets/*file                       controllers.Assets.at(path="/public", file)
+
+GET         /show                               controllers.BusinessVerificationController.show
+POST        /submit                             controllers.BusinessVerificationController.submit
+GET         /hello                              controllers.BusinessVerificationController.helloWorld
