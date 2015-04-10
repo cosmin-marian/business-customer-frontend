@@ -15,14 +15,18 @@ private object AppDependencies {
 
   private val playHealthVersion = "0.7.0"    
 
-  private val playFrontendVersion = "17.0.0"
+  private val frontendBootstrapVersion = "0.4.0"
   private val govukTemplateVersion = "2.6.0"
   private val playUiVersion = "1.8.0"
   
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
-    "uk.gov.hmrc" %% "play-frontend" % playFrontendVersion,
+    "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
+    "uk.gov.hmrc" %% "play-partials" % "1.3.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "0.7.0",
+    "uk.gov.hmrc" %% "play-config" % "1.0.0",
+    "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
 
@@ -38,13 +42,12 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "uk.gov.hmrc" %% "play-frontend" % playFrontendVersion % scope classifier "tests",
         "org.scalatest" %% "scalatest" % "2.2.1" % scope,
+        "org.scalatestplus" %% "play" % "1.2.0" % scope,
         "org.pegdown" % "pegdown" % "1.4.2" % scope,
         "org.jsoup" % "jsoup" % "1.7.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "uk.gov.hmrc" %% "hmrctest" % "0.4.0",
-        "org.pegdown" % "pegdown" % "1.4.2"
+        "uk.gov.hmrc" %% "hmrctest" % "0.4.0"
       )
     }.test
   }

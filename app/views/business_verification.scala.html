@@ -1,11 +1,14 @@
 @(businessDetailsForm: Form[models.BusinessDetails])(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
+
+@bcMain(title = Messages("bc.business-verification.title")) {
 
 <h1 id="business-verification-header">Business verification</h1>
 <h2 id="business-lookup">Business Lookup</h2>
 <p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
 
-@form(action = controllers.routes.BusinessVerification.submit) {
+@form(action = controllers.routes.BusinessVerificationController.submit) {
 <div class="form-group">
     @inputRadioGroup(
     businessDetailsForm("businessType"),
@@ -16,4 +19,5 @@
     )
 </div>
 <button class="button" type="submit">Continue</button>
+}
 }
