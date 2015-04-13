@@ -1,6 +1,7 @@
 # microservice specific routes
 
 GET         /assets/*file                       controllers.Assets.at(path="/public", file)
+->          /template                           template.Routes
 
 GET         /show                               controllers.BusinessVerificationController.show
 POST        /submit                             controllers.BusinessVerificationController.submit
