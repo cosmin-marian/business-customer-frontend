@@ -14,12 +14,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
   "BusinessVerificationController" must {
 
     "respond to show" in {
-      val result = route(FakeRequest(GET, "/business-customer-frontend/show")).get
+      val result = route(FakeRequest(GET, "/business-customer/show")).get
       status(result) must not be (NOT_FOUND)
     }
 
     "respond to hello" in {
-      val result = route(FakeRequest(GET, "/business-customer-frontend/hello")).get
+      val result = route(FakeRequest(GET, "/business-customer/hello")).get
       status(result) must not be (NOT_FOUND)
     }
 
@@ -65,7 +65,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           "be non-empty text" in {
             val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(Json.parse("""{"businessType" : "abc"}""")))
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/business-customer-frontend/hello")
+            redirectLocation(result).get must include("/business-customer/hello")
           }
           "if empty" must {
 
