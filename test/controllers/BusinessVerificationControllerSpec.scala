@@ -102,18 +102,18 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-//      "when selecting Limited Liability Partnership option" must {
-//
-//        "add additional form fields to the screen for entry" in {
-//          val result = TestBusinessVerificationController.show().apply(FakeRequest())
-//          status(result) must be(OK)
-//
-//          val document = Jsoup.parse(contentAsString(result))
-//          println(document)
-//          document.getElementById("llpBusinessName").text() must be("Business Name")
-//          document.getElementById("llpCOUTR").text() must be("COTAX Unique Tax Reference")
-//        }
-//      }
+      "when selecting Limited Liability Partnership option" must {
+
+        "add additional form fields to the screen for entry" in {
+          val result = TestBusinessVerificationController.show().apply(FakeRequest())
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          println(document)
+          document.getElementById("llpBusinessName").text() must be("Business Name")
+          document.getElementById("llpCOUTR").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
     }
 
     "hello" must {
