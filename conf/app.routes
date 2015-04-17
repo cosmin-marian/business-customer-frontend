@@ -6,3 +6,7 @@ GET         /assets/*file                       controllers.Assets.at(path="/pub
 GET         /show                               controllers.BusinessVerificationController.show
 POST        /submit                             controllers.BusinessVerificationController.submit
 GET         /hello                              controllers.BusinessVerificationController.helloWorld
+
+
+GET        /review-details                      controllers.ReviewDetailsController.details
+GET        /subscribe                           controllers.ReviewDetailsController.subscription
