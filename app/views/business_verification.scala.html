@@ -9,11 +9,27 @@
 <script>
     $(document).ready(function(){
         $("#submit").hide();
-        $("#business-type-form").hide();
+        $("#business-type-sop-form, #business-type-ltd-uib-form, #business-type-llp-obp-form").hide();
 
         $('#businessType-sop').click(function() {
-            $("#submit").show();
-            $("#business-type-form").show();
+            $("#submit, #business-type-sop-form").show();
+            $("#business-type-ltd-uib-form,  #business-type-llp-obp-form").hide();
+        });
+        $('#businessType-ltd').click(function() {
+            $("#submit, #business-type-ltd-uib-form").show();
+            $("#business-type-sop-form,  #business-type-llp-obp-form").hide();
+        });
+          $('#businessType-uib').click(function() {
+            $("#submit, #business-type-ltd-uib-form").show();
+            $("#business-type-sop-form,  #business-type-llp-obp-form").hide();
+        });
+            $('#businessType-obp').click(function() {
+            $("#submit, #business-type-llp-obp-form").show();
+            $("#business-type-sop-form, #business-type-ltd-uib-form").hide();
+        });
+            $('#businessType-llp').click(function() {
+            $("#submit, #business-type-llp-obp-form").show();
+            $("#business-type-sop-form, #business-type-ltd-uib-form").hide();
         });
 
  });
@@ -29,14 +45,14 @@
     businessDetailsForm("businessType"),
     Seq("UIB" -> Messages("bc.business-verification.radioUIB"),"LTD" -> Messages("bc.business-verification.radioLTD"),
     "SOP" -> Messages("bc.business-verification.radioSOP"),"LLP" -> Messages("bc.business-verification.radioLLP"),
-    "PRT" -> Messages("bc.business-verification.radioPRT"), "NUK" -> Messages("bc.business-verification.radioNUK")),
+    "OBP" -> Messages("bc.business-verification.radioPRT"), "NUK" -> Messages("bc.business-verification.radioNUK")),
     '_legend -> "What type of business is it?",
     '_labelClass -> "block-label",
     '_labelAfter -> true
     )
 </div>
 
-<div id = "business-type-form" class = "form-field panel-indent js-hidden">
+<div id = "business-type-sop-form" class = "form-field panel-indent js-hidden">
 
     @helper.inputText(businessDetailsForm("firstname"),
     '_label -> Html(Messages("bc.business-verification.firstNameField")),
@@ -56,6 +72,38 @@
     '_label -> Html(Messages("bc.business-verification.saUTRField")),
     '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
     '_id -> "soleTraderUniqueTaxReference",
+    '_showConstraints -> false)
+
+</div>
+
+<div id = "business-type-ltd-uib-form" class = "form-field panel-indent js-hidden">
+
+    @helper.inputText(businessDetailsForm("businessName"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "ltdBusinessName",
+    '_showConstraints -> false)
+
+    @helper.inputText(businessDetailsForm("coUtr"),
+    '_label -> Html(Messages("bc.business-verification.coUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "ltdCOUTR",
+    '_showConstraints -> false)
+
+</div>
+
+<div id = "business-type-llp-obp-form" class = "form-field panel-indent js-hidden">
+
+    @helper.inputText(businessDetailsForm("businessName1"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "llpBusinessName",
+    '_showConstraints -> false)
+
+    @helper.inputText(businessDetailsForm("coUtr"),
+    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "llpCOUTR",
     '_showConstraints -> false)
 
 </div>

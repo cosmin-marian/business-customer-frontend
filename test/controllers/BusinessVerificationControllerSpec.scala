@@ -71,13 +71,50 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           println(document)
-          document.getElementById("soleTraderFirstName").text() must be("First Name")
-          document.getElementById("soleTraderLastName").text() must be("Last Name")
-          document.getElementById("soleTraderUniqueTaxReference").text() must be("Self Assessment Unique Tax Reference")
-
+          document.getElementById("ltdBusinessName").text() must be("Business Name")
+          document.getElementById("ltdCOUTR").text() must be("COTAX Unique Tax Reference")
         }
-    }
+      }
 
+      "when selecting Unincorporated Body option" must {
+
+        "add additional form fields to the screen for entry" in {
+          val result = TestBusinessVerificationController.show().apply(FakeRequest())
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          println(document)
+          document.getElementById("ltdBusinessName").text() must be("Business Name")
+          document.getElementById("ltdCOUTR").text() must be("COTAX Unique Tax Reference")
+        }
+      }
+
+      "when selecting Ordinary business partnership" must {
+
+        "add additional form fields to the screen for entry" in {
+          val result = TestBusinessVerificationController.show().apply(FakeRequest())
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          println(document)
+          document.getElementById("llpBusinessName").text() must be("Business Name")
+          document.getElementById("llpCOUTR").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+
+//      "when selecting Limited Liability Partnership option" must {
+//
+//        "add additional form fields to the screen for entry" in {
+//          val result = TestBusinessVerificationController.show().apply(FakeRequest())
+//          status(result) must be(OK)
+//
+//          val document = Jsoup.parse(contentAsString(result))
+//          println(document)
+//          document.getElementById("llpBusinessName").text() must be("Business Name")
+//          document.getElementById("llpCOUTR").text() must be("COTAX Unique Tax Reference")
+//        }
+//      }
+    }
 
     "hello" must {
 

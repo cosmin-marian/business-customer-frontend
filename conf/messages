@@ -9,3 +9,6 @@ bc.business-verification.radioSOP=Sole Trader
 bc.business-verification.firstNameField=First Name
 bc.business-verification.lastNameField=Last Name
 bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
+bc.business-verification.coUTRField=COTAX Unique Tax Reference
+bc.business-verification.businessNamefield=Business Name
+bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference
