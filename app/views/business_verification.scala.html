@@ -4,6 +4,21 @@
 
 @bcMain(title = Messages("bc.business-verification.title")) {
 
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#submit").hide();
+        $("#business-type-form").hide();
+
+        $('#businessType-sop').click(function() {
+            $("#submit").show();
+            $("#business-type-form").show();
+        });
+
+ });
+</script>
+
 <h1 id="business-verification-header">Business verification</h1>
 <h2 id="business-lookup">Business Lookup</h2>
 <p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
@@ -12,12 +27,41 @@
 <div class="form-group">
     @inputRadioGroup(
     businessDetailsForm("businessType"),
-    Seq("UIB" -> "Unincorporated Body","LTD" -> "Limited Company","SOP" -> "Sole Proprietor","LLP" -> "Limited Liability Partnership","PRT" -> "Partnership"),
+    Seq("UIB" -> Messages("bc.business-verification.radioUIB"),"LTD" -> Messages("bc.business-verification.radioLTD"),
+    "SOP" -> Messages("bc.business-verification.radioSOP"),"LLP" -> Messages("bc.business-verification.radioLLP"),
+    "PRT" -> Messages("bc.business-verification.radioPRT"), "NUK" -> Messages("bc.business-verification.radioNUK")),
     '_legend -> "What type of business is it?",
     '_labelClass -> "block-label",
     '_labelAfter -> true
     )
 </div>
-<button class="button" type="submit">Continue</button>
+
+<div id = "business-type-form" class = "form-field panel-indent js-hidden">
+
+    @helper.inputText(businessDetailsForm("firstname"),
+    '_label -> Html(Messages("bc.business-verification.firstNameField")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderFirstName",
+    '_showConstraints -> false)
+
+
+    @helper.inputText(businessDetailsForm("lastname"),
+    '_label -> Html(Messages("bc.business-verification.lastNameField")),
+    '_error -> businessDetailsForm("lastname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderLastName",
+    '_showConstraints -> false)
+
+
+    @helper.inputText(businessDetailsForm("sautr"),
+    '_label -> Html(Messages("bc.business-verification.saUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderUniqueTaxReference",
+    '_showConstraints -> false)
+
+</div>
+
+<button class="button" id="submit" type="submit">Continue</button>
+
+
 }
 }

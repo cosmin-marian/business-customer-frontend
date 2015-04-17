@@ -1,2 +1,11 @@
 bc.title = Business Customer
-bc.business-verification.title = Business Customer
+bc.business-verification.title=Business Verification
+bc.business-verification.radioNUK=Non UK-based Company
+bc.business-verification.radioPRT=Ordinary Business Partnership
+bc.business-verification.radioLLP=Limited Liability Partnership
+bc.business-verification.radioUIB=Unincorporated Body
+bc.business-verification.radioLTD=Limited Company
+bc.business-verification.radioSOP=Sole Trader
+bc.business-verification.firstNameField=First Name
+bc.business-verification.lastNameField=Last Name
+bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
