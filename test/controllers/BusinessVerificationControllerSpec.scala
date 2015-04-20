@@ -56,7 +56,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         status(result) must be(OK)
 
         val document = Jsoup.parse(contentAsString(result))
-        println(document)
         document.getElementById("soleTraderFirstName").text() must be("First Name")
         document.getElementById("soleTraderLastName").text() must be("Last Name")
         document.getElementById("soleTraderUniqueTaxReference").text() must be("Self Assessment Unique Tax Reference")
@@ -70,7 +69,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          println(document)
           document.getElementById("ltdBusinessName").text() must be("Business Name")
           document.getElementById("ltdCOUTR").text() must be("COTAX Unique Tax Reference")
         }
@@ -83,7 +81,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          println(document)
           document.getElementById("ltdBusinessName").text() must be("Business Name")
           document.getElementById("ltdCOUTR").text() must be("COTAX Unique Tax Reference")
         }
@@ -96,7 +93,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          println(document)
           document.getElementById("llpBusinessName").text() must be("Business Name")
           document.getElementById("llpCOUTR").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
@@ -109,7 +105,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          println(document)
           document.getElementById("llpBusinessName").text() must be("Business Name")
           document.getElementById("llpCOUTR").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
