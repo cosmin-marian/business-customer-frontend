@@ -9,4 +9,3 @@ GET         /hello                              controllers.BusinessVerification
 
 
 GET        /review-details                      controllers.ReviewDetailsController.details
-GET        /subscribe                           controllers.ReviewDetailsController.subscription

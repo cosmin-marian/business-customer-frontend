@@ -1,7 +1,6 @@
 package controllers
 
 import forms.BusinessVerificationForms._
-import forms.ReviewDetailsForms
 import play.api.mvc.Action
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -21,14 +20,7 @@ trait ReviewDetailsController extends FrontendController {
   }
 
   def details = Action { implicit request =>
-    Ok(views.html.review_details(ReviewDetailsForms))
+    Ok(views.html.review_details())
   }
 
-
-  def subscription = Action {  implicit request =>
-    ReviewDetailsForms.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.business_verification(formWithErrors)),
-      value => Redirect(controllers.routes.BusinessVerificationController.subscribe)
-    )
-  }
 }
