@@ -4,6 +4,37 @@
 
 @bcMain(title = Messages("bc.business-verification.title")) {
 
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#submit").hide();
+        $("#business-type-sop-form, #business-type-ltd-uib-form, #business-type-llp-obp-form").hide();
+
+        $('#businessType-sop').click(function() {
+            $("#submit, #business-type-sop-form").show();
+            $("#business-type-ltd-uib-form,  #business-type-llp-obp-form").hide();
+        });
+        $('#businessType-ltd').click(function() {
+            $("#submit, #business-type-ltd-uib-form").show();
+            $("#business-type-sop-form,  #business-type-llp-obp-form").hide();
+        });
+          $('#businessType-uib').click(function() {
+            $("#submit, #business-type-ltd-uib-form").show();
+            $("#business-type-sop-form,  #business-type-llp-obp-form").hide();
+        });
+            $('#businessType-obp').click(function() {
+            $("#submit, #business-type-llp-obp-form").show();
+            $("#business-type-sop-form, #business-type-ltd-uib-form").hide();
+        });
+            $('#businessType-llp').click(function() {
+            $("#submit, #business-type-llp-obp-form").show();
+            $("#business-type-sop-form, #business-type-ltd-uib-form").hide();
+        });
+
+ });
+</script>
+
 <h1 id="business-verification-header">Business verification</h1>
 <h2 id="business-lookup">Business Lookup</h2>
 <p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
@@ -12,12 +43,73 @@
 <div class="form-group">
     @inputRadioGroup(
     businessDetailsForm("businessType"),
-    Seq("UIB" -> "Unincorporated Body","LTD" -> "Limited Company","SOP" -> "Sole Proprietor","LLP" -> "Limited Liability Partnership","PRT" -> "Partnership"),
+    Seq("UIB" -> Messages("bc.business-verification.radioUIB"),"LTD" -> Messages("bc.business-verification.radioLTD"),
+    "SOP" -> Messages("bc.business-verification.radioSOP"),"LLP" -> Messages("bc.business-verification.radioLLP"),
+    "OBP" -> Messages("bc.business-verification.radioPRT"), "NUK" -> Messages("bc.business-verification.radioNUK")),
     '_legend -> "What type of business is it?",
     '_labelClass -> "block-label",
     '_labelAfter -> true
     )
 </div>
-<button class="button" type="submit">Continue</button>
+
+<div id = "business-type-sop-form" class = "form-field panel-indent">
+
+    @helper.inputText(businessDetailsForm("firstname"),
+    '_label -> Html(Messages("bc.business-verification.firstNameField")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderFirstName",
+    '_showConstraints -> false)
+
+
+    @helper.inputText(businessDetailsForm("lastname"),
+    '_label -> Html(Messages("bc.business-verification.lastNameField")),
+    '_error -> businessDetailsForm("lastname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderLastName",
+    '_showConstraints -> false)
+
+
+    @helper.inputText(businessDetailsForm("sautr"),
+    '_label -> Html(Messages("bc.business-verification.saUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "soleTraderUniqueTaxReference",
+    '_showConstraints -> false)
+
+</div>
+
+<div id = "business-type-ltd-uib-form" class = "form-field panel-indent">
+
+    @helper.inputText(businessDetailsForm("businessName"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "ltdBusinessName",
+    '_showConstraints -> false)
+
+    @helper.inputText(businessDetailsForm("coUtr"),
+    '_label -> Html(Messages("bc.business-verification.coUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "ltdCOUTR",
+    '_showConstraints -> false)
+
+</div>
+
+<div id = "business-type-llp-obp-form" class = "form-field panel-indent">
+
+    @helper.inputText(businessDetailsForm("businessName1"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_error -> businessDetailsForm("firstname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "llpBusinessName",
+    '_showConstraints -> false)
+
+    @helper.inputText(businessDetailsForm("coUtr"),
+    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+    '_error -> businessDetailsForm("sautr").error.map(_.withMessage(Messages("register_organisation_error.name"))),
+    '_id -> "llpCOUTR",
+    '_showConstraints -> false)
+
+</div>
+
+<button class="button" id="submit" type="submit">Continue</button>
+
+
 }
 }
