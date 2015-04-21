@@ -14,9 +14,7 @@ object BCUtils {
             w1*(u1.asDigit)
           }
           val total = weightedUtr.sum
-          println(total)
           val remainder = total % 11
-          println(remainder + " " + checkDigit)
           isValidUtr(remainder, checkDigit)
         }
       }
