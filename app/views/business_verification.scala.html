@@ -9,36 +9,32 @@
 <script>
     $(document).ready(function(){
         $("#submit").hide();
-        $("#business-type-sop-form, #business-type-ltd-form, #business-type-uib-form, #business-type-llp-form, #business-type-obp-form").hide();
+        $("#business-type-uib-form, #business-type-ltd-form, #business-type-sop-form, #business-type-llp-form, #business-type-obp-form, #business-type-non-uk-form").hide();
 
-        $('#businessType-sop').click(function() {
-            $("#submit, #business-type-sop-form").show();
-            $("#business-type-ltd-uib-form,  #business-type-llp-form, #business-type-obp-form").hide();
-        });
-        $('#businessType-ltd').click(function() {
-            $("#submit, #business-type-ltd-form").show();
-            $("#business-type-sop-form, #business-type-uib-form, #business-type-llp-form, #business-type-obp-form").hide();
-        });
-          $('#businessType-uib').click(function() {
-            $("#submit, #business-type-uib-form").show();
-            $("#business-type-sop-form, #business-type-ltd-form, #business-type-llp-form, #business-type-obp-form").hide();
-        });
-            $('#businessType-obp').click(function() {
-            $("#submit, #business-type-obp-form").show();
-            $("#business-type-sop-form, #business-type-ltd-form, #business-type-uib-form").hide();
-        });
-            $('#businessType-llp').click(function() {
-            $("#submit, #business-type-llp-form").show();
-            $("#business-type-sop-form, #business-type-ltd-form, #business-type-uib-form").hide();
-        });
+        $(".block-label input[type='radio']").each(function() {
 
- });
+            var $radio = $(this),
+                dataTarget = $(this).attr('data-target');
+
+            $radio.on('click', function() {
+
+                $('#'+dataTarget).show().find('input[type="text"]').attr('required', true);
+                $("#submit").show();
+
+                $(".block-label input[type='radio']:not(:checked)").each(function() {
+
+                    $('#' + $(this).attr('data-target')).hide().find('input[type="text"]').attr('required', false);
+
+                });
+            });
+        });
+     });
 </script>
 }
 
-<h1 id="business-verification-header">Business verification</h1>
-<h2 id="business-lookup">Business Lookup</h2>
-<p id="business-lookup-text">Complete the questions below in order for us to verify your business.</p>
+<h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
+<h2 id="business-lookup">@Messages("bc.business-verification.lookup")</h2>
+<p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 
 @if(businessDetailsForm.hasGlobalErrors){
 <div class="alert alert-error">
@@ -52,97 +48,133 @@
 <div class="form-group">
     @inputRadioGroup(
     businessDetailsForm("businessType"),
-    Seq("UIB" -> Messages("bc.business-verification.radioUIB"),"LTD" -> Messages("bc.business-verification.radioLTD"),
-    "SOP" -> Messages("bc.business-verification.radioSOP"),"LLP" -> Messages("bc.business-verification.radioLLP"),
-    "OBP" -> Messages("bc.business-verification.radioPRT"), "NUK" -> Messages("bc.business-verification.radioNUK")),
-    '_legend -> "What type of business is it?",
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
+    Seq("UIB" -> Messages("bc.business-verification.radioUIB")),
+        '_legend -> Messages("bc.business-verification.radio-legend"),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-uib-form"
     )
-</div>
 
-<div id = "business-type-sop-form" class = "form-field panel-indent">
+    <div id="business-type-uib-form" class="form-field panel-indent">
 
-    @helper.inputText(businessDetailsForm("SAFirstName"),
-    '_label -> Html(Messages("bc.business-verification.firstNameField")),
-    '_error -> businessDetailsForm("SAFirstName").error.map(_.withMessage(Messages("bc.business-verification-error.firstname"))),
-    '_id -> "soleTraderFirstName",
-    '_showConstraints -> false)
+        @helper.inputText(businessDetailsForm("uibCompany.uibBusinessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_id -> "uib-business-name",
+        '_showConstraints -> false)
+
+        @helper.inputText(businessDetailsForm("uibCompany.uibCotaxAUTR"),
+        '_label -> Html(Messages("bc.business-verification.coUTRField")),
+        '_id -> "uib-cotax-utr",
+        '_showConstraints -> false)
+
+    </div>
+
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("LTD" -> Messages("bc.business-verification.radioLTD")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-ltd-form"
+    )
+
+    <div id="business-type-ltd-form" class="form-field panel-indent">
+
+        @helper.inputText(businessDetailsForm("ltdCompany.ltdBusinessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_id -> "ltd-business-name",
+        '_showConstraints -> false)
+
+        @helper.inputText(businessDetailsForm("ltdCompany.ltdCotaxAUTR"),
+        '_label -> Html(Messages("bc.business-verification.coUTRField")),
+        '_id -> "ltd-cotax-utr",
+        '_showConstraints -> false)
+
+    </div>
+
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("SOP" -> Messages("bc.business-verification.radioSOP")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-sop-form"
+    )
+
+    <div id="business-type-sop-form" class="form-field panel-indent">
+
+        @helper.inputText(businessDetailsForm("soleTrader.sAFirstName"),
+        '_label -> Html(Messages("bc.business-verification.firstNameField")),
+        '_id -> "sole-trader-first-name",
+        '_showConstraints -> false)
+
+        @helper.inputText(businessDetailsForm("soleTrader.sASurname"),
+        '_label -> Html(Messages("bc.business-verification.lastNameField")),
+        '_id -> "sole-trader-last-name",
+        '_showConstraints -> false)
+
+        @helper.inputText(businessDetailsForm("soleTrader.sAUTR"),
+        '_label -> Html(Messages("bc.business-verification.saUTRField")),
+        '_id -> "sole-trader-utr",
+        '_showConstraints -> false)
+
+     </div>
 
 
-    @helper.inputText(businessDetailsForm("sASurname"),
-    '_label -> Html(Messages("bc.business-verification.lastNameField")),
-    '_error -> businessDetailsForm("sASurname").error.map(_.withMessage(Messages("register_organisation_error.name"))),
-    '_id -> "soleTraderLastName",
-    '_showConstraints -> false)
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("LLP" -> Messages("bc.business-verification.radioLLP")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-llp-form"
+    )
+
+    <div id = "business-type-llp-form" class = "form-field panel-indent">
+
+        @helper.inputText(businessDetailsForm("llpCompany.llpBusinessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_id -> "llp-business-name",
+        '_showConstraints -> false)
+
+        @helper.inputText(businessDetailsForm("llpCompany.llpPSAUTR"),
+        '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+        '_id -> "llp-psa-utr",
+        '_showConstraints -> false)
 
 
-    @helper.inputText(businessDetailsForm("sAUTR"),
-    '_label -> Html(Messages("bc.business-verification.saUTRField")),
-    '_error -> businessDetailsForm("sAUTR").error.map(_.withMessage(Messages("register_organisation_error.name"))),
-    '_id -> "soleTraderUniqueTaxReference",
-    '_showConstraints -> false)
+    </div>
 
-</div>
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("OBP" -> Messages("bc.business-verification.radioPRT")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-obp-form"
+    )
 
-<div id = "business-type-ltd-form" class = "form-field panel-indent">
+    <div id = "business-type-obp-form" class = "form-field panel-indent">
 
-    @helper.inputText(businessDetailsForm("ltdCompany.ltdBusinessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "ltdBusinessName",
-    '_showConstraints -> false)
+        @helper.inputText(businessDetailsForm("obpCompany.obpBusinessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_id -> "obp-business-name",
+        '_showConstraints -> false)
 
-    @helper.inputText(businessDetailsForm("ltdCompany.ltdCotaxAUTR"),
-    '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_id -> "ltdCOUTR",
-    '_showConstraints -> false)
+        @helper.inputText(businessDetailsForm("obpCompany.obpPSAUTR"),
+        '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+        '_id -> "obp-psa-utr",
+        '_showConstraints -> false)
 
-</div>
+    </div>
 
-<div id = "business-type-uib-form" class = "form-field panel-indent">
-
-    @helper.inputText(businessDetailsForm("uibCompany.uibBusinessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "uibBusinessName",
-    '_showConstraints -> false)
-
-    @helper.inputText(businessDetailsForm("uibCompany.uibCotaxAUTR"),
-    '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_id -> "uibCOUTR",
-    '_showConstraints -> false)
-
-</div>
-
-<div id = "business-type-llp-form" class = "form-field panel-indent">
-
-    @helper.inputText(businessDetailsForm("llpCompany.llpBusinessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "llpBusinessName",
-    '_showConstraints -> false)
-
-    @helper.inputText(businessDetailsForm("llpCompany.llpPSAUTR"),
-    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
-    '_id -> "llpPSAUTR",
-    '_showConstraints -> false)
-
-</div>
-
-<div id = "business-type-obp-form" class = "form-field panel-indent">
-
-    @helper.inputText(businessDetailsForm("obpCompany.obpBusinessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "obpBusinessName",
-    '_showConstraints -> false)
-
-    @helper.inputText(businessDetailsForm("obpCompany.obpPSAUTR"),
-    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
-    '_id -> "obpPSAUTR",
-    '_showConstraints -> false)
+    @inputRadioGroup(
+    businessDetailsForm("businessType"),
+    Seq("NUK" -> Messages("bc.business-verification.radioNUK")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true,
+        '_dataAttributes -> "data-target=business-type-non-uk-form"
+    )
 
 </div>
 
 <button class="button" id="submit" type="submit">Continue</button>
 
-
-}
+    }
 }
