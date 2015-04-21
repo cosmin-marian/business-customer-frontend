@@ -18,6 +18,7 @@ private object AppDependencies {
   private val frontendBootstrapVersion = "0.5.1"
   private val govukTemplateVersion = "2.6.0"
   private val playUiVersion = "1.8.1"
+  private val httpCachingClientVersion = "2.5.0"
   
   val compile = Seq(
     ws,
@@ -30,7 +31,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
-
+    "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8",
     "com.codahale.metrics" % "metrics-graphite" % "3.0.2"
   )
