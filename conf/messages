@@ -12,3 +12,4 @@ bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
 bc.business-verification.coUTRField=COTAX Unique Tax Reference
 bc.business-verification.businessNamefield=Business Name
 bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference
+bc.business-verification-error.firstname=Please enter a first name

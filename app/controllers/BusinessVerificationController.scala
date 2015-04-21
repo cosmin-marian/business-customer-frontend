@@ -14,8 +14,8 @@ trait BusinessVerificationController extends FrontendController {
 
   def submit = Action {  implicit request =>
     businessDetailsForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.business_verification(formWithErrors)),
-      value => Redirect(controllers.routes.BusinessVerificationController.helloWorld())
+      formWithErrors => {println("~~~~~~~~~~~~" + formWithErrors.errors);println("###################" + formWithErrors.globalErrors) ;BadRequest(views.html.business_verification(formWithErrors))},
+      value => {println("~~~~~~~~~~~~" + value); Redirect(controllers.routes.BusinessVerificationController.helloWorld())}
     )
   }
 
