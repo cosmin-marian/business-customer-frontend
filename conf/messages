@@ -5,3 +5,11 @@ bc.business-verification.title = Business Customer
 
 business-review.title = Welcome to ATED subscription
 business-review.subhead = You are about to subscribe to ATED with the business below. You can update some of these details later in the subscription
+
+business-review.name = Business name
+business-review.type = Type of business
+business-review.address = Business address
+business-review.telephone = Telephone
+business-review.email = Email
+business-review.button = Subscribe
+business-review.cancel-subscription = Cancel Subscription

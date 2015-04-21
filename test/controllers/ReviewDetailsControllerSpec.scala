@@ -31,23 +31,27 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
     val result = TestReviewDetailsController.details().apply(FakeRequest())
 
     val document = Jsoup.parse(contentAsString(result))
-    document.getElementById("business-review-details-header").text() must be("Welcome to ATED subscription")
+    document.select("h1").text() must be("Welcome to ATED subscription")
 
+    document.select("#business-name th:nth-child(1)").text() must be ("Business name")
+    document.select("#business-type th:nth-child(1)").text() must be ("Type of business")
+    document.select("#business-address th:nth-child(1)").text() must be ("Business address")
+    document.select("#business-telephone th:nth-child(1)").text()must be ("Telephone")
+    document.select("#business-email th:nth-child(1)").text() must be ("Email")
 
-    document.select(".table").toString must include ("Business name")
-    document.select(".table").toString must include ("Type of business")
-    document.select(".table").toString must include ("Business address")
-    document.select(".table").toString must include ("Telephone")
-    document.select(".table").toString must include ("Email")
-    document.select(".table").toString must include ("ATED subscription")
+    document.select("#business-name th:nth-child(2)").text() must be ("ACME")
+    document.select("#business-type th:nth-child(2)").text()  must be ("Limited")
+    document.select("#business-address th:nth-child(2)").text() must be ("23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
+    document.select("#business-telephone th:nth-child(2)").text() must be ("01234567890")
+    document.select("#business-email th:nth-child(2)").text() must be ("contact@acme.com")
 
-    document.getElementById("business-name").text() must be ("ACME")
-    document.getElementById("business-type").text() must be ("Limited")
-    document.getElementById("business-address").text() must be ("23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
-    document.getElementById("business-telephone").text() must be ("Telephone")
-    document.getElementById("business-email").text() must be ("01234567890")
-    document.getElementById("subscribe-button").text() must be ("contact@acme.com")
+    document.select(".button").text() must be ("Subscribe")
+    document.select(".cancel-subscription-button").text() must be ("Cancel Subscription")
   }
+
+
+
+
 
 
 }

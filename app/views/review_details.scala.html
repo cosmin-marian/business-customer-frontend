@@ -1,37 +1,44 @@
-@()(implicit request: Request[_])
+@(businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 
 
 @bcMain(title = Messages("bc.business-review.title")) {
+
+<h1 aria-level="1" role="heading">@Html(Messages("business-review.title"))</h1>
+
   <table>
       <thead>
-        <tr>
-            <th>Business name</th>
-            <th>ACME</th>
+        <tr id="business-name">
+            <th>@Messages("business-review.name")</th>
+            <th>@businessDetails.businessName</th>
         </tr>
 
-        <tr>
-            <th>Type of business</th>
-            <th>Limited</th>
+        <tr id="business-type">
+            <th>@Messages("business-review.type")</th>
+            <th>@businessDetails.businessType</th>
         </tr>
 
-        <tr>
-            <th>Business address</th>
-            <th>23 High Street Park View The Park Gloucester Gloucestershire ABC 123</th>
+        <tr id="business-address">
+            <th>@Messages("business-review.address")</th>
+            <th>@businessDetails.businessAddress</th>
         </tr>
 
-        <tr>
-            <th>Telephone</th>
-            <th>01234567890</th>
+        <tr id="business-telephone">
+            <th>@Messages("business-review.telephone")</th>
+            <th>@businessDetails.businessTelephone</th>
         </tr>
 
-        <tr>
-            <th>Email</th>
-            <th>contact@acme.com</th>
+        <tr id="business-email">
+            <th>@Messages("business-review.email")</th>
+            <th>@businessDetails.businessEmail</th>
         </tr>
 
       </thead>
 
   </table>
+
+<a href="#" class="button">@Messages("business-review.button")</a>
+
+<a href="#" class="cancel-subscription-button">@Messages("business-review.cancel-subscription")</a>
 }
