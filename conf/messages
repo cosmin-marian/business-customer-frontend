@@ -1,8 +1,6 @@
 bc.title = Business Customer
 bc.business-verification.title = Business Customer
 
-
-
 business-review.title = Welcome to ATED subscription
 business-review.subhead = You are about to subscribe to ATED with the business below. You can update some of these details later in the subscription
 
@@ -13,3 +11,17 @@ business-review.telephone = Telephone
 business-review.email = Email
 business-review.button = Subscribe
 business-review.cancel-subscription = Cancel Subscription
+
+bc.business-verification.title=Business Verification
+bc.business-verification.radioNUK=Non UK-based Company
+bc.business-verification.radioPRT=Ordinary Business Partnership
+bc.business-verification.radioLLP=Limited Liability Partnership
+bc.business-verification.radioUIB=Unincorporated Body
+bc.business-verification.radioLTD=Limited Company
+bc.business-verification.radioSOP=Sole Trader
+bc.business-verification.firstNameField=First Name
+bc.business-verification.lastNameField=Last Name
+bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
+bc.business-verification.coUTRField=COTAX Unique Tax Reference
+bc.business-verification.businessNamefield=Business Name
+bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference
