@@ -21,6 +21,9 @@ class BCUtilsSpec extends PlaySpec {
       }
       "given invalid UTR return false" in {
         BCUtils.validateUTR(Some("2111111111")) must be(false)
+        BCUtils.validateUTR(Some("211111111")) must be(false)
+        BCUtils.validateUTR(Some("211111 111 ")) must be(false)
+        BCUtils.validateUTR(Some("211111ab111 ")) must be(false)
       }
       "None as UTR return false" in {
         BCUtils.validateUTR(None) must be(false)
