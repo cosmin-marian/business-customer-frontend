@@ -145,6 +145,33 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.getElementById("sole-trader-utr").text() must be("Self Assessment Unique Tax Reference")
           }
 
+          "if entered, First name must be less than 40 characters" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAFirstName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+            status(result) must be(BAD_REQUEST)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            contentAsString(result) must include("Maximum length is 40")
+          }
+
+          "if entered, Last name must be less than 40 characters" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sASurname" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+            status(result) must be(BAD_REQUEST)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            contentAsString(result) must include("Maximum length is 40")
+          }
+
+          "if entered, SA UTR must be 10 digits" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAUTR" -> "12345678917"))
+            status(result) must be(BAD_REQUEST)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+          }
+
           "if businessType is Limited company: Business Name and COTAX UTR" must {
 
             "not be empty" in {
@@ -158,6 +185,24 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
               document.getElementById("ltd-business-name").text() must be("Business Name")
               document.getElementById("ltd-cotax-utr").text() must be("COTAX Unique Tax Reference")
+            }
+
+            "if entered, Business Name must be less than 40 characters" in {
+              val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+              status(result) must be(BAD_REQUEST)
+
+              val document = Jsoup.parse(contentAsString(result))
+
+              contentAsString(result) must include("Maximum length is 40")
+            }
+
+            "if entered, COTAX UTR must be 10 digits" in {
+              val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdCotaxAUTR" -> "12345678917"))
+              status(result) must be(BAD_REQUEST)
+
+              val document = Jsoup.parse(contentAsString(result))
+
+              contentAsString(result) must include("Unique Tax Reference must be 10 digits")
             }
           }
 
@@ -175,7 +220,17 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               document.getElementById("uib-business-name").text() must be("Business Name")
               document.getElementById("uib-cotax-utr").text() must be("COTAX Unique Tax Reference")
             }
+
+            "if entered, Business Name must be less than 40 characters" in {
+              val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "SOP", "uibCompany.uibBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+              status(result) must be(BAD_REQUEST)
+
+              val document = Jsoup.parse(contentAsString(result))
+
+              contentAsString(result) must include("Maximum length is 40")
+            }
           }
+
 
           "if businessType is Ordinary business partnership: Business Name and Partnership Self Assessment UTR" must {
 

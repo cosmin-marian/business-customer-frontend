@@ -86,6 +86,7 @@
 
         @helper.inputText(businessDetailsForm("ltdCompany.ltdCotaxAUTR"),
         '_label -> Html(Messages("bc.business-verification.coUTRField")),
+        '_error -> businessDetailsForm("ltdCompany.ltdCotaxAUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
         '_id -> "ltd-cotax-utr",
         '_showConstraints -> false)
 
@@ -113,6 +114,7 @@
 
         @helper.inputText(businessDetailsForm("soleTrader.sAUTR"),
         '_label -> Html(Messages("bc.business-verification.saUTRField")),
+        '_error -> businessDetailsForm("soleTrader.sAUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
         '_id -> "sole-trader-utr",
         '_showConstraints -> false)
 

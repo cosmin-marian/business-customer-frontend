@@ -7,9 +7,9 @@ import play.api.data.validation.Constraints._
 
 case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, limitedCompany: LimitedCompanyMatch, uib: UnincorporatedMatch, obp :OrdinaryBusinessPartnershipMatch, llp :LimitedLiabilityPartnershipMatch)
 
-case class SoleTraderMatch(sAFirstName: Option[String], sASurname: Option[String], sAUTR: Option[String])
+case class SoleTraderMatch(sAFirstName: Option[String], sASurname: Option[String], sAUTR: Option[Int])
 
-case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxUTR: Option[String])
+case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxUTR: Option[Int])
 
 case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxUTR: Option[String])
 
@@ -22,16 +22,16 @@ object BusinessVerificationForms {
   val businessDetailsForm = Form(mapping(
       "businessType" -> nonEmptyText,
       "soleTrader"   -> mapping(
-        "sAFirstName" -> optional(text),
-        "sASurname"   -> optional(text),
-        "sAUTR"   -> optional(text)
+        "sAFirstName" -> optional(text.verifying(maxLength(40))),
+        "sASurname"   -> optional(text.verifying(maxLength(40))),
+        "sAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
     )(SoleTraderMatch.apply)(SoleTraderMatch.unapply),
     "ltdCompany"   -> mapping(
-      "ltdBusinessName"   -> optional(text),
-      "ltdCotaxAUTR"   -> optional(text)
+      "ltdBusinessName"   -> optional(text.verifying(maxLength(40))),
+      "ltdCotaxAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
     )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply),
       "uibCompany"   -> mapping(
-        "uibBusinessName"   -> optional(text),
+        "uibBusinessName"   -> optional(text.verifying(maxLength(40))),
         "uibCotaxAUTR"   -> optional(text)
     )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply),
     "obpCompany"   -> mapping(
