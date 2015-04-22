@@ -9,24 +9,33 @@
 <script>
     $(document).ready(function(){
 
-        $("#business-type-uib-form, #business-type-ltd-form, #business-type-sop-form, #business-type-llp-form, #business-type-obp-form, #business-type-non-uk-form, #submit").hide();
+        // On document ready, if no radio button is selected, hide submit
+        if ($('.block-label input[type="radio"]:checked').length == 0) {
+            $('#submit').hide();
+        }
 
-        $(".block-label input[type='radio']").each(function() {
+        // On document ready, hide any form fields for unchecked radio buttons
+        $('.block-label input[type="radio"]:not(:checked)').each(function() {
+            $('#' + $(this).attr('data-target')).hide();
+        });
 
-            var $radio = $(this),
-                dataTarget = $(this).attr('data-target');
+        // On radio click event
+        $('.block-label input[type="radio"]').on('click', function() {
 
-            $radio.on('click', function() {
+            // Show corresponding form fields and show submit button
+            $('#submit, #'+ $(this).attr('data-target')).show();
 
-                $('#'+dataTarget).show();
-                $("#submit").show();
-
-                $(".block-label input[type='radio']:not(:checked)").each(function() {
-
-                    $('#' + $(this).attr('data-target')).hide();
-
-                });
+            // Hide all form fields for radio buttons that are NOT checked
+            $('.block-label input[type="radio"]:not(:checked)').each(function() {
+                $('#' + $(this).attr('data-target')).hide();
             });
+
+            // If errors exist, when changing radio selection, remove errors from previous selection
+            if ($('.error-overview').length > 0) {
+                $(this).on('change', function() {
+                    $('.error-overview').remove();
+                });
+            }
         });
      });
 </script>
@@ -37,7 +46,7 @@
 <p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 
 @if(businessDetailsForm.hasGlobalErrors){
-<div class="alert alert-error">
+<div class="error-overview">
     @for(validationError <- businessDetailsForm.globalErrors){
     @validationError.message<p></p>
     }
