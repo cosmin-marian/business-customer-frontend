@@ -4,6 +4,8 @@ import forms.formValidators.BusinessVerificationValidator._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
+import play.api.i18n.Messages
+
 
 case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, limitedCompany: LimitedCompanyMatch, uib: UnincorporatedMatch, obp :OrdinaryBusinessPartnershipMatch, llp :LimitedLiabilityPartnershipMatch)
 
@@ -11,11 +13,11 @@ case class SoleTraderMatch(sAFirstName: Option[String], sASurname: Option[String
 
 case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxUTR: Option[Int])
 
-case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxUTR: Option[String])
+case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxUTR: Option[Int])
 
-case class OrdinaryBusinessPartnershipMatch(obpBusinessName: Option[String], obpPSAUTR: Option[String])
+case class OrdinaryBusinessPartnershipMatch(obpBusinessName: Option[String], obpPSAUTR: Option[Int])
 
-case class LimitedLiabilityPartnershipMatch(llpBusinessName: Option[String], llpPSAUTR: Option[String])
+case class LimitedLiabilityPartnershipMatch(llpBusinessName: Option[String], llpPSAUTR: Option[Int])
 
 object BusinessVerificationForms {
 
@@ -32,24 +34,26 @@ object BusinessVerificationForms {
     )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply),
       "uibCompany"   -> mapping(
         "uibBusinessName"   -> optional(text.verifying(maxLength(40))),
-        "uibCotaxAUTR"   -> optional(text)
+        "uibCotaxAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
     )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply),
     "obpCompany"   -> mapping(
-        "obpBusinessName"   -> optional(text),
-        "obpPSAUTR"   -> optional(text)
+        "obpBusinessName"   -> optional(text.verifying(maxLength(40))),
+        "obpPSAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
     )(OrdinaryBusinessPartnershipMatch.apply)(OrdinaryBusinessPartnershipMatch.unapply),
     "llpCompany"   -> mapping(
-        "llpBusinessName"   -> optional(text),
-        "llpPSAUTR"   -> optional(text)
+        "llpBusinessName"   -> optional(text.verifying(maxLength(40))),
+        "llpPSAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
     )(LimitedLiabilityPartnershipMatch.apply)(LimitedLiabilityPartnershipMatch.unapply)
     )(BusinessDetails.apply)(BusinessDetails.unapply)
-    verifying("Please enter First name", p => saFirstNameCheck(p))
-    verifying("Please enter Surname", p => saSurnameCheck(p))
-    verifying("Please enter SA UTR", p => saUTRCheck(p))
-    verifying("Please enter Business Name", p => businessNameCheck(p))
-    verifying("Please enter COTAX UTR", p => cotaxUTRCheck(p))
-    verifying("Please enter Partnership Self Assessment Unique Tax Reference", p => psaUTRCheck(p))
-
+    verifying(Messages("bc.business-verification-error.firstname"), p => saFirstNameCheck(p))
+    verifying(Messages("bc.business-verification-error.surname"), p => saSurnameCheck(p))
+    verifying(Messages("bc.business-verification-error.sautr"), p => saUTREmptyCheck(p))
+    verifying(Messages("bc.business-verification-error.businessName"), p => businessNameCheck(p))
+    verifying(Messages("bc.business-verification-error.cotaxutr"), p => cotaxUTREmptyCheck(p))
+    verifying(Messages("bc.business-verification-error.psautr"), p => psaUTREmptyCheck(p))
+    verifying(Messages("bc.business-verification-error.invalidSAUTR"), p => validateSAUTR(p))
+    verifying(Messages("bc.business-verification-error.invalidCOUTR"), p => validateCOUTR(p))
+    verifying(Messages("bc.business-verification-error.invalidPSAUTR"), p => validatePSAUTR(p))
   )
 
 }
