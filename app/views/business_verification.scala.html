@@ -4,12 +4,12 @@
 
 @bcMain(title = Messages("bc.business-verification.title")) {
 
-@if(businessDetailsForm.errors.isEmpty){
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
-        $("#submit").hide();
-        $("#business-type-uib-form, #business-type-ltd-form, #business-type-sop-form, #business-type-llp-form, #business-type-obp-form, #business-type-non-uk-form").hide();
+
+        $("#business-type-uib-form, #business-type-ltd-form, #business-type-sop-form, #business-type-llp-form, #business-type-obp-form, #business-type-non-uk-form, #submit").hide();
 
         $(".block-label input[type='radio']").each(function() {
 
@@ -18,19 +18,19 @@
 
             $radio.on('click', function() {
 
-                $('#'+dataTarget).show().find('input[type="text"]').attr('required', true);
+                $('#'+dataTarget).show();
                 $("#submit").show();
 
                 $(".block-label input[type='radio']:not(:checked)").each(function() {
 
-                    $('#' + $(this).attr('data-target')).hide().find('input[type="text"]').attr('required', false);
+                    $('#' + $(this).attr('data-target')).hide();
 
                 });
             });
         });
      });
 </script>
-}
+
 
 <h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
 <h2 id="business-lookup">@Messages("bc.business-verification.lookup")</h2>
