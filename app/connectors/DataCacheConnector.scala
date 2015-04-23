@@ -1,8 +1,11 @@
 package connectors
 
 import models.ReviewDetails
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import play.api.mvc.Request
 import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.SessionKeys
+
 
 import scala.concurrent.Future
 
@@ -15,5 +18,9 @@ trait DataCacheConnector {
   def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
     SessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
   }
+
+
+
+
 }
 
