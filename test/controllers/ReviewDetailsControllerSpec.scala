@@ -38,31 +38,31 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
 
     "return Review Details view" in {
 
-      val result = testReviewDetailsController.details("ATED").apply(FakeRequest())
+      val result = testReviewDetailsController.businessDetails("ATED").apply(FakeRequest())
 
       val document = Jsoup.parse(contentAsString(result))
-      document.select("h1").text() must be("Welcome to ATED subscription")
+      document.select("h1").text must be("Welcome to ATED subscription")
 
-      document.select("#business-name th:nth-child(1)").text() must be("Business name")
-      document.select("#business-type th:nth-child(1)").text() must be("Type of business")
-      document.select("#business-address th:nth-child(1)").text() must be("Business address")
-      document.select("#business-telephone th:nth-child(1)").text() must be("Telephone")
-      document.select("#business-email th:nth-child(1)").text() must be("Email")
+      document.select("#business-name th:nth-child(1)").text must be("Business name")
+      document.select("#business-type th:nth-child(1)").text must be("Type of business")
+      document.select("#business-address th:nth-child(1)").text must be("Business address")
+      document.select("#business-telephone th:nth-child(1)").text must be("Telephone")
+      document.select("#business-email th:nth-child(1)").text must be("Email")
 
-      document.select("#business-name th:nth-child(2)").text() must be("ACME")
-      document.select("#business-type th:nth-child(2)").text() must be("Limited")
-      document.select("#business-address th:nth-child(2)").text() must be("Address")
-      document.select("#business-telephone th:nth-child(2)").text() must be("01234567890")
-      document.select("#business-email th:nth-child(2)").text() must be("contact@acme.com")
+      document.select("#business-name th:nth-child(2)").text must be("ACME")
+      document.select("#business-type th:nth-child(2)").text must be("Limited")
+      document.select("#business-address th:nth-child(2)").text must be("Address")
+      document.select("#business-telephone th:nth-child(2)").text must be("01234567890")
+      document.select("#business-email th:nth-child(2)").text must be("contact@acme.com")
 
-      document.select(".button").text() must be("Subscribe")
-      document.select(".cancel-subscription-button").text() must be("Cancel Subscription")
-      document.select(".nested-banner").text() must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
+      document.select(".button").text must be("Subscribe")
+      document.select(".cancel-subscription-button").text must be("Cancel Subscription")
+      document.select(".nested-banner").text must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
     }
 
     "read existing business details data from cache (without updating data)" in {
       val testReviewController = testReviewDetailsController
-      val result = testReviewController.details("ATED").apply(FakeRequest())
+      val result = testReviewController.businessDetails("ATED").apply(FakeRequest())
 
       status(result) must be(OK)
 

@@ -13,7 +13,7 @@ trait ReviewDetailsController extends FrontendController {
 
   def dataCacheConnector: DataCacheConnector
 
-  def details(serviceName: String) = UnauthorisedAction.async { implicit request =>
+  def businessDetails(serviceName: String) = UnauthorisedAction.async { implicit request =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case businessDetails => Future.successful(Ok(views.html.review_details(serviceName, businessDetails.get)))
     }

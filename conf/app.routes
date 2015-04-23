@@ -7,5 +7,4 @@ GET         /show                               controllers.BusinessVerification
 POST        /submit                             controllers.BusinessVerificationController.submit
 GET         /hello                              controllers.BusinessVerificationController.helloWorld
 
-
-GET        /review-details/:service             controllers.ReviewDetailsController.details(service: String)
+GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
