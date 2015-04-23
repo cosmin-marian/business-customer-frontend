@@ -1,11 +1,13 @@
-@(businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
-@import uk.gov.hmrc.play.views.html.helpers._
-
 
 @bcMain(title = Messages("bc.business-review.title")) {
 
-<h1 aria-level="1" role="heading">@Html(Messages("business-review.title"))</h1>
+<h1 aria-level="1" role="heading">@Html(Messages("business-review.title", service))</h1>
+
+  <div class="nested-banner">
+      <p>@Messages("business-review.subscribe-banner", service)</p>
+  </div>
 
   <table>
       <thead>
