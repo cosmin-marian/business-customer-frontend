@@ -9,18 +9,17 @@ import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
-object DataCacheConnector extends DataCacheConnector
+object DataCacheConnector extends DataCacheConnector {
+  override val sessionCache = SessionCache
+}
 
 trait DataCacheConnector {
+
+  val sessionCache: SessionCache
 
   val sourceId: String = "BC_Business_Details"
 
   def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
-    SessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
+    sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
   }
-
-
-
-
 }
-
