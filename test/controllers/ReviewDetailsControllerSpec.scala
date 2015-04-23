@@ -8,7 +8,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.SessionId
 
 import scala.concurrent.Future
 
@@ -39,7 +38,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
 
     "return Review Details view" in {
 
-      val result = testReviewDetailsController.details().apply(FakeRequest())
+      val result = testReviewDetailsController.details("ATED").apply(FakeRequest())
 
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text() must be("Welcome to ATED subscription")
@@ -63,7 +62,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
 
     "read existing business details data from cache (without updating data)" in {
       val testReviewController = testReviewDetailsController
-      val result = testReviewController.details().apply(FakeRequest())
+      val result = testReviewController.details("ATED").apply(FakeRequest())
 
       status(result) must be(OK)
 
