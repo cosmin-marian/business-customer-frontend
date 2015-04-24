@@ -5,4 +5,4 @@ GET         /assets/*file                       controllers.Assets.at(path="/pub
 
 GET         /show                               controllers.BusinessVerificationController.show
 POST        /submit                             controllers.BusinessVerificationController.submit
-GET         /hello                              controllers.BusinessVerificationController.helloWorld
+GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)

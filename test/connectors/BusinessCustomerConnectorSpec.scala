@@ -3,15 +3,12 @@ package connectors
 
 import java.util.UUID
 
-import connectors.BusinessCustomerConnector
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.SessionId
 import forms._
 import uk.gov.hmrc.play.http.logging.SessionId
-import scala.Some
 
 class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite {
 
