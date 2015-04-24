@@ -5,19 +5,47 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
+import play.api.libs.json
 
+import play.api.libs.json.Json
 
-case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, limitedCompany: LimitedCompanyMatch, uib: UnincorporatedMatch, obp :OrdinaryBusinessPartnershipMatch, llp :LimitedLiabilityPartnershipMatch)
 
 case class SoleTraderMatch(sAFirstName: Option[String], sASurname: Option[String], sAUTR: Option[Int])
 
-case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxUTR: Option[Int])
+case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxAUTR: Option[Int])
 
-case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxUTR: Option[Int])
+case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxAUTR: Option[Int])
 
 case class OrdinaryBusinessPartnershipMatch(obpBusinessName: Option[String], obpPSAUTR: Option[Int])
 
 case class LimitedLiabilityPartnershipMatch(llpBusinessName: Option[String], llpPSAUTR: Option[Int])
+
+case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, limitedCompany: LimitedCompanyMatch, uibCompany: UnincorporatedMatch, obpCompany :OrdinaryBusinessPartnershipMatch, llpCompany :LimitedLiabilityPartnershipMatch)
+
+
+object SoleTraderMatch {
+  implicit val formats = Json.format[SoleTraderMatch]
+}
+
+object LimitedCompanyMatch {
+  implicit val formats = Json.format[LimitedCompanyMatch]
+}
+
+object UnincorporatedMatch {
+  implicit val formats = Json.format[UnincorporatedMatch]
+}
+
+object OrdinaryBusinessPartnershipMatch {
+  implicit val formats = Json.format[OrdinaryBusinessPartnershipMatch]
+}
+
+object LimitedLiabilityPartnershipMatch {
+  implicit val formats = Json.format[LimitedLiabilityPartnershipMatch]
+}
+
+object BusinessDetails {
+  implicit val formats = Json.format[BusinessDetails]
+}
 
 object BusinessVerificationForms {
 
