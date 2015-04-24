@@ -1,24 +1,21 @@
 package controllers
 
-import forms.BusinessVerificationForms._
-import models.ReviewDetails
-import play.api.mvc.Action
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import connectors.DataCacheConnector
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 
+import scala.concurrent.Future
 
 object ReviewDetailsController extends ReviewDetailsController {
-
+  override val dataCacheConnector = DataCacheConnector
 }
 
 trait ReviewDetailsController extends FrontendController {
 
-  def subscribe = Action {
-    Ok(views.html.subscription())
+  def dataCacheConnector: DataCacheConnector
+
+  def businessDetails(serviceName: String) = UnauthorisedAction.async { implicit request =>
+    dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
+      case businessDetails => Future.successful(Ok(views.html.review_details(serviceName, businessDetails.get)))
+    }
   }
-
-  def details = Action { implicit request =>
-    Ok(views.html.review_details(ReviewDetails("ACME", "Limited", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123","01234567890", "contact@acme.com")))
-  }
-
-
 }
