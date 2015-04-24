@@ -43,17 +43,11 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
       val document = Jsoup.parse(contentAsString(result))
       document.select("h1").text must be("Welcome to ATED subscription")
 
-      document.select("#business-name th:nth-child(1)").text must be("Business name")
-      document.select("#business-type th:nth-child(1)").text must be("Type of business")
-      document.select("#business-address th:nth-child(1)").text must be("Business address")
-      document.select("#business-telephone th:nth-child(1)").text must be("Telephone")
-      document.select("#business-email th:nth-child(1)").text must be("Email")
-
-      document.select("#business-name th:nth-child(2)").text must be("ACME")
-      document.select("#business-type th:nth-child(2)").text must be("Limited")
-      document.select("#business-address th:nth-child(2)").text must be("Address")
-      document.select("#business-telephone th:nth-child(2)").text must be("01234567890")
-      document.select("#business-email th:nth-child(2)").text must be("contact@acme.com")
+      document.getElementById("business-name").text must be("ACME")
+      document.getElementById("business-type").text must be("Limited")
+      document.getElementById("business-address").text must be("Address")
+      document.getElementById("business-telephone").text must be("01234567890")
+      document.getElementById("business-email").text must be("contact@acme.com")
 
       document.select(".button").text must be("Subscribe")
       document.select(".cancel-subscription-button").text must be("Cancel Subscription")
