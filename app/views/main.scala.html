@@ -1,6 +1,7 @@
 @(applicationConfig: config.ApplicationConfig = config.ApplicationConfig,
     title: String,
     contentHeader: Option[Html] = None,
+    mainContent: Html = HtmlFormat.empty,
     userLoggedIn: Boolean = false,
     getHelpForm: Html  = HtmlFormat.empty,
     linkElement : Option[Html] = None)(mainContent: Html = HtmlFormat.empty)

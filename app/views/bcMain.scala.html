@@ -13,7 +13,11 @@
 }
 
 @main(
+    applicationConfig = config.ApplicationConfig,
     title = title,
+    mainContent = mainContent,
+    userLoggedIn = userLoggedIn,
+    getHelpForm = getHelpForm,
     linkElement = Some(linkElement)){
         <article>
             @mainContent
