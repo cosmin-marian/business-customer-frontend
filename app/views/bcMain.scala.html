@@ -1,4 +1,4 @@
-@(title: String, userLoggedIn: Boolean = false, supportLinkEnabled: Boolean = false)(mainContent: Html)(implicit request : Request[_])
+@(title: String, userLoggedIn: Boolean = false, supportLinkEnabled: Boolean = false)(mainContent: Html)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -8,9 +8,17 @@
     }
 }
 
+@linkElement = {
+<link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/business-customer.css")'/>
+}
+
 @main(
     applicationConfig = config.ApplicationConfig,
     title = title,
-    mainContent = mainContent,
     userLoggedIn = userLoggedIn,
-    getHelpForm = getHelpForm)
+    getHelpForm = getHelpForm,
+    linkElement = Some(linkElement)){
+        <article>
+            @mainContent
+        </article>
+}

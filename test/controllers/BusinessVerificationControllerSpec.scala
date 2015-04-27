@@ -379,9 +379,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
 
       }
-
     }
-
   }
-
 }
