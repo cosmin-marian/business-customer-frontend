@@ -7,7 +7,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import scala.concurrent.Future
 
 object DataCacheConnector extends DataCacheConnector {
-  override val sessionCache = SessionCache
+  val sessionCache: SessionCache = SessionCache
 }
 
 trait DataCacheConnector {
