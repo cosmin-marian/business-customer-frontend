@@ -1,0 +1,43 @@
+@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+
+@bcMain(title = Messages("bc.business-review.title")) {
+
+<h1 aria-level="1" role="heading">@Html(Messages("business-review.title", service))</h1>
+
+  <div class="nested-banner">
+      <p>@Messages("business-review.subscribe-banner", service)</p>
+  </div>
+
+  <table>
+        <tr>
+            <th>@Messages("business-review.name")</th>
+            <td id="business-name">@businessDetails.businessName</td>
+        </tr>
+
+        <tr>
+            <th>@Messages("business-review.type")</th>
+            <td id="business-type">@businessDetails.businessType</td>
+        </tr>
+
+        <tr>
+            <th>@Messages("business-review.address")</th>
+            <td id="business-address">@businessDetails.businessAddress</td>
+        </tr>
+
+        <tr>
+            <th>@Messages("business-review.telephone")</th>
+            <td id="business-telephone">@businessDetails.businessTelephone</td>
+        </tr>
+
+        <tr>
+            <th>@Messages("business-review.email")</th>
+            <td id="business-email">@businessDetails.businessEmail</td>
+        </tr>
+
+  </table>
+
+<a href="#" class="button">@Messages("business-review.button")</a>
+
+<a href="#" class="cancel-subscription-button">@Messages("business-review.cancel-subscription")</a>
+}
