@@ -5,13 +5,21 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
+import connectors.BusinessCustomerConnector
+import org.mockito.Matchers
+import scala.concurrent.Future
 
 
-class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite {
+class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
+  val mockConnector = mock[BusinessCustomerConnector]
 
-  object TestBusinessVerificationController extends BusinessVerificationController
+  object TestBusinessVerificationController extends BusinessVerificationController {
+    val businessCustomerConnector = mockConnector
+  }
 
   "BusinessVerificationController" must {
 
@@ -118,7 +126,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "hello" must {
 
       "respond with OK" in {
-        val result = TestBusinessVerificationController.helloWorld().apply(FakeRequest())
+        val result = TestBusinessVerificationController.helloWorld("").apply(FakeRequest())
         status(result) must be(OK)
       }
 
@@ -220,141 +228,154 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
           }
         }
-      }
 
-      "if an Unincorporated body: Business Name and COTAX UTR" must {
+        "if an Unincorporated body: Business Name and COTAX UTR" must {
 
-        "not be empty" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB"))
-          status(result) must be(BAD_REQUEST)
+          "not be empty" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB"))
+            status(result) must be(BAD_REQUEST)
 
-          val document = Jsoup.parse(contentAsString(result))
+            val document = Jsoup.parse(contentAsString(result))
 
-          contentAsString(result) must include("Business Name must be entered")
-          contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
+            contentAsString(result) must include("Business Name must be entered")
+            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
           document.getElementById("uib-business-name_field").text() must be("Business Name")
           document.getElementById("uib-cotax-utr_field").text() must be("COTAX Unique Tax Reference")
         }
 
-        "if entered, Business Name must be less than 40 characters" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
-          status(result) must be(BAD_REQUEST)
+          "if entered, Business Name must be less than 40 characters" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+            status(result) must be(BAD_REQUEST)
 
-          val document = Jsoup.parse(contentAsString(result))
+            val document = Jsoup.parse(contentAsString(result))
 
-          contentAsString(result) must include("Maximum length is 40")
+            contentAsString(result) must include("Maximum length is 40")
+          }
+
+          "if entered, COTAX UTR must be 10 digits" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "12345678917"))
+            status(result) must be(BAD_REQUEST)
+
+            contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+          }
+
+          "if entered, CO TAX UTR must be valid" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "1234567892"))
+            status(result) must be(BAD_REQUEST)
+
+            contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
+          }
         }
 
-        "if entered, COTAX UTR must be 10 digits" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "12345678917"))
-          status(result) must be(BAD_REQUEST)
 
-          contentAsString(result) must include("Unique Tax Reference must be 10 digits")
-        }
+        "if an Ordinary business partnership: Business Name and Partnership Self Assessment UTR" must {
 
-        "if entered, CO TAX UTR must be valid" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "1234567892"))
-          status(result) must be(BAD_REQUEST)
+          "not be empty" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP"))
+            status(result) must be(BAD_REQUEST)
 
-          contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
-        }
-      }
+            val document = Jsoup.parse(contentAsString(result))
 
-
-      "if an Ordinary business partnership: Business Name and Partnership Self Assessment UTR" must {
-
-        "not be empty" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP"))
-          status(result) must be(BAD_REQUEST)
-
-          val document = Jsoup.parse(contentAsString(result))
-
-          contentAsString(result) must include("Business Name must be entered")
-          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
+            contentAsString(result) must include("Business Name must be entered")
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
           document.getElementById("obp-business-name_field").text() must be("Business Name")
           document.getElementById("obp-psa-utr_field").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
 
-        "if entered, Business Name must be less than 40 characters" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
-          status(result) must be(BAD_REQUEST)
+          "if entered, Business Name must be less than 40 characters" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+            status(result) must be(BAD_REQUEST)
 
-          val document = Jsoup.parse(contentAsString(result))
+            val document = Jsoup.parse(contentAsString(result))
 
-          contentAsString(result) must include("Maximum length is 40")
+            contentAsString(result) must include("Maximum length is 40")
+          }
+
+          "if entered, Partnership UTR must be 10 digits" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "12345678917"))
+            status(result) must be(BAD_REQUEST)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+          }
+
+          "if entered, Partnership UTR must be valid" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "1234567892"))
+            status(result) must be(BAD_REQUEST)
+
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+          }
         }
 
-        "if entered, Partnership UTR must be 10 digits" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "12345678917"))
-          status(result) must be(BAD_REQUEST)
+        "if Limited liability partnership: Business Name and Partnership Self Assessment UTR" must {
 
-          val document = Jsoup.parse(contentAsString(result))
+          "not be empty" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP"))
+            status(result) must be(BAD_REQUEST)
 
-          contentAsString(result) must include("Unique Tax Reference must be 10 digits")
-        }
+            val document = Jsoup.parse(contentAsString(result))
 
-        "if entered, Partnership UTR must be valid" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "1234567892"))
-          status(result) must be(BAD_REQUEST)
-
-          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
-        }
-      }
-
-      "if Limited liability partnership: Business Name and Partnership Self Assessment UTR" must {
-
-        "not be empty" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP"))
-          status(result) must be(BAD_REQUEST)
-
-          val document = Jsoup.parse(contentAsString(result))
-
-          contentAsString(result) must include("Business Name must be entered")
-          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
+            contentAsString(result) must include("Business Name must be entered")
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
           document.getElementById("llp-business-name_field").text() must be("Business Name")
           document.getElementById("llp-psa-utr_field").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
 
-        "if entered, Business Name must be less than 40 characters" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
-          status(result) must be(BAD_REQUEST)
+          "if entered, Business Name must be less than 40 characters" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+            status(result) must be(BAD_REQUEST)
 
-          val document = Jsoup.parse(contentAsString(result))
+            val document = Jsoup.parse(contentAsString(result))
 
-          contentAsString(result) must include("Maximum length is 40")
+            contentAsString(result) must include("Maximum length is 40")
+          }
+
+          "if entered, Partnership UTR must be 10 digits" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "12345678917"))
+            status(result) must be(BAD_REQUEST)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+          }
+
+          "if entered, Partnership UTR must be valid" in {
+            val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "1234567892"))
+            status(result) must be(BAD_REQUEST)
+
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+          }
         }
 
-        "if entered, Partnership UTR must be 10 digits" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "12345678917"))
-          status(result) must be(BAD_REQUEST)
-
-          val document = Jsoup.parse(contentAsString(result))
-
-          contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+        "if valid text has been entered - continue to next action - MATCH FOUND" in {
+          val inputJsonForUIB = Json.parse("""{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111111"} }""")
+          val matchSuccessResponse = Json.parse("""{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+          when(mockConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
+          val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(inputJsonForUIB))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
         }
 
-        "if entered, Partnership UTR must be valid" in {
-          val result = TestBusinessVerificationController.submit(request.withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "1234567892"))
-          status(result) must be(BAD_REQUEST)
-
-          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+        "if valid text has been entered - continue to next action - MATCH NOT FOUND" in {
+          val inputJsonForUIB = Json.parse("""{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111112"} }""")
+          val matchFailureResponse = Json.parse("""{"error": "Sorry. Business details not found."}""")
+          when(mockConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponse))
+          val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(inputJsonForUIB))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
         }
-      }
 
-      "if valid text has been entered - continue to next action" in {
-        val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "abc"}""")))
-        status(result) must be(SEE_OTHER)
-        redirectLocation(result).get must include("/business-customer/hello")
-      }
+        "if empty" must {
 
-      "if empty" must {
+          "return BadRequest" in {
+            val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}""")))
+            status(result) must be(BAD_REQUEST)
+          }
 
-        "return BadRequest" in {
-          val result = TestBusinessVerificationController.submit().apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}""")))
-          status(result) must be(BAD_REQUEST)
         }
 
       }
