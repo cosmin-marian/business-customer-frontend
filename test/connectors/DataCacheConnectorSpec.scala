@@ -23,6 +23,10 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
 
     "fetchAndGetBusinessDetailsForSession" must {
 
+      "use the correct session cache" in {
+        DataCacheConnector.sessionCache must be(SessionCache)
+      }
+
       "fetch saved BusinessDetails from SessionCache" in {
         implicit val hc: HeaderCarrier = HeaderCarrier()
         val reviewDetails: ReviewDetails = ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
@@ -30,9 +34,6 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
         val result = TestDataCacheConnector.fetchAndGetBusinessDetailsForSession
         await(result) must be(Some(reviewDetails))
       }
-
     }
-
   }
-
 }

@@ -63,10 +63,4 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
       testReviewController.dataCacheConnector.reads must be(1)
     }
   }
-
-  "DataCacheConnector" must {
-    "use the correct session cache" in {
-      DataCacheConnector.sessionCache must be(SessionCache)
-    }
-  }
 }
