@@ -1,10 +1,9 @@
 @(applicationConfig: config.ApplicationConfig = config.ApplicationConfig,
     title: String,
     contentHeader: Option[Html] = None,
-    mainContent: Html = HtmlFormat.empty,
     userLoggedIn: Boolean = false,
     getHelpForm: Html  = HtmlFormat.empty,
-    linkElement : Option[Html] = None)
+    linkElement : Option[Html] = None)(mainContent: Html = HtmlFormat.empty)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
