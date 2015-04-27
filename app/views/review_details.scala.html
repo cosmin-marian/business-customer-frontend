@@ -1,7 +1,7 @@
 @(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 
-@bcMain(title = Messages("bc.business-review.title")) {
+@bcMain(title = Messages("bc.business-review.title", service)) {
 
 <h1 aria-level="1" role="heading">@Html(Messages("business-review.title", service))</h1>
 

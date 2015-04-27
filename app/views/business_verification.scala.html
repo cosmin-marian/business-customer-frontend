@@ -1,4 +1,4 @@
-@(businessDetailsForm: Form[forms.BusinessDetails])(implicit request: Request[_])
+@(businessDetailsForm: Form[forms.BusinessDetails], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -54,7 +54,7 @@
 </div>
 }
 
-@form(action = controllers.routes.BusinessVerificationController.submit) {
+@form(action = controllers.routes.BusinessVerificationController.submit(service)) {
 <div class="form-group">
     @inputRadioGroup(
     businessDetailsForm("businessType"),

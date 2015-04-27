@@ -3,9 +3,9 @@
 GET         /assets/*file                       controllers.Assets.at(path="/public", file)
 ->          /template                           template.Routes
 
-GET         /show                               controllers.BusinessVerificationController.show
+GET         /business-verification/:service     controllers.BusinessVerificationController.businessVerification(service: String)
 
-POST        /submit                             controllers.BusinessVerificationController.submit
+POST        /submit/:service                    controllers.BusinessVerificationController.submit(service: String)
 
 GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)
 
