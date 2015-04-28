@@ -5,7 +5,6 @@ import java.util.UUID
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import forms.BusinessVerificationForms._
 import models.ReviewDetails
-import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.SessionKeys
@@ -27,7 +26,6 @@ trait BusinessVerificationController extends FrontendController {
    }
 
   def submit(service: String) = Action.async {  implicit request =>
-    Logger.info("*****************session***************"+request.session.get(SessionKeys.sessionId))
     businessDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {
