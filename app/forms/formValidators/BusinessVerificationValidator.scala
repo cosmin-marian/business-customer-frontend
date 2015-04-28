@@ -26,7 +26,7 @@ object BusinessVerificationValidator {
 
   def businessNameCheck(businessDetails : BusinessDetails) = {
     businessDetails.businessType match {
-      case "LTD" => !businessDetails.limitedCompany.ltdBusinessName.isEmpty
+      case "LTD" => !businessDetails.ltdCompany.ltdBusinessName.isEmpty
       case "UIB" =>  !businessDetails.uibCompany.uibBusinessName.isEmpty
       case "OBP" =>  !businessDetails.obpCompany.obpBusinessName.isEmpty
       case "LLP" =>  !businessDetails.llpCompany.llpBusinessName.isEmpty
@@ -36,7 +36,7 @@ object BusinessVerificationValidator {
 
   def cotaxUTREmptyCheck(businessDetails : BusinessDetails) = {
     businessDetails.businessType match {
-      case "LTD" => !businessDetails.limitedCompany.ltdCotaxAUTR.isEmpty
+      case "LTD" => !businessDetails.ltdCompany.ltdCotaxAUTR.isEmpty
       case "UIB" =>  !businessDetails.uibCompany.uibCotaxAUTR.isEmpty
       case _ => true
     }
@@ -63,8 +63,8 @@ object BusinessVerificationValidator {
   def validateCOUTR(businessDetails : BusinessDetails) = {
     businessDetails.businessType match {
       case "LTD" =>  {
-        if (businessDetails.limitedCompany.ltdCotaxAUTR.isEmpty) true
-        else validateUTR(Some(businessDetails.limitedCompany.ltdCotaxAUTR.get.toString()))
+        if (businessDetails.ltdCompany.ltdCotaxAUTR.isEmpty) true
+        else validateUTR(Some(businessDetails.ltdCompany.ltdCotaxAUTR.get.toString()))
       }
       case "UIB" =>  {
         if (businessDetails.uibCompany.uibCotaxAUTR.isEmpty) true

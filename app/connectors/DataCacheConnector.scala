@@ -19,4 +19,9 @@ trait DataCacheConnector {
   def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
     sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
   }
+
+  def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier) = {
+    sessionCache.cache[ReviewDetails](sourceId, reviewDetails)
+  }
+
 }

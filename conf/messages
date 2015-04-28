@@ -2,6 +2,7 @@ bc.title = Business Customer
 bc.business-verification.title = Business Customer
 
 business-review.title = Welcome to {0} subscription
+bc.business-review.title = Welcome to {0} subscription
 
 business-review.name = Business name
 business-review.type = Type of business

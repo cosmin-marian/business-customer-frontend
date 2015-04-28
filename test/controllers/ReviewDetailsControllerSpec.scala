@@ -37,7 +37,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "return Review Details view" in {
-
       val result = testReviewDetailsController.businessDetails("ATED").apply(FakeRequest())
 
       val document = Jsoup.parse(contentAsString(result))
@@ -62,5 +61,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite {
 
       testReviewController.dataCacheConnector.reads must be(1)
     }
+
   }
+
 }
