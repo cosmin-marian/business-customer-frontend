@@ -29,13 +29,19 @@ trait BusinessVerificationController extends FrontendController {
     businessDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {
-        businessCustomerConnector.lookup(value) map {
-          actualResponse => {
-            if(actualResponse.toString() contains("error")){
-              Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString()))
-            }else{
-              dataCacheConnector.saveBusinessDetails(actualResponse.as[ReviewDetails])
-              Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+        if(value.businessType == """NUK"""){
+          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK")))
+        }else {
+          businessCustomerConnector.lookup(value) flatMap {
+            actualResponse => {
+              if (actualResponse.toString() contains ("error")) {
+                Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
+              } else {
+                dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
+                  cachedData =>
+                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
+                }
+              }
             }
           }
         }

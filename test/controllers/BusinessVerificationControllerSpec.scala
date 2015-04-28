@@ -1,14 +1,17 @@
 package controllers
 
+import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import org.jsoup.Jsoup
+import org.mockito.Matchers
+import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
-import connectors.{DataCacheConnector, BusinessCustomerConnector}
-import org.mockito.Matchers
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.audit.http.HeaderCarrier
+
 import scala.concurrent.Future
 
 
@@ -355,9 +358,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
 
         "if valid text has been entered - continue to next action - MATCH FOUND" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJsonForUIB = Json.parse("""{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111111"} }""")
           val matchSuccessResponse = Json.parse("""{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+          val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
           when(mockConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
+          when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
           val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(inputJsonForUIB))
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include(s"/business-customer/review-details/$service")
@@ -379,6 +385,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(BAD_REQUEST)
           }
 
+        }
+
+        "if non-uk, continue to next action" in {
+          val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")))
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
         }
 
       }

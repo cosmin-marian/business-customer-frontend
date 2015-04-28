@@ -5,8 +5,6 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
-import play.api.libs.json
-
 import play.api.libs.json.Json
 
 
@@ -20,7 +18,7 @@ case class OrdinaryBusinessPartnershipMatch(obpBusinessName: Option[String], obp
 
 case class LimitedLiabilityPartnershipMatch(llpBusinessName: Option[String], llpPSAUTR: Option[Int])
 
-case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, limitedCompany: LimitedCompanyMatch, uibCompany: UnincorporatedMatch, obpCompany :OrdinaryBusinessPartnershipMatch, llpCompany :LimitedLiabilityPartnershipMatch)
+case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, ltdCompany: LimitedCompanyMatch, uibCompany: UnincorporatedMatch, obpCompany :OrdinaryBusinessPartnershipMatch, llpCompany :LimitedLiabilityPartnershipMatch)
 
 
 object SoleTraderMatch {

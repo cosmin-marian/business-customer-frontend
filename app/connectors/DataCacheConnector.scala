@@ -3,7 +3,6 @@ package connectors
 import models.ReviewDetails
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -21,11 +20,8 @@ trait DataCacheConnector {
     sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
   }
 
-  def saveBusinessDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier) = {
-    sessionCache.cache[ReviewDetails](sourceId, reviewDetails) map {
-      details =>
-        details
-    }
+  def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier) = {
+    sessionCache.cache[ReviewDetails](sourceId, reviewDetails)
   }
 
 }

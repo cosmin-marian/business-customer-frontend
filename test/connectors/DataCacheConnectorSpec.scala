@@ -44,7 +44,7 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
         val reviewDetails: ReviewDetails = ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
         val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> Json.toJson(reviewDetails)))
         when(mockSessionCache.cache[ReviewDetails](Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
-        val result = TestDataCacheConnector.saveBusinessDetails(reviewDetails)
+        val result = TestDataCacheConnector.saveReviewDetails(reviewDetails)
         await(result).data.get("BC_Business_Details") must be (Some(Json.toJson(reviewDetails)))
       }
 
