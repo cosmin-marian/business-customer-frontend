@@ -11,10 +11,10 @@ import scala.concurrent.Future
 import config.WSHttp
 import forms.BusinessDetails
 
-trait BusinessCustomerConnector extends ServicesConfig {
+trait BusinessMatchingConnector extends ServicesConfig {
 
-  lazy val serviceURL = baseUrl("business-customer")
-  val baseURI = "business-customer"
+  lazy val serviceURL = baseUrl("business-matching")
+  val baseURI = "business-matching"
   val lookupURI = "business-lookup"
 
   val http: HttpGet with HttpPost = WSHttp
@@ -28,4 +28,4 @@ trait BusinessCustomerConnector extends ServicesConfig {
 
 }
 
-object BusinessCustomerConnector extends BusinessCustomerConnector
+object BusinessMatchingConnector extends BusinessMatchingConnector

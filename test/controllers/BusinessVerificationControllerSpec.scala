@@ -1,6 +1,6 @@
 package controllers
 
-import connectors.{BusinessCustomerConnector, DataCacheConnector}
+import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -18,12 +18,12 @@ import scala.concurrent.Future
 class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
-  val mockConnector = mock[BusinessCustomerConnector]
+  val mockConnector = mock[BusinessMatchingConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController {
-    val businessCustomerConnector = mockConnector
+    val businessMatchingConnector = mockConnector
     val dataCacheConnector = mockDataCacheConnector
   }
 

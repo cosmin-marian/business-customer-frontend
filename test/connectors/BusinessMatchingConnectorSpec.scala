@@ -21,7 +21,7 @@ import uk.gov.hmrc.play.http.{HttpResponse, HttpGet, HttpPost}
 
 import scala.concurrent.Future
 
-class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
+class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
 
   class MockHttp extends WSGet with WSPost {
     override def auditConnector: AuditConnector = BusinessCustomerFrontendAuditConnector
@@ -30,7 +30,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
 
   val mockWSHttp = mock[MockHttp]
 
-  object TestBusinessCustomerConnector extends BusinessCustomerConnector {
+  object TestBusinessMatchingConnector extends BusinessMatchingConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
   }
 
@@ -51,7 +51,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111111)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchSuccessResponse))))
-        val result = TestBusinessCustomerConnector.lookup(businessDetails)
+        val result = TestBusinessMatchingConnector.lookup(businessDetails)
         await(result).as[JsValue] must be(matchSuccessResponse)
 
       }
@@ -60,7 +60,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111112)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchFailureResponse))))
-        val result = TestBusinessCustomerConnector.lookup(businessDetails)
+        val result = TestBusinessMatchingConnector.lookup(businessDetails)
         await(result).as[JsValue] must be(matchFailureResponse)
       }
 
