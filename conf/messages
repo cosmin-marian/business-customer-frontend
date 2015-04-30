@@ -40,3 +40,6 @@ bc.business-verification-error.psautr=Partnership Self Assessment Unique Tax Ref
 bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference is not valid
 bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
+
+
+business-registration.title = Add business details
