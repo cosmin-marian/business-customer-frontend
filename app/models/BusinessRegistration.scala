@@ -5,7 +5,9 @@ import play.api.libs.json.Json
 
 case class BusinessRegistration(businessName: String, businessAddress: Address, contactDetails: ContactDetails )
 
-case class Address(line_1: String, line_2: String, line_3: String, postCode: Int, country: String)
+case class Address(line_1: String, line_2: String, line_3: String, line_4: String, postCode: Int, country: String) {
+
+}
 
 case class ContactDetails(telePhoneNumber: Int, email: String)
 
