@@ -5,7 +5,8 @@
 
 @bcMain(title = Messages("business-registration.title")) {
 
-<h1 aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
+<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
+
 
 
 @form(action = controllers.routes.BusinessRegController.register) {
@@ -15,6 +16,7 @@
 
         @bcInput(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.businessName")),
+        '_labelClass -> "form-label",
         '_id -> "businessName",
         '_showConstraints -> false)
 
@@ -35,7 +37,7 @@
 
         @bcInput(businessRegistrationForm("line_4"),
         '_label ->  Html(Messages("bc.business-registration.line_4")),
-        '_id -> "line_3",
+        '_id -> "line_4",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("country"),

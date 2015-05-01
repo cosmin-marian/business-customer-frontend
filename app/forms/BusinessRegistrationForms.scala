@@ -17,7 +17,6 @@ object BusinessRegistrationForms {
       "line_2" -> text,
       "line_3" -> text,
       "line_4" -> text,
-      "postCode" -> number,
       "country" -> text
     )(Address.apply)(Address.unapply),
     "contactDetails" -> mapping(
