@@ -12,4 +12,4 @@ GET         /hello                              controllers.BusinessVerification
 GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
 
 
-GET       /                                     controllers.BusinessRegController.register(response: String)
+GET       /                                     controllers.BusinessRegController.register

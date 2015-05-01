@@ -25,7 +25,7 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
 
     }
 
-/*  "BusinessRegController" must {
+  "BusinessRegController" must {
 
     "respond to /" in {
       val result = route(FakeRequest(GET, "/business-customer")).get
@@ -35,7 +35,7 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
 
    "return business registration view" in {
 
-     val result = TestBusinessRegController.businessRegistration().apply(FakeRequest())
+     val result = TestBusinessRegController.register().apply(FakeRequest())
      val document = Jsoup.parse(contentAsString(result))
 
       document.title() must be("Business Registration")
@@ -45,5 +45,5 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
   }
 
 
-  }*/
+  }
 }

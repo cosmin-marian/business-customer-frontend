@@ -1,11 +1,66 @@
-@(businessRegistrationForm: models.BusinessRegistration)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration])(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 
 @bcMain(title = Messages("business-registration.title")) {
 
-<h1 aria-level="1" role="heading">@Html(Messages("business-registration.header"))</h1>
+<h1 aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
 
+
+@form(action = controllers.routes.BusinessRegController.register) {
+<div class="form-group">
+
+    <div id="business-registration-form">
+
+        @bcInput(businessRegistrationForm("businessName"),
+        '_label ->  Html(Messages("bc.business-registration.businessName")),
+        '_id -> "businessName",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("line_1"),
+        '_label ->  Html(Messages("bc.business-registration.line_1")),
+        '_id -> "line_1",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("line_2"),
+        '_label ->  Html(Messages("bc.business-registration.line_2")),
+        '_id -> "line_2",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("line_3"),
+        '_label ->  Html(Messages("bc.business-registration.line_3")),
+        '_id -> "line_3",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("line_4"),
+        '_label ->  Html(Messages("bc.business-registration.line_4")),
+        '_id -> "line_3",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("country"),
+        '_label ->  Html(Messages("bc.business-registration.country")),
+        '_id -> "country",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("phoneNumber"),
+        '_label ->  Html(Messages("bc.business-registration.telePhoneNumber")),
+        '_id -> "phoneNumber",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("email"),
+        '_label ->  Html(Messages("bc.business-registration.email")),
+        '_id -> "email",
+        '_showConstraints -> false)
+
+
+    </div>
+
+</div>
+
+<button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
+
+
+}
 
 }
