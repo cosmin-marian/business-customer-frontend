@@ -1,12 +1,14 @@
 # microservice specific routes
 
-GET         /assets/*file                       controllers.Assets.at(path="/public", file)
-->          /template                           template.Routes
+GET         /assets/*file                                                            controllers.Assets.at(path="/public", file)
+->          /template                                                                template.Routes
 
-GET         /business-verification/:service     controllers.BusinessVerificationController.businessVerification(service: String)
+GET         /business-verification/:service                                          controllers.BusinessVerificationController.businessVerification(service: String)
 
-POST        /submit/:service                    controllers.BusinessVerificationController.submit(service: String)
+GET         /business-verification/:service/lookup/:businessType                     controllers.BusinessVerificationController.businessLookup(service: String, businessType: String)
 
-GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)
+POST        /submit/:service                                                         controllers.BusinessVerificationController.submit(service: String)
 
-GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
+GET         /hello                                                                   controllers.BusinessVerificationController.helloWorld(response: String)
+
+GET         /review-details/:service                                                 controllers.ReviewDetailsController.businessDetails(service: String)

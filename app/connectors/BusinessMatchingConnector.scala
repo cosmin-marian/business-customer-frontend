@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 import config.WSHttp
-import forms.BusinessDetails
+import forms.BusinessType
 
 trait BusinessMatchingConnector extends ServicesConfig {
 
@@ -19,7 +19,7 @@ trait BusinessMatchingConnector extends ServicesConfig {
 
   val http: HttpGet with HttpPost = WSHttp
 
-  def lookup(lookupData: BusinessDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+  def lookup(lookupData: BusinessType)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
     http.POST(s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)).map {
       httpResponse =>
         Json.parse(httpResponse.body)

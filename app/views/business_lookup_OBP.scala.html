@@ -1,0 +1,26 @@
+@(ordinaryBusinessPartnershipForm: Form[forms.OrdinaryBusinessPartnershipMatch], service: String)(implicit request: Request[_])
+
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+
+@bcMain(title = Messages("bc.business-verification.title")) {
+
+@form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "OBP")) {
+
+<div id = "business-type-obp-form" class = "form-field panel-indent">
+
+    @bcInput(ordinaryBusinessPartnershipForm("businessName"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_id -> "obp-business-name",
+    '_showConstraints -> false)
+
+    @bcInput(ordinaryBusinessPartnershipForm("psaUTR"),
+    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+    '_error -> ordinaryBusinessPartnershipForm("psaUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
+    '_id -> "obp-psa-utr",
+    '_showConstraints -> false)
+
+</div>
+}
+}

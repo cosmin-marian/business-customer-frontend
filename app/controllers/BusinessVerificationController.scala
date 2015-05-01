@@ -22,32 +22,51 @@ trait BusinessVerificationController extends FrontendController {
   val dataCacheConnector: DataCacheConnector
 
    def businessVerification(service: String) = UnauthorisedAction { implicit request =>
-     Ok(views.html.business_verification(businessDetailsForm, service)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+     Ok(views.html.business_verification(businessTypeForm, service)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
    }
 
-  def submit(service: String) = UnauthorisedAction.async {  implicit request =>
-    businessDetailsForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
+  def submit(service: String) = UnauthorisedAction {  implicit request =>
+    businessTypeForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.business_verification(formWithErrors, service)),
       value => {
-        if(value.businessType == """NUK"""){
-          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK")))
-        }else {
-          businessMatchingConnector.lookup(value) flatMap {
-            actualResponse => {
-              if (actualResponse.toString() contains ("error")) {
-                Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-              } else {
-                dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                  cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-                }
-              }
-            }
-          }
+        value.businessType match {
+          case "NUK" => Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK"))
+          case "SOP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "SOP"))
+          case "UIB" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "UIB"))
+          case "LTD" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LTD"))
+          case "OBP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "OBP"))
+          case "LLP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LLP"))
         }
+//        if(value.businessType == """NUK"""){
+//          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK")))
+//        }else {
+//          businessMatchingConnector.lookup(value) flatMap {
+//            actualResponse => {
+//              if (actualResponse.toString() contains ("error")) {
+//                Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
+//              } else {
+//                dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
+//                  cachedData =>
+//                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
+//                }
+//              }
+//            }
+//          }
+//        }
       }
     )
   }
+
+  def businessLookup(service: String, businessType: String) = UnauthorisedAction { implicit request =>
+    businessType match {
+      case "SOP"  => Ok(views.html.business_lookup_SOP(soleTraderForm, service))
+      case "LTD"  => Ok(views.html.business_lookup_LTD(limitedCompanyForm, service))
+      case "UIB"  => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service))
+      case "OBP"  => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service))
+      case "LLP"  => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service))
+    }
+  }
+
 
   def helloWorld(response: String) = Action {
     Ok(views.html.hello_world(response))
