@@ -12,6 +12,6 @@ object BusinessRegController extends BusinessRegController{
 trait BusinessRegController extends FrontendController {
 
   def register = Action {
-    Ok("Yes")
+    Ok("Yess")
   }
 }
