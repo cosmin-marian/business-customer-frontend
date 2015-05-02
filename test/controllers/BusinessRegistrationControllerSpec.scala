@@ -40,6 +40,8 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
      document.getElementById("phoneNumber_field").text() must be("Phone number")
      document.getElementById("email_field").text() must be("Email")
      document.getElementById("submit").text() must be("Save and continue")
+     document.select(".brama-vertically-centered-text2").text() must be("Cancel")
+
 
    }
 

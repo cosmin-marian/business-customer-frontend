@@ -14,8 +14,7 @@ object BusinessRegController extends BusinessRegController{
 trait BusinessRegController extends FrontendController {
 
 
-
-  def register = Action { implicit request =>
+  def register = UnauthorisedAction { implicit request =>
     Ok(views.html.business_registration(businessRegistrationForm))
   }
 

@@ -54,3 +54,5 @@ bc.business-registration.country = Country
 bc.business-registration.telePhoneNumber = Phone number
 bc.business-registration.email = Email
 bc.business-registration.submit= Save and continue
+bc.business-registration.cancel= Cancel
+
