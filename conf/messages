@@ -49,10 +49,9 @@ bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3
 bc.business-registration.line_4 = Address line 4
-bc.business-registration.postCode = Postcode
 bc.business-registration.country = Country
-bc.business-registration.telePhoneNumber = Phone number
-bc.business-registration.email = Email
 bc.business-registration.submit= Save and continue
 bc.business-registration.cancel= Cancel
+
+
 

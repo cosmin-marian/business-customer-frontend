@@ -1,6 +1,6 @@
 package forms
 
-import models.{BusinessRegistration, ContactDetails, Address}
+import models.{BusinessRegistration, Address}
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -16,13 +16,9 @@ object BusinessRegistrationForms {
       "line_3" -> text,
       "line_4" -> text,
       "country" -> text
-    )(Address.apply)(Address.unapply),
-    "contactDetails" -> mapping(
-      "telePhoneNumber" -> text,
-      "email" -> email
-    )(ContactDetails.apply)(ContactDetails.unapply)
-
+    )(Address.apply)(Address.unapply)
    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
 }
+

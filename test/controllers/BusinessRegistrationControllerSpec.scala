@@ -37,8 +37,6 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
      document.getElementById("line_3_field").text() must be("Address line 3")
      document.getElementById("line_4_field").text() must be("Address line 4")
      document.getElementById("country_field").text() must be("Country")
-     document.getElementById("telePhoneNumber_field").text() must be("Phone number")
-     document.getElementById("email_field").text() must be("Email")
      document.getElementById("submit").text() must be("Save and continue")
      document.getElementById("cancel").text() must be("Cancel")
 
@@ -46,4 +44,6 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
 
   }
 }
+
+
 
