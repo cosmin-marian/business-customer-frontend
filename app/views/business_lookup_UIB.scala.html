@@ -8,19 +8,20 @@
 
 @form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "UIB")) {
 
-<div id="business-type-ltd-form" class="form-field panel-indent">
+<div id="business-type-uib-form" class="form-field">
 
     @bcInput(unincorporatedBodyForm("businessName"),
     '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "uib-business-name",
+    '_id -> "business-name",
     '_showConstraints -> false)
 
     @bcInput(unincorporatedBodyForm("cotaxUTR"),
     '_label -> Html(Messages("bc.business-verification.coUTRField")),
     '_error -> unincorporatedBodyForm("cotaxUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
-    '_id -> "uib-cotax-utr",
+    '_id -> "cotax-utr",
     '_showConstraints -> false)
 
 </div>
+<button class="button" id="submit" type="submit">Continue</button>
 }
 }

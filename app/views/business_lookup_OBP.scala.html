@@ -8,19 +8,20 @@
 
 @form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "OBP")) {
 
-<div id = "business-type-obp-form" class = "form-field panel-indent">
+<div id="business-type-obp-form" class="form-field">
 
     @bcInput(ordinaryBusinessPartnershipForm("businessName"),
     '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "obp-business-name",
+    '_id -> "business-name",
     '_showConstraints -> false)
 
     @bcInput(ordinaryBusinessPartnershipForm("psaUTR"),
     '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
     '_error -> ordinaryBusinessPartnershipForm("psaUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
-    '_id -> "obp-psa-utr",
+    '_id -> "psa-utr",
     '_showConstraints -> false)
 
 </div>
+<button class="button" id="submit" type="submit">Continue</button>
 }
 }

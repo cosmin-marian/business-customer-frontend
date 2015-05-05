@@ -8,19 +8,20 @@
 
 @form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "LLP")) {
 
-<div id = "business-type-llp-form" class = "form-field panel-indent">
+<div id="business-type-llp-form" class="form-field">
 
     @bcInput(limitedLiabilityPartnershipForm("businessName"),
     '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "llp-business-name",
+    '_id -> "business-name",
     '_showConstraints -> false)
 
     @bcInput(limitedLiabilityPartnershipForm("psaUTR"),
     '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
     '_error -> limitedLiabilityPartnershipForm("psaUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
-    '_id -> "llp-psa-utr",
+    '_id -> "psa-utr",
     '_showConstraints -> false)
 
 </div>
+<button class="button" id="submit" type="submit">Continue</button>
 }
 }
