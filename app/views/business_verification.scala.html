@@ -2,6 +2,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
+@import views.html.helpers.error._
 
 @bcMain(title = Messages("bc.business-verification.title")) {
 
@@ -22,32 +23,7 @@ $(document).ready(function() {
     });
  });
 </script>
-@if(!businessTypeForm.hasGlobalErrors || businessTypeForm.hasErrors){
-<div id="errors" class="validation-summary">
-    <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
-    <ul>
-        @if(businessTypeForm.hasGlobalErrors) {
-        @for(validationError <- businessTypeForm.globalErrors){
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-                @validationError.message
-            </a>
-        </li>
-        }
-        } else {
-        @if(businessTypeForm.hasErrors) {
-        @for(validationError <- businessTypeForm.errors){
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-                @validationError.message
-            </a>
-        </li>
-        }
-        }
-    </ul>
-</div>
-}
-}
+@errors(businessTypeForm)
 <h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
 <p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 

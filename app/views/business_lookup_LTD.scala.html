@@ -3,34 +3,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
+@import views.html.helpers.error._
 
 @bcMain(title = Messages("bc.business-verification.title")) {
-@if(!limitedCompanyForm.hasGlobalErrors || limitedCompanyForm.hasErrors){
-<div id="errors" class="validation-summary">
-    <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
-    <ul>
-        @if(limitedCompanyForm.hasGlobalErrors) {
-        @for(validationError <- limitedCompanyForm.globalErrors){
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-                @validationError.message
-            </a>
-        </li>
-        }
-        } else {
-        @if(limitedCompanyForm.hasErrors) {
-        @for(validationError <- limitedCompanyForm.errors){
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-                @validationError.message
-            </a>
-        </li>
-        }
-        }
-    </ul>
-</div>
-}
-}
+
+@errors(limitedCompanyForm)
+
 <h1 id="business-type-header">@Messages("bc.business-verification.LTD")</h1>
 
 
