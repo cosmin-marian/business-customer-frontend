@@ -22,7 +22,6 @@
 
     @bcInput(unincorporatedBodyForm("cotaxUTR"),
     '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_error -> unincorporatedBodyForm("cotaxUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
     '_id -> "cotax-utr",
     '_showConstraints -> false)
 

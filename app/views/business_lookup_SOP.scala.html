@@ -27,7 +27,6 @@
 
     @bcInput(soleTraderForm("sautr"),
     '_label -> Html(Messages("bc.business-verification.saUTRField")),
-    '_error -> soleTraderForm("soleTrader.sAUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
     '_id -> "sa-utr",
     '_showConstraints -> false)
 
