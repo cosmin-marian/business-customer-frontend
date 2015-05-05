@@ -16,8 +16,7 @@
     @if(elements.hasErrors) {
     <div class="@if(elements.hasErrors || (parentElements.isDefined && parentElements.get.hasErrors)) {form-field error}">
         }
-        <label for="@{elements.field.name.replaceAll("""[\.\[\]]""", "-")}" class="form-label @elements.args.get('_divClass) @if(elements.args.get('_labelClass)){ @elements.args.get('_labelClass) }" @if(elements.args.contains('_labelDataAttributes)){@elements.args.get('_labelDataAttributes)}>
-
+        <label for="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}" class="@elements.args.get('_divClass) @if( elements.args.get('_labelClass) ){ @elements.args.get('_labelClass) } @if(elements.hasErrors || (parentElements.isDefined && parentElements.get.hasErrors)) {form-field--error}" @if(elements.args.contains('_labelDataAttributes)){@elements.args.get('_labelDataAttributes)} id="@if( elements.args.get('_id) ) {@elements.args.get('_id)_field} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}">
 
         @elements.errors.map { error => <span class="error-notification">@Messages(error)</span>}
         @if(parentElements.isDefined) {
@@ -41,7 +40,7 @@
         <input @if(elements.args.contains('_type)){type="@elements.args.get('_type)"}else{type="text"}
         class="form-control @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }" @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
         name="@elements.field.name"
-        id="@elements.field.name.replaceAll("""[\.\[\]]""", "-")"
+        id="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}"
         value="@value"
         />
         @if(elements.args.contains('_nested)) {
