@@ -1,6 +1,6 @@
 @(form: Form[_])
 
-@if(!form.hasGlobalErrors || form.hasErrors){
+@if(form.hasGlobalErrors || form.hasErrors){
 <div id="errors" class="validation-summary">
     <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
     <ul>
