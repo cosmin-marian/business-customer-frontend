@@ -8,27 +8,18 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function(){
+$(document).ready(function() {
 
-        // On document ready, if no radio button is selected, hide submit
-        if ($('.block-label input[type="radio"]:checked').length == 0) {
-            $('#submit').hide();
-        }
+    // On document ready, hide submit
+    $('#submit').hide();
 
-        // On radio click event
-        $('.block-label input[type="radio"]').on('click', function() {
+    // On radio click event
+    $('.block-label input[type="radio"]').on('click', function() {
 
-            // Show continue button
-            $('#submit, #'+ $(this).attr('data-target')).show();
-
-            // If errors exist, when changing radio selection, remove errors from previous selection
-            if ($('.error-overview').length > 0) {
-                $(this).on('change', function() {
-                    $('.error-overview').remove();
-                });
-            }
-        });
-     });
+        // Show continue button
+        $('#submit').show();
+    });
+ });
 </script>
 
 <h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
@@ -48,50 +39,44 @@
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("NUK" -> Messages("bc.business-verification.radioNUK")),
-    '_legend -> Messages("bc.business-verification.radio-legend"),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true,
-    '_dataAttributes -> "data-target=business-type-non-uk-form"
+        '_legend -> Messages("bc.business-verification.radio-legend"),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("UIB" -> Messages("bc.business-verification.radioUIB")),
         '_labelClass -> "block-label",
-        '_labelAfter -> true,
-        '_dataAttributes -> "data-target=business-type-uib-form"
+        '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("LTD" -> Messages("bc.business-verification.radioLTD")),
         '_labelClass -> "block-label",
-        '_labelAfter -> true,
-        '_dataAttributes -> "data-target=business-type-ltd-form"
+        '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("SOP" -> Messages("bc.business-verification.radioSOP")),
         '_labelClass -> "block-label",
-        '_labelAfter -> true,
-        '_dataAttributes -> "data-target=business-type-sop-form"
+        '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("LLP" -> Messages("bc.business-verification.radioLLP")),
         '_labelClass -> "block-label",
-        '_labelAfter -> true,
-        '_dataAttributes -> "data-target=business-type-llp-form"
+        '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("OBP" -> Messages("bc.business-verification.radioPRT")),
         '_labelClass -> "block-label",
-        '_labelAfter -> true,
-        '_dataAttributes -> "data-target=business-type-obp-form"
+        '_labelAfter -> true
     )
 
 </div>
