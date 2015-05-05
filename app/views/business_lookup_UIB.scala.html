@@ -6,6 +6,7 @@
 @import views.html.helpers.error._
 
 @bcMain(title = Messages("bc.business-verification.title")) {
+
 @errors(unincorporatedBodyForm)
 
 <h1 id="business-type-header">@Messages("bc.business-verification.UIB")</h1>
@@ -21,7 +22,6 @@
 
     @bcInput(unincorporatedBodyForm("cotaxUTR"),
     '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_error -> unincorporatedBodyForm("cotaxUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
     '_id -> "cotax-utr",
     '_showConstraints -> false)
 

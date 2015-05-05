@@ -22,7 +22,6 @@
 
     @bcInput(ordinaryBusinessPartnershipForm("psaUTR"),
     '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
-    '_error -> ordinaryBusinessPartnershipForm("psaUTR").error.map(_.withMessage(Messages("bc.business-verification-error.utr"))),
     '_id -> "psa-utr",
     '_showConstraints -> false)
 
