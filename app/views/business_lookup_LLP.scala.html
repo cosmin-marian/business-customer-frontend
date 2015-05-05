@@ -6,6 +6,33 @@
 
 @bcMain(title = Messages("bc.business-verification.title")) {
 
+@if(!limitedLiabilityPartnershipForm.hasGlobalErrors || limitedLiabilityPartnershipForm.hasErrors){
+<div id="errors" class="validation-summary">
+    <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
+    <ul>
+        @if(limitedLiabilityPartnershipForm.hasGlobalErrors) {
+            @for(validationError <- limitedLiabilityPartnershipForm.globalErrors){
+            <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                    @validationError.message
+                </a>
+            </li>
+            }
+        } else {
+        @if(limitedLiabilityPartnershipForm.hasErrors) {
+            @for(validationError <- limitedLiabilityPartnershipForm.errors){
+            <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                    @validationError.message
+                </a>
+            </li>
+            }
+        }
+    </ul>
+</div>
+}
+}
+<h1 id="business-type-header">@Messages("bc.business-verification.LLP")</h1>
 @form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "LLP")) {
 
 <div id="business-type-llp-form" class="form-field">

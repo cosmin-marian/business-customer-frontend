@@ -11,8 +11,9 @@
 $(document).ready(function() {
 
     // On document ready, hide submit
-    $('#submit').hide();
-
+    if ($('.block-label input[type="radio"]:checked').length == 0) {
+        $('#submit').hide();
+    }
     // On radio click event
     $('.block-label input[type="radio"]').on('click', function() {
 
@@ -21,24 +22,43 @@ $(document).ready(function() {
     });
  });
 </script>
-
+@if(!businessTypeForm.hasGlobalErrors || businessTypeForm.hasErrors){
+<div id="errors" class="validation-summary">
+    <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
+    <ul>
+        @if(businessTypeForm.hasGlobalErrors) {
+        @for(validationError <- businessTypeForm.globalErrors){
+        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                @validationError.message
+            </a>
+        </li>
+        }
+        } else {
+        @if(businessTypeForm.hasErrors) {
+        @for(validationError <- businessTypeForm.errors){
+        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                @validationError.message
+            </a>
+        </li>
+        }
+        }
+    </ul>
+</div>
+}
+}
 <h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
 <p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 
-@if(businessTypeForm.hasGlobalErrors){
-<div class="error-overview">
-    @for(validationError <- businessTypeForm.globalErrors){
-    @validationError.message<p></p>
-    }
-</div>
-}
+
 
 @form(action = controllers.routes.BusinessVerificationController.submit(service)) {
 <div class="form-group">
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("NUK" -> Messages("bc.business-verification.radioNUK")),
+    Seq("NUK" -> Messages("bc.business-verification.NUK")),
         '_legend -> Messages("bc.business-verification.radio-legend"),
         '_labelClass -> "block-label",
         '_labelAfter -> true
@@ -46,35 +66,35 @@ $(document).ready(function() {
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("UIB" -> Messages("bc.business-verification.radioUIB")),
+    Seq("UIB" -> Messages("bc.business-verification.UIB")),
         '_labelClass -> "block-label",
         '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("LTD" -> Messages("bc.business-verification.radioLTD")),
+    Seq("LTD" -> Messages("bc.business-verification.LTD")),
         '_labelClass -> "block-label",
         '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("SOP" -> Messages("bc.business-verification.radioSOP")),
+    Seq("SOP" -> Messages("bc.business-verification.SOP")),
         '_labelClass -> "block-label",
         '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("LLP" -> Messages("bc.business-verification.radioLLP")),
+    Seq("LLP" -> Messages("bc.business-verification.LLP")),
         '_labelClass -> "block-label",
         '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("OBP" -> Messages("bc.business-verification.radioPRT")),
+    Seq("OBP" -> Messages("bc.business-verification.PRT")),
         '_labelClass -> "block-label",
         '_labelAfter -> true
     )
