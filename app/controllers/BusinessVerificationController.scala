@@ -30,7 +30,7 @@ trait BusinessVerificationController extends FrontendController {
       formWithErrors => BadRequest(views.html.business_verification(formWithErrors, service)),
       value => {
         value.businessType match {
-          case "NUK" => Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK"))
+          case "NUK" => Redirect(controllers.routes.BusinessRegController.register())
           case "SOP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "SOP"))
           case "UIB" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "UIB"))
           case "LTD" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LTD"))

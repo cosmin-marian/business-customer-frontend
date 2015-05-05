@@ -168,7 +168,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "if non-uk, continue to registration page" in {
         val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")))
         status(result) must be(SEE_OTHER)
-        redirectLocation(result).get must include("/business-customer/hello")
+        redirectLocation(result).get must include("/business-customer/register")
       }
     }
   }
