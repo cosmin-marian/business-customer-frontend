@@ -37,13 +37,13 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
      document.getElementById("line_3_field").text() must be("Address line 3")
      document.getElementById("line_4_field").text() must be("Address line 4")
      document.getElementById("country_field").text() must be("Country")
-     document.getElementById("phoneNumber_field").text() must be("Phone number")
+     document.getElementById("telePhoneNumber_field").text() must be("Phone number")
      document.getElementById("email_field").text() must be("Email")
      document.getElementById("submit").text() must be("Save and continue")
-     document.select(".brama-vertically-centered-text2").text() must be("Cancel")
-
+     document.getElementById("cancel").text() must be("Cancel")
 
    }
 
   }
 }
+

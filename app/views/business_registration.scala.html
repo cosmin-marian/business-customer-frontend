@@ -8,7 +8,6 @@
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
 
 
-
 @form(action = controllers.routes.BusinessRegController.register) {
 <div class="form-group">
 
@@ -45,9 +44,9 @@
         '_id -> "country",
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("phoneNumber"),
+        @bcInput(businessRegistrationForm("telePhoneNumber"),
         '_label ->  Html(Messages("bc.business-registration.telePhoneNumber")),
-        '_id -> "phoneNumber",
+        '_id -> "telePhoneNumber",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("email"),
@@ -63,9 +62,8 @@
     <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
     <div>
-       <p> <a href="#" class="brama-vertically-centered-text2">@Messages("bc.business-registration.cancel")</a> </p>
+       <p> <a href="#"  id="cancel">@Messages("bc.business-registration.cancel")</a> </p>
     </div>
-
 }
 
 }
