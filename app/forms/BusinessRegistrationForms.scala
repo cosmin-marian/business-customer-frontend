@@ -18,8 +18,8 @@ object BusinessRegistrationForms {
       "country" -> text
     )(Address.apply)(Address.unapply),
     "contactDetails" -> mapping(
-      "telePhoneNumber" -> number,
-      "email" -> text
+      "telePhoneNumber" -> text,
+      "email" -> email
     )(ContactDetails.apply)(ContactDetails.unapply)
 
    )(BusinessRegistration.apply)(BusinessRegistration.unapply)

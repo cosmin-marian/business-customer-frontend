@@ -2,7 +2,9 @@ package controllers
 
 
 import play.api.mvc._
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
+import forms.BusinessRegistrationForms._
+
 
 
 object BusinessRegController extends BusinessRegController{
@@ -11,7 +13,9 @@ object BusinessRegController extends BusinessRegController{
 
 trait BusinessRegController extends FrontendController {
 
-  def register = Action {
-    Ok("Yess")
+
+  def register = UnauthorisedAction { implicit request =>
+    Ok(views.html.business_registration(businessRegistrationForm))
   }
+
 }

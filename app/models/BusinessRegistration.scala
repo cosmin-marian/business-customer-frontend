@@ -9,7 +9,7 @@ case class Address(line_1: String, line_2: String, line_3: String, line_4: Strin
 
 }
 
-case class ContactDetails(telePhoneNumber: Int, email: String)
+case class ContactDetails(telePhoneNumber: String, email: String)
 
 
 object Address {
