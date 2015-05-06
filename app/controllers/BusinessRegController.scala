@@ -5,9 +5,7 @@ import forms.BusinessRegistrationForms._
 
 
 
-object BusinessRegController extends BusinessRegController{
-
-}
+object BusinessRegController extends BusinessRegController
 
 trait BusinessRegController extends FrontendController {
 
