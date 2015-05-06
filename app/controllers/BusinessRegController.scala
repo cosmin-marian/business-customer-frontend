@@ -1,7 +1,5 @@
 package controllers
 
-
-import play.api.mvc._
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
 import forms.BusinessRegistrationForms._
 
@@ -19,3 +17,4 @@ trait BusinessRegController extends FrontendController {
   }
 
 }
+
