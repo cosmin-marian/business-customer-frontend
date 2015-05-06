@@ -13,10 +13,10 @@
 
     <div id="business-registration-form">
 
-        @bcInput(businessRegistrationForm("businessName"),
+        @bcInput(businessRegistrationForm("business-name"),
         '_label ->  Html(Messages("bc.business-registration.businessName")),
         '_labelClass -> "form-label",
-        '_id -> "businessName",
+        '_id -> "business-name",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("line_1"),

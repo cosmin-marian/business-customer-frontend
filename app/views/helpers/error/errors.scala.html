@@ -10,6 +10,7 @@
             <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
                 @validationError.message
             </a>
+            Global
         </li>
         }
         } else {
@@ -17,8 +18,10 @@
         @for(validationError <- form.errors) {
         <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
             <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+                @validationError.key
                 @validationError.message
             </a>
+            Field
         </li>
         }
         }

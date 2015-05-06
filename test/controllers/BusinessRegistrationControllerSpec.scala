@@ -31,7 +31,7 @@ class BusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite
 
      document.title() must be("Business Registration")
      document.getElementById("business-registration.header").text() must be("Add business details")
-     document.getElementById("businessName_field").text() must be("Business name")
+     document.getElementById("business-name_field").text() must be("Business name")
      document.getElementById("line_1_field").text() must be("Address line 1")
      document.getElementById("line_2_field").text() must be("Address line 2")
      document.getElementById("line_3_field").text() must be("Address line 3")

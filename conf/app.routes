@@ -7,11 +7,13 @@ GET         /business-verification/:service                                     
 
 GET         /business-verification/:service/lookup/:businessType                     controllers.BusinessVerificationController.businessLookup(service: String, businessType: String)
 
-POST        /submit/:service                                                         controllers.BusinessVerificationController.submit(service: String)
+POST        /continue/:service                                                       controllers.BusinessVerificationController.continue(service: String)
 
 GET         /hello                                                                   controllers.BusinessVerificationController.helloWorld(response: String)
 
 GET         /review-details/:service                                                 controllers.ReviewDetailsController.businessDetails(service: String)
 
 GET         /register                                                                controllers.BusinessRegController.register
+
+POST        /submit                                                                  controllers.BusinessVerificationController.submit
 

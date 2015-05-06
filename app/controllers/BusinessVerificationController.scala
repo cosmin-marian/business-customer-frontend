@@ -25,7 +25,7 @@ trait BusinessVerificationController extends FrontendController {
      Ok(views.html.business_verification(businessTypeForm, service)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
    }
 
-  def submit(service: String) = UnauthorisedAction { implicit request =>
+  def continue(service: String) = UnauthorisedAction { implicit request =>
     businessTypeForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.business_verification(formWithErrors, service)),
       value => {
@@ -65,6 +65,13 @@ trait BusinessVerificationController extends FrontendController {
       case "OBP"  => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service))
       case "LLP"  => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service))
     }
+  }
+
+  def submit() = UnauthorisedAction { implicit request =>
+    val service = "ATED"
+    unincorporatedBodyForm.bindFromRequest.fold(
+      formWithErrors => {println("###########################################"+ formWithErrors.errors); BadRequest(views.html.business_lookup_UIB(formWithErrors, service))},
+      value => ???)
   }
 
   def helloWorld(response: String) = Action {

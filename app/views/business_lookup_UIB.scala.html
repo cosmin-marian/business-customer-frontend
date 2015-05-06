@@ -11,8 +11,7 @@
 
 <h1 id="business-type-header">@Messages("bc.business-verification.UIB")</h1>
 
-@form(action = controllers.routes.BusinessVerificationController.businessLookup(service, "UIB")) {
-
+@form(action = controllers.routes.BusinessVerificationController.submit()) {
 <div id="business-type-uib-form" class="form-field">
 
     @bcInput(unincorporatedBodyForm("businessName"),

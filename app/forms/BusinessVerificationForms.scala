@@ -74,8 +74,12 @@ object BusinessVerificationForms {
   )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply))
 
   val unincorporatedBodyForm = Form(mapping(
-    "businessName"   -> nonEmptyText.verifying(maxLength(40)),
-    "cotaxUTR"   -> longNumber.verifying(p => String.valueOf(p).length==10)
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "cotaxUTR"   -> longNumber
+      .verifying(Messages("bc.business-verification-error.cotaxutr"), x => x.isValidLong && x.toString.length > 0)
+      .verifying(Messages("bc.business-verification-error.cotaxutr.length"), x => String.valueOf(x).nonEmpty && String.valueOf(x).length == 10)
   )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply))
 
   val ordinaryBusinessPartnershipForm = Form(mapping(

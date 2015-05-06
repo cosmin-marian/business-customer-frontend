@@ -67,7 +67,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Sole Trader option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}""")))
         status(result) must be(303)
         redirectLocation(result).get must include("/business-verification/ATED/lookup")
       }
@@ -86,7 +86,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Limited Company option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}""")))
         status(result) must be(303)
         redirectLocation(result).get must include("/business-verification/ATED/lookup")
       }
@@ -104,7 +104,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Unincorporated Body option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}""")))
         status(result) must be(303)
         redirectLocation(result).get must include("/business-verification/ATED/lookup")
       }
@@ -122,7 +122,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Ordinary business partnership" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}""")))
         status(result) must be(303)
         redirectLocation(result).get must include("/business-verification/ATED/lookup")
       }
@@ -140,7 +140,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Limited Liability Partnership option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}""")))
         status(result) must be(303)
         redirectLocation(result).get must include("/business-verification/ATED/lookup")
       }
@@ -160,13 +160,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "if empty" must {
 
         "return BadRequest" in {
-          val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}""")))
+          val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}""")))
           status(result) must be(BAD_REQUEST)
         }
       }
 
       "if non-uk, continue to registration page" in {
-        val result = TestBusinessVerificationController.submit(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")))
+        val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")))
         status(result) must be(SEE_OTHER)
         redirectLocation(result).get must include("/business-customer/register")
       }

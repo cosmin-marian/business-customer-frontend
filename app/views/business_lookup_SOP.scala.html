@@ -15,17 +15,17 @@
 
 <div id="business-type-sop-form" class="form-field">
 
-    @bcInput(soleTraderForm("firstName"),
+    @bcInput(soleTraderForm("first-name"),
     '_label -> Html(Messages("bc.business-verification.firstNameField")),
     '_id -> "first-name",
     '_showConstraints -> false)
 
-    @bcInput(soleTraderForm("surname"),
+    @bcInput(soleTraderForm("last-name"),
     '_label -> Html(Messages("bc.business-verification.lastNameField")),
     '_id -> "last-name",
     '_showConstraints -> false)
 
-    @bcInput(soleTraderForm("sautr"),
+    @bcInput(soleTraderForm("sa-utr"),
     '_label -> Html(Messages("bc.business-verification.saUTRField")),
     '_id -> "sa-utr",
     '_showConstraints -> false)
