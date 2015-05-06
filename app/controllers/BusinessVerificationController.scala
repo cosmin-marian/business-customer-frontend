@@ -36,7 +36,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {
         if(value.businessType == """NUK"""){
-          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK")))
+          Future.successful(Redirect(controllers.routes.BusinessRegController.register()))
         }else {
           businessMatchingConnector.lookup(value) flatMap {
             actualResponse => {
@@ -59,3 +59,4 @@ trait BusinessVerificationController extends FrontendController with Actions {
     Ok(views.html.hello_world(response))
   }
 }
+

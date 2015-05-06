@@ -12,3 +12,6 @@ GET         /hello                              controllers.BusinessVerification
 GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
 
 GET        /unauthorised                        controllers.ApplicationController.unauthorised
+
+GET       /register                             controllers.BusinessRegController.register
+
