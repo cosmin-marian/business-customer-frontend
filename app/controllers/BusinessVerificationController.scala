@@ -16,20 +16,19 @@ import controllers.auth.BusinessCustomerRegime
 import scala.concurrent.Future
 
 object BusinessVerificationController extends BusinessVerificationController {
-  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
-  val dataCacheConnector: DataCacheConnector = DataCacheConnector
-  val authConnector = FrontendAuthConnector
+  override val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  override val dataCacheConnector: DataCacheConnector = DataCacheConnector
+  override val authConnector = FrontendAuthConnector
 }
 
 trait BusinessVerificationController extends FrontendController with Actions {
 
   val businessMatchingConnector: BusinessMatchingConnector
   val dataCacheConnector: DataCacheConnector
-  val authConnector : AuthConnector
 
    def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime) {
      implicit user => implicit request =>
-     Ok(views.html.business_verification(businessDetailsForm, service)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+     Ok(views.html.business_verification(businessDetailsForm, service))
    }
 
   def submit(service: String) = UnauthorisedAction.async {  implicit request =>
