@@ -54,4 +54,8 @@ bc.business-registration.submit= Save and continue
 bc.business-registration.cancel= Cancel
 
 
+bc.business-registration-error.businessName = Business name must be entered
+bc.business-registration-error.line_1 = Address Line 1 must be entered
+bc.business-registration-error.line_2 = Address Line 2 must be entered
+bc.business-registration-error.country = Country must be entered
 

@@ -12,4 +12,7 @@ GET         /hello                              controllers.BusinessVerification
 GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
 
 
-GET       /register                             controllers.BusinessRegController.register
+GET        /register                            controllers.BusinessRegController.register
+
+POST       /send                                controllers.BusinessRegController.send(service: String)
+

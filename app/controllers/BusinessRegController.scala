@@ -14,5 +14,15 @@ trait BusinessRegController extends FrontendController {
     Ok(views.html.business_registration(businessRegistrationForm))
   }
 
+  def send(service: String) = UnauthorisedAction { implicit request =>
+    businessRegistrationForm.bindFromRequest.fold(
+      formWithErrors => {
+        BadRequest(views.html.business_registration(formWithErrors))
+      },
+      value => Ok
+
+    )
+  }
+
 }
 
