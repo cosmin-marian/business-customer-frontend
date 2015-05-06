@@ -21,31 +21,35 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     val dataCacheConnector = mockDataCacheConnector
   }
 
-  "if an Unincorporated body: Business Name and COTAX UTR" must {
+  "if an Unincorporated body: Business Name" must {
     "not be empty" in {
-      val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody())
+      val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody("businessName" -> ""))
       status(result) must be(BAD_REQUEST)
 
       val document = Jsoup.parse(contentAsString(result))
-      println(document)
 
+      contentAsString(result) must include("Business Name must be entered")
 
-
-        contentAsString(result) must include("Business Name must be entered")
-//      contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered") //TODO
-//
-//      document.getElementById("uib-business-name_field").text() must be("Business Name")
-//      document.getElementById("uib-cotax-utr_field").text() must be("COTAX Unique Tax Reference")
+      document.getElementById("business-name_field").text() must include("Business Name")
+      document.getElementById("cotax-utr_field").text() must include("COTAX Unique Tax Reference")
     }
 
-//    "if entered, Business Name must be less than 40 characters" in {
-//      val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody("businessName"->"AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
-//      status(result) must be(BAD_REQUEST)
-//
-//      val document = Jsoup.parse(contentAsString(result))
-//
-//      contentAsString(result) must include("Maximum length is 40")
-//    }
+    "if an Unincorporated body: CO Tax UTR" must {
+      "not be empty" in {
+        val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> ""))
+        status(result) must be(BAD_REQUEST)
 
+        contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
+      }
+
+      //    "if entered, Business Name must be less than 40 characters" in {
+      //      val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody("businessName"->"AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
+      //      status(result) must be(BAD_REQUEST)
+      //
+      //      val document = Jsoup.parse(contentAsString(result))
+      //
+      //      contentAsString(result) must include("Maximum length is 40")
+      //    }
+    }
   }
 }

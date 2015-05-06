@@ -12,7 +12,7 @@ case class SoleTraderMatch(firstName: String, surname: String, saUTR: Long)
 
 case class LimitedCompanyMatch(businessName: String, cotaxUTR: Long)
 
-case class UnincorporatedMatch(businessName: String, cotaxUTR: Long)
+case class UnincorporatedMatch(businessName: String, cotaxUTR: String)
 
 case class OrdinaryBusinessPartnershipMatch(businessName: String, psaUTR: Long)
 
@@ -77,9 +77,9 @@ object BusinessVerificationForms {
     "businessName"   -> text
       .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
-    "cotaxUTR"   -> longNumber
-      .verifying(Messages("bc.business-verification-error.cotaxutr"), x => x.isValidLong && x.toString.length > 0)
-      .verifying(Messages("bc.business-verification-error.cotaxutr.length"), x => String.valueOf(x).nonEmpty && String.valueOf(x).length == 10)
+    "cotaxUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.cotaxutr"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.cotaxutr.length"), x => x.nonEmpty && x.length != 10)
   )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply))
 
   val ordinaryBusinessPartnershipForm = Form(mapping(
