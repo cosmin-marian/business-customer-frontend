@@ -11,6 +11,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 
 import scala.concurrent.Future
 
@@ -19,12 +20,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
   val request = FakeRequest()
   val mockConnector = mock[BusinessMatchingConnector]
+  val mockAuthConnector = mock[AuthConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     val businessMatchingConnector = mockConnector
     val dataCacheConnector = mockDataCacheConnector
+    val authConnector = mockAuthConnector
   }
 
   "BusinessVerificationController" must {
