@@ -3,6 +3,8 @@
 GET         /assets/*file                       controllers.Assets.at(path="/public", file)
 ->          /template                           template.Routes
 
+GET         /:service                           controllers.HomeController.homePage(service: String)
+
 GET         /business-verification/:service     controllers.BusinessVerificationController.businessVerification(service: String)
 
 POST        /submit/:service                    controllers.BusinessVerificationController.submit(service: String)
