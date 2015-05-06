@@ -10,3 +10,6 @@ POST        /submit/:service                    controllers.BusinessVerification
 GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)
 
 GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
+
+
+GET       /register                             controllers.BusinessRegController.register
