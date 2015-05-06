@@ -1,11 +1,11 @@
 @(form: Form[_])
 
-@if(form.hasGlobalErrors || form.hasErrors){
+@if(form.hasGlobalErrors || form.hasErrors) {
 <div id="errors" class="validation-summary">
     <h1 class="heading-small">@Messages("bc.business-verification-error.summaryHeader")</h1>
     <ul>
         @if(form.hasGlobalErrors) {
-        @for(validationError <- form.globalErrors){
+        @for(validationError <- form.globalErrors) {
         <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
             <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
                 @validationError.message
@@ -14,7 +14,7 @@
         }
         } else {
         @if(form.hasErrors) {
-        @for(validationError <- form.errors){
+        @for(validationError <- form.errors) {
         <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
             <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
                 @validationError.message
