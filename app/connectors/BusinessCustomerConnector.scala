@@ -19,7 +19,7 @@ trait BusinessCustomerConnector extends ServicesConfig {
   val http: HttpGet with HttpPost = WSHttp
 
   def register(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
-    http.POST(s"""$serviceURL/$baseURI/$registerURI""", Json.toJson(registerData)).map {
+    http.POST( s"""$serviceURL/$baseURI/$registerURI""", Json.toJson(registerData)).map {
       httpResponse =>
         Json.parse(httpResponse.body)
     }

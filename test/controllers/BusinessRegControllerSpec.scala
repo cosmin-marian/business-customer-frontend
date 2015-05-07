@@ -22,9 +22,11 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
+
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
   }
+
   val serviceName: String = "ATED"
 
   "BusinessRegController" must {

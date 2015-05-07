@@ -22,7 +22,7 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 
-class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite  with MockitoSugar {
+class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
@@ -40,6 +40,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite  with 
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
+
       override val authConnector = mockAuthConnector
     }
   }
@@ -109,7 +110,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite  with 
     testDetailsController
   }
 
-  def businessDetailsWithUnAuthorisedUser(test: Future[Result] => Any)  {
+  def businessDetailsWithUnAuthorisedUser(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 

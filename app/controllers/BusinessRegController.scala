@@ -10,10 +10,11 @@ object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
 }
 
-trait BusinessRegController extends FrontendController  with Actions {
+trait BusinessRegController extends FrontendController with Actions {
 
-  def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) { implicit user => implicit request =>
-    Ok(views.html.business_registration(businessRegistrationForm, service))
+  def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+    implicit user => implicit request =>
+      Ok(views.html.business_registration(businessRegistrationForm, service))
   }
 
 }

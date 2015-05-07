@@ -9,7 +9,7 @@ import play.api.test.Helpers._
 class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
   "ApplicationController" must {
-    
+
     "unauthorised" must {
 
       "respond with an OK" in {
@@ -21,10 +21,10 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
         val result = controllers.ApplicationController.unauthorised().apply(FakeRequest())
         val content = contentAsString(result)
         val doc = Jsoup.parse(content)
-        doc.title() must be (Messages("bc.unauthorised.title"))
+        doc.title() must be(Messages("bc.unauthorised.title"))
       }
 
     }
   }
-  
+
 }
