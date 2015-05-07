@@ -51,7 +51,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite {
     "validate form" must {
 
       "not be empty" in {
-        //val someJson = Json.parse( """{ "businessName": "ACME", "businessAddress": {"line_1": "111", "line_2": "ABC Street", "line_3": "ABC city", "line_4": "ABC 123", "country": "ABC"} }""")
+
         val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")))
         status(result) must be(BAD_REQUEST)
 
@@ -62,13 +62,55 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite {
         contentAsString(result) must include("Country must be entered")
       }
 
-      /*
-      "If entered, characters must be maximum of 40" in {
 
-        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "egg", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")))
+      "If entered, Business name must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")))
         status(result) must be(BAD_REQUEST)
+
         contentAsString(result) must include("Business name must not be more than 40 characters")
-      }*/
+      }
+
+      "If entered, Address line 1 must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")))
+        status(result) must be(BAD_REQUEST)
+
+        contentAsString(result) must include("Address must not be more than 40 characters")
+      }
+
+      "If entered, Address line 2 must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_3": "", "line_4": "", "country": ""} }""")))
+        status(result) must be(BAD_REQUEST)
+
+        contentAsString(result) must include("Address must not be more than 40 characters")
+      }
+
+
+      "Address line 3 is optional but if entered, must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_4": "", "country": ""} }""")))
+        status(result) must be(BAD_REQUEST)
+
+        contentAsString(result) must include("Address must not be more than 40 characters")
+      }
+
+      "Address line 4 is optional but if entered, must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "country": ""} }""")))
+        status(result) must be(BAD_REQUEST)
+
+        contentAsString(result) must include("Address must not be more than 40 characters")
+      }
+
+      "Country must be maximum of 40 characters" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")))
+        status(result) must be(BAD_REQUEST)
+
+        contentAsString(result) must include("Country must not be more than 40 characters")
+      }
     }
   }
 
