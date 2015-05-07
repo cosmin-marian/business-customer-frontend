@@ -13,6 +13,9 @@ trait HomeController extends FrontendController with Actions {
 
   def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime) {
     implicit user => implicit request =>
-    Ok(user.userAuthority.accounts.sa.toString)
+      user.userAuthority.accounts.sa.isDefined || user.userAuthority.accounts.ct.isDefined match {
+        case true => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+        case false => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
+      }
   }
 }

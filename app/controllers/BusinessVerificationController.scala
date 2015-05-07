@@ -4,7 +4,7 @@ import java.util.UUID
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import forms.BusinessVerificationForms._
-import models.ReviewDetails
+import models.{BusinessMatchDetails, ReviewDetails}
 import play.api.mvc._
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.config.FrontendAuthConnector
@@ -39,7 +39,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
         if(value.businessType == """NUK"""){
           Future.successful(Redirect(controllers.routes.BusinessRegController.register()))
         }else {
-          businessMatchingConnector.lookup(value) flatMap {
+          businessMatchingConnector.lookup(BusinessMatchDetails(true, "1234567890", None, None)) flatMap {
             actualResponse => {
               if (actualResponse.toString() contains ("error")) {
                 Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))

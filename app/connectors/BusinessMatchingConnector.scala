@@ -1,15 +1,15 @@
 package connectors
 
 
+import config.WSHttp
+import models.BusinessMatchDetails
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HttpGet, HttpPost}
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import config.WSHttp
-import forms.BusinessDetails
 
 trait BusinessMatchingConnector extends ServicesConfig {
 
@@ -19,13 +19,12 @@ trait BusinessMatchingConnector extends ServicesConfig {
 
   val http: HttpGet with HttpPost = WSHttp
 
-  def lookup(lookupData: BusinessDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+  def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
     http.POST(s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)).map {
       httpResponse =>
         Json.parse(httpResponse.body)
     }
   }
-
 }
 
 object BusinessMatchingConnector extends BusinessMatchingConnector

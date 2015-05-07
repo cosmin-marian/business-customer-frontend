@@ -2,7 +2,6 @@ package controllers
 
 import java.util.UUID
 
-import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
@@ -36,12 +35,19 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       status(result) must not be NOT_FOUND
     }
 
+    "redirect to business verification page if the user has no SA or COTAX enrolments" in {
+      getWithAuthorisedNoUtrUser {
+        result =>
+          redirectLocation(result).get must include("/business-customer/business-verification")
+      }
+    }
+
+
+
     "check for SA or COTAX enrolments" in {
       getWithAuthorisedUser {
         result =>
-          status(result) must be(OK)
-          val document = Jsoup.parse(contentAsString(result))
-          document.text() must include(utr)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
       }
     }
   }
@@ -55,6 +61,23 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
 
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234"))), sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None)
+      Future.successful(Some(orgAuthority))
+    }
+
+    val result = TestHomeController.homePage(service).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def getWithAuthorisedNoUtrUser(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
 
