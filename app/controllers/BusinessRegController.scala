@@ -17,6 +17,7 @@ trait BusinessRegController extends FrontendController {
   def send(service: String) = UnauthorisedAction { implicit request =>
     businessRegistrationForm.bindFromRequest.fold(
       formWithErrors => {
+        println("--------------->>> errors = " + formWithErrors.errors)
         BadRequest(views.html.business_registration(formWithErrors))
       },
       value => Ok

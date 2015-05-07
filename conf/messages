@@ -58,4 +58,11 @@ bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address Line 1 must be entered
 bc.business-registration-error.line_2 = Address Line 2 must be entered
 bc.business-registration-error.country = Country must be entered
+bc.business-registration-error.businessName.length = Business name must not be more than 40 characters
+bc.business-registration-error.line_1.length = Address must not be more than 40 characters
+bc.business-registration-error.line_2.length = Address must not be more than 40 characters
+bc.business-registration-error.line_3.length = Address must not be more than 40 characters
+bc.business-registration-error.line_4.length = Address must not be more than 40 characters
+bc.business-registration-error.country.length=Business country must not be more than 40 characters
+
 
