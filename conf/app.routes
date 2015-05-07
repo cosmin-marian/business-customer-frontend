@@ -15,5 +15,5 @@ GET         /review-details/:service                                            
 
 GET         /register                                                                controllers.BusinessRegController.register
 
-POST        /submit                                                                  controllers.BusinessVerificationController.submit
+POST        /submit/:businessType                                                    controllers.BusinessVerificationController.submit(businessType: String)
 
