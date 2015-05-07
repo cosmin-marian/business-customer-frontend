@@ -31,7 +31,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
      Ok(views.html.business_verification(businessDetailsForm, service))
    }
 
-  def submit(service: String) = UnauthorisedAction.async {  implicit request =>
+  def submit(service: String) =  AuthorisedFor(BusinessCustomerRegime).async {
+    implicit user => implicit request =>
     businessDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {
