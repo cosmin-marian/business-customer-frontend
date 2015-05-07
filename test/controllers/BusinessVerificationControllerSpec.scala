@@ -556,6 +556,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
     test(result)
   }
+
   def submitWithUnAuthorisedUser(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"

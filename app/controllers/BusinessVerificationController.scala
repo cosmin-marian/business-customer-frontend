@@ -6,9 +6,8 @@ import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import forms.BusinessVerificationForms._
 import models.ReviewDetails
 import play.api.mvc._
-import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.config.FrontendAuthConnector
-import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.frontend.auth.Actions
 import controllers.auth.BusinessCustomerRegime
