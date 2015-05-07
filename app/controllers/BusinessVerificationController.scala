@@ -6,26 +6,33 @@ import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import forms.BusinessVerificationForms._
 import models.ReviewDetails
 import play.api.mvc._
+import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
+import uk.gov.hmrc.play.config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
 import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.play.frontend.auth.Actions
+import controllers.auth.BusinessCustomerRegime
 
 import scala.concurrent.Future
 
 object BusinessVerificationController extends BusinessVerificationController {
-  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
-  val dataCacheConnector: DataCacheConnector = DataCacheConnector
+  override val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  override val dataCacheConnector: DataCacheConnector = DataCacheConnector
+  override val authConnector = FrontendAuthConnector
 }
 
-trait BusinessVerificationController extends FrontendController {
+trait BusinessVerificationController extends FrontendController with Actions {
 
   val businessMatchingConnector: BusinessMatchingConnector
   val dataCacheConnector: DataCacheConnector
 
-   def businessVerification(service: String) = UnauthorisedAction { implicit request =>
-     Ok(views.html.business_verification(businessDetailsForm, service)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+   def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime) {
+     implicit user => implicit request =>
+     Ok(views.html.business_verification(businessDetailsForm, service))
    }
 
-  def submit(service: String) = UnauthorisedAction.async {  implicit request =>
+  def submit(service: String) =  AuthorisedFor(BusinessCustomerRegime).async {
+    implicit user => implicit request =>
     businessDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {

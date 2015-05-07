@@ -9,8 +9,10 @@ POST        /submit/:service                    controllers.BusinessVerification
 
 GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)
 
-GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
+GET         /review-details/:service            controllers.ReviewDetailsController.businessDetails(service: String)
 
-GET       /register                             controllers.BusinessRegController.register
+GET         /unauthorised                       controllers.ApplicationController.unauthorised
+
+GET         /register                           controllers.BusinessRegController.register
 
 GET         /:service                           controllers.HomeController.homePage(service: String)
