@@ -38,7 +38,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     reset(mockWSHttp)
   }
 
-  "BusinessCustomerConnector" must {
+  "BusinessMatchingConnector" must {
 
     "services are running" must {
 
@@ -46,7 +46,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchFailureResponse = Json.parse("""{"error": "Sorry. Business details not found."}""")
 
 
-      "for a successful match, return business details" in {
+      "for a successful match, return review details" in {
 
         val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111111)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
