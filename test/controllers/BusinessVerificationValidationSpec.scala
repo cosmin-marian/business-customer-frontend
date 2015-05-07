@@ -20,7 +20,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     val dataCacheConnector = mockDataCacheConnector
   }
 
-  "if the selection is Unincorporated body or Limited Company:" must {
+  "if the selection is Unincorporated body :" must {
     "Business Name must not be empty" in {
       val result = TestBusinessVerificationController.submit("UIB").apply(request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> ""))
       status(result) must be(BAD_REQUEST)
@@ -63,6 +63,49 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
   }
 
+
+  "if the selection is Limited Company :" must {
+    "Business Name must not be empty" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> ""))
+      status(result) must be(BAD_REQUEST)
+
+      val document = Jsoup.parse(contentAsString(result))
+
+      contentAsString(result) must include("Business Name must be entered")
+
+      document.getElementById("businessName_field").text() must include("Business Name")
+      document.getElementById("cotaxUTR_field").text() must include("COTAX Unique Tax Reference")
+    }
+
+    "CO Tax UTR must not be empty" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> ""))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
+    }
+
+
+    "Business Name must not be more than 40 characters" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> ""))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Business Name must not be more than 40 characters")
+    }
+
+    "CO Tax UTR must be 10 digits" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111"))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
+    }
+
+    "CO Tax UTR must be valid" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892"))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
+    }
+  }
 
 
   "if the selection is Sole Trader:" must {
@@ -140,17 +183,38 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
   }
 
+  "if the selection is Ordinary Business Partnership :" must {
+    "Business Name and CO Tax UTR must not be empty"  in {
+      val result = TestBusinessVerificationController.submit("OBP").apply(request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> ""))
+      status(result) must be(BAD_REQUEST)
 
+      val document = Jsoup.parse(contentAsString(result))
 
+      contentAsString(result) must include("Business Name must be entered")
+      contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
+      document.getElementById("businessName_field").text() must include("Business Name")
+      document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
+    }
 
-  //    "if entered, Business Name must be less than 40 characters" in {
-  //      val result = TestBusinessVerificationController.submit().apply(request.withFormUrlEncodedBody("businessName"->"AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"))
-  //      status(result) must be(BAD_REQUEST)
-  //
-  //      val document = Jsoup.parse(contentAsString(result))
-  //
-  //      contentAsString(result) must include("Maximum length is 40")
-  //    }
+    "Business Name must not be more than 40 characters" in {
+      val result = TestBusinessVerificationController.submit("OBP").apply(request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> ""))
+      status(result) must be(BAD_REQUEST)
 
+      contentAsString(result) must include("Business Name must not be more than 40 characters")
+    }
 
+    "Partnership Self Assessment UTR must be 10 digits" in {
+      val result = TestBusinessVerificationController.submit("OBP").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111"))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
+    }
+
+    "Partnership Self Assessment UTR must be valid" in {
+      val result = TestBusinessVerificationController.submit("OBP").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892"))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+    }
+  }
 }

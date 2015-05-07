@@ -6,8 +6,8 @@
     <ul>
         @if(form.hasGlobalErrors) {
         @for(validationError <- form.globalErrors) {
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+        <li class="validation-message" id='#@validationError.key'>
+            <a href='#@validationError.key'>
                 @validationError.message
             </a>
         </li>
@@ -15,8 +15,8 @@
         } else {
         @if(form.hasErrors) {
         @for(validationError <- form.errors) {
-        <li class="validation-message" id='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
-            <a href='#@validationError.key.replaceAll("""[\.\[\]]""", "-")'>
+        <li class="validation-message" id='#@validationError.key'>
+            <a href='#@validationError.key'>
                 @validationError.message
             </a>
         </li>

@@ -37,9 +37,7 @@ trait BusinessVerificationController extends FrontendController {
           case "OBP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "OBP"))
           case "LLP" => Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LLP"))
         }
-//        if(value.businessType == """NUK"""){l
-//          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld("NON-UK")))
-//        }else {
+//
 //          businessMatchingConnector.lookup(value) flatMap {
 //            actualResponse => {
 //              if (actualResponse.toString() contains ("error")) {
@@ -52,7 +50,7 @@ trait BusinessVerificationController extends FrontendController {
 //              }
 //            }
 //          }
-//        }
+
       }
     )
   }
@@ -67,11 +65,31 @@ trait BusinessVerificationController extends FrontendController {
     }
   }
 
-  def submit() = UnauthorisedAction { implicit request =>
+  def submit(businessType: String) = UnauthorisedAction { implicit request =>
     val service = "ATED"
-    unincorporatedBodyForm.bindFromRequest.fold(
-      formWithErrors => {println("###########################################"+ formWithErrors.errors); BadRequest(views.html.business_lookup_UIB(formWithErrors, service))},
-      value => ???)
+    businessType match {
+      case "UIB" => unincorporatedBodyForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.business_lookup_UIB(formWithErrors, service)),
+        value => ???
+      )
+      case "SOP" => soleTraderForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.business_lookup_SOP(formWithErrors, service)),
+        value => ???
+      )
+      case "LLP" => limitedLiabilityPartnershipForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.business_lookup_LLP(formWithErrors, service)),
+        value => ???
+      )
+      case "OBP" => ordinaryBusinessPartnershipForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.business_lookup_OBP(formWithErrors, service)),
+        value => ???
+      )
+      case "LTD" => limitedCompanyForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.business_lookup_LTD(formWithErrors, service)),
+        value => ???
+      )
+    }
+
   }
 
   def helloWorld(response: String) = Action {
