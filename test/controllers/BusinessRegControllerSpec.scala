@@ -25,11 +25,12 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
   }
+  val serviceName: String = "ATED"
 
   "BusinessRegController" must {
 
     "respond to /register" in {
-      val result = route(FakeRequest(GET, "/business-customer/register")).get
+      val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName")).get
       status(result) must not be (NOT_FOUND)
     }
 
@@ -81,7 +82,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       Future.successful(Some(payeAuthority))
     }
 
-    val result = TestBusinessRegController.register().apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -98,7 +99,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       Future.successful(Some(orgAuthority))
     }
 
-    val result = TestBusinessRegController.register().apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

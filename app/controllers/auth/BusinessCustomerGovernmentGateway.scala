@@ -2,7 +2,7 @@ package controllers.auth
 
 import uk.gov.hmrc.play.frontend.auth.GovernmentGateway
 
-object BusinessCustomerGovernmentGateway extends GovernmentGateway {
+case class BusinessCustomerGovernmentGateway(serviceName: String) extends GovernmentGateway {
 
-  override val login = ExternalUrls.signIn
+  override val login = ExternalUrls.signIn + s"/$serviceName"
 }
