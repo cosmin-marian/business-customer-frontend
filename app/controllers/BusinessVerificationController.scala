@@ -70,23 +70,23 @@ trait BusinessVerificationController extends FrontendController {
     businessType match {
       case "UIB" => unincorporatedBodyForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.business_lookup_UIB(formWithErrors, service)),
-        value => ???
+        value => Ok
       )
       case "SOP" => soleTraderForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.business_lookup_SOP(formWithErrors, service)),
-        value => ???
+        value => Ok
       )
       case "LLP" => limitedLiabilityPartnershipForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.business_lookup_LLP(formWithErrors, service)),
-        value => ???
+        value => Ok
       )
       case "OBP" => ordinaryBusinessPartnershipForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.business_lookup_OBP(formWithErrors, service)),
-        value => ???
+        value => Ok
       )
       case "LTD" => limitedCompanyForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.business_lookup_LTD(formWithErrors, service)),
-        value => ???
+        value => Ok
       )
     }
 

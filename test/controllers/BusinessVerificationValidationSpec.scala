@@ -148,7 +148,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
   }
 
-  "if the selection is Ordinary Business Partnership or Limited Liability Partnership:" must {
+  "if the selection is Limited Liability Partnership:" must {
     "Business Name and CO Tax UTR must not be empty"  in {
       val result = TestBusinessVerificationController.submit("LLP").apply(request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> ""))
       status(result) must be(BAD_REQUEST)
@@ -215,6 +215,41 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       status(result) must be(BAD_REQUEST)
 
       contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+    }
+  }
+
+  "if the Ordinary Business Partnership form is successfully validated:" must {
+    "the status code should be 200" in {
+      val result = TestBusinessVerificationController.submit("OBP").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111"))
+      status(result) must be(OK)
+    }
+  }
+
+  "if the Limited Liability Partnership form  is successfully validated:" must {
+    "the status code should be 200" in {
+      val result = TestBusinessVerificationController.submit("LLP").apply(request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111"))
+      status(result) must be(OK)
+    }
+  }
+
+  "if the Sole Trader form  is successfully validated:" must {
+    "the status code should be 200" in {
+      val result = TestBusinessVerificationController.submit("SOP").apply(request.withFormUrlEncodedBody("first-name" -> "John", "last-name" -> "Smith", "saUTR" -> "1111111111"))
+      status(result) must be(OK)
+    }
+  }
+
+  "if the Unincorporated body form  is successfully validated:" must {
+    "the status code should be 200" in {
+      val result = TestBusinessVerificationController.submit("UIB").apply(request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co"))
+      status(result) must be(OK)
+    }
+  }
+
+  "if the Limited Company form  is successfully validated:" must {
+    "the status code should be 200" in {
+      val result = TestBusinessVerificationController.submit("LTD").apply(request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co"))
+      status(result) must be(OK)
     }
   }
 }
