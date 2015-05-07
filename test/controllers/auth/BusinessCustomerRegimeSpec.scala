@@ -15,12 +15,12 @@ class BusinessCustomerRegimeSpec extends PlaySpec with OneServerPerSuite with Mo
 
       val accounts = mock[Accounts](RETURNS_DEEP_STUBS)
 
-      "return true when the user is registered for company tax" in {
+      "return true when the user is registered for Org account" in {
         when(accounts.org.isDefined).thenReturn(true)
         BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(true)
       }
 
-      "return false when the user is not registered for company tax" in {
+      "return false when the user is not registered for Org account" in {
         when(accounts.org.isDefined).thenReturn(false)
         BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(false)
       }
