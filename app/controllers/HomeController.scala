@@ -1,18 +1,12 @@
 package controllers
 
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 
-object HomeController extends HomeController {
-  val authConnector = ???
-}
+object HomeController extends HomeController
 
-trait HomeController extends FrontendController with Actions {
+trait HomeController extends FrontendController {
 
-  val authConnector: AuthConnector
-
-  def homePage(service: String) = AuthorisedFor(SaRegime) {  user => request =>
+  def homePage(service: String) = UnauthorisedAction { implicit request =>
     Ok("Success")
   }
 }
