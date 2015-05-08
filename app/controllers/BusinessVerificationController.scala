@@ -2,16 +2,15 @@ package controllers
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import controllers.auth.BusinessCustomerRegime
-import forms.{UnincorporatedMatch, BusinessDetails}
 import forms.BusinessVerificationForms._
+import forms.{BusinessDetails, UnincorporatedMatch}
 import models.ReviewDetails
 import play.api.data.Form
 import play.api.mvc._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
@@ -44,19 +43,6 @@ trait BusinessVerificationController extends FrontendController with Actions {
           case "OBP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "OBP")))
           case "LLP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LLP")))
         }
-        //
-        //          businessMatchingConnector.lookup(value) flatMap {
-        //            actualResponse => {
-        //              if (actualResponse.toString() contains ("error")) {
-        //                Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-        //              } else {
-        //                dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-        //                  cachedData =>
-        //                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-        //                }
-        //              }
-        //            }
-        //          }
       }
     )
   }

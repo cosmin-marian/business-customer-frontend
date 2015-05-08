@@ -8,10 +8,12 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import play.api.libs.json.Json
 import play.api.mvc.{Result, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{PayeAccount, OrgAccount, Accounts, Authority}
 import uk.gov.hmrc.play.http.SessionKeys
@@ -22,15 +24,15 @@ import scala.concurrent.Future
 class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
-  val mockConnector = mock[BusinessMatchingConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
+  val mockBusinessMatchingConnector = mock[BusinessMatchingConnector]
   val mockAuthConnector = mock[AuthConnector]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController  {
-    val businessMatchingConnector = mockConnector
     val dataCacheConnector = mockDataCacheConnector
     val authConnector = mockAuthConnector
+    val businessMatchingConnector = mockBusinessMatchingConnector
   }
 
   "if the selection is Unincorporated body :" must {
@@ -283,7 +285,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     "the status code should be 200" in {
       submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
         result =>
-          status(result) must be(OK)
+          status(result) must be(SEE_OTHER)
       }
     }
   }
@@ -322,6 +324,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       Future.successful(Some(payeAuthority))
     }
 
+
     val result = TestBusinessVerificationController.submit(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
@@ -338,6 +341,11 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
+
+    val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+    val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
+    when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
+    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
