@@ -9,6 +9,7 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.BusinessMatchingService
 import uk.gov.hmrc.domain.{SaUtr, Org}
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{SaAccount, Accounts, Authority, OrgAccount}
@@ -25,6 +26,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val mockAuthConnector = mock[AuthConnector]
 
   object TestHomeController extends HomeController{
+    override val businessMatchService: BusinessMatchingService = BusinessMatchingService
     override val authConnector = mockAuthConnector
   }
 
@@ -42,8 +44,6 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       }
     }
 
-
-
     "check for SA or COTAX enrolments" in {
       getWithAuthorisedUser {
         result =>
@@ -51,9 +51,6 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       }
     }
   }
-
-
-
 
   def getWithAuthorisedUser(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"

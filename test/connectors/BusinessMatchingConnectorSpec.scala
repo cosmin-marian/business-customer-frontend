@@ -43,7 +43,6 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
 
 
       "for a successful match, return business details" in {
-
         val businessDetails = BusinessMatchDetails(true, "1234567890", None, None)
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessMatchDetails, ReviewDetails](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
