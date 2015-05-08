@@ -1,0 +1,28 @@
+@(form: Form[_])
+
+@if(form.hasGlobalErrors || form.hasErrors) {
+<div id="errors" class="validation-summary">
+    <h1 class="heading-small">@Messages("bc.business-registration-error.summaryHeader")</h1>
+    <ul>
+        @if(form.hasGlobalErrors) {
+        @for(validationError <- form.globalErrors) {
+        <li class="validation-message" id='#@validationError.key'>
+            <a href='#@validationError.key'>
+                @validationError.message
+            </a>
+        </li>
+        }
+        } else {
+        @if(form.hasErrors) {
+        @for(validationError <- form.errors) {
+        <li class="validation-message" id='#@validationError.key'>
+            <a href='#@validationError.key'>
+                @validationError.message
+            </a>
+        </li>
+        }
+        }
+    </ul>
+</div>
+}
+}

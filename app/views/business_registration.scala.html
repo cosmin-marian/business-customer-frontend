@@ -2,8 +2,11 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
+@import views.html.helpers.error._
 
 @bcMain(title = Messages("business-registration.title")) {
+
+@errors(businessRegistrationForm)
 
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
 

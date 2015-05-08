@@ -64,6 +64,6 @@ bc.business-registration-error.line_2.length = Address must not be more than 40 
 bc.business-registration-error.line_3.length = Address must not be more than 40 characters
 bc.business-registration-error.line_4.length = Address must not be more than 40 characters
 bc.business-registration-error.country.length = Country must not be more than 40 characters
-bc.business-registration-error.summaryHeader=There is a problem with the form
+bc.business-registration-error.summaryHeader = There is a problem with the form
 
 
