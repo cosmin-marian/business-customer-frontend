@@ -32,12 +32,12 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite {
 
       document.title() must be("Business Registration")
       document.getElementById("business-registration.header").text() must be("Add business details")
-      document.getElementById("business-name_field").text() must be("Business name")
-      document.getElementById("address-line-1_field").text() must be("Address line 1")
-      document.getElementById("address-line-2_field").text() must be("Address line 2")
-      document.getElementById("address-line-3_field").text() must be("Address line 3")
-      document.getElementById("address-line-4_field").text() must be("Address line 4")
-      document.getElementById("country_field").text() must be("Country")
+      document.getElementById("businessName_field").text() must be("Business name")
+      document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
+      document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+      document.getElementById("businessAddress.line_3_field").text() must be("Address line 3")
+      document.getElementById("businessAddress.line_4_field").text() must be("Address line 4")
+      document.getElementById("businessAddress.country_field").text() must be("Country")
       document.getElementById("submit").text() must be("Save and continue")
       document.getElementById("cancel").text() must be("Cancel")
 
