@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import utils.BCUtils._
 
 
-case class SoleTraderMatch(firstName: String, surname: String, saUTR: String)
+case class SoleTraderMatch(firstName: String, lastName: String, saUTR: String)
 
 case class LimitedCompanyMatch(businessName: String, cotaxUTR: String)
 
