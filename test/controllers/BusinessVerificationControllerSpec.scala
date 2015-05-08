@@ -9,15 +9,15 @@ import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
+import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
 import uk.gov.hmrc.play.config.FrontendAuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{PayeAccount, Authority, OrgAccount, Accounts}
-import play.api.mvc.{AnyContentAsJson, AnyContent, AnyContentAsFormUrlEncoded, Result}
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -226,7 +226,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, First name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAFirstName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAFirstName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -235,7 +235,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Last name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sASurname" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sASurname" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -244,7 +244,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, SA UTR must be 10 digits" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAUTR" -> "12345678917")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAUTR" -> "12345678917")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -253,7 +253,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, SA UTR must be valid" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAUTR" -> "1234567892")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "soleTrader.sAUTR" -> "1234567892")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -265,7 +265,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if a Limited company: Business Name and COTAX UTR" must {
 
           "not be empty" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -279,7 +279,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Business Name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -288,7 +288,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, COTAX UTR must be 10 digits" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdCotaxAUTR" -> "12345678917")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdCotaxAUTR" -> "12345678917")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -297,7 +297,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, CO TAX UTR must be valid" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdCotaxAUTR" -> "1234567892")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "ltdCompany.ltdCotaxAUTR" -> "1234567892")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -309,7 +309,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if an Unincorporated body: Business Name and COTAX UTR" must {
 
           "not be empty" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -322,7 +322,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Business Name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -331,7 +331,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, COTAX UTR must be 10 digits" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "12345678917")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "12345678917")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -340,7 +340,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, CO TAX UTR must be valid" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "1234567892")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "uibCompany.uibCotaxAUTR" -> "1234567892")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -353,7 +353,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if an Ordinary business partnership: Business Name and Partnership Self Assessment UTR" must {
 
           "not be empty" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -366,7 +366,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Business Name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -375,7 +375,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Partnership UTR must be 10 digits" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "12345678917")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "12345678917")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -384,7 +384,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Partnership UTR must be valid" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "1234567892")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "obpCompany.obpPSAUTR" -> "1234567892")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -396,7 +396,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if Limited liability partnership: Business Name and Partnership Self Assessment UTR" must {
 
           "not be empty" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -409,16 +409,16 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Business Name must be less than 40 characters" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpBusinessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
                 contentAsString(result) must include("Maximum length is 40")
-            }            
+            }
           }
 
           "if entered, Partnership UTR must be 10 digits" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "12345678917")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "12345678917")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
@@ -427,25 +427,25 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Partnership UTR must be valid" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "1234567892")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "llpCompany.llpPSAUTR" -> "1234567892")) {
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
-            }            
+            }
           }
         }
 
         "if valid text has been entered - continue to next action - MATCH FOUND" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJsonForUIB = Json.parse("""{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111111"} }""")
+          val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111111"} }""")
 
-          val matchSuccessResponse = Json.parse("""{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+          val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
           val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
           when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
           when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
-          submitWithAuthorisedUserJson (FakeRequest().withJsonBody(inputJsonForUIB)) {
+          submitWithAuthorisedUserJson(FakeRequest().withJsonBody(inputJsonForUIB)) {
             result =>
               status(result) must be(SEE_OTHER)
               redirectLocation(result).get must include(s"/business-customer/review-details/$service")
@@ -454,12 +454,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
 
         "if valid text has been entered - continue to next action - MATCH NOT FOUND" in {
-          val inputJsonForUIB = Json.parse("""{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111112"} }""")
+          val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111112"} }""")
 
-          val matchFailureResponse = Json.parse("""{"error": "Sorry. Business details not found."}""")
+          val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
           when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponse))
 
-          submitWithAuthorisedUserJson (FakeRequest().withJsonBody(inputJsonForUIB)) {
+          submitWithAuthorisedUserJson(FakeRequest().withJsonBody(inputJsonForUIB)) {
             result =>
               status(result) must be(SEE_OTHER)
               redirectLocation(result).get must include("/business-customer/hello")
@@ -469,7 +469,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if empty" must {
 
           "return BadRequest" in {
-            submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "")) {
+            submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "")) {
               result =>
                 status(result) must be(BAD_REQUEST)
             }
@@ -478,7 +478,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
 
         "if non-uk, continue to the registration page" in {
-          submitWithAuthorisedUser (FakeRequest().withFormUrlEncodedBody("businessType" -> "NUK")) {
+          submitWithAuthorisedUser(FakeRequest().withFormUrlEncodedBody("businessType" -> "NUK")) {
             result =>
               status(result) must be(SEE_OTHER)
               redirectLocation(result).get must include("/business-customer/register")
@@ -523,7 +523,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def submitWithAuthorisedUser(fakeRequest : FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUser(fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -540,7 +540,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def submitWithAuthorisedUserJson(fakeRequest : FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserJson(fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -556,6 +556,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
     test(result)
   }
+
   def submitWithUnAuthorisedUser(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"

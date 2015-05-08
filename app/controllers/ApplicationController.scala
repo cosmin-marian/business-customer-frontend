@@ -5,8 +5,9 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 object ApplicationController extends FrontendController {
 
-  def unauthorised() =  Action { implicit request =>
-    Ok(views.html.unauthorised(request))
+  def unauthorised() = Action {
+    implicit request =>
+      Ok(views.html.unauthorised(request))
   }
 
 }

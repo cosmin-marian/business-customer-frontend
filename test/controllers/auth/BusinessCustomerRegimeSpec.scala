@@ -4,9 +4,10 @@ import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.Accounts
-import controllers.auth.BusinessCustomerRegime._
 
 class BusinessCustomerRegimeSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+
+  val serviceName: String = "ATED"
 
   "BusinessCustomerRegime" must {
 
@@ -14,25 +15,25 @@ class BusinessCustomerRegimeSpec extends PlaySpec with OneServerPerSuite with Mo
 
       val accounts = mock[Accounts](RETURNS_DEEP_STUBS)
 
-      "return true when the user is registered for company tax" in {
+      "return true when the user is registered for Org account" in {
         when(accounts.org.isDefined).thenReturn(true)
-        isAuthorised(accounts) must be(true)
+        BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(true)
       }
 
-      "return false when the user is not registered for company tax" in {
+      "return false when the user is not registered for Org account" in {
         when(accounts.org.isDefined).thenReturn(false)
-        isAuthorised(accounts) must be(false)
+        BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(false)
       }
 
     }
 
     "define the authentication type as the BusinessCustomer GG" in {
-      authenticationType must be(BusinessCustomerGovernmentGateway)
+      BusinessCustomerRegime(serviceName).authenticationType must be(BusinessCustomerGovernmentGateway(serviceName))
     }
 
     "define the unauthorised landing page as /unauthorised" in {
-      unauthorisedLandingPage.isDefined must be(true)
-      unauthorisedLandingPage.get must be("/business-customer/unauthorised")
+      BusinessCustomerRegime(serviceName).unauthorisedLandingPage.isDefined must be(true)
+      BusinessCustomerRegime(serviceName).unauthorisedLandingPage.get must be("/business-customer/unauthorised")
     }
 
   }

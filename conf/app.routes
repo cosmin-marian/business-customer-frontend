@@ -13,6 +13,6 @@ GET         /review-details/:service            controllers.ReviewDetailsControl
 
 GET         /unauthorised                       controllers.ApplicationController.unauthorised
 
-GET         /register                           controllers.BusinessRegController.register
+GET         /register/:service                  controllers.BusinessRegController.register(service: String)
 
 GET         /:service                           controllers.HomeController.homePage(service: String)

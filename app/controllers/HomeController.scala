@@ -11,7 +11,7 @@ object HomeController extends HomeController{
 
 trait HomeController extends FrontendController with Actions {
 
-  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime) {
+  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       user.userAuthority.accounts.sa.isDefined || user.userAuthority.accounts.ct.isDefined match {
         case true => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))

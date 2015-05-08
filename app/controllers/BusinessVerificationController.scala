@@ -1,17 +1,13 @@
 package controllers
 
-import java.util.UUID
-
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
+import controllers.auth.BusinessCustomerRegime
 import forms.BusinessVerificationForms._
 import models.{BusinessMatchDetails, ReviewDetails}
 import play.api.mvc._
-import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.config.FrontendAuthConnector
-import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
-import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.frontend.auth.Actions
-import controllers.auth.BusinessCustomerRegime
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
@@ -26,18 +22,18 @@ trait BusinessVerificationController extends FrontendController with Actions {
   val businessMatchingConnector: BusinessMatchingConnector
   val dataCacheConnector: DataCacheConnector
 
-   def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime) {
-     implicit user => implicit request =>
-     Ok(views.html.business_verification(businessDetailsForm, service))
-   }
+  def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+    implicit user => implicit request =>
+      Ok(views.html.business_verification(businessDetailsForm, service))
+  }
 
-  def submit(service: String) =  AuthorisedFor(BusinessCustomerRegime).async {
+  def submit(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
     businessDetailsForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
       value => {
         if(value.businessType == """NUK"""){
-          Future.successful(Redirect(controllers.routes.BusinessRegController.register()))
+          Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
         }else {
           businessMatchingConnector.lookup(BusinessMatchDetails(true, "1234567890", None, None)) flatMap {
             actualResponse => {
