@@ -55,15 +55,6 @@ object BusinessVerificationForms {
   val businessTypeForm = Form(mapping(
       "businessType" -> nonEmptyText
     )(BusinessType.apply)(BusinessType.unapply)
-//    verifying(Messages("bc.business-verification-error.firstname"), p => saFirstNameCheck(p))
-//    verifying(Messages("bc.business-verification-error.surname"), p => saSurnameCheck(p))
-//    verifying(Messages("bc.business-verification-error.sautr"), p => saUTREmptyCheck(p))
-//    verifying(Messages("bc.business-verification-error.businessName"), p => businessNameCheck(p))
-//    verifying(Messages("bc.business-verification-error.cotaxutr"), p => cotaxUTREmptyCheck(p))
-//    verifying(Messages("bc.business-verification-error.psautr"), p => psaUTREmptyCheck(p))
-//    verifying(Messages("bc.business-verification-error.invalidSAUTR"), p => validateSAUTR(p))
-//    verifying(Messages("bc.business-verification-error.invalidCOUTR"), p => validateCOUTR(p))
-//    verifying(Messages("bc.business-verification-error.invalidPSAUTR"), p => validatePSAUTR(p))
   )
 
   val soleTraderForm = Form(mapping(

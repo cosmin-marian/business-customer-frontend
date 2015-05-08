@@ -29,6 +29,13 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val mockAuthConnector = mock[AuthConnector]
   val service = "ATED"
 
+  val matchSuccessResponseUIB = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+  val matchSuccessResponseLTD = Json.parse( """{"businessName":"ACME","businessType":"Limited company","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+  val matchSuccessResponseSOP = Json.parse( """{"businessName":"ACME","businessType":"Sole trader","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+  val matchSuccessResponseOBP = Json.parse( """{"businessName":"ACME","businessType":"Ordinary business partnership","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+  val matchSuccessResponseLLP = Json.parse( """{"businessName":"ACME","businessType":"Limited liability partnership","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+
+
   object TestBusinessVerificationController extends BusinessVerificationController  {
     val dataCacheConnector = mockDataCacheConnector
     val authConnector = mockAuthConnector
@@ -37,7 +44,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
   "if the selection is Unincorporated body :" must {
     "Business Name must not be empty" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
 
@@ -51,7 +58,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must not be empty" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
@@ -60,7 +67,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
     "Business Name must not be more than 40 characters" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Business Name must not be more than 40 characters")
@@ -68,7 +75,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must be 10 digits" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
@@ -76,7 +83,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must be valid" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
@@ -87,7 +94,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
   "if the selection is Limited Company :" must {
     "Business Name must not be empty" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           val document = Jsoup.parse(contentAsString(result))
@@ -98,7 +105,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must not be empty" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
@@ -107,7 +114,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
     "Business Name must not be more than 40 characters" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Business Name must not be more than 40 characters")
@@ -115,7 +122,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must be 10 digits" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
@@ -123,7 +130,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "CO Tax UTR must be valid" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
@@ -134,7 +141,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
   "if the selection is Sole Trader:" must {
     "First name, last name and SA UTR  must be entered" in {
-      submitWithAuthorisedUser("SOP", request.withFormUrlEncodedBody("firstName" -> "", "lastName" -> "", "saUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "", "lastName" -> "", "saUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           val document = Jsoup.parse(contentAsString(result))
@@ -151,7 +158,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "SA UTR must be valid" in {
-      submitWithAuthorisedUser("SOP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "saUTR" -> "1234567892")) {
+      submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "saUTR" -> "1234567892")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Self Assessment Unique Tax Reference is not valid")
@@ -159,7 +166,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "First Name and Last Name must not be more than 40 characters" in {
-      submitWithAuthorisedUser("SOP", request.withFormUrlEncodedBody("firstName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "lastName" -> "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")) {
+      submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "lastName" -> "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("First Name must not be more than 40 characters")
@@ -168,7 +175,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "SA  UTR must be 10 digits" in {
-      submitWithAuthorisedUser("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "11111111111")) {
+      submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Self Assessment Unique Tax Reference must be 10 digits")
@@ -178,7 +185,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
   "if the selection is Limited Liability Partnership:" must {
     "Business Name and CO Tax UTR must not be empty"  in {
-      submitWithAuthorisedUser("LLP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           val document = Jsoup.parse(contentAsString(result))
@@ -191,7 +198,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Business Name must not be more than 40 characters" in {
-      submitWithAuthorisedUser("LLP", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Business Name must not be more than 40 characters")
@@ -199,7 +206,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Partnership Self Assessment UTR must be 10 digits" in {
-      submitWithAuthorisedUser("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
@@ -207,7 +214,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Partnership Self Assessment UTR must be valid" in {
-      submitWithAuthorisedUser("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
@@ -217,7 +224,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
   "if the selection is Ordinary Business Partnership :" must {
     "Business Name and CO Tax UTR must not be empty"  in {
-      submitWithAuthorisedUser("OBP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           val document = Jsoup.parse(contentAsString(result))
@@ -230,7 +237,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Business Name must not be more than 40 characters" in {
-      submitWithAuthorisedUser("OBP", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> "")) {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Business Name must not be more than 40 characters")
@@ -238,7 +245,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Partnership Self Assessment UTR must be 10 digits" in {
-      submitWithAuthorisedUser("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
@@ -246,7 +253,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     "Partnership Self Assessment UTR must be valid" in {
-      submitWithAuthorisedUser("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
@@ -255,46 +262,86 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   }
 
   "if the Ordinary Business Partnership form is successfully validated:" must {
-    "the status code should be 200" in {
-      submitWithAuthorisedUser("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+    "for successful match, status should be 303 and  user should be redirected to review details page" in {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
         result =>
-          status(result) must be(OK)
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+      }
+    }
+    "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+      submitWithAuthorisedUserFailure("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
       }
     }
   }
 
   "if the Limited Liability Partnership form  is successfully validated:" must {
-    "the status code should be 200" in {
-      submitWithAuthorisedUser("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+    "for successful match, status should be 303 and  user should be redirected to review details page" in {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
         result =>
-          status(result) must be(OK)
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+      }
+    }
+    "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+      submitWithAuthorisedUserFailure("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
       }
     }
   }
 
   "if the Sole Trader form  is successfully validated:" must {
-    "the status code should be 200" in {
-      submitWithAuthorisedUser("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111111")) {
+    "for successful match, status should be 303 and  user should be redirected to review details page" in {
+      submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111111")) {
         result =>
-          status(result) must be(OK)
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+      }
+    }
+    "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+      submitWithAuthorisedUserFailure("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111112")) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
       }
     }
   }
 
   "if the Unincorporated body form  is successfully validated:" must {
-    "the status code should be 200" in {
-      submitWithAuthorisedUser("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
+    "for successful match, status should be 303 and  user should be redirected to review details page" in {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
         result =>
           status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+      }
+    }
+    "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+      submitWithAuthorisedUserFailure("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111112", "businessName" -> "Smith & Co")) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
       }
     }
   }
 
   "if the Limited Company form  is successfully validated:" must {
-    "the status code should be 200" in {
-      submitWithAuthorisedUser("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
+    "for successful match, status should be 303 and  user should be redirected to review details page" in {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
         result =>
-          status(result) must be(OK)
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+      }
+    }
+    "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+      submitWithAuthorisedUserFailure("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111112", "businessName" -> "Smith & Co")) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-customer/hello")
       }
     }
   }
@@ -333,7 +380,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def submitWithAuthorisedUser(businessType : String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(businessType : String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -341,8 +388,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
+    val matchSuccessResponse = businessType match {
+      case "UIB" => matchSuccessResponseUIB
+      case "LLP" => matchSuccessResponseLLP
+      case "OBP" => matchSuccessResponseOBP
+      case "SOP" => matchSuccessResponseSOP
+      case "LTD" => matchSuccessResponseLTD
+    }
 
-    val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
     val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
     when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
     when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
@@ -354,4 +407,27 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     test(result)
   }
+
+  def submitWithAuthorisedUserFailure(businessType : String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
+      Future.successful(Some(orgAuthority))
+    }
+
+    val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
+    val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchFailureResponse))
+    when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponse))
+    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+
+    val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
 }
