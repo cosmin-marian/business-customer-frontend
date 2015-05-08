@@ -11,16 +11,16 @@
 
 <h1 id="business-type-header">@Messages("bc.business-verification.SOP")</h1>
 
-@form(action = controllers.routes.BusinessVerificationController.submit("SOP")) {
+@form(action = controllers.routes.BusinessVerificationController.submit("ATED","SOP")) {
 
 <div id="business-type-sop-form" class="form-field">
 
-    @bcInput(soleTraderForm("first-name"),
+    @bcInput(soleTraderForm("firstName"),
     '_label -> Html(Messages("bc.business-verification.firstNameField")),
     '_id -> "first-name",
     '_showConstraints -> false)
 
-    @bcInput(soleTraderForm("last-name"),
+    @bcInput(soleTraderForm("lastName"),
     '_label -> Html(Messages("bc.business-verification.lastNameField")),
     '_id -> "last-name",
     '_showConstraints -> false)

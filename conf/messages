@@ -49,6 +49,9 @@ bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference
 bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
 
+## Unauthorised Page
+bc.unauthorised.title=Unauthorised
+bc.unauthorised.heading=Unauthorised
 
 business-registration.title = Business Registration
 bc.business-registration.header = Add business details
@@ -60,6 +63,3 @@ bc.business-registration.line_4 = Address line 4
 bc.business-registration.country = Country
 bc.business-registration.submit= Save and continue
 bc.business-registration.cancel= Cancel
-
-
-

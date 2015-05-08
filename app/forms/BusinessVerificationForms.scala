@@ -20,6 +20,8 @@ case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String
 
 case class BusinessType (businessType: String)
 
+case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch], uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch], llpCompany :Option[LimitedLiabilityPartnershipMatch])
+
 
 object SoleTraderMatch {
   implicit val formats = Json.format[SoleTraderMatch]
@@ -44,6 +46,9 @@ object LimitedLiabilityPartnershipMatch {
 object BusinessType {
   implicit val formats = Json.format[BusinessType]
 }
+object BusinessDetails {
+  implicit val formats = Json.format[BusinessDetails]
+}
 
 object BusinessVerificationForms {
 
@@ -62,10 +67,10 @@ object BusinessVerificationForms {
   )
 
   val soleTraderForm = Form(mapping(
-    "first-name" -> text
+    "firstName" -> text
       .verifying(Messages("bc.business-verification-error.firstname"), x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.firstname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
-    "last-name"   -> text
+    "lastName"   -> text
       .verifying(Messages("bc.business-verification-error.surname"), x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.surname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
     "saUTR"   -> text

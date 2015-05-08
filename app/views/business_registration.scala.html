@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration])(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -8,7 +8,7 @@
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
 
 
-@form(action = controllers.routes.BusinessRegController.register) {
+@form(action = controllers.routes.BusinessRegController.register(service)) {
 <div class="form-group">
 
     <div id="business-registration-form">
@@ -16,27 +16,27 @@
         @bcInput(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.businessName")),
         '_labelClass -> "form-label",
-        '_id -> "businessName",
+        '_id -> "business-name",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("line_1"),
         '_label ->  Html(Messages("bc.business-registration.line_1")),
-        '_id -> "line_1",
+        '_id -> "address-line-1",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("line_2"),
         '_label ->  Html(Messages("bc.business-registration.line_2")),
-        '_id -> "line_2",
+        '_id -> "address-line-2",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("line_3"),
         '_label ->  Html(Messages("bc.business-registration.line_3")),
-        '_id -> "line_3",
+        '_id -> "address-line-3",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("line_4"),
         '_label ->  Html(Messages("bc.business-registration.line_4")),
-        '_id -> "line_4",
+        '_id -> "address-line-4",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("country"),
