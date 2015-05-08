@@ -40,7 +40,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               if (actualResponse.toString() contains ("error")) {
                 Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
               } else {
-                dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
+                dataCacheConnector.saveReviewDetails(actualResponse) flatMap {
                   cachedData =>
                   Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
                 }

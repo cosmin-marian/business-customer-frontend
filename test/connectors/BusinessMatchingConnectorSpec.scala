@@ -4,21 +4,19 @@ package connectors
 import java.util.UUID
 
 import config.BusinessCustomerFrontendAuditConnector
-import forms._
-import models.BusinessMatchDetails
+import models.{BusinessMatchDetails, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.Play
-import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.play.http.{HttpResponse, HttpGet, HttpPost}
+import uk.gov.hmrc.play.http.{HttpGet, HttpPost, Upstream4xxResponse}
 
 import scala.concurrent.Future
 
@@ -41,27 +39,24 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
 
   "BusinessMatchingConnector" must {
 
-    val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
-    val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
-
+    val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123", "201234567890", "contact@acme.com")
 
 
       "for a successful match, return business details" in {
 
         val businessDetails = BusinessMatchDetails(true, "1234567890", None, None)
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-        when(mockWSHttp.POST[BusinessMatchDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchSuccessResponse))))
+        when(mockWSHttp.POST[BusinessMatchDetails, ReviewDetails](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
         val result = TestBusinessMatchingConnector.lookup(businessDetails)
-        await(result).as[JsValue] must be(matchSuccessResponse)
+        await(result) must be(successModel)
       }
 
       "for unsuccessful match, return error message" in {
         val businessDetails = BusinessMatchDetails(true, "1234567890", None, None)
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-        when(mockWSHttp.POST[BusinessMatchDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchFailureResponse))))
+        when(mockWSHttp.POST[BusinessMatchDetails, ReviewDetails](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.failed(Upstream4xxResponse("No business partner found", 404, 404)))
         val result = TestBusinessMatchingConnector.lookup(businessDetails)
-        await(result).as[JsValue] must be(matchFailureResponse)
+        an[Upstream4xxResponse] must be thrownBy await(result)
       }
-
     }
 }

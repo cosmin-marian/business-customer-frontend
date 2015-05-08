@@ -1,19 +1,22 @@
 package services
 
-import connectors.BusinessMatchingConnector
+import connectors.{DataCacheConnector, BusinessMatchingConnector}
 import models.{BusinessMatchDetails, ReviewDetails}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.User
+import scala.concurrent.Future
 
 object BusinessMatchingService extends BusinessMatchingService {
-  override val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  val dataCacheConnector: DataCacheConnector = DataCacheConnector
 }
 
 trait BusinessMatchingService {
 
   val businessMatchingConnector: BusinessMatchingConnector
+  val dataCacheConnector: DataCacheConnector
 
-  def matchBusiness(implicit user: User, hc: HeaderCarrier): ReviewDetails = {
+  def matchBusiness(implicit user: User, hc: HeaderCarrier): Future[ReviewDetails] = {
     // make match call with utr and boolean
     // store result in data cache
 
@@ -21,7 +24,6 @@ trait BusinessMatchingService {
     val details = BusinessMatchDetails(true, utr.toString, None, None)
     businessMatchingConnector.lookup(details)
 
-    ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
   }
 
   def getUserUtr(implicit user: User) = {

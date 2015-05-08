@@ -1,42 +1,63 @@
 package services
 
-import connectors.BusinessMatchingConnector
-import models.ReviewDetails
+import connectors.DataCacheConnectorSpec.TestDataCacheConnector
+import connectors.DataCacheConnectorSpec.TestDataCacheConnector
+import connectors.{DataCacheConnector, BusinessMatchingConnector}
+import models.{BusinessMatchDetails, ReviewDetails}
+import org.scalatest.BeforeAndAfter
+import org.scalatest.mock.MockitoSugar
+import play.api.test.Helpers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import uk.gov.hmrc.domain.{CtUtr, SaUtr}
+import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{CtAccount, Accounts, Authority, SaAccount}
 import uk.gov.hmrc.play.frontend.auth.User
 
-class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite {
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
+
+  object TestConnector extends BusinessMatchingConnector {
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[ReviewDetails] = Future(reviewDetails)
+  }
+
+  object TestDataCacheConnector extends DataCacheConnector {
+    val sessionCache = SessionCache
+
+    var writes: Int = 0
+
+//    override def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier) = {
+//      writes = writes + 1
+//      Future.successful(Some(ReviewDetails("ACME", "Limited", "Address", "01234567890", "contact@acme.com")))
+//    }
+
+  }
 
   object TestBusinessMatchingService extends BusinessMatchingService{
-    override val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+    override val businessMatchingConnector: BusinessMatchingConnector = TestConnector
+    override val dataCacheConnector: DataCacheConnector = TestDataCacheConnector
 }
 
   val reviewDetails: ReviewDetails = ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
-
   val utr = "1234567890"
   implicit val hc = HeaderCarrier()
 
   "BusinessMatchingService" must {
-    "accept User object and connect to BusinessMatchingConnector" in {
-
-    }
 
     "accept SA User object and return ReviewDetails object" in {
       implicit val saUser = User("testuser", Authority(uri="",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
-      result must be(reviewDetails)
-
+      await(result) must be(reviewDetails)
     }
 
     "accept CT User object and return ReviewDetails object" in {
       implicit val ctUser = User("testuser", Authority(uri="",accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
-      result must be(reviewDetails)
-
+      await(result) must be(reviewDetails)
     }
+
   }
 
 }
