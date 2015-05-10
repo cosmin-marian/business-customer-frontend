@@ -111,7 +111,18 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite {
 
         contentAsString(result) must include("Country must not be more than 40 characters")
       }
+
+      "If registration details entered are valid, save and continue button must redirect to review details page" in {
+
+        val result = TestBusinessRegController.send(service).apply(request.withJsonBody(Json.parse("""{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "England"} }""")))
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include("/business-customer/review-details/ATED")
+
+      }
     }
   }
 
 }
+
+
+

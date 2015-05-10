@@ -16,3 +16,4 @@ GET        /register                            controllers.BusinessRegControlle
 
 POST       /send                                controllers.BusinessRegController.send(service: String)
 
+

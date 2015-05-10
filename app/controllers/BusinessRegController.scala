@@ -19,7 +19,9 @@ trait BusinessRegController extends FrontendController {
       formWithErrors => {
         BadRequest(views.html.business_registration(formWithErrors))
       },
-      value => Ok
+      value => {
+        Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+      }
 
     )
   }
