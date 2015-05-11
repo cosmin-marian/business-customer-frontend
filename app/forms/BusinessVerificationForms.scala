@@ -80,7 +80,6 @@ object BusinessVerificationForms {
     "cotaxUTR"   -> text
       .verifying(Messages("bc.business-verification-error.cotaxutr"),  x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.cotaxutr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10) && x.matches("""^[0-9]+$"""))
-     // .verifying("Test",  x => x.matches("""^[0-9]+$"""))
       .verifying(Messages("bc.business-verification-error.invalidCOUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
   )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply))
 
