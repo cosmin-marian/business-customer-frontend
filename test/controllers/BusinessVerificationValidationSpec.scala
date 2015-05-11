@@ -36,7 +36,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val matchSuccessResponseLLP = Json.parse( """{"businessName":"ACME","businessType":"Limited liability partnership","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
 
 
-  object TestBusinessVerificationController extends BusinessVerificationController  {
+  object TestBusinessVerificationController extends BusinessVerificationController {
     val dataCacheConnector = mockDataCacheConnector
     val authConnector = mockAuthConnector
     val businessMatchingConnector = mockBusinessMatchingConnector
@@ -81,6 +81,15 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
       }
     }
+
+    "CO Tax UTR must contain only letters" in {
+      submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "111111111a")) {
+        result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
+      }
+    }
+
 
     "CO Tax UTR must be valid" in {
       submitWithAuthorisedUserSuccess("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
@@ -136,6 +145,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
       }
     }
+
+    "CO Tax UTR must contain only letters" in {
+      submitWithAuthorisedUserSuccess("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "111111111a")) {
+        result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
+      }
+    }
   }
 
 
@@ -174,17 +191,27 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-    "SA  UTR must be 10 digits" in {
+    "SA UTR must be 10 digits" in {
       submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "11111111111")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Self Assessment Unique Tax Reference must be 10 digits")
       }
     }
+
+
+      "SA UTR must contain only letters" in {
+        submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "111111111a")) {
+          result =>
+            status(result) must be(BAD_REQUEST)
+            contentAsString(result) must include("Self Assessment Unique Tax Reference must be 10 digits")
+        }
+      }
+
   }
 
   "if the selection is Limited Liability Partnership:" must {
-    "Business Name and CO Tax UTR must not be empty"  in {
+    "Business Name and CO Tax UTR must not be empty" in {
       submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
@@ -220,10 +247,19 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
       }
     }
+
+    "Partnership Self Assessment UTR must contain only letters" in {
+      submitWithAuthorisedUserSuccess("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
+        result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+      }
+    }
+
   }
 
   "if the selection is Ordinary Business Partnership :" must {
-    "Business Name and CO Tax UTR must not be empty"  in {
+    "Business Name and CO Tax UTR must not be empty" in {
       submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
         result =>
           status(result) must be(BAD_REQUEST)
@@ -254,6 +290,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "Partnership Self Assessment UTR must be valid" in {
       submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
+        result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+      }
+    }
+
+    "Partnership Self Assessment must contain only letters" in {
+      submitWithAuthorisedUserSuccess("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
         result =>
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
@@ -380,7 +424,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(businessType : String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -408,7 +452,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def submitWithAuthorisedUserFailure(businessType : String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserFailure(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
