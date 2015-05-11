@@ -38,34 +38,27 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     reset(mockWSHttp)
   }
 
-  "BusinessCustomerConnector" must {
+  "BusinessMatchingConnector" must {
 
-    "services are running" must {
-
-      val matchSuccessResponse = Json.parse("""{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
-      val matchFailureResponse = Json.parse("""{"error": "Sorry. Business details not found."}""")
+    val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+    val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 
 
-      "for a successful match, return business details" in {
+    "for a successful match, return review details" in {
 
-        val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111111)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-        when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchSuccessResponse))))
-        val result = TestBusinessMatchingConnector.lookup(businessDetails)
-        await(result).as[JsValue] must be(matchSuccessResponse)
-
-      }
-
-      "for unsuccessful match, return error message" in {
-        val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111112)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-        when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchFailureResponse))))
-        val result = TestBusinessMatchingConnector.lookup(businessDetails)
-        await(result).as[JsValue] must be(matchFailureResponse)
-      }
-
-
-
+      val businessDetails = BusinessDetails("UIB", None ,None, Some(UnincorporatedMatch("ACME","1111111111")), None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchSuccessResponse))))
+      val result = TestBusinessMatchingConnector.lookup(businessDetails)
+      await(result).as[JsValue] must be(matchSuccessResponse)
+    }
+    
+    "for unsuccessful match, return error message" in {
+      val businessDetails = BusinessDetails("UIB", None ,None, Some(UnincorporatedMatch("ACME","1111111112")), None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchFailureResponse))))
+      val result = TestBusinessMatchingConnector.lookup(businessDetails)
+      await(result).as[JsValue] must be(matchFailureResponse)
     }
 
   }

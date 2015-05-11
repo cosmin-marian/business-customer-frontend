@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration])(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -11,7 +11,7 @@
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
 
 
-@form(action = controllers.routes.BusinessRegController.send("ATED")) {
+@form(action = controllers.routes.BusinessRegController.send(service)) {
 <div class="form-group">
 
     <div id="business-registration-form">
@@ -60,6 +60,4 @@
 }
 
 }
-
-
 

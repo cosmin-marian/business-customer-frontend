@@ -20,7 +20,7 @@ trait BusinessMatchingConnector extends ServicesConfig {
   val http: HttpGet with HttpPost = WSHttp
 
   def lookup(lookupData: BusinessDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
-    http.POST(s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)).map {
+    http.POST( s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)).map {
       httpResponse =>
         Json.parse(httpResponse.body)
     }

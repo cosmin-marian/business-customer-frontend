@@ -1,19 +1,22 @@
 # microservice specific routes
 
-GET         /assets/*file                       controllers.Assets.at(path="/public", file)
-->          /template                           template.Routes
+GET         /assets/*file                                                           controllers.Assets.at(path="/public", file)
+->          /template                                                               template.Routes
 
-GET         /business-verification/:service     controllers.BusinessVerificationController.businessVerification(service: String)
+GET         /business-verification/:service                                         controllers.BusinessVerificationController.businessVerification(service: String)
 
-POST        /submit/:service                    controllers.BusinessVerificationController.submit(service: String)
+GET         /business-verification/:service/businessForm/:businessType              controllers.BusinessVerificationController.businessForm(service: String, businessType: String)
 
-GET         /hello                              controllers.BusinessVerificationController.helloWorld(response: String)
+POST        /business-verification/:service/continue                                controllers.BusinessVerificationController.continue(service: String)
 
-GET        /review-details/:service             controllers.ReviewDetailsController.businessDetails(service: String)
+GET         /hello                                                                  controllers.BusinessVerificationController.helloWorld(response: String)
 
+GET         /review-details/:service                                                controllers.ReviewDetailsController.businessDetails(service: String)
 
-GET        /register                            controllers.BusinessRegController.register
+GET         /unauthorised                                                           controllers.ApplicationController.unauthorised
 
-POST       /send                                controllers.BusinessRegController.send(service: String)
+POST        /business-verification/:service/submit/:businessType                    controllers.BusinessVerificationController.submit(service: String, businessType: String)
 
+GET         /register/:service                                                      controllers.BusinessRegController.register(service: String)
 
+POST       /send                                                                    controllers.BusinessRegController.send(service: String)
