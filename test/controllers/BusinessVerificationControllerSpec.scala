@@ -121,8 +121,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               status(result) must be(OK)
 
               val document = Jsoup.parse(contentAsString(result))
-              document.getElementById("first-name_field").text() must be("First Name")
-              document.getElementById("last-name_field").text() must be("Last Name")
+              document.getElementById("firstName_field").text() must be("First Name")
+              document.getElementById("lastName_field").text() must be("Last Name")
               document.getElementById("saUTR_field").text() must be("Self Assessment Unique Tax Reference")
           }
 
@@ -277,8 +277,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               contentAsString(result) must include("Last Name must be entered")
               contentAsString(result) must include("Self Assessment Unique Tax Reference must be entered")
 
-              document.getElementById("first-name_field").text() must include("First Name")
-              document.getElementById("last-name_field").text() must include("Last Name")
+              document.getElementById("firstName_field").text() must include("First Name")
+              document.getElementById("lastName_field").text() must include("Last Name")
               document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference")
             }
           }

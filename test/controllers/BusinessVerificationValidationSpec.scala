@@ -168,8 +168,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           contentAsString(result) must include("Self Assessment Unique Tax Reference must be entered")
 
 
-          document.getElementById("first-name_field").text() must include("First Name")
-          document.getElementById("last-name_field").text() must include("Last Name")
+          document.getElementById("firstName_field").text() must include("First Name")
+          document.getElementById("lastName_field").text() must include("Last Name")
           document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference")
       }
     }
