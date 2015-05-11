@@ -25,19 +25,10 @@
             <td id="business-address">@businessDetails.businessAddress</td>
         </tr>
 
-        <tr>
-            <th>@Messages("business-review.telephone")</th>
-            <td id="business-telephone">@businessDetails.businessTelephone</td>
-        </tr>
-
-        <tr>
-            <th>@Messages("business-review.email")</th>
-            <td id="business-email">@businessDetails.businessEmail</td>
-        </tr>
 
   </table>
 
-<a href="#" id="subscribe" class="button">@Messages("business-review.button")</a>
+<a href="@routes.BusinessRegController.redirectToService(service)" id="subscribe" class="button">@Messages("business-review.registration-button", service.toUpperCase)</a>
 
 <a href="#" id="cancel" class="cancel-subscription-button">@Messages("business-review.cancel-subscription")</a>
 }

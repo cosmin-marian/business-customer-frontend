@@ -15,3 +15,5 @@ GET        /unauthorised                        controllers.ApplicationControlle
 
 GET       /register/:service                    controllers.BusinessRegController.register(service: String)
 
+GET       /redirect-to-service/:service         controllers.BusinessRegController.redirectToService(service: String)
+

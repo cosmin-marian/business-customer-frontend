@@ -73,10 +73,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-name").text must be("ACME")
         document.getElementById("business-type").text must be("Limited")
         document.getElementById("business-address").text must be("Address")
-        document.getElementById("business-telephone").text must be("01234567890")
-        document.getElementById("business-email").text must be("contact@acme.com")
 
-        document.select(".button").text must be("Subscribe")
+        document.select(".button").text must be(s"$service Account Registration")
         document.select(".cancel-subscription-button").text must be("Cancel Subscription")
         document.select(".nested-banner").text must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
       }

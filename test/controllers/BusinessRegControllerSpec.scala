@@ -29,7 +29,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
   val serviceName: String = "ATED"
 
-  "BusinessRegController" must {
+  "BusinessRegController register" must {
 
     "respond to /register" in {
       val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName")).get
@@ -72,40 +72,94 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
       }
     }
-
   }
 
-  def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
+  "BusinessRegController redirect-to-service " must {
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
-      Future.successful(Some(payeAuthority))
+
+    "unauthorised users" must {
+      "respond with a redirect" in {
+        redirectToServiceWithUnAuthorisedUser { result =>
+          status(result) must be(SEE_OTHER)
+        }
+      }
+
+      "be redirected to the unauthorised page" in {
+        redirectToServiceWithUnAuthorisedUser { result =>
+          redirectLocation(result).get must include("/business-customer/unauthorised")
+        }
+      }
     }
 
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
+    "Authorised Users" must {
 
-    test(result)
+      "return service start page" in {
+
+        redirectToServiceWithAuthorisedUser("ATED") {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/ated/account-summary")
+        }
+      }
+
+      "throw an exception if it's an unknown service" in {
+        redirectToServiceWithAuthorisedUser("unknownServiceTest") {
+          result =>
+            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
+            thrown.getMessage must include("Service does not exist for : unknownServiceTest")
+        }
+      }
+    }
   }
 
-  def registerWithAuthorisedUser(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
-
+  private def setAuthorisedUser(userId : String) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
+  }
 
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+  private def setUnAuthorisedUser(userId : String) {
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
+      Future.successful(Some(payeAuthority))
+    }
+  }
+
+  private def fakeRequestWithSession(userId : String) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
+      SessionKeys.userId -> userId)
+  }
 
+  private def redirectToServiceWithUnAuthorisedUser(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setUnAuthorisedUser(userId)
+    val result = TestBusinessRegController.redirectToService(serviceName).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setAuthorisedUser(userId)
+    val result = TestBusinessRegController.redirectToService(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+
+  private def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setUnAuthorisedUser(userId)
+    val result = TestBusinessRegController.register(serviceName).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  private def registerWithAuthorisedUser(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setAuthorisedUser(userId)
+    val result = TestBusinessRegController.register(serviceName).apply(fakeRequestWithSession(userId))
     test(result)
   }
 }
