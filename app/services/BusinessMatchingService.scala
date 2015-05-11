@@ -22,10 +22,12 @@ trait BusinessMatchingService {
 
     val utr = getUserUtr
     val details = BusinessMatchDetails(true, utr.toString, None, None)
-    businessMatchingConnector.lookup(details) flatMap {
+    val result = businessMatchingConnector.lookup(details)
+    result map {
       case reviewData => dataCacheConnector.saveReviewDetails(reviewData)
     }
-    businessMatchingConnector.lookup(details)
+    println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 2" + result)
+    result
   }
 
   def getUserUtr(implicit user: User) = {

@@ -456,17 +456,16 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
         }
 
-//        "if valid text has been entered - continue to next action - MATCH NOT FOUND" in {
-//          val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111112"} }""")
-//
-//          when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.failed(Upstream4xxResponse("No business partner found", 404, 404)))
-//
-//          submitWithAuthorisedUserJson(FakeRequest().withJsonBody(inputJsonForUIB)) {
-//            result =>
-//              status(result) must be(SEE_OTHER)
-//              redirectLocation(result).get must include("/business-customer/hello")
-//          }
-//        }
+        "if valid text has been entered - continue to next action - MATCH NOT FOUND" in {
+          val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111112"} }""")
+
+          when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.failed(Upstream4xxResponse("No business partner found", 404, 404)))
+
+          submitWithAuthorisedUserJson(FakeRequest().withJsonBody(inputJsonForUIB)) {
+            result =>
+              an[Upstream4xxResponse] must be thrownBy await(result)
+          }
+        }
 
         "if empty" must {
 

@@ -23,6 +23,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val request = FakeRequest()
   val service = "AWRS"
   val utr = "1097172564"
+  val noMatchUtr = "1111111111"
   val mockAuthConnector = mock[AuthConnector]
 
   object TestHomeController extends HomeController{
@@ -38,26 +39,31 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     }
 
     "redirect to business verification page if the user has no SA or COTAX enrolments" in {
-      getWithAuthorisedNoUtrUser {
-        result =>
-          redirectLocation(result).get must include("/business-customer/business-verification")
-      }
+      getWithAuthorisedNoUtrUser (result =>  redirectLocation(result).get must include("/business-customer/business-verification"))
+
     }
 
     "check for SA or COTAX enrolments" in {
-      getWithAuthorisedUser {
+      getWithAuthorisedUser() {
         result =>
           redirectLocation(result).get must include(s"/business-customer/review-details/$service")
       }
     }
+
+    "redirect to Business Verification page if SA or COTAX enrolments find no match in ETMP" in {
+      getWithAuthorisedUser(authUtr = Some(noMatchUtr)) {
+        result =>
+          redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
+      }
+    }
   }
 
-  def getWithAuthorisedUser(test: Future[Result] => Any) {
+  def getWithAuthorisedUser(authUtr: Option[String] = Some(utr))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234"))), sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None)
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234"))), sa = Some(SaAccount(s"/sa/individual/${authUtr.get}", SaUtr(authUtr.get)))), None, None)
       Future.successful(Some(orgAuthority))
     }
 
@@ -66,6 +72,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
+    println("***************************************" + result)
     test(result)
   }
 
