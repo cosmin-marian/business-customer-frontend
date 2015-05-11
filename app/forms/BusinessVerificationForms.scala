@@ -1,24 +1,28 @@
 package forms
 
-import forms.formValidators.BusinessVerificationValidator._
+
 import play.api.data.Forms._
 import play.api.data._
-import play.api.data.validation.Constraints._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import utils.BCUtils._
+
+import scala.util.matching.Regex
 
 
-case class SoleTraderMatch(sAFirstName: Option[String], sASurname: Option[String], sAUTR: Option[Int])
+case class SoleTraderMatch(firstName: String, lastName: String, saUTR: String)
 
-case class LimitedCompanyMatch(ltdBusinessName: Option[String], ltdCotaxAUTR: Option[Int])
+case class LimitedCompanyMatch(businessName: String, cotaxUTR: String)
 
-case class UnincorporatedMatch(uibBusinessName: Option[String], uibCotaxAUTR: Option[Int])
+case class UnincorporatedMatch(businessName: String, cotaxUTR: String)
 
-case class OrdinaryBusinessPartnershipMatch(obpBusinessName: Option[String], obpPSAUTR: Option[Int])
+case class OrdinaryBusinessPartnershipMatch(businessName: String, psaUTR: String)
 
-case class LimitedLiabilityPartnershipMatch(llpBusinessName: Option[String], llpPSAUTR: Option[Int])
+case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String)
 
-case class BusinessDetails (businessType: String, soleTrader: SoleTraderMatch, ltdCompany: LimitedCompanyMatch, uibCompany: UnincorporatedMatch, obpCompany :OrdinaryBusinessPartnershipMatch, llpCompany :LimitedLiabilityPartnershipMatch)
+case class BusinessType (businessType: String)
+
+case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch], uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch], llpCompany :Option[LimitedLiabilityPartnershipMatch])
 
 
 object SoleTraderMatch {
@@ -41,45 +45,72 @@ object LimitedLiabilityPartnershipMatch {
   implicit val formats = Json.format[LimitedLiabilityPartnershipMatch]
 }
 
+object BusinessType {
+  implicit val formats = Json.format[BusinessType]
+}
 object BusinessDetails {
   implicit val formats = Json.format[BusinessDetails]
 }
 
 object BusinessVerificationForms {
 
-  val businessDetailsForm = Form(mapping(
-      "businessType" -> nonEmptyText,
-      "soleTrader"   -> mapping(
-        "sAFirstName" -> optional(text.verifying(maxLength(40))),
-        "sASurname"   -> optional(text.verifying(maxLength(40))),
-        "sAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
-    )(SoleTraderMatch.apply)(SoleTraderMatch.unapply),
-    "ltdCompany"   -> mapping(
-      "ltdBusinessName"   -> optional(text.verifying(maxLength(40))),
-      "ltdCotaxAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
-    )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply),
-      "uibCompany"   -> mapping(
-        "uibBusinessName"   -> optional(text.verifying(maxLength(40))),
-        "uibCotaxAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
-    )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply),
-    "obpCompany"   -> mapping(
-        "obpBusinessName"   -> optional(text.verifying(maxLength(40))),
-        "obpPSAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
-    )(OrdinaryBusinessPartnershipMatch.apply)(OrdinaryBusinessPartnershipMatch.unapply),
-    "llpCompany"   -> mapping(
-        "llpBusinessName"   -> optional(text.verifying(maxLength(40))),
-        "llpPSAUTR"   -> optional(number.verifying(p => String.valueOf(p).length==10))
-    )(LimitedLiabilityPartnershipMatch.apply)(LimitedLiabilityPartnershipMatch.unapply)
-    )(BusinessDetails.apply)(BusinessDetails.unapply)
-    verifying(Messages("bc.business-verification-error.firstname"), p => saFirstNameCheck(p))
-    verifying(Messages("bc.business-verification-error.surname"), p => saSurnameCheck(p))
-    verifying(Messages("bc.business-verification-error.sautr"), p => saUTREmptyCheck(p))
-    verifying(Messages("bc.business-verification-error.businessName"), p => businessNameCheck(p))
-    verifying(Messages("bc.business-verification-error.cotaxutr"), p => cotaxUTREmptyCheck(p))
-    verifying(Messages("bc.business-verification-error.psautr"), p => psaUTREmptyCheck(p))
-    verifying(Messages("bc.business-verification-error.invalidSAUTR"), p => validateSAUTR(p))
-    verifying(Messages("bc.business-verification-error.invalidCOUTR"), p => validateCOUTR(p))
-    verifying(Messages("bc.business-verification-error.invalidPSAUTR"), p => validatePSAUTR(p))
+  val regexFormat = new Regex("""""[a-zA-Z]"""")
+  val businessTypeForm = Form(mapping(
+      "businessType" -> nonEmptyText
+    )(BusinessType.apply)(BusinessType.unapply)
   )
+
+  val soleTraderForm = Form(mapping(
+    "firstName" -> text
+      .verifying(Messages("bc.business-verification-error.firstname"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.firstname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "lastName"   -> text
+      .verifying(Messages("bc.business-verification-error.surname"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.surname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "saUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.sautr"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.sautr.length"), x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidSAUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(SoleTraderMatch.apply)(SoleTraderMatch.unapply))
+
+  val limitedCompanyForm = Form(mapping(
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "cotaxUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.cotaxutr"),  x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.cotaxutr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10) && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidCOUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply))
+
+  val unincorporatedBodyForm = Form(mapping(
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "cotaxUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.cotaxutr"),  x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.cotaxutr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidCOUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(UnincorporatedMatch.apply)(UnincorporatedMatch.unapply))
+
+  val ordinaryBusinessPartnershipForm = Form(mapping(
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "psaUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.psautr"),  x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.psautr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidPSAUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(OrdinaryBusinessPartnershipMatch.apply)(OrdinaryBusinessPartnershipMatch.unapply))
+
+  val limitedLiabilityPartnershipForm = Form(mapping(
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "psaUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.psautr"),  x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.psautr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidPSAUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(LimitedLiabilityPartnershipMatch.apply)(LimitedLiabilityPartnershipMatch.unapply))
 
 }
