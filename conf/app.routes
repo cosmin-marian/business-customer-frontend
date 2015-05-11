@@ -7,15 +7,15 @@ GET         /business-verification/:service                                     
 
 GET         /business-verification/:service/lookup/:businessType                    controllers.BusinessVerificationController.businessLookup(service: String, businessType: String)
 
-POST        /business-verification/:service/continue                               controllers.BusinessVerificationController.continue(service: String)
+POST        /business-verification/:service/continue                                controllers.BusinessVerificationController.continue(service: String)
 
-GET         /hello                                                                   controllers.BusinessVerificationController.helloWorld(response: String)
+GET         /hello                                                                  controllers.BusinessVerificationController.helloWorld(response: String)
 
-GET         /review-details/:service            controllers.ReviewDetailsController.businessDetails(service: String)
+GET         /review-details/:service                                                controllers.ReviewDetailsController.businessDetails(service: String)
 
-GET         /unauthorised                       controllers.ApplicationController.unauthorised
+GET         /unauthorised                                                           controllers.ApplicationController.unauthorised
 
-POST        /business-verification/:service/submit/:businessType               controllers.BusinessVerificationController.submit(service: String, businessType: String)
+POST        /business-verification/:service/submit/:businessType                    controllers.BusinessVerificationController.submit(service: String, businessType: String)
 
-GET         /register/:service                  controllers.BusinessRegController.register(service: String)
+GET         /register/:service                                                      controllers.BusinessRegController.register(service: String)
 

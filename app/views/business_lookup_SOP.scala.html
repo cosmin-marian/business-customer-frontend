@@ -1,4 +1,4 @@
-@(soleTraderForm: Form[forms.SoleTraderMatch], service: String)(implicit request: Request[_])
+@(soleTraderForm: Form[forms.SoleTraderMatch],service: String, businessType: String)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -11,7 +11,7 @@
 
 <h1 id="business-type-header">@Messages("bc.business-verification.SOP")</h1>
 
-@form(action = controllers.routes.BusinessVerificationController.submit("ATED","SOP")) {
+@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
 <div id="business-type-sop-form" class="form-field">
 

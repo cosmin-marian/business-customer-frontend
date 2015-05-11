@@ -1,4 +1,4 @@
-@(limitedCompanyForm: Form[forms.LimitedCompanyMatch], service: String)(implicit request: Request[_])
+@(limitedCompanyForm: Form[forms.LimitedCompanyMatch], service: String, businessType: String)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -11,7 +11,7 @@
 
 <h1 id="business-type-header">@Messages("bc.business-verification.LTD")</h1>
 
-@form(action = controllers.routes.BusinessVerificationController.submit("ATED","LTD")) {
+@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
 <div id="business-type-ltd-form" class="form-field">
 
