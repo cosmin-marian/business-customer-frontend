@@ -77,18 +77,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service))),
       unincorporatedFormData => {
         val businessDetails = BusinessDetails(businessType, None, None, Some(unincorporatedFormData), None, None)
-        businessMatchingConnector.lookup(businessDetails) flatMap {
-          actualResponse => {
-            if (actualResponse.toString() contains ("error")) {
-              Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-            } else {
-              dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-              }
-            }
-          }
-        }
+        matchAndCache(businessDetails, service)
       }
     )
   }
@@ -98,18 +87,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service))),
       soleTraderFormData => {
         val businessDetails = BusinessDetails(businessType, Some(soleTraderFormData), None, None, None, None)
-        businessMatchingConnector.lookup(businessDetails) flatMap {
-          actualResponse => {
-            if (actualResponse.toString() contains ("error")) {
-              Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-            } else {
-              dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-              }
-            }
-          }
-        }
+        matchAndCache(businessDetails, service)
       }
     )
   }
@@ -119,18 +97,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service))),
       llpFormData => {
         val businessDetails = BusinessDetails(businessType, None, None, None, None, Some(llpFormData))
-        businessMatchingConnector.lookup(businessDetails) flatMap {
-          actualResponse => {
-            if (actualResponse.toString() contains ("error")) {
-              Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-            } else {
-              dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-              }
-            }
-          }
-        }
+        matchAndCache(businessDetails, service)
       }
     )
   }
@@ -140,18 +107,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service))),
       obpFormData => {
         val businessDetails = BusinessDetails(businessType, None, None, None, Some(obpFormData), None)
-        businessMatchingConnector.lookup(businessDetails) flatMap {
-          actualResponse => {
-            if (actualResponse.toString() contains ("error")) {
-              Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-            } else {
-              dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-              }
-            }
-          }
-        }
+        matchAndCache(businessDetails, service)
       }
     )
   }
@@ -161,20 +117,24 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service))),
       limitedCompanyFormData => {
         val businessDetails = BusinessDetails(businessType, None, Some(limitedCompanyFormData), None, None, None)
-        businessMatchingConnector.lookup(businessDetails) flatMap {
-          actualResponse => {
-            if (actualResponse.toString() contains ("error")) {
-              Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString())))
-            } else {
-              dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-                cachedData =>
-                  Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
-              }
-            }
+        matchAndCache(businessDetails, service)
+      }
+    )
+  }
+
+  private def matchAndCache(businessDetails: BusinessDetails, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+    businessMatchingConnector.lookup(businessDetails) flatMap {
+      actualResponse => {
+        if (actualResponse.toString contains ("error")) {
+          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString)))
+        } else {
+          dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
+            cachedData =>
+              Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
           }
         }
       }
-    )
+    }
   }
 
 
