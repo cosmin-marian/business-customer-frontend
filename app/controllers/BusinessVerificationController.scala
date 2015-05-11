@@ -37,17 +37,17 @@ trait BusinessVerificationController extends FrontendController with Actions {
         value => {
           value.businessType match {
             case "NUK" => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
-            case "SOP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "SOP")))
-            case "UIB" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "UIB")))
-            case "LTD" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LTD")))
-            case "OBP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "OBP")))
-            case "LLP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessLookup(service, "LLP")))
+            case "SOP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
+            case "UIB" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
+            case "LTD" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
+            case "OBP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
+            case "LLP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
           }
         }
       )
   }
 
-  def businessLookup(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def businessForm(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       businessType match {
         case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, service, businessType))

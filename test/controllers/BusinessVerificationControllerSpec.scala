@@ -79,7 +79,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               document.title() must be("Business Verification")
 
               document.getElementById("business-verification-header").text() must be("Business verification")
-              //document.getElementById("business-lookup").text() must be("Business Lookup")
               document.select(".block-label").text() must include("Unincorporated Body")
               document.select(".block-label").text() must include("Limited Company")
               document.select(".block-label").text() must include("Sole Trader")
@@ -111,7 +110,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
             result =>
               status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/lookup")
+              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
           }
         }
 
@@ -135,7 +134,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) {
             result =>
               status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/lookup")
+              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
           }
         }
 
@@ -157,7 +156,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}"""))) {
             result =>
               status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/lookup")
+              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
           }
         }
 
@@ -178,7 +177,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUserJson("OBP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}"""))) {
             result =>
               status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/lookup")
+              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
           }
         }
 
@@ -200,7 +199,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUserJson("LLP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
             result =>
               status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/lookup")
+              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
           }
         }
 
@@ -503,7 +502,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
-                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/lookup/UIB")
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/UIB")
             }
 
           }
@@ -515,7 +514,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             continueWithAuthorisedUserJson("LTD", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
-                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/lookup/LTD")
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/LTD")
             }
 
           }
@@ -527,7 +526,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
-                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/lookup/SOP")
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/SOP")
             }
 
           }
@@ -539,7 +538,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             continueWithAuthorisedUserJson("OBP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
-                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/lookup/OBP")
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/OBP")
             }
 
           }
@@ -551,7 +550,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             continueWithAuthorisedUserJson("LLP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
-                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/lookup/LLP")
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/LLP")
             }
 
           }
@@ -607,7 +606,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       Future.successful(Some(orgAuthority))
     }
 
-    val result = TestBusinessVerificationController.businessLookup(service, businessType).apply(FakeRequest().withSession(
+    val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
