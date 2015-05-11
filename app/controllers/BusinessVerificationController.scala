@@ -47,14 +47,15 @@ trait BusinessVerificationController extends FrontendController with Actions {
       )
   }
 
-  def businessLookup(service: String, businessType: String) = Action { implicit request =>
-    businessType match {
-      case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, service))
-      case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, service))
-      case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service))
-      case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service))
-      case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service))
-    }
+  def businessLookup(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+    implicit user => implicit request =>
+      businessType match {
+        case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, service))
+        case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, service))
+        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service))
+        case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service))
+        case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service))
+      }
   }
 
   def submit(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
