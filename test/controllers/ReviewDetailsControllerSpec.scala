@@ -35,7 +35,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        Future.successful(Some(ReviewDetails("ACME", "Limited", "Address", "01234567890", "contact@acme.com")))
+        Future.successful(Some(ReviewDetails("ACME", "Limited", "Address")))
       }
     }
     new ReviewDetailsController {
@@ -73,10 +73,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-name").text must be("ACME")
         document.getElementById("business-type").text must be("Limited")
         document.getElementById("business-address").text must be("Address")
-        document.getElementById("business-telephone").text must be("01234567890")
-        document.getElementById("business-email").text must be("contact@acme.com")
 
-        document.select(".button").text must be("Subscribe")
+        document.select(".button").text must be("Continue")
         document.select(".cancel-subscription-button").text must be("Cancel Subscription")
         document.select(".nested-banner").text must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
       }
@@ -91,20 +89,88 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   }
 
-  def businessDetailsWithAuthorisedUser(test: Future[Result] => Any) = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
 
+  "redirect-to-service " must {
+
+    "unauthorised users" must {
+      "respond with a redirect" in {
+        redirectToServiceWithUnAuthorisedUser(service) { result =>
+          status(result) must be(SEE_OTHER)
+        }
+      }
+
+      "be redirected to the unauthorised page" in {
+        redirectToServiceWithUnAuthorisedUser(service) { result =>
+          redirectLocation(result).get must include("/business-customer/unauthorised")
+        }
+      }
+    }
+
+    "Authorised Users" must {
+
+      "return service start page" in {
+
+        redirectToServiceWithAuthorisedUser(service) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/ated/account-summary")
+        }
+      }
+
+      "throw an exception if it's an unknown service" in {
+        redirectToServiceWithAuthorisedUser("unknownServiceTest") {
+          result =>
+            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
+            thrown.getMessage must include("Service does not exist for : unknownServiceTest")
+        }
+      }
+    }
+  }
+
+  private def setAuthorisedUser(userId : String) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
+  }
 
-    val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service).apply(FakeRequest().withSession(
+  private def setUnAuthorisedUser(userId : String) {
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
+      Future.successful(Some(payeAuthority))
+    }
+  }
+
+  private def fakeRequestWithSession(userId : String) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
+      SessionKeys.userId -> userId)
+  }
+
+  private def redirectToServiceWithUnAuthorisedUser(service : String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setUnAuthorisedUser(userId)
+    val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    setAuthorisedUser(userId)
+    val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+
+  def businessDetailsWithAuthorisedUser(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    setAuthorisedUser(userId)
+    val testDetailsController = testReviewDetailsController
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -114,15 +180,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
-      Future.successful(Some(payeAuthority))
-    }
-
-    val result = testReviewDetailsController.businessDetails(service).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
+    setUnAuthorisedUser(userId)
+    val result = testReviewDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
   }

@@ -46,4 +46,3 @@ trait BusinessRegController extends FrontendController with Actions {
   }
 
 }
-

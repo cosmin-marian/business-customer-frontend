@@ -19,4 +19,6 @@ POST        /business-verification/:service/submit/:businessType                
 
 GET         /register/:service                                                      controllers.BusinessRegController.register(service: String)
 
-POST       /send                                                                    controllers.BusinessRegController.send(service: String)
+POST        /send                                                                   controllers.BusinessRegController.send(service: String)
+
+GET         /redirect-to-service/:service                                           controllers.ReviewDetailsController.redirectToService(service: String)

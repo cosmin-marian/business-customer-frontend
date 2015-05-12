@@ -250,7 +250,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
-    val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+    val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC"}""")
 
     val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> successResponse))
     when(mockBusinessCustomerConnector.register(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successResponse))
