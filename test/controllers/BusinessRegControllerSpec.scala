@@ -38,7 +38,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
   val serviceName: String = "ATED"
 
-  "BusinessRegController register" must {
+  "BusinessRegController" must {
 
     "respond to /register" in {
       val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName")).get
@@ -94,190 +94,133 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
       }
 
-    }
-  }
+      "send" must {
 
-  "BusinessRegController redirect-to-service " must {
+        "validate form" must {
 
+          "not be empty" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
 
-    "unauthorised users" must {
-      "respond with a redirect" in {
-        redirectToServiceWithUnAuthorisedUser { result =>
-          status(result) must be(SEE_OTHER)
-        }
-      }
-
-      "be redirected to the unauthorised page" in {
-        redirectToServiceWithUnAuthorisedUser { result =>
-          redirectLocation(result).get must include("/business-customer/unauthorised")
-        }
-      }
-    }
-
-    "Authorised Users" must {
-
-      "return service start page" in {
-
-        redirectToServiceWithAuthorisedUser("ATED") {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/ated/account-summary")
-        }
-      }
-
-      "throw an exception if it's an unknown service" in {
-        redirectToServiceWithAuthorisedUser("unknownServiceTest") {
-          result =>
-            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
-            thrown.getMessage must include("Service does not exist for : unknownServiceTest")
-
-
-            "send" must {
-
-              "validate form" must {
-
-                "not be empty" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
-
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Business name must be entered")
-                      contentAsString(result) must include("Address Line 1 must be entered")
-                      contentAsString(result) must include("Address Line 2 must be entered")
-                      contentAsString(result) must include("Country must be entered")
-                  }
-                }
-
-
-                "If entered, Business name must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
-
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Business name must not be more than 40 characters")
-                  }
-                }
-
-                "If entered, Address line 1 must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Address must not be more than 40 characters")
-                  }
-                }
-
-                "If entered, Address line 2 must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_3": "", "line_4": "", "country": ""} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Address must not be more than 40 characters")
-                  }
-                }
-
-
-                "Address line 3 is optional but if entered, must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_4": "", "country": ""} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Address must not be more than 40 characters")
-                  }
-                }
-
-                "Address line 4 is optional but if entered, must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "country": ""} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Address must not be more than 40 characters")
-                  }
-                }
-
-                "Country must be maximum of 40 characters" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(BAD_REQUEST)
-                      contentAsString(result) must include("Country must not be more than 40 characters")
-                  }
-                }
-
-                "If registration details entered are valid, save and continue button must redirect to review details page" in {
-                  implicit val hc: HeaderCarrier = HeaderCarrier()
-                  val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "England"} }""")
-                  submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-                    result =>
-                      status(result) must be(SEE_OTHER)
-                      redirectLocation(result).get must include(s"/business-customer/review-details/$service")
-                  }
-                }
-
-              }
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Business name must be entered")
+                contentAsString(result) must include("Address Line 1 must be entered")
+                contentAsString(result) must include("Address Line 2 must be entered")
+                contentAsString(result) must include("Country must be entered")
             }
+          }
+
+
+          "If entered, Business name must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
+
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Business name must not be more than 40 characters")
+            }
+          }
+
+          "If entered, Address line 1 must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_2": "", "line_3": "", "line_4": "", "country": ""} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Address must not be more than 40 characters")
+            }
+          }
+
+          "If entered, Address line 2 must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_3": "", "line_4": "", "country": ""} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Address must not be more than 40 characters")
+            }
+          }
+
+
+          "Address line 3 is optional but if entered, must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "line_4": "", "country": ""} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Address must not be more than 40 characters")
+            }
+          }
+
+          "Address line 4 is optional but if entered, must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "country": ""} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Address must not be more than 40 characters")
+            }
+          }
+
+          "Country must be maximum of 40 characters" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Country must not be more than 40 characters")
+            }
+          }
+
+          "If registration details entered are valid, save and continue button must redirect to review details page" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "England"} }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(SEE_OTHER)
+                redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            }
+          }
         }
       }
     }
   }
 
-  private def setAuthorisedUser(userId : String) {
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
-  }
 
-  private def setUnAuthorisedUser(userId : String) {
+  def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
       Future.successful(Some(payeAuthority))
     }
-  }
 
-  private def fakeRequestWithSession(userId : String) = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    FakeRequest().withSession(
+    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId)
-  }
+      SessionKeys.userId -> userId))
 
-  private def redirectToServiceWithUnAuthorisedUser(test: Future[Result] => Any) {
-    val userId = s"user-${UUID.randomUUID}"
-    setUnAuthorisedUser(userId)
-    val result = TestBusinessRegController.redirectToService(serviceName).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
-  private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
+  def registerWithAuthorisedUser(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
-    setAuthorisedUser(userId)
-    val result = TestBusinessRegController.redirectToService(service).apply(fakeRequestWithSession(userId))
-    test(result)
-  }
 
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
+      Future.successful(Some(orgAuthority))
+    }
 
-  private def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
-    val userId = s"user-${UUID.randomUUID}"
-    setUnAuthorisedUser(userId)
-    val result = TestBusinessRegController.register(serviceName).apply(fakeRequestWithSession(userId))
-    test(result)
-  }
+    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
 
-  private def registerWithAuthorisedUser(test: Future[Result] => Any) {
-    val userId = s"user-${UUID.randomUUID}"
-    setAuthorisedUser(userId)
-    val result = TestBusinessRegController.register(serviceName).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
@@ -285,8 +228,16 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    setUnAuthorisedUser(userId)
-    val result = TestBusinessRegController.send(service).apply(fakeRequestWithSession(userId))
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
+      Future.successful(Some(payeAuthority))
+    }
+
+
+    val result = TestBusinessRegController.send(service).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
 
     test(result)
   }
@@ -295,15 +246,21 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    setAuthorisedUser(userId)
-
-    val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
+      Future.successful(Some(orgAuthority))
+    }
+    val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC"}""")
 
     val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> successResponse))
     when(mockBusinessCustomerConnector.register(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successResponse))
     when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
-    val result = TestBusinessRegController.send(service).apply(fakeRequestWithSession(userId))
+    val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
     test(result)
   }
 
