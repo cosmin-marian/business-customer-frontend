@@ -7,8 +7,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.BCUtils._
 
-import scala.util.matching.Regex
-
 
 case class SoleTraderMatch(firstName: String, lastName: String, saUTR: String)
 
@@ -54,7 +52,6 @@ object BusinessDetails {
 
 object BusinessVerificationForms {
 
-  val regexFormat = new Regex("""""[a-zA-Z]"""")
   val businessTypeForm = Form(mapping(
       "businessType" -> nonEmptyText
     )(BusinessType.apply)(BusinessType.unapply)
@@ -64,7 +61,7 @@ object BusinessVerificationForms {
     "firstName" -> text
       .verifying(Messages("bc.business-verification-error.firstname"), x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.firstname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
-    "lastName"   -> text
+    "lastName"  -> text
       .verifying(Messages("bc.business-verification-error.surname"), x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.surname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
     "saUTR"   -> text
