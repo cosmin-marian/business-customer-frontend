@@ -4,7 +4,7 @@ import connectors.{DataCacheConnector, BusinessMatchingConnector}
 import models.{BusinessMatchDetails, ReviewDetails}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import uk.gov.hmrc.domain.{CtUtr, SaUtr}
@@ -24,7 +24,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   object TestConnector extends BusinessMatchingConnector {
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[ReviewDetails] = Future(reviewDetails)
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = Future(reviewDetails)
   }
 
   object TestDataCacheConnector extends DataCacheConnector {
@@ -42,6 +42,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     }
   }
 
+
   val reviewDetails: ReviewDetails = ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
@@ -58,17 +59,19 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "accept SA User object and return ReviewDetails object" in {
-      implicit val saUser = User("testuser", Authority(uri="",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+      implicit val saUser = User("testuser", Authority(uri = "", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetails)
     }
 
     "accept CT User object and return ReviewDetails object" in {
-      implicit val ctUser = User("testuser", Authority(uri="",accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
+      implicit val ctUser = User("testuser", Authority(uri = "", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetails)
     }
+  }
 
+  "BusinessMatchingService" must {
     "increment dataCache counter by 1" in {
       implicit val saUser = User("testuser", Authority(uri="",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       TestBusinessMatchingService.dataCacheConnector.resetWrites

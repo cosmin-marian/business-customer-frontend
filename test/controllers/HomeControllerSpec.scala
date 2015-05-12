@@ -2,15 +2,19 @@ package controllers
 
 import java.util.UUID
 
+import connectors.{BusinessMatchingConnector, DataCacheConnector}
+import models.{ReviewDetails, BusinessMatchDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BusinessMatchingService
 import uk.gov.hmrc.domain.{SaUtr, Org}
+import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{SaAccount, Accounts, Authority, OrgAccount}
 import uk.gov.hmrc.play.http.SessionKeys
@@ -30,6 +34,23 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     override val businessMatchService: BusinessMatchingService = BusinessMatchingService
     override val authConnector = mockAuthConnector
   }
+
+  object TestNoMatchHomeController extends HomeController{
+    override val businessMatchService: BusinessMatchingService = TestBusinessMatchingService
+    override val authConnector = mockAuthConnector
+  }
+
+  object TestBusinessMatchingService extends BusinessMatchingService{
+    override val dataCacheConnector = DataCacheConnector
+    override val businessMatchingConnector = TestBusinessMatchConnector
+  }
+
+  object TestBusinessMatchConnector extends BusinessMatchingConnector{
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+      Future.successful(throw new Exception("Something went wrong"))
+    }
+  }
+
 
   "HomeController" must {
 
@@ -51,9 +72,9 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     }
 
     "redirect to Business Verification page if SA or COTAX enrolments find no match in ETMP" in {
-      getWithAuthorisedUser(authUtr = Some(noMatchUtr)) {
+      getWithAuthorisedUserNoMatch(authUtr = Some(noMatchUtr)) {
         result =>
-          redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
+          redirectLocation(result).get must not be(s"/business-customer/review-details/$service")
       }
     }
   }
@@ -72,7 +93,23 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
-    println("***************************************" + result)
+    test(result)
+  }
+
+  def getWithAuthorisedUserNoMatch(authUtr: Option[String] = Some(noMatchUtr))(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234"))), sa = Some(SaAccount(s"/sa/individual/${authUtr.get}", SaUtr(authUtr.get)))), None, None)
+      Future.successful(Some(orgAuthority))
+    }
+
+    val result = TestNoMatchHomeController.homePage(service).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
     test(result)
   }
 
