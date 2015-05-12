@@ -25,7 +25,6 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
 
   class MockHttp extends WSGet with WSPost {
     override def auditConnector: AuditConnector = BusinessCustomerFrontendAuditConnector
-
     override def appName = Play.configuration.getString("appName").getOrElse("business-customer-frontend")
   }
 
@@ -47,22 +46,20 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
 
     "for a successful match, return review details" in {
 
-      val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111111)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
+      val businessDetails = BusinessDetails("UIB", None ,None, Some(UnincorporatedMatch("ACME","1111111111")), None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchSuccessResponse))))
       val result = TestBusinessMatchingConnector.lookup(businessDetails)
       await(result).as[JsValue] must be(matchSuccessResponse)
-
     }
-
+    
     "for unsuccessful match, return error message" in {
-      val businessDetails = BusinessDetails("UIB", SoleTraderMatch(None, None, None), LimitedCompanyMatch(None, None), UnincorporatedMatch(Some("ACME"), Some(1111111112)), OrdinaryBusinessPartnershipMatch(None, None), LimitedLiabilityPartnershipMatch(None, None))
+      val businessDetails = BusinessDetails("UIB", None ,None, Some(UnincorporatedMatch("ACME","1111111112")), None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[BusinessDetails, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(matchFailureResponse))))
       val result = TestBusinessMatchingConnector.lookup(businessDetails)
       await(result).as[JsValue] must be(matchFailureResponse)
     }
-
 
   }
 
