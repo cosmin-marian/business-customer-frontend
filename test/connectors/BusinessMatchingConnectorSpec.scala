@@ -4,8 +4,7 @@ package connectors
 import java.util.UUID
 
 import config.BusinessCustomerFrontendAuditConnector
-import models.{BusinessMatchDetails, ReviewDetails}
-import forms._
+import models.BusinessMatchDetails
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
@@ -18,7 +17,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.play.http.{HttpGet, HttpPost, Upstream4xxResponse, HttpResponse}
+import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpResponse}
 
 import scala.concurrent.Future
 

@@ -6,11 +6,11 @@ import config.BusinessCustomerFrontendAuditConnector
 import models.{Address, BusinessRegistration}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.Play
 import play.api.libs.json.{JsValue, Json}
+import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.http.logging.SessionId
