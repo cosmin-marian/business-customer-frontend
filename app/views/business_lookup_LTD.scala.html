@@ -1,0 +1,31 @@
+@(limitedCompanyForm: Form[forms.LimitedCompanyMatch], service: String, businessType: String)(implicit request: Request[_])
+
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import views.html.helpers.error._
+
+@bcMain(title = Messages("bc.business-verification.lookup")) {
+
+@errors(limitedCompanyForm)
+
+<h1 id="business-type-header">@Messages("bc.business-verification.LTD")</h1>
+
+@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
+
+<div id="business-type-ltd-form" class="form-field">
+
+    @bcInput(limitedCompanyForm("businessName"),
+    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_id -> "businessName",
+    '_showConstraints -> false)
+
+    @bcInput(limitedCompanyForm("cotaxUTR"),
+    '_label -> Html(Messages("bc.business-verification.coUTRField")),
+    '_id -> "cotaxUTR",
+    '_showConstraints -> false)
+
+</div>
+<button class="button" id="submit" type="submit">Continue</button>
+}
+}

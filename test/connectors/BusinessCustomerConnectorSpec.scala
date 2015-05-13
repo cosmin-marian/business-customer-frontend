@@ -35,10 +35,10 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
   "BusinessCustomerConnector" must {
 
     "for successful save, return ReviewDetails as Json" in {
-      val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+      val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC"}""")
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(200, Some(successResponse))))
-      val businessRegistrationData = BusinessRegistration("ACME", businessAddress = Address("111", "ABC Street", "ABC city", "ABC 123", "ABC"))
+      val businessRegistrationData = BusinessRegistration("ACME", businessAddress = Address("111", "ABC Street", Some("ABC city"), Some("ABC 123"), "ABC"))
       val result = TestBusinessCustomerConnector.register(businessRegistrationData)
       await(result).as[JsValue] must be(successResponse)
     }

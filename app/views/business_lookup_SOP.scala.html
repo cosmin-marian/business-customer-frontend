@@ -1,0 +1,36 @@
+@(soleTraderForm: Form[forms.SoleTraderMatch],service: String, businessType: String)(implicit request: Request[_])
+
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import views.html.helpers.error._
+
+@bcMain(title = Messages("bc.business-verification.lookup")) {
+
+@errors(soleTraderForm)
+
+<h1 id="business-type-header">@Messages("bc.business-verification.SOP")</h1>
+
+@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
+
+<div id="business-type-sop-form" class="form-field">
+
+    @bcInput(soleTraderForm("firstName"),
+    '_label -> Html(Messages("bc.business-verification.firstNameField")),
+    '_id -> "firstName",
+    '_showConstraints -> false)
+
+    @bcInput(soleTraderForm("lastName"),
+    '_label -> Html(Messages("bc.business-verification.lastNameField")),
+    '_id -> "lastName",
+    '_showConstraints -> false)
+
+    @bcInput(soleTraderForm("saUTR"),
+    '_label -> Html(Messages("bc.business-verification.saUTRField")),
+    '_id -> "saUTR",
+    '_showConstraints -> false)
+
+</div>
+<button class="button" id="submit" type="submit">Continue</button>
+}
+}

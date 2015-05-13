@@ -43,7 +43,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   }
 
 
-  val reviewDetails = ReviewDetails("ACME", "UIB", "some address", "01234567890", "abc@def.com")
+  val reviewDetails = ReviewDetails("ACME", "UIB", "some address")
   val reviewDetailsJson = Json.toJson(reviewDetails)
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
