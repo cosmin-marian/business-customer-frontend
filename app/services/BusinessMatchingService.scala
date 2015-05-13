@@ -2,7 +2,7 @@ package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models.{BusinessMatchDetails, ReviewDetails}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsString, JsObject, JsValue}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{CtAccount, SaAccount}
 import uk.gov.hmrc.play.frontend.auth.User
@@ -31,6 +31,8 @@ trait BusinessMatchingService {
         dataCacheConnector.saveReviewDetails(reviewData.as[ReviewDetails]) map {
           data => reviewData
         }
+    } recover {
+      case _ => JsObject(Seq("error" -> JsString("Generic error")))
     }
   }
 

@@ -5,7 +5,7 @@ import models.{BusinessMatchDetails, ReviewDetails}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsString, JsObject, JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{CtUtr, SaUtr}
 import uk.gov.hmrc.http.cache.client.SessionCache
@@ -18,13 +18,22 @@ import scala.concurrent.Future
 
 class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
 
-  object TestBusinessMatchingService extends BusinessMatchingService{
+  object TestBusinessMatchingService extends BusinessMatchingService {
     override val businessMatchingConnector: BusinessMatchingConnector = TestConnector
+    override val dataCacheConnector = TestDataCacheConnector
+  }
+
+  object TestBusinessMatchingServiceWithNoMatch extends BusinessMatchingService {
+    override val businessMatchingConnector: BusinessMatchingConnector = TestConnectorWithNoMatch
     override val dataCacheConnector = TestDataCacheConnector
   }
 
   object TestConnector extends BusinessMatchingConnector {
     override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = Future(Json.toJson(reviewDetails))
+  }
+
+  object TestConnectorWithNoMatch extends BusinessMatchingConnector {
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = Future(Json.toJson(JsObject(Seq("error" -> JsString("Generic error")))))
   }
 
   object TestDataCacheConnector extends DataCacheConnector {
@@ -69,6 +78,12 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       implicit val ctUser = User("testuser", Authority(uri = "", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetailsJson)
+    }
+
+    "return error when no match is found" in {
+      implicit val ctUser = User("testuser", Authority(uri = "", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
+      val result = TestBusinessMatchingServiceWithNoMatch.matchBusiness
+      await(result) must be(JsObject(Seq("error" -> JsString("Generic error"))))
     }
   }
 
