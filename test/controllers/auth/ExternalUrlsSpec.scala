@@ -11,7 +11,7 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "have loginCallback " in {
-      ExternalUrls.loginCallback must be("http://localhost:9923/business-customer/business-verification")
+      ExternalUrls.loginCallback must be("http://localhost:9923/business-customer")
     }
 
     "have loginPath " in {
@@ -19,7 +19,7 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "have signIn " in {
-      ExternalUrls.signIn must be(s"""http://localhost:9025/account/sign-in?continue=http://localhost:9923/business-customer/business-verification""")
+      ExternalUrls.signIn must be(s"""http://localhost:9025/account/sign-in?continue=http://localhost:9923/business-customer""")
     }
 
   }
