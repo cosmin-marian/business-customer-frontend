@@ -3,7 +3,7 @@ package controllers
 import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
 import play.api.Play
-import uk.gov.hmrc.play.config.{RunMode, FrontendAuthConnector}
+import uk.gov.hmrc.play.config.{FrontendAuthConnector, RunMode}
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 

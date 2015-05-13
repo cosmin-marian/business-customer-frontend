@@ -3,19 +3,19 @@ package controllers
 import java.util.UUID
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
+import models.ReviewDetails
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
-import play.api.mvc.{Result, AnyContentAsFormUrlEncoded}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{PayeAccount, OrgAccount, Accounts, Authority}
+import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -440,9 +440,9 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "LTD" => matchSuccessResponseLTD
     }
 
-    val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
+    val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
     when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
-    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -462,9 +462,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
 
     val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
-    val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchFailureResponse))
     when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponse))
-    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

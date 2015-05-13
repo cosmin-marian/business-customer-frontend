@@ -3,20 +3,20 @@ package controllers
 import java.util.UUID
 
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
+import models.ReviewDetails
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsJson, AnyContentAsFormUrlEncoded, Result}
+import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Org, Nino}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{OrgAccount, PayeAccount, Accounts, Authority}
+import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -93,6 +93,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("cancel").text() must be("Cancel")
         }
       }
+    }
 
       "send" must {
 
@@ -187,8 +188,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
       }
     }
-  }
-
 
   def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
@@ -251,10 +250,10 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       Future.successful(Some(orgAuthority))
     }
     val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC"}""")
+    val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
 
-    val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> successResponse))
     when(mockBusinessCustomerConnector.register(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successResponse))
-    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -263,6 +262,5 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     test(result)
   }
-
 
 }
