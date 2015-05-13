@@ -8,7 +8,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-object HomeController extends HomeController{
+object HomeController extends HomeController {
   val businessMatchService: BusinessMatchingService = BusinessMatchingService
   override val authConnector = FrontendAuthConnector
 }

@@ -106,16 +106,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
     }
+
     "when selecting Sole Trader option" must {
 
-      "when selecting Sole Trader option" must {
-
-        "redirect to next screen to allow additional form fields to be entered" in {
-          continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
-            result =>
-              status(result) must be(303)
-              redirectLocation(result).get must include("/business-verification/ATED/businessForm")
-          }
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
+          result =>
+            status(result) must be(303)
+            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
     }
