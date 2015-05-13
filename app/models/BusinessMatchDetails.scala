@@ -5,9 +5,9 @@ import uk.gov.hmrc.domain.{SaUtr, CtUtr}
 
 case class BusinessMatchDetails(matchUtr: Boolean, utr: String, individual: Option[Individual], organisation: Option[Organisation])
 
-case class Individual(firstName: String, lastName: String, dob: String, saUtr: SaUtr)
+case class Individual(firstName: String, lastName: String, dob: String, saUtr: String)
 
-case class Organisation(businessName: String, ctUtr: CtUtr)
+case class Organisation(businessName: String, ctUtr: String)
 
 object Individual {
   implicit val formats = Json.format[Individual]

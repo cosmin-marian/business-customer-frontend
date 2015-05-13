@@ -14,12 +14,11 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
 import uk.gov.hmrc.play.config.FrontendAuthConnector
-import uk.gov.hmrc.play.http.{Upstream4xxResponse, SessionKeys}
+import uk.gov.hmrc.play.http.{SessionKeys, Upstream4xxResponse}
 
 import scala.concurrent.Future
 
@@ -442,11 +441,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"uibBusinessName": "ACME", "uibCotaxAUTR": "1111111111"} }""")
 
           val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
-          val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> matchSuccessResponse))
           val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123", "201234567890", "contact@acme.com")
 
           when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
-          when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+          when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
           submitWithAuthorisedUserJson(FakeRequest().withJsonBody(inputJsonForUIB)) {
             result =>

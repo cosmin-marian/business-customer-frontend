@@ -10,9 +10,9 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Org, Nino}
+import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{OrgAccount, PayeAccount, Accounts, Authority}
+import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future

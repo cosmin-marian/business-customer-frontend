@@ -1,6 +1,6 @@
 package services
 
-import connectors.{DataCacheConnector, BusinessMatchingConnector}
+import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models.{BusinessMatchDetails, ReviewDetails}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -27,10 +27,11 @@ trait BusinessMatchingService {
     val result = businessMatchingConnector.lookup(details)
 
     result flatMap {
-      case reviewData => dataCacheConnector.saveReviewDetails(reviewData.as[ReviewDetails])
-      case _ => throw new Exception("Some error")
+      case reviewData =>
+        dataCacheConnector.saveReviewDetails(reviewData.as[ReviewDetails]) map {
+          data => reviewData
+        }
     }
-    result
   }
 
   def getUserUtr(implicit user: User) = {

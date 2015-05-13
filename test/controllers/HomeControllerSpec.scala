@@ -3,20 +3,20 @@ package controllers
 import java.util.UUID
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.{ReviewDetails, BusinessMatchDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BusinessMatchingService
-import uk.gov.hmrc.domain.{SaUtr, Org}
+import uk.gov.hmrc.domain.{Org, SaUtr}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{SaAccount, Accounts, Authority, OrgAccount}
+import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, SaAccount}
+import uk.gov.hmrc.play.frontend.auth.User
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -30,24 +30,31 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val noMatchUtr = "1111111111"
   val mockAuthConnector = mock[AuthConnector]
 
-  object TestHomeController extends HomeController{
-    override val businessMatchService: BusinessMatchingService = BusinessMatchingService
+  object TestHomeController extends HomeController {
+    override val businessMatchService: BusinessMatchingService = TestOkBusinessMatchingService
     override val authConnector = mockAuthConnector
   }
 
-  object TestNoMatchHomeController extends HomeController{
+  object TestNoMatchHomeController extends HomeController {
     override val businessMatchService: BusinessMatchingService = TestBusinessMatchingService
     override val authConnector = mockAuthConnector
   }
 
-  object TestBusinessMatchingService extends BusinessMatchingService{
+  object TestOkBusinessMatchingService extends BusinessMatchingService {
     override val dataCacheConnector = DataCacheConnector
-    override val businessMatchingConnector = TestBusinessMatchConnector
+    override val businessMatchingConnector = BusinessMatchingConnector
+
+    override def matchBusiness(implicit user: User, hc: HeaderCarrier): Future[JsValue] = {
+      Future.successful(JsObject(Seq()))
+    }
   }
 
-  object TestBusinessMatchConnector extends BusinessMatchingConnector{
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
-      Future.successful(throw new Exception("Something went wrong"))
+  object TestBusinessMatchingService extends BusinessMatchingService {
+    override val dataCacheConnector = DataCacheConnector
+    override val businessMatchingConnector = BusinessMatchingConnector
+
+    override def matchBusiness(implicit user: User, hc: HeaderCarrier): Future[JsValue] = {
+      Future.successful(JsObject(Seq("error" -> JsString("error"))))
     }
   }
 
@@ -71,10 +78,10 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       }
     }
 
-    "redirect to Business Verification page if SA or COTAX enrolments find no match in ETMP" in {
+    "redirect to Business Verification page if SA or COTAX enrolments recover if an error has been thrown" in {
       getWithAuthorisedUserNoMatch(authUtr = Some(noMatchUtr)) {
         result =>
-          redirectLocation(result).get must not be(s"/business-customer/review-details/$service")
+          redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
       }
     }
   }
