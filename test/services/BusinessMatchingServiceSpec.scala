@@ -1,7 +1,7 @@
 package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.{BusinessMatchDetails, ReviewDetails}
+import models.{Address, BusinessMatchDetails, ReviewDetails}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -29,11 +29,15 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   object TestConnector extends BusinessMatchingConnector {
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = Future(Json.toJson(reviewDetails))
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+      Future(Json.toJson(reviewDetails))
+    }
   }
 
   object TestConnectorWithNoMatch extends BusinessMatchingConnector {
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = Future(Json.toJson(JsObject(Seq("error" -> JsString("Generic error")))))
+    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+      Future(Json.toJson(JsObject(Seq("error" -> JsString("Generic error")))))
+    }
   }
 
   object TestDataCacheConnector extends DataCacheConnector {
@@ -46,13 +50,13 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       Future.successful(Some(reviewDetails))
     }
 
-    def resetWrites = {
+    def resetWrites() = {
       writes = 0
     }
   }
 
-
-  val reviewDetails = ReviewDetails("ACME", "UIB", "some address")
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+  val reviewDetails = ReviewDetails("ACME", "UIB", address)
   val reviewDetailsJson = Json.toJson(reviewDetails)
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
@@ -89,8 +93,10 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
   "BusinessMatchingService" must {
     "increment dataCache counter by 1" in {
+
       implicit val saUser = AuthContext(Authority(uri="testuser",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       TestBusinessMatchingService.dataCacheConnector.resetWrites
+
       val result = TestBusinessMatchingService.matchBusiness
 
       await(result) must be(reviewDetailsJson)
