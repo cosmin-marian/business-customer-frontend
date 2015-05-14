@@ -33,7 +33,6 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8",
-    "uk.gov.hmrc" %% "frontend-wiring" % "0.2.0",
     "com.codahale.metrics" % "metrics-graphite" % "3.0.2"
   )
 

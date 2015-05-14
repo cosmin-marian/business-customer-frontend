@@ -17,7 +17,7 @@ import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
 import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
-import uk.gov.hmrc.play.config.FrontendAuthConnector
+import config.FrontendAuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future

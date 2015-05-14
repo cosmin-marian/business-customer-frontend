@@ -8,7 +8,7 @@ import models.{BusinessMatchDetails, Individual, Organisation, ReviewDetails}
 import play.api.data.Form
 import play.api.mvc._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.config.FrontendAuthConnector
+import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
