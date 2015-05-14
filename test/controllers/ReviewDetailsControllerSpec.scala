@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import connectors.DataCacheConnector
-import models.ReviewDetails
+import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,7 +26,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = SessionCache
@@ -35,7 +35,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        Future.successful(Some(ReviewDetails("ACME", "Limited", "Address")))
+        Future.successful(Some(ReviewDetails("ACME", "Limited", address)))
       }
     }
     new ReviewDetailsController {
@@ -72,7 +72,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
         document.getElementById("business-name").text must be("ACME")
         document.getElementById("business-type").text must be("Limited")
-        document.getElementById("business-address").text must be("Address")
+        document.getElementById("business-address").text must be(s"$address")
 
         document.select(".button").text must be("Continue")
         document.select(".cancel-subscription-button").text must be("Cancel Subscription")

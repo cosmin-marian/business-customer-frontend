@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.ReviewDetails
+import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -485,7 +485,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           "if valid text has been entered - continue to next action - UIB" in {
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
+            val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+            val successModel = ReviewDetails("ACME", "Unincorporated body", address)
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
             when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
