@@ -7,10 +7,10 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{JsString, JsObject, JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{CtUtr, SaUtr}
+import uk.gov.hmrc.domain.{Org, CtUtr, SaUtr}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, CtAccount, SaAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -82,6 +82,12 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       implicit val ctUser = AuthContext( Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetailsJson)
+    }
+
+    "accept Org User object and return error" in {
+      implicit val ctUser = AuthContext( Authority(uri = "testuser", accounts = Accounts(org = Some(OrgAccount("", Org("1234")))), None, None))
+      val result = TestBusinessMatchingService.matchBusiness
+      await(result) must be(JsObject(Seq("error" -> JsString("Generic error"))))
     }
 
     "return error when no match is found" in {

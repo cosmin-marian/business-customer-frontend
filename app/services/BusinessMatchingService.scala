@@ -22,24 +22,27 @@ trait BusinessMatchingService {
 
   def matchBusiness(implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
 
-    val utr = getUserUtr
-    val details = BusinessMatchDetails(true, utr.toString, None, None)
-    val result = businessMatchingConnector.lookup(details)
+    getUserUtr.map{utr =>
+      val details = BusinessMatchDetails(true, utr, None, None)
+      val result = businessMatchingConnector.lookup(details)
 
-    result flatMap {
-      case reviewData =>
-        dataCacheConnector.saveReviewDetails(reviewData.as[ReviewDetails]) map {
-          data => reviewData
-        }
-    } recover {
-      case _ => JsObject(Seq("error" -> JsString("Generic error")))
-    }
+      result flatMap {
+        case reviewData =>
+          dataCacheConnector.saveReviewDetails(reviewData.as[ReviewDetails]) map {
+            data => reviewData
+          }
+      } recover {
+        case _ => JsObject(Seq("error" -> JsString("Generic error")))
+      }
+    }.getOrElse(Future.successful(JsObject(Seq("error" -> JsString("Generic error")))))
+
   }
 
   def getUserUtr(implicit user: AuthContext) = {
-    user.principal.accounts.sa.getOrElse(user.principal.accounts.ct.get) match {
-      case sa: SaAccount => sa.utr.utr
-      case ct: CtAccount => ct.utr.utr
+    (user.principal.accounts.sa, user.principal.accounts.ct) match {
+      case (Some(sa), x) => Some(sa.utr.utr.toString)
+      case (None, Some(ct)) => Some(ct.utr.utr.toString)
+      case _ => None
     }
   }
 }
