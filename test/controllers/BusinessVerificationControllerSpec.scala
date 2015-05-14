@@ -15,8 +15,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import config.FrontendAuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
@@ -572,10 +571,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -589,10 +585,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -606,10 +599,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
-      Future.successful(Some(payeAuthority))
-    }
+    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -623,10 +613,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -640,10 +627,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -657,10 +641,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -674,10 +655,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
-      Future.successful(Some(payeAuthority))
-    }
+    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP").withSession(
       SessionKeys.sessionId -> sessionId,

@@ -10,8 +10,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{CtUtr, SaUtr}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, CtAccount, SaAccount}
-import uk.gov.hmrc.play.frontend.auth.User
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, CtAccount, SaAccount}
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -69,19 +69,19 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "accept SA User object and return ReviewDetails object" in {
-      implicit val saUser = User("testuser", Authority(uri = "", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+      implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetailsJson)
     }
 
     "accept CT User object and return ReviewDetails object" in {
-      implicit val ctUser = User("testuser", Authority(uri = "", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
+      implicit val ctUser = AuthContext( Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingService.matchBusiness
       await(result) must be(reviewDetailsJson)
     }
 
     "return error when no match is found" in {
-      implicit val ctUser = User("testuser", Authority(uri = "", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
+      implicit val ctUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
       val result = TestBusinessMatchingServiceWithNoMatch.matchBusiness
       await(result) must be(JsObject(Seq("error" -> JsString("Generic error"))))
     }
@@ -89,7 +89,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
   "BusinessMatchingService" must {
     "increment dataCache counter by 1" in {
-      implicit val saUser = User("testuser", Authority(uri="",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+      implicit val saUser = AuthContext(Authority(uri="testuser",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
       TestBusinessMatchingService.dataCacheConnector.resetWrites
       val result = TestBusinessMatchingService.matchBusiness
 

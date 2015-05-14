@@ -1,6 +1,6 @@
 package controllers.auth
 
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.Accounts
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.frontend.auth.{AuthenticationProvider, TaxRegime}
 
 case class BusinessCustomerRegime(serviceName: String) extends TaxRegime {

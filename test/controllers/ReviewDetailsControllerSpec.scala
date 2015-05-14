@@ -15,8 +15,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, PayeAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -127,19 +126,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
   }
 
-  private def setAuthorisedUser(userId : String) {
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
-      Future.successful(Some(orgAuthority))
-    }
-  }
-
-  private def setUnAuthorisedUser(userId : String) {
-    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("CS100700A")))), None, None)
-      Future.successful(Some(payeAuthority))
-    }
-  }
 
   private def fakeRequestWithSession(userId : String) = {
     val sessionId = s"session-${UUID.randomUUID}"
@@ -151,14 +137,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   private def redirectToServiceWithUnAuthorisedUser(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
-    setUnAuthorisedUser(userId)
+    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
   private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
-    setAuthorisedUser(userId)
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
@@ -168,7 +154,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    setAuthorisedUser(userId)
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
@@ -180,7 +166,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    setUnAuthorisedUser(userId)
+    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = testReviewDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
