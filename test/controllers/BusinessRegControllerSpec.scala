@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
-import models.ReviewDetails
+import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -249,8 +249,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
     }
-    val successResponse = Json.parse( """{"businessName":"ACME","businessType":"Non UK-based Company","businessAddress":"111\nABC Street\nABC city\nABC 123\nABC"}""")
-    val successModel = ReviewDetails("ACME", "Unincorporated body", "23 High Street Park View The Park Gloucester Gloucestershire ABC 123")
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+    val successResponse = Json.parse( """{"businessName":"ACME", "businessType":"Non UK-based Company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
+    val successModel = ReviewDetails("ACME", "Unincorporated body", address)
 
     when(mockBusinessCustomerConnector.register(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successResponse))
     when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
