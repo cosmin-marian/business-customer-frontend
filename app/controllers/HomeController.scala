@@ -2,7 +2,7 @@ package controllers
 
 import controllers.auth.BusinessCustomerRegime
 import services.BusinessMatchingService
-import uk.gov.hmrc.play.config.FrontendAuthConnector
+import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -19,7 +19,7 @@ trait HomeController extends FrontendController with Actions {
 
   def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      user.userAuthority.accounts.sa.isDefined || user.userAuthority.accounts.ct.isDefined match {
+      user.principal.accounts.sa.isDefined || user.principal.accounts.ct.isDefined match {
         case true => {
           businessMatchService.matchBusiness flatMap {
             noException => {

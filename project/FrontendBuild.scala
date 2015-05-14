@@ -25,7 +25,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
     "uk.gov.hmrc" %% "play-partials" % "1.3.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "0.7.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.2.0",
     "uk.gov.hmrc" %% "url-builder" % "0.5.0",
     "uk.gov.hmrc" %% "play-config" % "1.0.0",
     "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
@@ -33,7 +33,6 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8",
-    "uk.gov.hmrc" %% "frontend-wiring" % "0.2.0",
     "com.codahale.metrics" % "metrics-graphite" % "3.0.2"
   )
 

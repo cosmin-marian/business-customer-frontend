@@ -4,7 +4,7 @@ import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms._
 import models.ReviewDetails
-import uk.gov.hmrc.play.config.FrontendAuthConnector
+import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 

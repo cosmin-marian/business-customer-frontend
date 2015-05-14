@@ -14,9 +14,9 @@ import play.api.test.Helpers._
 import services.BusinessMatchingService
 import uk.gov.hmrc.domain.{Org, SaUtr}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.auth.frontend.connectors.AuthConnector
-import uk.gov.hmrc.play.auth.frontend.connectors.domain.{Accounts, Authority, OrgAccount, SaAccount}
-import uk.gov.hmrc.play.frontend.auth.User
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Authority, Accounts, OrgAccount, SaAccount}
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     override val dataCacheConnector = DataCacheConnector
     override val businessMatchingConnector = BusinessMatchingConnector
 
-    override def matchBusiness(implicit user: User, hc: HeaderCarrier): Future[JsValue] = {
+    override def matchBusiness(implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
       Future.successful(JsObject(Seq()))
     }
   }
@@ -53,7 +53,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     override val dataCacheConnector = DataCacheConnector
     override val businessMatchingConnector = BusinessMatchingConnector
 
-    override def matchBusiness(implicit user: User, hc: HeaderCarrier): Future[JsValue] = {
+    override def matchBusiness(implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
       Future.successful(JsObject(Seq("error" -> JsString("error"))))
     }
   }
