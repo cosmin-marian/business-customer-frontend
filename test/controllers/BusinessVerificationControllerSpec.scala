@@ -85,6 +85,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               document.select(".block-label").text() must include("Limited Liability Partnership")
               document.select(".block-label").text() must include("Partnership")
               document.select(".block-label").text() must include("Non UK-based Company")
+              document.select(".block-label").text() must include("Limited Partnership")
               document.select("button").text() must be("Continue")
           }
         }
@@ -208,6 +209,29 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
       "add additional form fields to the screen for entry" in {
         businessLookupWithAuthorisedUser("LLP") {
+          result =>
+            status(result) must be(OK)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            document.getElementById("businessName_field").text() must be("Business Name")
+            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+    }
+
+    "when selecting Limited Partnership option" must {
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
+          result =>
+            status(result) must be(303)
+            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+
+      "add additional form fields to the screen for entry" in {
+        businessLookupWithAuthorisedUser("LP") {
           result =>
             status(result) must be(OK)
 
