@@ -32,7 +32,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val matchSuccessResponseSOP = Json.parse( """{ "businessName":"ACME", "businessType":"Sole trader", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
   val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
   val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
-
+  val matchSuccessResponseLP =  Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     val dataCacheConnector = mockDataCacheConnector
@@ -339,6 +339,23 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
+    "if the Limited Partnership form  is successfully validated:" must {
+      "for successful match, status should be 303 and  user should be redirected to review details page" in {
+        submitWithAuthorisedUserSuccess("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+        }
+      }
+      "for unsuccessful match, status should be 303 and  user should be redirected to hello world page" in {
+        submitWithAuthorisedUserFailure("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/business-customer/hello")
+        }
+      }
+    }
+
     "if the Sole Trader form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
         submitWithAuthorisedUserSuccess("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111111")) {
@@ -434,6 +451,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "OBP" => matchSuccessResponseOBP
       case "SOP" => matchSuccessResponseSOP
       case "LTD" => matchSuccessResponseLTD
+      case "LP" => matchSuccessResponseLP
     }
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
