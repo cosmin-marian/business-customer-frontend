@@ -42,6 +42,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
             case "LTD" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
             case "OBP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
             case "LLP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
+            case "LP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
           }
         }
       )
@@ -55,6 +56,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
         case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service ,businessType))
         case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service, businessType))
         case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service, businessType))
+        case "LP" =>  Ok(views.html.business_lookup_LP(limitedPartnershipForm, service, businessType))
       }
   }
 
@@ -64,6 +66,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
         case "UIB" => uibFormHandling(unincorporatedBodyForm, businessType, service)
         case "SOP" => sopFormHandling(soleTraderForm, businessType, service)
         case "LLP" => llpFormHandling(limitedLiabilityPartnershipForm, businessType, service)
+        case "LP" => lpFormHandling(limitedPartnershipForm, businessType, service)
         case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service)
         case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service)
       }
@@ -98,6 +101,16 @@ trait BusinessVerificationController extends FrontendController with Actions {
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
       llpFormData => {
         val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(llpFormData.businessName, llpFormData.psaUTR)))
+        matchAndCache(businessDetails, service)
+      }
+    )
+  }
+
+  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+    limitedPartnershipForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
+      lpFormData => {
+        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(lpFormData.businessName, lpFormData.psaUTR)))
         matchAndCache(businessDetails, service)
       }
     )
