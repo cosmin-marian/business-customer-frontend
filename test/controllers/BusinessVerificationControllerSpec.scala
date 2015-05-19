@@ -85,6 +85,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               document.select(".block-label").text() must include("Limited Liability Partnership")
               document.select(".block-label").text() must include("Partnership")
               document.select(".block-label").text() must include("Non UK-based Company")
+              document.select(".block-label").text() must include("Limited Partnership")
               document.select("button").text() must be("Continue")
           }
         }
@@ -208,6 +209,29 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
       "add additional form fields to the screen for entry" in {
         businessLookupWithAuthorisedUser("LLP") {
+          result =>
+            status(result) must be(OK)
+
+            val document = Jsoup.parse(contentAsString(result))
+
+            document.getElementById("businessName_field").text() must be("Business Name")
+            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+    }
+
+    "when selecting Limited Partnership option" must {
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
+          result =>
+            status(result) must be(303)
+            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+
+      "add additional form fields to the screen for entry" in {
+        businessLookupWithAuthorisedUser("LP") {
           result =>
             status(result) must be(OK)
 
@@ -479,6 +503,49 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
         }
 
+
+        "if Limited partnership: Business Name and Partnership Self Assessment UTR" must {
+
+          "not be empty" in {
+            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> "", "psaUTR" -> "")) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                val document = Jsoup.parse(contentAsString(result))
+                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
+
+                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
+            }
+          }
+
+          "if entered, Business Name must be less than 40 characters" in {
+            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Business Name must not be more than 40 characters")
+            }
+          }
+
+          "if entered, Partnership UTR must be 10 digits" in {
+            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "psaUTR" -> "12345678917")) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Unique Tax Reference must be 10 digits")
+            }
+          }
+
+          "if entered, Partnership UTR must be valid" in {
+            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "psaUTR" -> "1234567892")) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+            }
+          }
+        }
+
+
+
         "submit of continue" must {
 
           "if valid text has been entered - continue to next action - UIB" in {
@@ -539,6 +606,18 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/LLP")
+            }
+
+          }
+
+          "if valid text has been entered - continue to next action - LP" in {
+            implicit val hc: HeaderCarrier = HeaderCarrier()
+            val inputJsonForUIB = Json.parse( """{ "businessType": "LP", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
+
+            continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(inputJsonForUIB)) {
+              result =>
+                status(result) must be(SEE_OTHER)
+                redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/LP")
             }
 
           }

@@ -18,9 +18,11 @@ case class OrdinaryBusinessPartnershipMatch(businessName: String, psaUTR: String
 
 case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String)
 
+case class LimitedPartnershipMatch(businessName: String, psaUTR: String)
+
 case class BusinessType (businessType: String)
 
-case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch], uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch], llpCompany :Option[LimitedLiabilityPartnershipMatch])
+case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch], uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch], llpCompany :Option[LimitedLiabilityPartnershipMatch],lpCompany :Option[LimitedPartnershipMatch])
 
 
 object SoleTraderMatch {
@@ -41,6 +43,10 @@ object OrdinaryBusinessPartnershipMatch {
 
 object LimitedLiabilityPartnershipMatch {
   implicit val formats = Json.format[LimitedLiabilityPartnershipMatch]
+}
+
+object LimitedPartnershipMatch {
+  implicit val formats = Json.format[LimitedPartnershipMatch]
 }
 
 object BusinessType {
@@ -109,5 +115,14 @@ object BusinessVerificationForms {
       .verifying(Messages("bc.business-verification-error.psautr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
       .verifying(Messages("bc.business-verification-error.invalidPSAUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
   )(LimitedLiabilityPartnershipMatch.apply)(LimitedLiabilityPartnershipMatch.unapply))
+  val limitedPartnershipForm = Form(mapping(
+    "businessName"   -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+    "psaUTR"   -> text
+      .verifying(Messages("bc.business-verification-error.psautr"),  x => x.length > 0)
+      .verifying(Messages("bc.business-verification-error.psautr.length"),  x => x.isEmpty || (x.nonEmpty && x.length == 10)  && x.matches("""^[0-9]+$"""))
+      .verifying(Messages("bc.business-verification-error.invalidPSAUTR"), x => x.isEmpty || (x.length == 10 && validateUTR(Option(x))))
+  )(LimitedPartnershipMatch.apply)(LimitedPartnershipMatch.unapply))
 
 }

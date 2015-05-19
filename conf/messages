@@ -21,6 +21,7 @@ bc.business-verification.lookup-text=Complete the questions below in order for u
 bc.business-verification.NUK=Non UK-based Company
 bc.business-verification.PRT=Ordinary Business Partnership
 bc.business-verification.LLP=Limited Liability Partnership
+bc.business-verification.LP=Limited Partnership
 bc.business-verification.UIB=Unincorporated Body
 bc.business-verification.LTD=Limited Company
 bc.business-verification.SOP=Sole Trader
