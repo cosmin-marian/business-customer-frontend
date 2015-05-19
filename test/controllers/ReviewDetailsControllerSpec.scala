@@ -5,6 +5,8 @@ import java.util.UUID
 import connectors.DataCacheConnector
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
@@ -74,6 +76,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-address").text must be(s"$address")
 
         document.select(".button").text must be("Continue")
+
         document.select(".cancel-subscription-button").text must be("Cancel Subscription")
         document.select(".nested-banner").text must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
       }
@@ -107,12 +110,21 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     "Authorised Users" must {
 
-      "return service start page" in {
+      "return service start page correctly for ATED" in {
 
         redirectToServiceWithAuthorisedUser(service) {
           result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/ated/account-summary")
+            redirectLocation(result).get must include("/ated/registered-business-address")
+        }
+      }
+
+      "return service start page correctly for AWRS" in {
+
+        redirectToServiceWithAuthorisedUser("AWRS") {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }
       }
 
