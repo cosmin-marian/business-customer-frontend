@@ -4,7 +4,6 @@ import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models.{BusinessMatchDetails, ReviewDetails}
 import play.api.libs.json.{JsString, JsObject, JsValue}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{CtAccount, SaAccount}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.ExecutionContext.Implicits.global

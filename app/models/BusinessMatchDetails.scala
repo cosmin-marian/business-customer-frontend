@@ -1,7 +1,6 @@
 package models
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.domain.{SaUtr, CtUtr}
 
 case class BusinessMatchDetails(matchUtr: Boolean, utr: String, individual: Option[Individual], organisation: Option[Organisation])
 
