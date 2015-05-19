@@ -5,8 +5,6 @@ import java.util.UUID
 import connectors.DataCacheConnector
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
