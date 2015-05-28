@@ -25,6 +25,21 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
       }
 
     }
+
+    "Cancel" must {
+
+      "respond with a redirect" in {
+        val result = controllers.ApplicationController.cancel().apply(FakeRequest())
+        status(result) must be(SEE_OTHER)
+      }
+
+      "be redirected to the login page" in {
+        val result = controllers.ApplicationController.cancel().apply(FakeRequest())
+        redirectLocation(result).get must include("https://www.gov.uk/")
+      }
+
+
+    }
   }
 
 }
