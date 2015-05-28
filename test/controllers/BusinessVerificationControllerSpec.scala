@@ -77,14 +77,15 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               val document = Jsoup.parse(contentAsString(result))
 
               document.title() must be("Business Verification")
-
-              document.getElementById("business-verification-header").text() must be("Business verification")
-              document.select(".block-label").text() must include("Unincorporated Body")
+              document.getElementById("business-verification-text").text() must be("ATED account registration")
+              document.getElementById("business-lookup-text").text() must be("Before registering, you need to confirm your business details.")
+              document.getElementById("business-verification-header").text() must be("About your business details")
+              document.select(".block-label").text() must include("Unincorporated Association")
               document.select(".block-label").text() must include("Limited Company")
-              document.select(".block-label").text() must include("Sole Trader")
+              document.select(".block-label").text() must include("Sole Trader / Self-employed")
               document.select(".block-label").text() must include("Limited Liability Partnership")
               document.select(".block-label").text() must include("Partnership")
-              document.select(".block-label").text() must include("Non UK-based Company")
+              document.select(".block-label").text() must include("Non-UK based Company")
               document.select(".block-label").text() must include("Limited Partnership")
               document.select("button").text() must be("Continue")
           }

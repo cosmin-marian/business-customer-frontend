@@ -24,6 +24,7 @@ $(document).ready(function() {
  });
 </script>
 @errors(businessTypeForm)
+<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
 <h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
 <p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 
@@ -42,43 +43,44 @@ $(document).ready(function() {
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
-    Seq("UIB" -> Messages("bc.business-verification.UIB")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
     Seq("LTD" -> Messages("bc.business-verification.LTD")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("SOP" -> Messages("bc.business-verification.SOP")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("LLP" -> Messages("bc.business-verification.LLP")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
     )
 
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("OBP" -> Messages("bc.business-verification.PRT")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
     )
+
     @inputRadioGroup(
     businessTypeForm("businessType"),
     Seq("LP" -> Messages("bc.business-verification.LP")),
     '_labelClass -> "block-label",
     '_labelAfter -> true
+    )
+
+    @inputRadioGroup(
+    businessTypeForm("businessType"),
+    Seq("LLP" -> Messages("bc.business-verification.LLP")),
+    '_labelClass -> "block-label",
+    '_labelAfter -> true
+    )
+
+    @inputRadioGroup(
+    businessTypeForm("businessType"),
+    Seq("UIB" -> Messages("bc.business-verification.UIB")),
+        '_labelClass -> "block-label",
+        '_labelAfter -> true
     )
 
 
