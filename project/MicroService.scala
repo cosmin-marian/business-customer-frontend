@@ -18,15 +18,14 @@ trait MicroService {
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
   lazy val scoverageSettings = {
-    instrumentSettings ++ Seq(
-      ScoverageKeys.excludedPackages in ScoverageCompile :=  "<empty>;Reverse.*;views.html.*;app.Routes.*;prod.*;uk.gov.hmrc.*;testOnlyDoNotUseInAppConf.*;forms.*;config.*;",
-      ScoverageKeys.minimumCoverage := 100,
-      ScoverageKeys.failOnMinimumCoverage := true,
-      ScoverageKeys.highlighting := true,
-      parallelExecution in ScoverageTest := false
+    Seq(
+      ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;views.html.*;app.Routes.*;prod.*;uk.gov.hmrc.*;testOnlyDoNotUseInAppConf.*;forms.*;config.*;",
+      ScoverageKeys.coverageMinimum := 100,
+      ScoverageKeys.coverageFailOnMinimum := true,
+      ScoverageKeys.coverageHighlighting := true,
+      parallelExecution in Test := false
     )
   }
-
 
 
   lazy val microservice = Project(appName, file("."))

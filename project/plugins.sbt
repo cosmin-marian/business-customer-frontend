@@ -15,6 +15,6 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-utils" % "2.4.0")
 
 addSbtPlugin("uk.gov.hmrc" % "hmrc-resolvers" % "0.4.0")
 
-addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.7.1")
+addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "1.1.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0")
