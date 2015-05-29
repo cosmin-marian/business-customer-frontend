@@ -13,13 +13,14 @@ business-review.button = Subscribe
 business-review.cancel-subscription = Cancel Subscription
 business-review.subscribe-banner = You are now ready to subscribe to {0} with the following business details. You can update your details on the following pages.
 business-review.registration-button = Continue
+bc.business-verification.cancel = Cancel
 
 bc.business-verification.text=ATED account registration
 bc.business-verification.title=Business Verification
 bc.business-verification.header=About your business details
 bc.business-verification.lookup=Business Lookup
 bc.business-verification.lookup-text=Before registering, you need to confirm your business details.
-bc.business-verification.NUK=Non-UK based Company
+bc.business-verification.NUK=Non-UK Company
 bc.business-verification.PRT=Ordinary Business Partnership
 bc.business-verification.LLP=Limited Liability Partnership
 bc.business-verification.LP=Limited Partnership

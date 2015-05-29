@@ -23,4 +23,7 @@ POST        /send                                                               
 
 GET         /redirect-to-service/:service                                       controllers.ReviewDetailsController.redirectToService(service: String)
 
+GET         /cancel                                                             controllers.ApplicationController.cancel
+
 GET         /:service                                                           controllers.HomeController.homePage(service: String)
+
