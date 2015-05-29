@@ -113,7 +113,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         redirectToServiceWithAuthorisedUser(service) {
           result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/ated/registered-business-address")
+            redirectLocation(result).get must include("/ated-subscription/registered-business-address")
         }
       }
 
