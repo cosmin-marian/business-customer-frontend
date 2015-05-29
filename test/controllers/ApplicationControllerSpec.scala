@@ -38,7 +38,6 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
         redirectLocation(result).get must include("https://www.gov.uk/")
       }
 
-
     }
   }
 
