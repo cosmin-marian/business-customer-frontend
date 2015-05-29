@@ -25,5 +25,8 @@ GET         /redirect-to-service/:service                                       
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
 
+GET         /back/:service                                                      controllers.BusinessRegController.back(service: String)
+
+
 GET         /:service                                                           controllers.HomeController.homePage(service: String)
 

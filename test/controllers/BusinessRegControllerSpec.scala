@@ -81,15 +81,17 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             val document = Jsoup.parse(contentAsString(result))
 
             document.title() must be("Business Registration")
-            document.getElementById("business-registration.header").text() must be("Add business details")
+            document.getElementById("business-verification-text").text() must be("ATED account registration")
+            document.getElementById("business-registration.header").text() must be("Non-UK business details")
+            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your business.")
             document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4")
             document.getElementById("businessAddress.country_field").text() must be("Country")
-            document.getElementById("submit").text() must be("Save and continue")
-            document.getElementById("cancel").text() must be("Cancel")
+            document.getElementById("submit").text() must be("Continue")
+            document.getElementById("back").text() must be("Back")
         }
       }
     }
@@ -175,7 +177,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             }
           }
 
-          "If registration details entered are valid, save and continue button must redirect to review details page" in {
+          "If registration details entered are valid, continue button must redirect to review details page" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
             val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "England"} }""")
             submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
@@ -183,6 +185,14 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/review-details/$service")
             }
+          }
+        }
+
+        "must redirect to the business search page when back link is clicked" in {
+
+          registerWithAuthorisedUser {
+            result =>
+              redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
           }
         }
       }

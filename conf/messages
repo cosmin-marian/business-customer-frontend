@@ -58,15 +58,17 @@ bc.unauthorised.title=Unauthorised
 bc.unauthorised.heading=Unauthorised
 
 business-registration.title = Business Registration
-bc.business-registration.header = Add business details
+bc.business-registration.header = Non-UK business details
+bc.business-registration.subheader = You need to tell us the details of your business.
 bc.business-registration.businessName = Business name
 bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3
 bc.business-registration.line_4 = Address line 4
 bc.business-registration.country = Country
-bc.business-registration.submit= Save and continue
+bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
+bc.business-registration.back= Back
 
 bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address Line 1 must be entered

@@ -10,6 +10,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
+
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
   override val dataCacheConnector = DataCacheConnector
@@ -25,6 +26,12 @@ trait BusinessRegController extends FrontendController with Actions {
     implicit user => implicit request =>
       Ok(views.html.business_registration(businessRegistrationForm, service))
   }
+
+  def back(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+    implicit user => implicit request =>
+      Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
+  }
+
 
   def send(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
