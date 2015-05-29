@@ -13,19 +13,19 @@ private object AppDependencies {
   import play.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "0.7.0"    
+  private val playHealthVersion = "0.8.0"
 
-  private val frontendBootstrapVersion = "0.5.1"
+  private val frontendBootstrapVersion = "0.6.0"
   private val govukTemplateVersion = "2.6.0"
-  private val playUiVersion = "1.8.1"
+  private val playUiVersion = "1.9.0"
   private val httpCachingClientVersion = "2.5.0"
-  
+
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-    "uk.gov.hmrc" %% "play-partials" % "1.3.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.2.0",
+    "uk.gov.hmrc" %% "play-partials" % "1.4.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.3.0",
     "uk.gov.hmrc" %% "url-builder" % "0.5.0",
     "uk.gov.hmrc" %% "play-config" % "1.0.0",
     "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
