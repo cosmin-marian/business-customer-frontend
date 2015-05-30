@@ -188,11 +188,17 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
-        "must redirect to the business search page when back link is clicked" in {
+        "Back" must {
 
-          registerWithAuthorisedUser {
-            result =>
-              redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
+          "respond with redirect" in {
+            val result = TestBusinessRegController.back(service).apply(FakeRequest())
+            status(result) must be(SEE_OTHER)
+          }
+
+          "be redirected to the business verification page" in {
+
+              val result = TestBusinessRegController.back(service).apply(FakeRequest())
+              redirectLocation(result).get must include(s"/business-customer/$service")
           }
         }
       }
