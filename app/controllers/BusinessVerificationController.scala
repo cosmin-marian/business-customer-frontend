@@ -76,7 +76,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     Ok(views.html.hello_world(response))
   }
 
-  private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String,
+                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
       unincorporatedFormData => {
@@ -86,17 +87,20 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String
+                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     soleTraderForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
       soleTraderFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", Some(Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, "", soleTraderFormData.saUTR)), None)
+        val businessDetails = BusinessMatchDetails(false, "", Some(Individual(soleTraderFormData.firstName,
+          soleTraderFormData.lastName, "", soleTraderFormData.saUTR)), None)
         matchAndCache(businessDetails, service)
       }
     )
   }
 
-  private def llpFormHandling(limitedLiabilityPartnershipForm: Form[LimitedLiabilityPartnershipMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def llpFormHandling(limitedLiabilityPartnershipForm: Form[LimitedLiabilityPartnershipMatch], businessType: String,
+                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
       llpFormData => {
@@ -106,7 +110,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service:
+    String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
       lpFormData => {
@@ -116,7 +121,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def obpFormHandling(ordinaryBusinessPartnershipForm: Form[OrdinaryBusinessPartnershipMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def obpFormHandling(ordinaryBusinessPartnershipForm: Form[OrdinaryBusinessPartnershipMatch], businessType: String,
+                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service, businessType))),
       obpFormData => {
@@ -126,7 +132,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def ltdFormHandling(limitedCompanyForm: Form[LimitedCompanyMatch], businessType: String, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def ltdFormHandling(limitedCompanyForm: Form[LimitedCompanyMatch], businessType: String,
+                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedCompanyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service, businessType))),
       limitedCompanyFormData => {
@@ -136,7 +143,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def matchAndCache(businessDetails: BusinessMatchDetails, service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def matchAndCache(businessDetails: BusinessMatchDetails, service: String)(implicit request: Request[AnyContent],
+                                                                                    hc: HeaderCarrier): Future[Result] = {
     businessMatchingConnector.lookup(businessDetails) flatMap {
       actualResponse => {
         if (actualResponse.toString contains ("error")) {

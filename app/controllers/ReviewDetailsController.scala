@@ -32,7 +32,8 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
       serviceRedirectUrl match{
         case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
-        case _ => throw new RuntimeException(s"Service does not exist for : $service. This should be in the conf file against 'govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl'")
+        case _ => throw new RuntimeException(s"Service does not exist for :" +
+          s" $service. This should be in the conf file against 'govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl'")
       }
   }
 }
