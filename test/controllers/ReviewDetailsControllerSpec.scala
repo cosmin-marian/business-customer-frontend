@@ -75,7 +75,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
         document.select(".button").text must be("Register and confirm")
 
-        document.select(".cancel-subscription-button").text must be("Cancel Subscription")
+        document.select(".cancel-subscription-button").text must be("Cancel")
         document.select(".nested-banner").text must be("You are now ready to subscribe to ATED with the following business details. You can update your details on the following pages.")
       }
     }
