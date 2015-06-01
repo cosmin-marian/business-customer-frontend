@@ -22,7 +22,9 @@ case class LimitedPartnershipMatch(businessName: String, psaUTR: String)
 
 case class BusinessType (businessType: String)
 
-case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch], uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch], llpCompany :Option[LimitedLiabilityPartnershipMatch],lpCompany :Option[LimitedPartnershipMatch])
+case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch],
+                            uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch],
+                            llpCompany :Option[LimitedLiabilityPartnershipMatch],lpCompany :Option[LimitedPartnershipMatch])
 
 
 object SoleTraderMatch {
