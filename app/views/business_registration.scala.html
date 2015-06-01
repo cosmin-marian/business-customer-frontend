@@ -7,9 +7,9 @@
 @bcMain(title = Messages("business-registration.title")) {
 
 @errors(businessRegistrationForm)
-
+<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
-
+<p class="text-section" id="business-registration-subheader">@Messages("bc.business-registration.subheader")</p>
 
 @form(action = controllers.routes.BusinessRegController.send(service)) {
 <div class="form-group">
@@ -55,7 +55,7 @@
     <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
     <div>
-       <p> <a href="#"  id="cancel">@Messages("bc.business-registration.cancel")</a> </p>
+       <p> <a href="@controllers.routes.BusinessRegController.back(service: String)"  id="back">@Messages("bc.business-registration.back")</a> </p>
     </div>
 }
 
