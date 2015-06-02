@@ -67,8 +67,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     "return Review Details view" in {
       businessDetailsWithAuthorisedUser { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Verify agent details")
-
+        document.select("h1").text must be("Verify business details")
+        document.getElementById("bc.business-registration.text").text() must be("ATED account registration")
         document.getElementById("business-name").text must be("ACME")
         document.getElementById("business-type").text must be("Limited")
         document.getElementById("business-address").text must be(s"$address")
