@@ -25,7 +25,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = SessionCache
@@ -68,14 +68,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       businessDetailsWithAuthorisedUser { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Verify business details")
+        document.getElementById("banner").text must be("You are about to register the following business for ATED.")
         document.getElementById("bc.business-registration.text").text() must be("ATED account registration")
-        document.getElementById("business-name").text must be("ACME")
-        document.getElementById("business-type").text must be("Limited")
-        document.getElementById("business-address").text must be(s"$address")
+        document.getElementById("business-name-label").text must be("Business name")
+        document.getElementById("business-type-label").text must be("Type of business")
+        document.getElementById("business-address-label").text must be("Registered address")
 
         document.select(".button").text must be("Continue")
 
-        document.getElementById("banner").text must be("You are about to register the following business for ATED.")
       }
     }
 

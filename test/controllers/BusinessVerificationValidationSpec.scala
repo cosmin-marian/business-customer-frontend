@@ -453,7 +453,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "LTD" => matchSuccessResponseLTD
       case "LP" => matchSuccessResponseLP
     }
-    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
     when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
     when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
