@@ -55,7 +55,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     }
   }
 
-  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), "U.K.")
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
   val reviewDetails = ReviewDetails("ACME", "UIB", address)
   val reviewDetailsJson = Json.toJson(reviewDetails)
   val utr = "1234567890"
