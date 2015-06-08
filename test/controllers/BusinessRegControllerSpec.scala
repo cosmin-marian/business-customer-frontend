@@ -13,6 +13,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.BusinessRegistrationService
 import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -26,13 +27,11 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   val request = FakeRequest()
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-  val mockDataCacheConnector = mock[DataCacheConnector]
-  val mockBusinessCustomerConnector = mock[BusinessCustomerConnector]
+  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
 
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
-    override val dataCacheConnector = mockDataCacheConnector
-    override val businessCustomerConnector = mockBusinessCustomerConnector
+    override val businessRegistrationService = mockBusinessRegistrationService
   }
 
   val serviceName: String = "ATED"
@@ -274,8 +273,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val successResponse = Json.parse( """{"businessName":"ACME", "businessType":"Non UK-based Company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
 
-    when(mockBusinessCustomerConnector.register(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successResponse))
-    when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+    when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
