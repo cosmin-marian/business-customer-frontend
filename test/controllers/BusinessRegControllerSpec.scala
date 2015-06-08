@@ -270,7 +270,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
-    val successResponse = Json.parse( """{"businessName":"ACME", "businessType":"Non UK-based Company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
 
     when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
