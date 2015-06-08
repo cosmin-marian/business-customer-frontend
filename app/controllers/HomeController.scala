@@ -1,8 +1,10 @@
 package controllers
 
-import controllers.auth.BusinessCustomerRegime
-import services.BusinessMatchingService
 import config.FrontendAuthConnector
+import controllers.auth.BusinessCustomerRegime
+import models.ReviewDetails
+import play.api.libs.json.{JsError, JsSuccess}
+import services.BusinessMatchingService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -17,21 +19,20 @@ trait HomeController extends FrontendController with Actions {
 
   val businessMatchService: BusinessMatchingService
 
-  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       user.principal.accounts.sa.isDefined || user.principal.accounts.ct.isDefined match {
         case true => {
-          businessMatchService.matchBusiness flatMap {
-            noException => {
-              if(noException.toString().contains("error")){
-                Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessVerification(service)))
-              } else {
-                Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
+          businessMatchService.matchBusinessWithUTR(false) map {
+            futureJsValue => futureJsValue map {
+              jsValue => jsValue.validate[ReviewDetails] match {
+                case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                case failure: JsError => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
               }
             }
           }
         }
-        case false => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessVerification(service)))
+        case false => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
       }
   }
 }
