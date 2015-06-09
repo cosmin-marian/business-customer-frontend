@@ -3,6 +3,7 @@ package connectors
 
 import config.WSHttp
 import models.MatchBusinessData
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -22,9 +23,9 @@ trait BusinessMatchingConnector extends ServicesConfig {
     http.POST( s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)) map {
       response =>
         response.status match {
-          case 200 | 404 => Json.toJson(response.body)
-          case 503 => throw new ServiceUnavailableException("Service unavailable")
-          case 400 | 500 => throw new InternalServerException("Bad Request or Internal server error")
+          case OK | NOT_FOUND => Json.toJson(response.body)
+          case SERVICE_UNAVAILABLE => throw new ServiceUnavailableException("Service unavailable")
+          case BAD_REQUEST | INTERNAL_SERVER_ERROR => throw new InternalServerException("Bad Request or Internal server error")
           case _ => throw new InternalServerException("Unknown response")
         }
     }

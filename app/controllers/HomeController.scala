@@ -19,20 +19,19 @@ trait HomeController extends FrontendController with Actions {
 
   val businessMatchService: BusinessMatchingService
 
-  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      user.principal.accounts.sa.isDefined || user.principal.accounts.ct.isDefined match {
-        case true => {
-          businessMatchService.matchBusinessWithUTR(false) map {
-            futureJsValue => futureJsValue map {
-              jsValue => jsValue.validate[ReviewDetails] match {
-                case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-                case failure: JsError => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
-              }
+      businessMatchService.matchBusinessWithUTR(isAnAgent = false) match {
+        case Some(futureJsValue) => {
+          futureJsValue map {
+            jsValue => jsValue.validate[ReviewDetails] match {
+              case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              case failure: JsError => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
             }
           }
         }
-        case false => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
+        case None => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessVerification(service)))
       }
   }
+
 }
