@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import builders.{AuthBuilder, SessionBuilder}
-import models.{ReviewDetails, Address}
+import models.{Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -26,7 +26,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessMatchingService = mock[BusinessMatchingService]
 
-  val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+  val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
   val testReviewDetails = ReviewDetails("ACME", "Limited", testAddress)
 
   object TestHomeController extends HomeController {
@@ -127,7 +127,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithAuthorisedUserNotMatched(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val notFound = Json.parse("""{"Reason" : "Text from reason column"}""")
+    val notFound = Json.parse( """{"Reason" : "Text from reason column"}""")
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Some(Future.successful(notFound)))
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
