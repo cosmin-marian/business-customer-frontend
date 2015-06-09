@@ -1,7 +1,12 @@
 package services
+
+import _root_.java.util.UUID
+
 import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -9,32 +14,43 @@ import scala.concurrent.Future
 object BusinessRegistrationService extends BusinessRegistrationService  {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
-  override val dataCacheConnector = DataCacheConnector
+  val dataCacheConnector = DataCacheConnector
+  val issuingInstitution = "HMRC"
+  val issuingCountryCode = "UK"
+  val nonUKbusinessType = "Non UK-based Company"
 }
 
 trait BusinessRegistrationService {
   val businessCustomerConnector: BusinessCustomerConnector
   val dataCacheConnector : DataCacheConnector
+  val issuingInstitution : String
+  val issuingCountryCode : String
+  val nonUKbusinessType : String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[Option[ReviewDetails]] = {
+  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[JsValue] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
-    businessCustomerConnector.registerNonUk(nonUKRegisterDetails).flatMap {
-      registrationSuccessResponse => {
-        val reviewDetails = createNonUKReviewDetails(registerData)
-        dataCacheConnector.saveReviewDetails(reviewDetails)
-      }
-    }
+    businessCustomerConnector.registerNonUk(nonUKRegisterDetails)
   }
 
 
-  private def createNonUKRegistrationRequest(registerData: BusinessRegistration) : NonUKRegistrationRequest = {
-    val businessOrgData = EtmpOrganisation(organisationName = "testName")
-    val nonUKIdentification = NonUKIdentification(idNumber = "id1", issuingInstitution="HRMC", issuingCountryCode = "UK")
-    val businessAddress = EtmpAddress("line1", "line2", None, None, None, "GB")
+  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) : NonUKRegistrationRequest = {
+
+    val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
+
+    val nonUKIdentification = NonUKIdentification(idNumber = "id1",
+      issuingInstitution=issuingInstitution,
+      issuingCountryCode = issuingCountryCode)
+
+    val businessAddress = EtmpAddress(addressLine1 = registerData.businessAddress.line_1,
+      addressLine2 = registerData.businessAddress.line_2,
+      addressLine3 = registerData.businessAddress.line_3,
+      addressLine4 = registerData.businessAddress.line_4,
+      postalCode = registerData.businessAddress.postcode,
+      countryCode = registerData.businessAddress.country )
 
     NonUKRegistrationRequest(
-      acknowledgmentReference = "SESS:123123123",
+      acknowledgmentReference = sessionOrUUID,
       organisation = businessOrgData,
       address = AddressChoice(foreignAddress = businessAddress),
       isAnAgent = false,
@@ -43,7 +59,22 @@ trait BusinessRegistrationService {
     )
   }
 
-  private def createNonUKReviewDetails(registerData: BusinessRegistration) :ReviewDetails = {
-    ReviewDetails(businessName = registerData.businessName, businessType = "", businessAddress = registerData.businessAddress)
+  private def createReviewDetails(response: NonUKRegistrationResponse,
+          registerData: BusinessRegistration) :ReviewDetails = {
+
+    ReviewDetails(businessName = registerData.businessName,
+      businessType = nonUKbusinessType,
+      businessAddress = registerData.businessAddress
+//      sapNumber = response.sapNumber,
+//      safeId  = response.safeId,
+//      agentReferenceNumber = response.agentReferenceNumber
+    )
+  }
+
+  private def sessionOrUUID(implicit hc: HeaderCarrier): String = {
+    hc.sessionId match {
+      case Some(sessionId) => sessionId.value
+      case None => UUID.randomUUID().toString.replace("-", "")
+    }
   }
 }

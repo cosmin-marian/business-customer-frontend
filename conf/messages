@@ -83,3 +83,9 @@ bc.business-registration-error.line_3.length = Address must not be more than 40 
 bc.business-registration-error.line_4.length = Address must not be more than 40 characters
 bc.business-registration-error.country.length = Country must not be more than 40 characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
+
+
+## Errors
+bc.connector.error.service-unavailable=Service unavailable
+bc.connector.error.bad-request=Bad Request or Internal server error
+bc.connector.error.unknown-response=Unknown response status: {0}
