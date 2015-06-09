@@ -22,13 +22,13 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   }
 
   object TestConnector extends BusinessCustomerConnector {
-    override def registerNonUk(registerData: NonUKRegistrationRequest)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+    override def registerNonUk(registerData: NonUKRegistrationRequest)(implicit headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
       val nonUKResponse =  NonUKRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",
         agentReferenceNumber = "AREF123123")
 
-      Future(Json.toJson(nonUKResponse))
+      Future(nonUKResponse)
     }
   }
 

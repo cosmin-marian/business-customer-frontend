@@ -1,12 +1,10 @@
 package services
 
-import _root_.java.util.UUID
+import java.util.UUID
 
 import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -27,10 +25,17 @@ trait BusinessRegistrationService {
   val issuingCountryCode : String
   val nonUKbusinessType : String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[JsValue] = {
+  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[Option[ReviewDetails]] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
-    businessCustomerConnector.registerNonUk(nonUKRegisterDetails)
+
+    for {
+      registerResponse <- businessCustomerConnector.registerNonUk(nonUKRegisterDetails)
+      reviewDetailsCache <- {
+        val reviewDetails = createReviewDetails(registerResponse, registerData)
+        dataCacheConnector.saveReviewDetails(reviewDetails)
+      }
+    } yield (reviewDetailsCache)
   }
 
 

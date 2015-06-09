@@ -1,9 +1,7 @@
 package controllers
 
-import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms._
-import models.ReviewDetails
 import config.FrontendAuthConnector
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
@@ -41,7 +39,10 @@ trait BusinessRegController extends FrontendController with Actions {
         registrationData => {
           businessRegistrationService.registerNonUk(registrationData).map {
             registrationSuccessResponse => {
-              Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              registrationSuccessResponse match {
+                case Some(reviewDetails) => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                case None => BadRequest(views.html.business_registration(businessRegistrationForm, service))
+              }
             }
           }
         }

@@ -19,15 +19,22 @@ trait BusinessCustomerConnector extends ServicesConfig {
 
   val http: HttpGet with HttpPost = WSHttp
 
-  def registerNonUk(registerData: NonUKRegistrationRequest)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
+  val STATUS_NOT_FOUND = 404
+  val BAD_REQUEST = 400
+  val INTERNAL_SERVER_ERROR = 500
+  val SERVICE_UNAVAILABLE = 503
+  val STATUS_OK = 200
+
+  def registerNonUk(registerData: NonUKRegistrationRequest)(implicit headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
     val postUrl =  s"""$serviceURL/$baseURI/$registerURI"""
     val jsonData = Json.toJson(registerData)
     http.POST( postUrl, jsonData) map {
       response =>
         response.status match {
-          case 200 | 404 => Json.parse(response.body)
-          case 503 => throw new ServiceUnavailableException(Messages("bc.connector.error.service-unavailable"))
-          case 400 | 500 => throw new InternalServerException(Messages("bc.connector.error.bad-request"))
+          case STATUS_OK  => response.json.as[NonUKRegistrationResponse]
+          case STATUS_NOT_FOUND  => throw new InternalServerException(Messages("bc.connector.error.not-found"))
+          case SERVICE_UNAVAILABLE => throw new ServiceUnavailableException(Messages("bc.connector.error.service-unavailable"))
+          case BAD_REQUEST | INTERNAL_SERVER_ERROR => throw new InternalServerException(Messages("bc.connector.error.bad-request"))
           case status => throw new InternalServerException(Messages("bc.connector.error.unknown-response", status))
         }
     }

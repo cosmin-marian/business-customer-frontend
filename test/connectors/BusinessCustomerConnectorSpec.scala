@@ -56,7 +56,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         .thenReturn(Future.successful(HttpResponse(200, Some(successResponse))))
 
       val result = TestBusinessCustomerConnector.registerNonUk(businessRequestData)
-      await(result).as[JsValue] must be(successResponse)
+      await(result) must be(businessResponseData)
     }
 
     "for Service Unavailable, throw an exception" in {
@@ -69,6 +69,18 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
       val result = TestBusinessCustomerConnector.registerNonUk(businessRequestData)
       val thrown = the[ServiceUnavailableException] thrownBy await(result)
       thrown.getMessage must include("Service unavailable")
+    }
+
+    "for Not Found, throw an exception" in {
+      val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
+
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(404, Some(matchFailureResponse))))
+
+      val result = TestBusinessCustomerConnector.registerNonUk(businessRequestData)
+      val thrown = the[InternalServerException] thrownBy await(result)
+      thrown.getMessage must include("Not Found")
     }
 
     "for InternalServerException, throw an exception" in {
