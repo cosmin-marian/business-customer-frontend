@@ -10,11 +10,6 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-object HomeController extends HomeController {
-  val businessMatchService: BusinessMatchingService = BusinessMatchingService
-  override val authConnector = FrontendAuthConnector
-}
-
 trait HomeController extends FrontendController with Actions {
 
   val businessMatchService: BusinessMatchingService
@@ -34,4 +29,9 @@ trait HomeController extends FrontendController with Actions {
       }
   }
 
+}
+
+object HomeController extends HomeController {
+  val businessMatchService: BusinessMatchingService = BusinessMatchingService
+  override val authConnector = FrontendAuthConnector
 }

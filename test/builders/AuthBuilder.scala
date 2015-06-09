@@ -11,9 +11,6 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.PayeAccount
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.OrgAccount
 import scala.concurrent.Future
 
-/**
- * Created by dev01 on 13/05/15.
- */
 object AuthBuilder {
 
   def createUserAuthContext(userId: String, userName: String) :AuthContext = {

@@ -4,13 +4,14 @@ import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessVerificationForms._
 import forms._
-import models.{BusinessMatchDetails, Individual, Organisation, ReviewDetails}
+import models.{MatchBusinessData, Individual, Organisation, ReviewDetails}
 import play.api.data.Form
 import play.api.mvc._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -81,7 +82,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
       unincorporatedFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(unincorporatedFormData.businessName, unincorporatedFormData.cotaxUTR)))
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = unincorporatedFormData.cotaxUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = None, organisation = Some(Organisation(unincorporatedFormData.businessName, businessType)))
         matchAndCache(businessDetails, service)
       }
     )
@@ -92,8 +95,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
     soleTraderForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
       soleTraderFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", Some(Individual(soleTraderFormData.firstName,
-          soleTraderFormData.lastName, "", soleTraderFormData.saUTR)), None)
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = soleTraderFormData.saUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = Some(Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)), organisation = None)
         matchAndCache(businessDetails, service)
       }
     )
@@ -104,7 +108,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
       llpFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(llpFormData.businessName, llpFormData.psaUTR)))
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = llpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = None, organisation = Some(Organisation(llpFormData.businessName, businessType)))
         matchAndCache(businessDetails, service)
       }
     )
@@ -115,7 +121,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
       lpFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(lpFormData.businessName, lpFormData.psaUTR)))
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = lpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = None, organisation = Some(Organisation(lpFormData.businessName, businessType)))
         matchAndCache(businessDetails, service)
       }
     )
@@ -126,7 +134,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service, businessType))),
       obpFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(obpFormData.businessName, obpFormData.psaUTR)))
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = obpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = None, organisation = Some(Organisation(obpFormData.businessName, businessType)))
         matchAndCache(businessDetails, service)
       }
     )
@@ -137,15 +147,17 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedCompanyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service, businessType))),
       limitedCompanyFormData => {
-        val businessDetails = BusinessMatchDetails(false, "", None, Some(Organisation(limitedCompanyFormData.businessName, limitedCompanyFormData.cotaxUTR)))
+        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+          utr = limitedCompanyFormData.cotaxUTR, requiresNameMatch = false, isAnAgent = false,
+          individual = None, organisation = Some(Organisation(limitedCompanyFormData.businessName, businessType)))
         matchAndCache(businessDetails, service)
       }
     )
   }
 
-  private def matchAndCache(businessDetails: BusinessMatchDetails, service: String)(implicit request: Request[AnyContent],
+  private def matchAndCache(matchBusinessData: MatchBusinessData, service: String)(implicit request: Request[AnyContent],
                                                                                     hc: HeaderCarrier): Future[Result] = {
-    businessMatchingConnector.lookup(businessDetails) flatMap {
+    businessMatchingConnector.lookup(matchBusinessData) flatMap {
       actualResponse => {
         if (actualResponse.toString contains ("error")) {
           Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString)))

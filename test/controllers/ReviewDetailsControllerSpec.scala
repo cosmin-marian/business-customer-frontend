@@ -5,14 +5,11 @@ import java.util.UUID
 import connectors.DataCacheConnector
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
-import org.mockito.Matchers
-import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector

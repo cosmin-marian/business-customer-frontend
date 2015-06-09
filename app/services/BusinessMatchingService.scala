@@ -1,11 +1,13 @@
 package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.{ReviewDetails, Individual, MatchBusinessData, Organisation}
+import models.{Individual, MatchBusinessData, Organisation, ReviewDetails}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.SessionKeys
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object BusinessMatchingService extends BusinessMatchingService {
   val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
