@@ -6,6 +6,7 @@ import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -16,7 +17,7 @@ object BusinessRegistrationService extends BusinessRegistrationService  {
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
   val issuingInstitution = "HMRC"
-  val issuingCountryCode = "UK"
+  val issuingCountryCode = "GB"
   val nonUKbusinessType = "Non UK-based Company"
 }
 

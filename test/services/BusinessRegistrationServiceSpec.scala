@@ -26,7 +26,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
     val businessCustomerConnector: BusinessCustomerConnector = TestConnector
     val dataCacheConnector = mockDataCacheConnector
     val issuingInstitution = "HMRC"
-    val issuingCountryCode = "UK"
+    val issuingCountryCode = "GB"
     val nonUKbusinessType = "Non UK-based Company"
   }
 
