@@ -32,6 +32,6 @@ trait HomeController extends FrontendController with Actions {
 }
 
 object HomeController extends HomeController {
-  val businessMatchService: BusinessMatchingService = BusinessMatchingService
+  override val businessMatchService: BusinessMatchingService = BusinessMatchingService
   override val authConnector = FrontendAuthConnector
 }

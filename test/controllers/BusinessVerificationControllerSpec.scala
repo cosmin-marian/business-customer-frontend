@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 
+import config.FrontendAuthConnector
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
@@ -13,10 +14,8 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import config.FrontendAuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -552,7 +551,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           "if valid text has been entered - continue to next action - UIB" in {
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+            val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
             val successModel = ReviewDetails("ACME", "Unincorporated body", address)
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 

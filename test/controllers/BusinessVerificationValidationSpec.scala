@@ -32,7 +32,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val matchSuccessResponseSOP = Json.parse( """{ "businessName":"ACME", "businessType":"Sole trader", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
   val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
   val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
-  val matchSuccessResponseLP =  Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
+  val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire, NE98 1ZZ", "country": "U.K."} }""")
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     val dataCacheConnector = mockDataCacheConnector
@@ -422,7 +422,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         }
       }
     }
-    
+
   }
 
   def submitWithUnAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
@@ -453,7 +453,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "LTD" => matchSuccessResponseLTD
       case "LP" => matchSuccessResponseLP
     }
-    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
     when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
     when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))

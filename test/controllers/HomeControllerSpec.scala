@@ -3,6 +3,7 @@ package controllers
 import java.util.UUID
 
 import builders.{AuthBuilder, SessionBuilder}
+import config.FrontendAuthConnector
 import models.{Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -40,6 +41,14 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   }
 
   "HomeController" must {
+
+    "implement correct Auth connector" in {
+      HomeController.authConnector must be(FrontendAuthConnector)
+    }
+
+    "implement correct BusinessMatching service" in {
+      HomeController.businessMatchService must be(BusinessMatchingService)
+    }
 
     "homePage" must {
       "unauthorised users" must {

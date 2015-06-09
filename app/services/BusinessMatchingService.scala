@@ -2,64 +2,54 @@ package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models.{Individual, MatchBusinessData, Organisation, ReviewDetails}
-import play.api.libs.json.{JsError, JsSuccess}
+import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
-object BusinessMatchingService extends BusinessMatchingService {
-  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
-  val dataCacheConnector: DataCacheConnector = DataCacheConnector
-}
+import scala.concurrent.Future
 
 trait BusinessMatchingService {
 
   val businessMatchingConnector: BusinessMatchingConnector
   val dataCacheConnector: DataCacheConnector
 
-  def matchBusinessWithUTR(isAnAgent: Boolean)(implicit user: AuthContext, hc: HeaderCarrier) = {
+  def matchBusinessWithUTR(isAnAgent: Boolean)
+                          (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtr map {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
         businessMatchingConnector.lookup(searchData) map {
           dataReturned =>
-            dataReturned.validate[ReviewDetails] match {
-              case success: JsSuccess[ReviewDetails] => {
-                success map {
-                  reviewDetailsReturned =>
-                    dataCacheConnector.saveReviewDetails(reviewDetailsReturned)
-                }
-                dataReturned
-              }
-              case failure: JsError => dataReturned
-            }
+            validateAndCache(dataReturned = dataReturned)
         }
     }
   }
 
-  def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual)(implicit user: AuthContext, hc: HeaderCarrier) = {
+  def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual)
+                                     (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtr map {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
         businessMatchingConnector.lookup(searchData) map {
-          response =>
-            response
+          dataReturned =>
+            validateAndCache(dataReturned = dataReturned)
         }
     }
   }
 
-  def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation)(implicit user: AuthContext, hc: HeaderCarrier) = {
+  def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation)
+                                       (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtr map {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
         businessMatchingConnector.lookup(searchData) map {
-          response =>
-            response
+          dataReturned =>
+            validateAndCache(dataReturned = dataReturned)
         }
     }
   }
@@ -72,4 +62,22 @@ trait BusinessMatchingService {
     }
   }
 
+  private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): JsValue = {
+    dataReturned.validate[ReviewDetails] match {
+      case success: JsSuccess[ReviewDetails] => {
+        success map {
+          reviewDetailsReturned =>
+            dataCacheConnector.saveReviewDetails(reviewDetailsReturned)
+        }
+        dataReturned
+      }
+      case failure: JsError => dataReturned
+    }
+  }
+
+}
+
+object BusinessMatchingService extends BusinessMatchingService {
+  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  val dataCacheConnector: DataCacheConnector = DataCacheConnector
 }
