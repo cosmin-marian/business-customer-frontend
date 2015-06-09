@@ -38,12 +38,7 @@ trait BusinessRegController extends FrontendController with Actions {
         },
         registrationData => {
           businessRegistrationService.registerNonUk(registrationData).map {
-            registrationSuccessResponse => {
-              registrationSuccessResponse match {
-                case Some(reviewDetails) => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-                case None => BadRequest(views.html.business_registration(businessRegistrationForm, service))
-              }
-            }
+            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
           }
         }
       )

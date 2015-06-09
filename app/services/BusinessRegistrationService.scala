@@ -4,7 +4,9 @@ import java.util.UUID
 
 import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
+import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -25,7 +27,7 @@ trait BusinessRegistrationService {
   val issuingCountryCode : String
   val nonUKbusinessType : String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[Option[ReviewDetails]] = {
+  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
 
@@ -35,7 +37,7 @@ trait BusinessRegistrationService {
         val reviewDetails = createReviewDetails(registerResponse, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
-    } yield (reviewDetailsCache)
+    } yield (reviewDetailsCache.getOrElse(throw new InternalServerException(Messages("bc.connector.error.registration-failed"))))
   }
 
 

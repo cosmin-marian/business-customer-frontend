@@ -89,4 +89,5 @@ bc.business-registration-error.summaryHeader = There is a problem with the form
 bc.connector.error.service-unavailable=Service unavailable
 bc.connector.error.bad-request=Bad Request or Internal server error
 bc.connector.error.not-found=Not Found
+bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
