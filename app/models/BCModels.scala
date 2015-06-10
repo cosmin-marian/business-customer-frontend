@@ -24,3 +24,9 @@ object Organisation {
 object MatchBusinessData {
   implicit val formats = Json.format[MatchBusinessData]
 }
+
+case class MatchFailureResponse(reason: String)
+
+object MatchFailureResponse {
+  implicit val formats = Json.format[MatchFailureResponse]
+}

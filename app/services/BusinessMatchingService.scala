@@ -1,7 +1,7 @@
 package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.{Individual, MatchBusinessData, Organisation, ReviewDetails}
+import models._
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
@@ -63,6 +63,22 @@ trait BusinessMatchingService {
   }
 
   private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): JsValue = {
+    val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
+    isFailureResponse match {
+      case true => dataReturned
+      case false => {
+        val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
+        isAnIndividual match {
+          case true => {
+            val businessType = "Sole Trader"
+            val individual = (dataReturned \ "individual").as[Individual]
+          }
+          case false => {
+
+          }
+        }
+      }
+    }
     dataReturned.validate[ReviewDetails] match {
       case success: JsSuccess[ReviewDetails] => {
         success map {
@@ -73,6 +89,10 @@ trait BusinessMatchingService {
       }
       case failure: JsError => dataReturned
     }
+  }
+
+  private def convertToReviewDetails(dataReturned: JsValue): JsValue = {
+    dataReturned
   }
 
 }
