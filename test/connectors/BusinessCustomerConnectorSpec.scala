@@ -40,7 +40,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     val businessRequestData = NonUKRegistrationRequest(
       acknowledgmentReference = "SESS:123123123",
       organisation = businessOrgData,
-      address = AddressChoice(foreignAddress = businessAddress),
+      address = businessAddress,
       isAnAgent = false,
       isAGroup = false,
       nonUKIdentification = nonUKIdentification

@@ -9,12 +9,6 @@ object EtmpAddress {
   implicit val formats = Json.format[EtmpAddress]
 }
 
-case class AddressChoice(foreignAddress : EtmpAddress)
-
-object AddressChoice {
-  implicit val formats = Json.format[AddressChoice]
-}
-
 case class EtmpOrganisation(organisationName : String)
 
 object EtmpOrganisation {
@@ -29,7 +23,7 @@ object NonUKIdentification {
 
 case class NonUKRegistrationRequest(acknowledgmentReference: String,
                         organisation: EtmpOrganisation,
-                        address : AddressChoice,
+                        address : EtmpAddress,
                         isAnAgent : Boolean,
                         isAGroup : Boolean,
                         nonUKIdentification : NonUKIdentification)

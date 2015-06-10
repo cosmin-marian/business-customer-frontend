@@ -56,7 +56,7 @@ trait BusinessRegistrationService {
     NonUKRegistrationRequest(
       acknowledgmentReference = sessionOrUUID,
       organisation = businessOrgData,
-      address = AddressChoice(foreignAddress = businessAddress),
+      address = businessAddress,
       isAnAgent = false,
       isAGroup = false,
       nonUKIdentification = nonUKIdentification
