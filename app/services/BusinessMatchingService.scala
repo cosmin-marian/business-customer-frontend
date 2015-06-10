@@ -2,7 +2,8 @@ package services
 
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models._
-import play.api.libs.json.{JsError, JsSuccess, JsValue}
+import play.api.Logger
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.SessionKeys
@@ -64,6 +65,7 @@ trait BusinessMatchingService {
 
   private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): JsValue = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
+    Logger.info(s" ###### dataReturned = ${dataReturned}       ~~~~~ isFailureResponse = ${isFailureResponse}")
     isFailureResponse match {
       case true => dataReturned
       case false => {
@@ -72,27 +74,29 @@ trait BusinessMatchingService {
           case true => {
             val businessType = "Sole Trader"
             val individual = (dataReturned \ "individual").as[Individual]
+            val addressReturned = (dataReturned \ "address").as[EtmpAddress]
+            val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
+              line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
+              postcode = addressReturned.postalCode, country = addressReturned.countryCode)
+            val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}", businessType = businessType, businessAddress = address)
+            dataCacheConnector.saveReviewDetails(reviewDetails)
+            Json.toJson(reviewDetails)
           }
           case false => {
-
+            val organisation = (dataReturned \ "organisation").as[Organisation]
+            val businessType = organisation.organisationType
+            val businessName = organisation.organisationName
+            val addressReturned = (dataReturned \ "address").as[EtmpAddress]
+            val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
+              line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
+              postcode = addressReturned.postalCode, country = addressReturned.countryCode)
+            val reviewDetails = ReviewDetails(businessName = businessName, businessType = businessType, businessAddress = address)
+            dataCacheConnector.saveReviewDetails(reviewDetails)
+            Json.toJson(reviewDetails)
           }
         }
       }
     }
-    dataReturned.validate[ReviewDetails] match {
-      case success: JsSuccess[ReviewDetails] => {
-        success map {
-          reviewDetailsReturned =>
-            dataCacheConnector.saveReviewDetails(reviewDetailsReturned)
-        }
-        dataReturned
-      }
-      case failure: JsError => dataReturned
-    }
-  }
-
-  private def convertToReviewDetails(dataReturned: JsValue): JsValue = {
-    dataReturned
   }
 
 }
