@@ -16,16 +16,12 @@ object BusinessRegistrationService extends BusinessRegistrationService  {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
-  val issuingInstitution = "HMRC"
-  val issuingCountryCode = "GB"
   val nonUKbusinessType = "Non UK-based Company"
 }
 
 trait BusinessRegistrationService {
   val businessCustomerConnector: BusinessCustomerConnector
   val dataCacheConnector : DataCacheConnector
-  val issuingInstitution : String
-  val issuingCountryCode : String
   val nonUKbusinessType : String
 
   def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
@@ -46,9 +42,9 @@ trait BusinessRegistrationService {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
-    val nonUKIdentification = NonUKIdentification(idNumber = "id1",
-      issuingInstitution=issuingInstitution,
-      issuingCountryCode = issuingCountryCode)
+    val nonUKIdentification = NonUKIdentification(idNumber = registerData.businessUniqueId,
+      issuingInstitution= registerData.issuingInstitution,
+      issuingCountryCode = registerData.businessAddress.country)
 
     val businessAddress = EtmpAddress(addressLine1 = registerData.businessAddress.line_1,
       addressLine2 = registerData.businessAddress.line_2,

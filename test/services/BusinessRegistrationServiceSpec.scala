@@ -25,8 +25,6 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   object TestBusinessRegistrationService extends BusinessRegistrationService {
     val businessCustomerConnector: BusinessCustomerConnector = TestConnector
     val dataCacheConnector = mockDataCacheConnector
-    val issuingInstitution = "HMRC"
-    val issuingCountryCode = "GB"
     val nonUKbusinessType = "Non UK-based Company"
   }
 
@@ -54,7 +52,12 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
     "save the response from the registration" in {
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
-      val busRegData = BusinessRegistration(businessName = "testName", businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessUniqueId = s"BUID-${UUID.randomUUID}",
+        issuingInstitution = "issuingInstitution"
+      )
+
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress)
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
@@ -70,7 +73,12 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
     "save the response fails from the registration" in {
       implicit val hc = new HeaderCarrier(sessionId = None)
 
-      val busRegData = BusinessRegistration(businessName = "testName", businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessUniqueId = s"BUID-${UUID.randomUUID}",
+        issuingInstitution = "issuingInstitution"
+      )
+
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress)
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
