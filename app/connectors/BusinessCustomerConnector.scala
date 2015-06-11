@@ -29,8 +29,8 @@ trait BusinessCustomerConnector extends ServicesConfig {
 
   def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
 
-    val link = AuthLink.getAuthLink()
-    val postUrl = s"""$serviceURL/$baseURI/$registerURI"""
+    val authLink = AuthLink.getAuthLink()
+    val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map {
       response =>
