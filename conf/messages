@@ -69,7 +69,7 @@ bc.business-registration.line_3 = Address line 3
 bc.business-registration.line_4 = Address line 4
 bc.business-registration.country = Country
 bc.business-registration.businessUniqueId = Business Unique Id
-bc.business-registration.issuingInstitution = Institution that has issued BUI
+bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -78,8 +78,6 @@ bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address Line 1 must be entered
 bc.business-registration-error.line_2 = Address Line 2 must be entered
 bc.business-registration-error.country = Country must be entered
-bc.business-registration-error.businessUniqueId = Business Unique Id must be entered
-bc.business-registration-error.issuingInstitution = Institution that has issued BUI must be entered
 bc.business-registration-error.businessName.length = Business name must not be more than {0} characters
 bc.business-registration-error.line_1.length = Address line 1 must not be more than {0} characters
 bc.business-registration-error.line_2.length = Address line 2 must not be more than {0} characters
@@ -87,7 +85,7 @@ bc.business-registration-error.line_3.length = Address line 3 must not be more t
 bc.business-registration-error.line_4.length = Address line 4 must not be more than {0} characters
 bc.business-registration-error.country.length = Country must not be more than {0} characters
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
-bc.business-registration-error.issuingInstitution.length = Institution that has issued BUI must not be more than {0} characters
+bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
 
 

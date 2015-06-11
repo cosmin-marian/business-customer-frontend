@@ -33,12 +33,10 @@ object BusinessRegistrationForms {
         verifying(Messages("bc.business-registration-error.country"), x => x.length > 0)
         .verifying(Messages("bc.business-registration-error.country.length", 2), x => x.isEmpty || (x.nonEmpty && x.length <= 2))
       )(Address.apply)(Address.unapply),
-      "businessUniqueId" -> text.
-        verifying(Messages("bc.business-registration-error.businessUniqueId"), x => x.length > 0)
-        .verifying(Messages("bc.business-registration-error.businessUniqueId.length", 60), x => x.isEmpty || (x.nonEmpty && x.length <= 60)),
-      "issuingInstitution" -> text.
-        verifying(Messages("bc.business-registration-error.issuingInstitution"), x => x.length > 0)
-        .verifying(Messages("bc.business-registration-error.issuingInstitution.length", 40), x => x.isEmpty || (x.nonEmpty && x.length <= 40))
+      "businessUniqueId" -> optional(text)
+        .verifying(Messages("bc.business-registration-error.businessUniqueId.length", 60), x => x.isEmpty || (x.nonEmpty && x.get.length <= 60)),
+      "issuingInstitution" -> optional(text)
+        .verifying(Messages("bc.business-registration-error.issuingInstitution.length", 40), x => x.isEmpty || (x.nonEmpty && x.get.length <= 40))
    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
