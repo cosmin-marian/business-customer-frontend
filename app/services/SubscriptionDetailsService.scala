@@ -3,7 +3,9 @@ package services
 
 import connectors.DataCacheConnector
 import models.SubscriptionDetails
+import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -20,7 +22,7 @@ trait SubscriptionDetailsService {
       cachedData =>
         cachedData match {
           case Some(subscriptionDetails) => subscriptionDetails
-          case _ => throw new RuntimeException("No Subscription Details Found")
+          case _ => throw new InternalServerException(Messages("bc.subscription.error.not-found"))
         }
     }
   }

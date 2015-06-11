@@ -95,3 +95,4 @@ bc.connector.error.bad-request=Bad Request or Internal server error
 bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
+bc.subscription.error.not-found=No Subscription Details found

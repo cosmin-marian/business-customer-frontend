@@ -1,6 +1,6 @@
 package connectors
 
-import models.{Address, ReviewDetails}
+import models.{SubscriptionDetails, Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
@@ -49,5 +49,24 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
       }
 
     }
+
+    "fetch saved subscriptionDetails from SessionCache" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      val subscriptionDetails: SubscriptionDetails = SubscriptionDetails("ATED", true)
+      when(mockSessionCache.fetchAndGetEntry[SubscriptionDetails](Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(Some(subscriptionDetails)))
+      val result = TestDataCacheConnector.fetchSubscriptionDetails
+      await(result) must be(Some(subscriptionDetails))
+    }
+
+
+    "save the subscriptionDetails details" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      val subscriptionDetails: SubscriptionDetails = SubscriptionDetails("ATED", true)
+      val returnedCacheMap: CacheMap = CacheMap("data", Map("user_settings" -> Json.toJson(subscriptionDetails)))
+      when(mockSessionCache.cache[ReviewDetails](Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+      val result = TestDataCacheConnector.saveSubscriptionDetails(subscriptionDetails)
+      await(result).get must be (subscriptionDetails)
+    }
+
   }
 }
