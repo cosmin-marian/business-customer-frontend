@@ -7,6 +7,7 @@ import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -24,7 +25,7 @@ trait BusinessRegistrationService {
   val dataCacheConnector : DataCacheConnector
   val nonUKbusinessType : String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
+  def registerNonUk(registerData: BusinessRegistration)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
 

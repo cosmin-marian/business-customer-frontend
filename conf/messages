@@ -96,3 +96,4 @@ bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
 bc.subscription.error.not-found=No Subscription Details found
+bc.connector.error.not-authorised=User does not have the correct authorisation

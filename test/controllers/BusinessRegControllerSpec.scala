@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 
+import builders.AuthBuilder
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
@@ -294,7 +295,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", "Unincorporated body", address)
 
-    when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

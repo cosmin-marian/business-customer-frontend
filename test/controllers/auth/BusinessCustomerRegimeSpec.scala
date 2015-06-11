@@ -20,8 +20,14 @@ class BusinessCustomerRegimeSpec extends PlaySpec with OneServerPerSuite with Mo
         BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(true)
       }
 
+      "return true when the user is an agent" in {
+        when(accounts.agent.isDefined).thenReturn(true)
+        BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(true)
+      }
+
       "return false when the user is not registered for Org account" in {
         when(accounts.org.isDefined).thenReturn(false)
+        when(accounts.agent.isDefined).thenReturn(false)
         BusinessCustomerRegime(serviceName).isAuthorised(accounts) must be(false)
       }
 

@@ -2,6 +2,7 @@ package connectors
 
 import java.util.UUID
 
+import builders.AuthBuilder
 import config.BusinessCustomerFrontendAuditConnector
 import models._
 import org.mockito.Matchers
@@ -31,6 +32,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
   object TestBusinessCustomerConnector extends BusinessCustomerConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
   }
+  implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
 
   "BusinessCustomerConnector" must {
     val businessOrgData = EtmpOrganisation(organisationName = "testName")
@@ -87,6 +89,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
       when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(500, Some(matchFailureResponse))))
 

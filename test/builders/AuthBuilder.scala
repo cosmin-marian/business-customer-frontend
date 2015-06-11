@@ -2,18 +2,13 @@ package builders
 
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import uk.gov.hmrc.domain.{Org, Nino}
+import uk.gov.hmrc.domain._
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.PayeAccount
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.OrgAccount
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import scala.concurrent.Future
 
-/**
- * Created by dev01 on 13/05/15.
- */
+
 object AuthBuilder {
 
   def createUserAuthContext(userId: String, userName: String) :AuthContext = {
@@ -23,9 +18,21 @@ object AuthBuilder {
 
   def mockAuthorisedUser(userId:String, mockAuthConnector: AuthConnector)  {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount(userId, Org("1234")))), None, None)
+      val orgAuthority = Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None)
       Future.successful(Some(orgAuthority))
 
+    }
+  }
+
+  def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector)  {
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      val agentAccount = AgentAccount(link="agent/1234",
+        agentCode=AgentCode(""),
+        agentUserId = AgentUserId(userId),
+        agentUserRole = AgentAdmin,
+        payeReference = None)
+      val agentAuthority = Authority(userId, Accounts(agent = Some(agentAccount)), None, None)
+      Future.successful(Some(agentAuthority))
     }
   }
 
