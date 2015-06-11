@@ -11,7 +11,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.BusinessMatchingService
+import services.{SubscriptionDetailsService, BusinessMatchingService}
 import uk.gov.hmrc.domain.{Org, SaUtr}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -29,15 +29,18 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val utr = "1097172564"
   val noMatchUtr = "1111111111"
   val mockAuthConnector = mock[AuthConnector]
+  val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   object TestHomeController extends HomeController {
     override val businessMatchService: BusinessMatchingService = TestOkBusinessMatchingService
     override val authConnector = mockAuthConnector
+    override val subscriptionDetailsService = mockSubscriptionDetailsService
   }
 
   object TestNoMatchHomeController extends HomeController {
     override val businessMatchService: BusinessMatchingService = TestBusinessMatchingService
     override val authConnector = mockAuthConnector
+    override val subscriptionDetailsService = mockSubscriptionDetailsService
   }
 
   object TestOkBusinessMatchingService extends BusinessMatchingService {
@@ -95,7 +98,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       Future.successful(Some(orgAuthority))
     }
 
-    val result = TestHomeController.homePage(service).apply(FakeRequest().withSession(
+    val result = TestHomeController.homePage(service, false).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -112,7 +115,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       Future.successful(Some(orgAuthority))
     }
 
-    val result = TestNoMatchHomeController.homePage(service).apply(FakeRequest().withSession(
+    val result = TestNoMatchHomeController.homePage(service, false).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -129,7 +132,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
       Future.successful(Some(orgAuthority))
     }
 
-    val result = TestHomeController.homePage(service).apply(FakeRequest().withSession(
+    val result = TestHomeController.homePage(service, false).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

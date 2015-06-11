@@ -27,6 +27,7 @@ GET         /cancel                                                             
 
 GET         /back/:service                                                      controllers.BusinessRegController.back(service: String)
 
+GET         /agent/:service                                                     controllers.HomeController.homePage(service: String, isAgent: Boolean ?= true)
+GET         /:service                                                           controllers.HomeController.homePage(service: String, isAgent: Boolean ?= false)
 
-GET         /:service                                                           controllers.HomeController.homePage(service: String)
 
