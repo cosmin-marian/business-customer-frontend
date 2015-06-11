@@ -12,7 +12,7 @@ import uk.gov.hmrc.play.http._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait BusinessMatchingConnector extends ServicesConfig {
+trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
 
   lazy val serviceURL = baseUrl("business-matching")
   val baseURI = "business-matching"

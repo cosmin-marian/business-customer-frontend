@@ -22,7 +22,7 @@ trait BusinessMatchingService {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
-        businessMatchingConnector.lookup(searchData) map {
+        businessMatchingConnector.lookup(searchData) flatMap {
           dataReturned =>
             validateAndCache(dataReturned = dataReturned)
         }
@@ -35,7 +35,7 @@ trait BusinessMatchingService {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
-        businessMatchingConnector.lookup(searchData) map {
+        businessMatchingConnector.lookup(searchData) flatMap {
           dataReturned =>
             validateAndCache(dataReturned = dataReturned)
         }
@@ -48,7 +48,7 @@ trait BusinessMatchingService {
       userUTR =>
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
-        businessMatchingConnector.lookup(searchData) map {
+        businessMatchingConnector.lookup(searchData) flatMap {
           dataReturned =>
             validateAndCache(dataReturned = dataReturned)
         }
@@ -63,11 +63,11 @@ trait BusinessMatchingService {
     }
   }
 
-  private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): JsValue = {
+  private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
     Logger.info(s" ###### dataReturned = ${dataReturned}       ~~~~~ isFailureResponse = ${isFailureResponse}")
     isFailureResponse match {
-      case true => dataReturned
+      case true => Future.successful(dataReturned)
       case false => {
         val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
         isAnIndividual match {
@@ -78,9 +78,12 @@ trait BusinessMatchingService {
             val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
               line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
               postcode = addressReturned.postalCode, country = addressReturned.countryCode)
-            val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}", businessType = businessType, businessAddress = address)
-            dataCacheConnector.saveReviewDetails(reviewDetails)
-            Json.toJson(reviewDetails)
+            val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}",
+              businessType = businessType, businessAddress = address)
+            dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
+              reviewDetailsReturned =>
+                Future.successful(Json.toJson(reviewDetails))
+            }
           }
           case false => {
             val organisation = (dataReturned \ "organisation").as[Organisation]
@@ -91,8 +94,10 @@ trait BusinessMatchingService {
               line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
               postcode = addressReturned.postalCode, country = addressReturned.countryCode)
             val reviewDetails = ReviewDetails(businessName = businessName, businessType = businessType, businessAddress = address)
-            dataCacheConnector.saveReviewDetails(reviewDetails)
-            Json.toJson(reviewDetails)
+            dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
+              reviewDetailsReturned =>
+                Future.successful(Json.toJson(reviewDetails))
+            }
           }
         }
       }
