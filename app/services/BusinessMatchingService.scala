@@ -29,29 +29,23 @@ trait BusinessMatchingService {
     }
   }
 
-  def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual)
-                                     (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
-    getUserUtr map {
-      userUTR =>
-        val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
-        businessMatchingConnector.lookup(searchData) flatMap {
-          dataReturned =>
-            validateAndCache(dataReturned = dataReturned)
-        }
+  def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String)
+                                     (implicit hc: HeaderCarrier): Future[JsValue] = {
+    val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+      utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
+    businessMatchingConnector.lookup(searchData) flatMap {
+      dataReturned =>
+        validateAndCache(dataReturned = dataReturned)
     }
   }
 
-  def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation)
-                                       (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
-    getUserUtr map {
-      userUTR =>
-        val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
-        businessMatchingConnector.lookup(searchData) flatMap {
-          dataReturned =>
-            validateAndCache(dataReturned = dataReturned)
-        }
+  def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String)
+                                       (implicit hc: HeaderCarrier): Future[JsValue] = {
+    val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
+      utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
+    businessMatchingConnector.lookup(searchData) flatMap {
+      dataReturned =>
+        validateAndCache(dataReturned = dataReturned)
     }
   }
 

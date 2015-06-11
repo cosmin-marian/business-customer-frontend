@@ -1,29 +1,29 @@
 package controllers
 
-import connectors.{BusinessMatchingConnector, DataCacheConnector}
+import config.FrontendAuthConnector
+import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessVerificationForms._
 import forms._
-import models.{MatchBusinessData, Individual, Organisation, ReviewDetails}
+import models.{Individual, Organisation, ReviewDetails}
 import play.api.data.Form
 import play.api.mvc._
+import services.BusinessMatchingService
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
 object BusinessVerificationController extends BusinessVerificationController {
-  override val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  override val businessMatchingService: BusinessMatchingService = BusinessMatchingService
   override val dataCacheConnector: DataCacheConnector = DataCacheConnector
   override val authConnector = FrontendAuthConnector
 }
 
 trait BusinessVerificationController extends FrontendController with Actions {
 
-  val businessMatchingConnector: BusinessMatchingConnector
+  val businessMatchingService: BusinessMatchingService
   val dataCacheConnector: DataCacheConnector
 
   def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
@@ -73,19 +73,29 @@ trait BusinessVerificationController extends FrontendController with Actions {
       }
   }
 
-  def helloWorld(response: String) = Action {
-    Ok(views.html.hello_world(response))
-  }
-
   private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String,
                               service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
       unincorporatedFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = unincorporatedFormData.cotaxUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = None, organisation = Some(Organisation(unincorporatedFormData.businessName, businessType)))
-        matchAndCache(businessDetails, service)
+        val organisation = Organisation(unincorporatedFormData.businessName, "unincorporatedBodyForm")
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+          organisation = organisation, utr = unincorporatedFormData.cotaxUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = unincorporatedBodyForm.withError(key = "cotaxUTR", message = errorMsg).fill(unincorporatedFormData)
+                BadRequest(views.html.business_lookup_UIB(errorForm, service, businessType))
+              }
+            }
+          }
+        }
       }
     )
   }
@@ -95,10 +105,24 @@ trait BusinessVerificationController extends FrontendController with Actions {
     soleTraderForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
       soleTraderFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = soleTraderFormData.saUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = Some(Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)), organisation = None)
-        matchAndCache(businessDetails, service)
+        val individual = Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)
+        businessMatchingService.matchBusinessWithIndividualName(isAnAgent = false,
+          individual = individual, saUTR = soleTraderFormData.saUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = soleTraderForm.withError(key = "saUTR", message = errorMsg).fill(soleTraderFormData)
+                BadRequest(views.html.business_lookup_SOP(errorForm, service, businessType))
+              }
+            }
+          }
+        }
       }
     )
   }
@@ -108,10 +132,24 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
       llpFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = llpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = None, organisation = Some(Organisation(llpFormData.businessName, businessType)))
-        matchAndCache(businessDetails, service)
+        val organisation = Organisation(llpFormData.businessName, "LLP")
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+          organisation = organisation, utr = llpFormData.psaUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = limitedLiabilityPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(llpFormData)
+                BadRequest(views.html.business_lookup_LLP(errorForm, service, businessType))
+              }
+            }
+          }
+        }
       }
     )
   }
@@ -121,10 +159,24 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
       lpFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = lpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = None, organisation = Some(Organisation(lpFormData.businessName, businessType)))
-        matchAndCache(businessDetails, service)
+        val organisation = Organisation(lpFormData.businessName, "partnership")
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+          organisation = organisation, utr = lpFormData.psaUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = limitedPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(lpFormData)
+                BadRequest(views.html.business_lookup_LP(errorForm, service, businessType))
+              }
+            }
+          }
+        }
       }
     )
   }
@@ -134,10 +186,24 @@ trait BusinessVerificationController extends FrontendController with Actions {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service, businessType))),
       obpFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = obpFormData.psaUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = None, organisation = Some(Organisation(obpFormData.businessName, businessType)))
-        matchAndCache(businessDetails, service)
+        val organisation = Organisation(obpFormData.businessName, "partnership")
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+          organisation = organisation, utr = obpFormData.psaUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = ordinaryBusinessPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(obpFormData)
+                BadRequest(views.html.business_lookup_OBP(errorForm, service, businessType))
+              }
+            }
+          }
+        }
       }
     )
   }
@@ -147,28 +213,26 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedCompanyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service, businessType))),
       limitedCompanyFormData => {
-        val businessDetails = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
-          utr = limitedCompanyFormData.cotaxUTR, requiresNameMatch = false, isAnAgent = false,
-          individual = None, organisation = Some(Organisation(limitedCompanyFormData.businessName, businessType)))
-        matchAndCache(businessDetails, service)
-      }
-    )
-  }
-
-  private def matchAndCache(matchBusinessData: MatchBusinessData, service: String)(implicit request: Request[AnyContent],
-                                                                                    hc: HeaderCarrier): Future[Result] = {
-    businessMatchingConnector.lookup(matchBusinessData) flatMap {
-      actualResponse => {
-        if (actualResponse.toString contains ("error")) {
-          Future.successful(Redirect(controllers.routes.BusinessVerificationController.helloWorld(actualResponse.toString)))
-        } else {
-          dataCacheConnector.saveReviewDetails(actualResponse.as[ReviewDetails]) flatMap {
-            cachedData =>
-              Future.successful(Redirect(controllers.routes.ReviewDetailsController.businessDetails(service)))
+        val organisation = Organisation(limitedCompanyFormData.businessName, "corporate body")
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+          organisation = organisation, utr = limitedCompanyFormData.cotaxUTR) map {
+          returnedResponse => {
+            val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+            validatedReviewDetails match {
+              case Some(reviewDetailsValidated) => {
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+              case None => {
+                //form with errors
+                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorForm = limitedCompanyForm.withError(key = "cotaxUTR", message = errorMsg).fill(limitedCompanyFormData)
+                BadRequest(views.html.business_lookup_LTD(errorForm, service, businessType))
+              }
+            }
           }
         }
       }
-    }
+    )
   }
 
 
