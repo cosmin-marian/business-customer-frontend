@@ -49,5 +49,6 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
       }
 
     }
+
   }
 }

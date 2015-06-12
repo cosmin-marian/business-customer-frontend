@@ -2,6 +2,7 @@ package services
 
 import _root_.java.util.UUID
 
+import builders.AuthBuilder
 import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
 import org.scalatest.BeforeAndAfter
@@ -12,6 +13,7 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{Json, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import uk.gov.hmrc.play.http.logging.SessionId
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,6 +22,7 @@ import scala.concurrent.Future
 
 class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
 
+  implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
   val mockDataCacheConnector = mock[DataCacheConnector]
 
   object TestBusinessRegistrationService extends BusinessRegistrationService {
@@ -29,7 +32,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   }
 
   object TestConnector extends BusinessCustomerConnector {
-    override def registerNonUk(registerData: NonUKRegistrationRequest)(implicit headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
+    override def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
       val nonUKResponse =  NonUKRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",

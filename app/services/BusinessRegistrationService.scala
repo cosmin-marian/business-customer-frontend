@@ -6,9 +6,11 @@ import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
-
+import utils.AuthUtils
 import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 
 object BusinessRegistrationService extends BusinessRegistrationService {
@@ -23,7 +25,8 @@ trait BusinessRegistrationService {
   val dataCacheConnector: DataCacheConnector
   val nonUKbusinessType: String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier): Future[ReviewDetails] = {
+
+  def registerNonUk(registerData: BusinessRegistration)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
 
@@ -37,10 +40,10 @@ trait BusinessRegistrationService {
   }
 
 
-  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier): NonUKRegistrationRequest = {
+  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)
+                                            (implicit user: AuthContext, headerCarrier: HeaderCarrier): NonUKRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
-
 
     val nonUKIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
@@ -63,7 +66,7 @@ trait BusinessRegistrationService {
       acknowledgmentReference = sessionOrUUID,
       organisation = businessOrgData,
       address = businessAddress,
-      isAnAgent = false,
+      isAnAgent = AuthUtils.isAgent,
       isAGroup = false,
       nonUKIdentification = nonUKIdentification
     )

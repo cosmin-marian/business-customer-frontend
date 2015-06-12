@@ -27,5 +27,4 @@ trait DataCacheConnector {
       case data => Future.successful(data.getEntry[ReviewDetails](sourceId))
     }
   }
-
 }

@@ -1,7 +1,8 @@
 bc.title = Business Customer
 bc.business-verification.title = Business Customer
 
-business-review.title = Verify business details
+business-review.user.title = Verify business details
+business-review.agent.title = Verify agent details
 bc.business-review.title = Welcome to {0} subscription
 
 business-review.name = Business name
@@ -13,6 +14,7 @@ business-review.button = Subscribe
 business-review.cancel-subscription = Cancel
 business-review.subscribe-banner = You are about to register the following business for {0}.
 business-review.registration-button = Continue
+bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
 
 
@@ -95,3 +97,6 @@ bc.connector.error.bad-request=Bad Request or Internal server error
 bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
+bc.subscription.error.not-found=No Subscription Details found
+bc.business-review.error.no-service=Service does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.serviceRedirectUrl'
+

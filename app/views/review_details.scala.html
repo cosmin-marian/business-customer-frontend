@@ -1,11 +1,14 @@
-@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 
 @bcMain(title = Messages("bc.business-review.title", service)) {
 
 <p class="text-section" id="bc.business-registration.text">@Messages("bc.business-registration.text")</p>
-<h1 aria-level="1" role="heading">@Html(Messages("business-review.title", service))</h1>
-
+@if(isAgent){
+<h1 aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
+}else{
+<h1 aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
+}
   <div id="banner">
       <p>@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
   </div>
@@ -42,7 +45,8 @@
         </tr>
   </table>
 
-<a href="@routes.ReviewDetailsController.redirectToService(service)" id="submit" class="button">@Messages("business-review.registration-button", service.toUpperCase)</a>
+<a href="@routes.ReviewDetailsController.continue(service)" id="submit" class="button">
+    @Messages("business-review.registration-button", service.toUpperCase)</a>
 <br><br>
 
 }
