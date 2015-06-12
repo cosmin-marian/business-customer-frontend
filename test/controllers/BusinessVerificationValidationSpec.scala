@@ -32,7 +32,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"} }""")
   val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"} }""")
   val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"} }""")
-  val matchFailureResponse = Json.parse("""{"reason":"Sorry. Business details not found. Try with correct UTR and/or name."}""")
+  val matchFailureResponse = Json.parse( """{"reason":"Sorry. Business details not found. Try with correct UTR and/or name."}""")
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     override val businessMatchingService = mockBusinessMatchingService

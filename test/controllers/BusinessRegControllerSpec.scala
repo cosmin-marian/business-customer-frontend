@@ -86,11 +86,11 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3")
-            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
             document.getElementById("businessAddress.country_field").text() must be("Country")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Id")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that has issued BUI")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Id (optional)")
+            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
             document.getElementById("back").text() must be("Back")
         }
@@ -112,8 +112,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Address Line 1 must be entered")
               contentAsString(result) must include("Address Line 2 must be entered")
               contentAsString(result) must include("Country must be entered")
-              contentAsString(result) must include("Business Unique Id must be entered")
-              contentAsString(result) must include("Institution that has issued BUI must be entered")
           }
         }
 
@@ -196,7 +194,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Institution that has issued BUI must not be more than 40 characters")
+              contentAsString(result) must include("Institution that issued the Business Unique Identifier must not be more than 40 characters")
           }
         }
 

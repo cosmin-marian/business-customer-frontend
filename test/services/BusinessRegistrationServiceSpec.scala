@@ -54,8 +54,8 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
 
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
-        businessUniqueId = s"BUID-${UUID.randomUUID}",
-        issuingInstitution = "issuingInstitution"
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        issuingInstitution = Some("issuingInstitution")
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress)
@@ -70,13 +70,32 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       reviewDetails.businessAddress.line_1 must be (busRegData.businessAddress.line_1)
     }
 
+    "save the response from the registration when we have no businessUniqueId or issuingInstitution" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessUniqueId = None,
+        issuingInstitution = None
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress)
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+      val regResult = TestBusinessRegistrationService.registerNonUk(busRegData)
+      val reviewDetails = await(regResult)
+
+      reviewDetails.businessName must be (busRegData.businessName)
+      reviewDetails.businessAddress.line_1 must be (busRegData.businessAddress.line_1)
+    }
+
     "save the response fails from the registration" in {
       implicit val hc = new HeaderCarrier(sessionId = None)
 
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
-        businessUniqueId = s"BUID-${UUID.randomUUID}",
-        issuingInstitution = "issuingInstitution"
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        issuingInstitution = Some("issuingInstitution")
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress)

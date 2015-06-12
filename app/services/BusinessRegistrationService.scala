@@ -41,9 +41,16 @@ trait BusinessRegistrationService {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
-    val nonUKIdentification = NonUKIdentification(idNumber = registerData.businessUniqueId,
-      issuingInstitution = registerData.issuingInstitution,
-      issuingCountryCode = registerData.businessAddress.country)
+
+    val nonUKIdentification = {
+      if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
+        Some(NonUKIdentification(idNumber = registerData.businessUniqueId,
+          issuingInstitution= registerData.issuingInstitution,
+          issuingCountryCode = Some(registerData.businessAddress.country)))
+      } else {
+        None
+      }
+    }
 
     val businessAddress = EtmpAddress(addressLine1 = registerData.businessAddress.line_1,
       addressLine2 = registerData.businessAddress.line_2,

@@ -15,9 +15,9 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.play.http._
 
 import scala.concurrent.Future
 
