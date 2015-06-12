@@ -8,7 +8,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http._
-import utils.AuthLink
+import utils.AuthUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -29,7 +29,7 @@ trait BusinessCustomerConnector extends ServicesConfig {
 
   def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
 
-    val authLink = AuthLink.getAuthLink()
+    val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map {

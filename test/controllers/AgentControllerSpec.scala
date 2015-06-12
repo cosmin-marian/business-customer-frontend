@@ -7,7 +7,7 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{SubscriptionDetailsService, BusinessRegistrationService}
+import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
@@ -19,12 +19,10 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationService = mock[BusinessRegistrationService]
-  val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   object TestAgentController extends AgentController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationService = mockBusinessRegistrationService
-    override val subscriptionDetailsService = mockSubscriptionDetailsService
   }
 
   val serviceName: String = "ATED"
@@ -79,7 +77,6 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockSubscriptionDetailsForAgent(serviceName, mockSubscriptionDetailsService)
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestAgentController.register(serviceName).apply(FakeRequest().withSession(

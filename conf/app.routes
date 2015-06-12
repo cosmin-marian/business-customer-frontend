@@ -9,8 +9,6 @@ GET         /business-verification/:service/businessForm/:businessType          
 
 POST        /business-verification/:service/continue                            controllers.BusinessVerificationController.continue(service: String)
 
-GET         /hello                                                              controllers.BusinessVerificationController.helloWorld(response: String)
-
 GET         /review-details/:service                                            controllers.ReviewDetailsController.businessDetails(service: String)
 
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
@@ -27,8 +25,8 @@ GET         /cancel                                                             
 
 GET         /back/:service                                                      controllers.BusinessRegController.back(service: String)
 
-GET         /agent/:service                                                     controllers.HomeController.homePage(service: String, isAgent: Boolean ?= true)
-GET         /:service                                                           controllers.HomeController.homePage(service: String, isAgent: Boolean ?= false)
+GET         /agent/:service                                                     controllers.HomeController.homePage(service: String)
+GET         /:service                                                           controllers.HomeController.homePage(service: String)
 
 GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 

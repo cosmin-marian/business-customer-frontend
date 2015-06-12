@@ -17,11 +17,11 @@ object BCUtils {
   def validateUTR(utr: Option[String]): Boolean = {
     utr match {
       case Some(utr) => {
-        utr.trim.length == 10 && utr.trim.forall(_.isDigit) && {
+        utr.trim.length == TEN && utr.trim.forall(_.isDigit) && {
           val actualUtr = utr.trim.toList
           val checkDigit = actualUtr.head.asDigit
           val restOfUtr = actualUtr.tail
-          val weights = List(6, 7, 8, 9, 10, 5, 4, 3, 2)
+          val weights = List(SIX, SEVEN, EIGHT, NINE, TEN, FIVE, FOUR, THREE, TWO)
           val weightedUtr = for((w1,u1) <- weights zip restOfUtr) yield {
             w1*(u1.asDigit)
           }
@@ -33,6 +33,7 @@ object BCUtils {
       case None => false
     }
   }
+  //scalastyle:off cyclomatic.complexity
   private def isValidUtr(remainder: Int, checkDigit: Int): Boolean = {
     remainder match {
       case ZERO => checkDigit == TWO

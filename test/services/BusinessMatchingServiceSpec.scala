@@ -1,113 +1,146 @@
 package services
 
+import java.util.UUID
+
 import connectors.{BusinessMatchingConnector, DataCacheConnector}
-import models.{Address, BusinessMatchDetails, ReviewDetails}
-import org.scalatest.BeforeAndAfter
+import models._
+import org.mockito.Matchers
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.{JsString, JsObject, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Org, CtUtr, SaUtr}
-import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.domain.{CtUtr, Org, SaUtr}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.http.logging.SessionId
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
+class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
-  object TestBusinessMatchingService extends BusinessMatchingService {
-    override val businessMatchingConnector: BusinessMatchingConnector = TestConnector
-    override val dataCacheConnector = TestDataCacheConnector
-  }
-
-  object TestBusinessMatchingServiceWithNoMatch extends BusinessMatchingService {
-    override val businessMatchingConnector: BusinessMatchingConnector = TestConnectorWithNoMatch
-    override val dataCacheConnector = TestDataCacheConnector
-  }
-
-  object TestConnector extends BusinessMatchingConnector {
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
-      Future(Json.toJson(reviewDetails))
-    }
-  }
-
-  object TestConnectorWithNoMatch extends BusinessMatchingConnector {
-    override def lookup(lookupData: BusinessMatchDetails)(implicit headerCarrier: HeaderCarrier): Future[JsValue] = {
-      Future(Json.toJson(JsObject(Seq("error" -> JsString("Generic error")))))
-    }
-  }
-
-  object TestDataCacheConnector extends DataCacheConnector {
-    override val sessionCache = SessionCache
-
-    var writes: Int = 0
-
-    override def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier) = {
-      writes = writes + 1
-      Future.successful(Some(reviewDetails))
-    }
-
-    def resetWrites() = {
-      writes = 0
-    }
-  }
-
-  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
-  val reviewDetails = ReviewDetails("ACME", "UIB", address)
-  val reviewDetailsJson = Json.toJson(reviewDetails)
+  val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "UK")
+  val testReviewDetails = ReviewDetails("ACME", "Limited", testAddress)
+  val matchFailureResponse = MatchFailureResponse(reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
+  val matchFailureResponseJson = Json.toJson(matchFailureResponse)
+  val successOrgJson = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909","agentReferenceNumber":"01234567890", "isEditable":true,"isAnAgent":false,"isAnIndividual":false, "organisation":{"organisationName":"Real Business Inc","isAGroup":true,"organisationType":"unincorporated body"},
+"address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
+  val successOrgReviewDetails = ReviewDetails("Real Business Inc", "unincorporated body", testAddress)
+  val successOrgReviewDetailsJson = Json.toJson(successOrgReviewDetails)
+  val successIndividualJson = Json.parse( """{"sapNumber":"1234567890", "safeId":"EX0012345678909", "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
+  val successIndReviewDetails = ReviewDetails("first name last name", "Sole Trader", testAddress)
+  val successIndReviewDetailsJson = Json.toJson(successIndReviewDetails)
+  val errorJson = Json.parse( """{"error" : "Some Error"}""")
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
-  implicit val hc = HeaderCarrier()
+  val testIndividual = Individual("firstName", "lastName", None)
+  val testOrganisation = Organisation("org name", "org type")
+  implicit val hc = HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
-  "BusinessMatchingService" must {
+  val mockBusinessMatchingConnector = mock[BusinessMatchingConnector]
+  val mockDataCacheConnector = mock[DataCacheConnector]
 
-    "use the correct data cache connector" in {
-      BusinessMatchingService.dataCacheConnector must be(DataCacheConnector)
-    }
+  object TestBusinessMatchingService extends BusinessMatchingService {
+    val businessMatchingConnector: BusinessMatchingConnector = mockBusinessMatchingConnector
+    val dataCacheConnector: DataCacheConnector = mockDataCacheConnector
+  }
 
-    "use the correct Middle service connector" in {
-      BusinessMatchingService.businessMatchingConnector must be(BusinessMatchingConnector)
-    }
-
-    "accept SA User object and return ReviewDetails object" in {
-      implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
-      val result = TestBusinessMatchingService.matchBusiness
-      await(result) must be(reviewDetailsJson)
-    }
-
-    "accept CT User object and return ReviewDetails object" in {
-      implicit val ctUser = AuthContext( Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
-      val result = TestBusinessMatchingService.matchBusiness
-      await(result) must be(reviewDetailsJson)
-    }
-
-    "accept Org User object and return error" in {
-      implicit val ctUser = AuthContext( Authority(uri = "testuser", accounts = Accounts(org = Some(OrgAccount("", Org("1234")))), None, None))
-      val result = TestBusinessMatchingService.matchBusiness
-      await(result) must be(JsObject(Seq("error" -> JsString("Generic error"))))
-    }
-
-    "return error when no match is found" in {
-      implicit val ctUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/individual/$utr", CtUtr(utr)))), None, None))
-      val result = TestBusinessMatchingServiceWithNoMatch.matchBusiness
-      await(result) must be(JsObject(Seq("error" -> JsString("Generic error"))))
-    }
+  override def beforeEach = {
+    reset(mockBusinessMatchingConnector)
+    reset(mockDataCacheConnector)
   }
 
   "BusinessMatchingService" must {
-    "increment dataCache counter by 1" in {
+    "matchBusinessWithUTR" must {
+      "for match found with SA user, return Review details as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successIndividualJson))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithUTR(false)
+        await(result.get) must be(successIndReviewDetailsJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
 
-      implicit val saUser = AuthContext(Authority(uri="testuser",accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
-      TestBusinessMatchingService.dataCacheConnector.resetWrites
+      "for match Not found with SA user, return Reasons as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
+        val result = TestBusinessMatchingService.matchBusinessWithUTR(false)
+        await(result.get) must be(matchFailureResponseJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
 
-      val result = TestBusinessMatchingService.matchBusiness
+      "for match found with CT user, return Review details as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/organisation/$utr", CtUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successOrgJson))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithUTR(false)
+        await(result.get) must be(successOrgReviewDetailsJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
 
-      await(result) must be(reviewDetailsJson)
+      "for match Not found with CT user, return Reasons as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/organisation/$utr", CtUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
+        val result = TestBusinessMatchingService.matchBusinessWithUTR(false)
+        await(result.get) must be(matchFailureResponseJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
 
-      TestBusinessMatchingService.dataCacheConnector.writes must be(1)
+      "for ORG user, return None as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(org = Some(OrgAccount("", Org("1234")))), None, None))
+        val result = TestBusinessMatchingService.matchBusinessWithUTR(false)
+        result must be(None)
+        verify(mockBusinessMatchingConnector, times(0)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
+    }
+
+    "matchBusinessWithIndividualName" must {
+      "for match found with SA user, return Review details as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successIndividualJson))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual, utr)
+        await(result) must be(successIndReviewDetailsJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
+
+      "for match Not found with SA user, return Reasons as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
+        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual, utr)
+        await(result) must be(matchFailureResponseJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
+    }
+
+    "matchBusinessWithOrganisationName" must {
+      "for match found with SA user, return Review details as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successIndividualJson))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        await(result) must be(successIndReviewDetailsJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
+
+      "for match Not found with SA user, return Reasons as JsValue" in {
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        await(result) must be(matchFailureResponseJson)
+        verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
+        verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
+      }
     }
   }
 

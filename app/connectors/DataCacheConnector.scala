@@ -1,6 +1,6 @@
 package connectors
 
-import models.{SubscriptionDetails, ReviewDetails}
+import models.ReviewDetails
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 
@@ -16,7 +16,6 @@ trait DataCacheConnector {
   val sessionCache: SessionCache
 
   val sourceId: String = "BC_Business_Details"
-  val userSettingsFormId: String = "user_settings"
 
   def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
     sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
@@ -26,17 +25,6 @@ trait DataCacheConnector {
     val result = sessionCache.cache[ReviewDetails](sourceId, reviewDetails)
     result flatMap {
       case data => Future.successful(data.getEntry[ReviewDetails](sourceId))
-    }
-  }
-
-  def fetchSubscriptionDetails(implicit hc: HeaderCarrier): Future[Option[SubscriptionDetails]] = {
-    sessionCache.fetchAndGetEntry[SubscriptionDetails](userSettingsFormId)
-  }
-
-  def saveSubscriptionDetails(subscriptionDetails: SubscriptionDetails)(implicit hc: HeaderCarrier): Future[Option[SubscriptionDetails]] = {
-    val result = sessionCache.cache[SubscriptionDetails](userSettingsFormId, subscriptionDetails)
-    result flatMap {
-      case data => Future.successful(data.getEntry[SubscriptionDetails](userSettingsFormId))
     }
   }
 }

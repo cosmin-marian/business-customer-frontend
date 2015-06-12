@@ -2,21 +2,18 @@ package controllers
 
 import java.util.UUID
 
-import connectors.{BusinessMatchingConnector, DataCacheConnector}
+import config.FrontendAuthConnector
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
-import org.mockito.Matchers
-import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.{Nino, Org}
+import services.BusinessMatchingService
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import config.FrontendAuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
@@ -25,28 +22,22 @@ import scala.concurrent.Future
 class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
-  val mockBusinessMatchingConnector = mock[BusinessMatchingConnector]
   val mockAuthConnector = mock[AuthConnector]
-  val mockDataCacheConnector = mock[DataCacheConnector]
+  val mockBusinessMatchingService = mock[BusinessMatchingService]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController {
-    override val businessMatchingConnector = mockBusinessMatchingConnector
-    override val dataCacheConnector = mockDataCacheConnector
     override val authConnector = mockAuthConnector
+    override val businessMatchingService = mockBusinessMatchingService
   }
 
   "BusinessVerificationController" must {
     "use the correct authentication connector" in {
-      controllers.BusinessVerificationController.authConnector must be(FrontendAuthConnector)
+      BusinessVerificationController.authConnector must be(FrontendAuthConnector)
     }
 
-    "use the correct business matching connector" in {
-      controllers.BusinessVerificationController.businessMatchingConnector must be(BusinessMatchingConnector)
-    }
-
-    "use the correct data cache connector" in {
-      controllers.BusinessVerificationController.dataCacheConnector must be(DataCacheConnector)
+    "use the correct business matching service" in {
+      BusinessVerificationController.businessMatchingService must be(BusinessMatchingService)
     }
 
     "respond to businessVerification" in {
@@ -260,17 +251,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-customer/register")
       }
-    }
-
-
-
-    "hello" must {
-
-      "respond with OK" in {
-        val result = TestBusinessVerificationController.helloWorld("").apply(FakeRequest())
-        status(result) must be(OK)
-      }
-
     }
 
     "submit" must {
@@ -552,12 +532,9 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           "if valid text has been entered - continue to next action - UIB" in {
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+            val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
             val successModel = ReviewDetails("ACME", "Unincorporated body", address)
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
-
-            when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
-            when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
             continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>

@@ -1,15 +1,12 @@
 package builders
 
-import models.SubscriptionDetails
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import services.SubscriptionDetailsService
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import scala.concurrent.Future
-
 
 object AuthBuilder {
 
@@ -41,16 +38,6 @@ object AuthBuilder {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createInvalidAuthority(userId)))
     }
-  }
-
-  def mockSubscriptionDetailsForUser(service: String, mockSubscriptionDetailsService : SubscriptionDetailsService) = {
-    val subscriptionDetails = SubscriptionDetails(service = service, isAgent = false)
-    when(mockSubscriptionDetailsService.fetchSubscriptionDetails(Matchers.any())).thenReturn(Future.successful(subscriptionDetails))
-  }
-
-  def mockSubscriptionDetailsForAgent(service: String, mockSubscriptionDetailsService : SubscriptionDetailsService) = {
-    val subscriptionDetails = SubscriptionDetails(service = service, isAgent = true)
-    when(mockSubscriptionDetailsService.fetchSubscriptionDetails(Matchers.any())).thenReturn(Future.successful(subscriptionDetails))
   }
 
   private def createInvalidAuthority(userId: String) :Authority = {

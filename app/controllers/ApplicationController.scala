@@ -1,9 +1,9 @@
 package controllers
 
-import play.api.mvc.Action
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.config.RunMode
 import play.api.Play
+import play.api.mvc.Action
+import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 
 trait ApplicationController extends FrontendController with RunMode {

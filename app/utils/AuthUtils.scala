@@ -2,9 +2,9 @@ package utils
 
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
-object AuthLink extends AuthLink
+object AuthUtils extends AuthUtils
 
-trait AuthLink {
+trait AuthUtils {
 
   def getAuthLink()(implicit user: AuthContext) = {
     (user.principal.accounts.org, user.principal.accounts.agent) match {
@@ -12,5 +12,9 @@ trait AuthLink {
       case (None, Some(x)) => x.link
       case _ => throw new RuntimeException("User does not have the correct authorisation")
     }
+  }
+
+  def isAgent()(implicit user: AuthContext) = {
+    user.principal.accounts.agent.isDefined
   }
 }
