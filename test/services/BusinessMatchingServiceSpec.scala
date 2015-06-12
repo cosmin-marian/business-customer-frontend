@@ -106,8 +106,8 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
         when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successIndividualJson))
         when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
-        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual)
-        await(result.get) must be(successIndReviewDetailsJson)
+        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual, utr)
+        await(result) must be(successIndReviewDetailsJson)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
         verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
       }
@@ -115,8 +115,8 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       "for match Not found with SA user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
         when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
-        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual)
-        await(result.get) must be(matchFailureResponseJson)
+        val result = TestBusinessMatchingService.matchBusinessWithIndividualName(false, testIndividual, utr)
+        await(result) must be(matchFailureResponseJson)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
         verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
       }
@@ -127,8 +127,8 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
         when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(successIndividualJson))
         when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
-        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation)
-        await(result.get) must be(successIndReviewDetailsJson)
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        await(result) must be(successIndReviewDetailsJson)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
         verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
       }
@@ -136,8 +136,8 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       "for match Not found with SA user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
         when(mockBusinessMatchingConnector.lookup(Matchers.any())(Matchers.any())).thenReturn(Future.successful(matchFailureResponseJson))
-        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation)
-        await(result.get) must be(matchFailureResponseJson)
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        await(result) must be(matchFailureResponseJson)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any())(Matchers.any())
         verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
       }

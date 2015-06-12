@@ -1,7 +1,6 @@
 package controllers
 
 import config.FrontendAuthConnector
-import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessVerificationForms._
 import forms._
@@ -17,14 +16,12 @@ import scala.concurrent.Future
 
 object BusinessVerificationController extends BusinessVerificationController {
   override val businessMatchingService: BusinessMatchingService = BusinessMatchingService
-  override val dataCacheConnector: DataCacheConnector = DataCacheConnector
   override val authConnector = FrontendAuthConnector
 }
 
 trait BusinessVerificationController extends FrontendController with Actions {
 
   val businessMatchingService: BusinessMatchingService
-  val dataCacheConnector: DataCacheConnector
 
   def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
@@ -78,7 +75,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
       unincorporatedFormData => {
-        val organisation = Organisation(unincorporatedFormData.businessName, "unincorporatedBodyForm")
+        val organisation = Organisation(unincorporatedFormData.businessName, "unincorporated body")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
           organisation = organisation, utr = unincorporatedFormData.cotaxUTR) map {
           returnedResponse => {
@@ -100,8 +97,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String
-                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String)
+                             (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     soleTraderForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
       soleTraderFormData => {
@@ -154,8 +151,8 @@ trait BusinessVerificationController extends FrontendController with Actions {
     )
   }
 
-  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service:
-    String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)
+                            (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
       lpFormData => {
