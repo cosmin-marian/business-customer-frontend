@@ -3,15 +3,16 @@ package controllers
 import java.util.UUID
 
 import connectors.DataCacheConnector
-import models.{Address, ReviewDetails}
+import models.{SubscriptionDetails, Address, ReviewDetails}
 import org.jsoup.Jsoup
-import org.mockito.Matchers
+import org.mockito.{Mockito, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -25,6 +26,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
+  val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
@@ -39,8 +41,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
-
       override val authConnector = mockAuthConnector
+      override val subscriptionDetailsService = mockSubscriptionDetailsService
     }
   }
 
@@ -48,6 +50,10 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     "use the correct data cache connector" in {
       controllers.ReviewDetailsController.dataCacheConnector must be(DataCacheConnector)
+    }
+
+    "use the correct subscription details service" in {
+      controllers.ReviewDetailsController.subscriptionDetailsService must be(SubscriptionDetailsService)
     }
 
     "unauthorised users" must {
@@ -154,6 +160,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockSubscriptionDetailsForUser(service, mockSubscriptionDetailsService)
     val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
@@ -164,6 +171,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockSubscriptionDetailsForUser(service, mockSubscriptionDetailsService)
+
     val testDetailsController = testReviewDetailsController
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 

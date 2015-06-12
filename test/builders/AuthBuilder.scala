@@ -1,7 +1,9 @@
 package builders
 
+import models.SubscriptionDetails
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -41,5 +43,15 @@ object AuthBuilder {
       val payeAuthority = Authority(userId, Accounts(paye = Some(PayeAccount(userId, Nino("AA026813B")))), None, None)
       Future.successful(Some(payeAuthority))
     }
+  }
+
+  def mockSubscriptionDetailsForUser(service: String, mockSubscriptionDetailsService : SubscriptionDetailsService) = {
+    val subscriptionDetails = SubscriptionDetails(service = service, isAgent = false)
+    when(mockSubscriptionDetailsService.fetchSubscriptionDetails(Matchers.any())).thenReturn(Future.successful(subscriptionDetails))
+  }
+
+  def mockSubscriptionDetailsForAgent(service: String, mockSubscriptionDetailsService : SubscriptionDetailsService) = {
+    val subscriptionDetails = SubscriptionDetails(service = service, isAgent = true)
+    when(mockSubscriptionDetailsService.fetchSubscriptionDetails(Matchers.any())).thenReturn(Future.successful(subscriptionDetails))
   }
 }
