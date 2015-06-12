@@ -46,6 +46,24 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
   }
 
+  def testReviewDetailsControllerNotFound = {
+    val mockDataCacheConnector = new DataCacheConnector {
+      val sessionCache = SessionCache
+
+      var reads: Int = 0
+
+      override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
+        reads = reads + 1
+        Future.successful(None)
+      }
+    }
+    new ReviewDetailsController {
+      override def dataCacheConnector = mockDataCacheConnector
+      override val authConnector = mockAuthConnector
+      override val subscriptionDetailsService = mockSubscriptionDetailsService
+    }
+  }
+
   "ReviewDetailsController" must {
 
     "use the correct data cache connector" in {
@@ -69,8 +87,15 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         }
       }
     }
+    "throw an exception if we have no review details" in {
+      businessDetailsWithAuthorisedUserNotFound { result =>
+        val thrown = the[RuntimeException] thrownBy contentAsString(result)
+        thrown.getMessage must include("No Details were found")
 
-    "return Review Details view" in {
+      }
+    }
+
+    "return Review Details view for a user" in {
       businessDetailsWithAuthorisedUser { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Verify business details")
@@ -81,7 +106,15 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-address-label").text must be("Registered address")
 
         document.select(".button").text must be("Continue")
+      }
+    }
 
+    "return Review Details view for an agent" in {
+
+      businessDetailsWithAuthorisedAgent { result =>
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").text must be("Verify agent details")
+        document.getElementById("banner").text must be("You are about to register the following business for ATED.")
       }
     }
 
@@ -95,17 +128,17 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
 
-  "redirect-to-service " must {
+  "conmtinue " must {
 
     "unauthorised users" must {
       "respond with a redirect" in {
-        redirectToServiceWithUnAuthorisedUser(service) { result =>
+        continueWithUnAuthorisedUser(service) { result =>
           status(result) must be(SEE_OTHER)
         }
       }
 
       "be redirected to the unauthorised page" in {
-        redirectToServiceWithUnAuthorisedUser(service) { result =>
+        continueWithUnAuthorisedUser(service) { result =>
           redirectLocation(result).get must include("/business-customer/unauthorised")
         }
       }
@@ -113,26 +146,34 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     "Authorised Users" must {
 
-      "return service start page correctly for ATED" in {
+      "return service start page correctly for ATED Users" in {
 
-        redirectToServiceWithAuthorisedUser(service) {
+        continueWithAuthorisedUser(service) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/ated-subscription/registered-business-address")
         }
       }
 
-      "return service start page correctly for AWRS" in {
+      "return service start page correctly for AWRS Users" in {
 
-        redirectToServiceWithAuthorisedUser("AWRS") {
+        continueWithAuthorisedUser("AWRS") {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }
       }
 
+      "return agent registration page correctly for Agents" in {
+
+        continueWithAuthorisedAgent(service) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/business-customer/agent/register")
+        }
+      }
       "throw an exception if it's an unknown service" in {
-        redirectToServiceWithAuthorisedUser("unknownServiceTest") {
+        continueWithAuthorisedUser("unknownServiceTest") {
           result =>
             val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
             thrown.getMessage must include("Service does not exist for : unknownServiceTest")
@@ -150,30 +191,59 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       SessionKeys.userId -> userId)
   }
 
-  private def redirectToServiceWithUnAuthorisedUser(service : String)(test: Future[Result] => Any) {
+  private def continueWithUnAuthorisedUser(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
-  private def redirectToServiceWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
+  private def continueWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     builders.AuthBuilder.mockSubscriptionDetailsForUser(service, mockSubscriptionDetailsService)
-    val result = testReviewDetailsController.redirectToService(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
+  private def continueWithAuthorisedAgent(service : String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockSubscriptionDetailsForAgent(service, mockSubscriptionDetailsService)
+    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  def businessDetailsWithAuthorisedAgent(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockSubscriptionDetailsForAgent(service, mockSubscriptionDetailsService)
+    val testDetailsController = testReviewDetailsController
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+
+    test(result)
+    testDetailsController
+  }
 
   def businessDetailsWithAuthorisedUser(test: Future[Result] => Any) = {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
-
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     builders.AuthBuilder.mockSubscriptionDetailsForUser(service, mockSubscriptionDetailsService)
-
     val testDetailsController = testReviewDetailsController
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+
+    test(result)
+    testDetailsController
+  }
+
+  def businessDetailsWithAuthorisedUserNotFound(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockSubscriptionDetailsForUser(service, mockSubscriptionDetailsService)
+    val testDetailsController = testReviewDetailsControllerNotFound
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)

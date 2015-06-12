@@ -1,7 +1,8 @@
 bc.title = Business Customer
 bc.business-verification.title = Business Customer
 
-business-review.title = Verify business details
+business-review.user.title = Verify business details
+business-review.agent.title = Verify agent details
 bc.business-review.title = Welcome to {0} subscription
 
 business-review.name = Business name
@@ -97,4 +98,4 @@ bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
 bc.subscription.error.not-found=No Subscription Details found
-bc.connector.error.not-authorised=User does not have the correct authorisation
+

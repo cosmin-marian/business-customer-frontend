@@ -21,7 +21,7 @@ POST        /business-verification/:service/submit/:businessType                
 
 POST        /send                                                               controllers.BusinessRegController.send(service: String)
 
-GET         /redirect-to-service/:service                                       controllers.ReviewDetailsController.redirectToService(service: String)
+GET         /review-details-continue/:service                                   controllers.ReviewDetailsController.continue(service: String)
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
 
@@ -29,5 +29,7 @@ GET         /back/:service                                                      
 
 GET         /agent/:service                                                     controllers.HomeController.homePage(service: String, isAgent: Boolean ?= true)
 GET         /:service                                                           controllers.HomeController.homePage(service: String, isAgent: Boolean ?= false)
+
+GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 
 

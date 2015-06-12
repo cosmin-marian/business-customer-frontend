@@ -30,21 +30,27 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
       subscriptionDetailsService.fetchSubscriptionDetails.flatMap{subscriptionDetails =>
         dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
           case Some(businessDetails) => Future.successful(Ok(views.html.review_details(subscriptionDetails, businessDetails)))
-          case _ => throw new InternalServerException(Messages("bc.business-review.error.not-found"))
+          case _ => throw new RuntimeException(Messages("bc.business-review.error.not-found"))
         }
       }
 
   }
 
-  def redirectToService(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def continue(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       subscriptionDetailsService.fetchSubscriptionDetails.flatMap { subscriptionDetails =>
-        val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl")
-        serviceRedirectUrl match {
-          case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
-          case _ => throw new RuntimeException(s"Service does not exist for :" +
-            s" $service. This should be in the conf file against 'govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl'")
+        subscriptionDetails.isAgent match {
+          case false => {
+            val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl")
+            serviceRedirectUrl match {
+              case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
+              case _ => throw new RuntimeException(s"Service does not exist for :" +
+                s" $service. This should be in the conf file against 'govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl'")
+            }
+          }
+          case true => Future.successful(Redirect(controllers.routes.AgentController.register(subscriptionDetails.service)))
         }
+
       }
   }
 }
