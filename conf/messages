@@ -98,4 +98,5 @@ bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
 bc.subscription.error.not-found=No Subscription Details found
+bc.business-review.error.no-service=Service does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.serviceRedirectUrl'
 

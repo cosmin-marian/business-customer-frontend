@@ -44,8 +44,8 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
             val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl")
             serviceRedirectUrl match {
               case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
-              case _ => throw new RuntimeException(s"Service does not exist for :" +
-                s" $service. This should be in the conf file against 'govuk-tax.$env.services.${subscriptionDetails.service.toLowerCase}.serviceRedirectUrl'")
+              case _ => throw new RuntimeException(Messages("bc.business-review.error.no-service", subscriptionDetails.service, subscriptionDetails.service.toLowerCase))
+
             }
           }
           case true => Future.successful(Redirect(controllers.routes.AgentController.register(subscriptionDetails.service)))
