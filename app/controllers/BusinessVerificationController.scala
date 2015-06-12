@@ -9,8 +9,9 @@ import play.api.data.Form
 import play.api.mvc._
 import services.BusinessMatchingService
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.Actions
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, Actions}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.AuthUtils
 
 import scala.concurrent.Future
 
@@ -71,12 +72,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String,
-                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                              service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
       unincorporatedFormData => {
         val organisation = Organisation(unincorporatedFormData.businessName, "unincorporated body")
-        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = unincorporatedFormData.cotaxUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
@@ -98,12 +99,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String)
-                             (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                             (implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     soleTraderForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
       soleTraderFormData => {
         val individual = Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)
-        businessMatchingService.matchBusinessWithIndividualName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithIndividualName(isAnAgent = AuthUtils.isAgent,
           individual = individual, saUTR = soleTraderFormData.saUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
@@ -125,12 +126,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def llpFormHandling(limitedLiabilityPartnershipForm: Form[LimitedLiabilityPartnershipMatch], businessType: String,
-                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                              service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
       llpFormData => {
         val organisation = Organisation(llpFormData.businessName, "LLP")
-        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = llpFormData.psaUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
@@ -152,12 +153,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)
-                            (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                            (implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
       lpFormData => {
         val organisation = Organisation(lpFormData.businessName, "partnership")
-        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = lpFormData.psaUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
@@ -179,12 +180,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def obpFormHandling(ordinaryBusinessPartnershipForm: Form[OrdinaryBusinessPartnershipMatch], businessType: String,
-                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                              service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service, businessType))),
       obpFormData => {
         val organisation = Organisation(obpFormData.businessName, "partnership")
-        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = obpFormData.psaUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
@@ -206,12 +207,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   }
 
   private def ltdFormHandling(limitedCompanyForm: Form[LimitedCompanyMatch], businessType: String,
-                              service: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+                              service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedCompanyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service, businessType))),
       limitedCompanyFormData => {
         val organisation = Organisation(limitedCompanyFormData.businessName, "corporate body")
-        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = false,
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = limitedCompanyFormData.cotaxUTR) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt

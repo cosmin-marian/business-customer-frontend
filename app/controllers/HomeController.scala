@@ -7,6 +7,7 @@ import play.api.libs.json.{JsError, JsSuccess}
 import services.BusinessMatchingService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.AuthUtils
 
 import scala.concurrent.Future
 
@@ -16,7 +17,7 @@ trait HomeController extends FrontendController with Actions {
 
   def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      businessMatchService.matchBusinessWithUTR(isAnAgent = false) match {
+      businessMatchService.matchBusinessWithUTR(isAnAgent = AuthUtils.isAgent) match {
         case Some(futureJsValue) => {
           futureJsValue map {
             jsValue => jsValue.validate[ReviewDetails] match {
