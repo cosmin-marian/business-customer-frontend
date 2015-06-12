@@ -51,10 +51,10 @@ trait BusinessVerificationController extends FrontendController with Actions {
       businessType match {
         case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, service, businessType))
         case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, service, businessType))
-        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service ,businessType))
+        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service, businessType))
         case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service, businessType))
         case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service, businessType))
-        case "LP" =>  Ok(views.html.business_lookup_LP(limitedPartnershipForm, service, businessType))
+        case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, service, businessType))
       }
   }
 

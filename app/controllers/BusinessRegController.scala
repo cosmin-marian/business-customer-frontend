@@ -1,8 +1,8 @@
 package controllers
 
+import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms._
-import config.FrontendAuthConnector
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -17,7 +17,7 @@ object BusinessRegController extends BusinessRegController {
 
 trait BusinessRegController extends FrontendController with Actions {
 
-  val businessRegistrationService : BusinessRegistrationService
+  val businessRegistrationService: BusinessRegistrationService
 
   def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
