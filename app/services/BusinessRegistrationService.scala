@@ -2,17 +2,16 @@ package services
 
 import java.util.UUID
 
-import connectors.{DataCacheConnector, BusinessCustomerConnector}
+import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.http.InternalServerException
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object BusinessRegistrationService extends BusinessRegistrationService  {
+object BusinessRegistrationService extends BusinessRegistrationService {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
@@ -21,10 +20,10 @@ object BusinessRegistrationService extends BusinessRegistrationService  {
 
 trait BusinessRegistrationService {
   val businessCustomerConnector: BusinessCustomerConnector
-  val dataCacheConnector : DataCacheConnector
-  val nonUKbusinessType : String
+  val dataCacheConnector: DataCacheConnector
+  val nonUKbusinessType: String
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
+  def registerNonUk(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier): Future[ReviewDetails] = {
 
     val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
 
@@ -38,9 +37,10 @@ trait BusinessRegistrationService {
   }
 
 
-  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier) : NonUKRegistrationRequest = {
+  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)(implicit headerCarrier: HeaderCarrier): NonUKRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
+
 
     val nonUKIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
@@ -51,12 +51,13 @@ trait BusinessRegistrationService {
         None
       }
     }
+
     val businessAddress = EtmpAddress(addressLine1 = registerData.businessAddress.line_1,
       addressLine2 = registerData.businessAddress.line_2,
       addressLine3 = registerData.businessAddress.line_3,
       addressLine4 = registerData.businessAddress.line_4,
       postalCode = registerData.businessAddress.postcode,
-      countryCode = registerData.businessAddress.country )
+      countryCode = registerData.businessAddress.country)
 
     NonUKRegistrationRequest(
       acknowledgmentReference = sessionOrUUID,
@@ -69,14 +70,14 @@ trait BusinessRegistrationService {
   }
 
   private def createReviewDetails(response: NonUKRegistrationResponse,
-          registerData: BusinessRegistration) :ReviewDetails = {
+                                  registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,
       businessType = nonUKbusinessType,
       businessAddress = registerData.businessAddress
-//      sapNumber = response.sapNumber,
-//      safeId  = response.safeId,
-//      agentReferenceNumber = response.agentReferenceNumber
+      //      sapNumber = response.sapNumber,
+      //      safeId  = response.safeId,
+      //      agentReferenceNumber = response.agentReferenceNumber
     )
   }
 

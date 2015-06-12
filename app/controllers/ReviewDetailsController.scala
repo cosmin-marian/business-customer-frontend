@@ -1,10 +1,10 @@
 package controllers
 
+import config.FrontendAuthConnector
 import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
 import play.api.Play
 import uk.gov.hmrc.play.config.RunMode
-import config.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -16,6 +16,7 @@ object ReviewDetailsController extends ReviewDetailsController {
 }
 
 trait ReviewDetailsController extends FrontendController with Actions with RunMode {
+
   import play.api.Play.current
 
   def dataCacheConnector: DataCacheConnector
@@ -30,7 +31,7 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
   def redirectToService(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
-      serviceRedirectUrl match{
+      serviceRedirectUrl match {
         case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
         case _ => throw new RuntimeException(s"Service does not exist for :" +
           s" $service. This should be in the conf file against 'govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl'")
