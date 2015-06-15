@@ -1,4 +1,4 @@
-@(businessTypeForm: Form[forms.BusinessType], service: String)(implicit request: Request[_])
+@(businessTypeForm: Form[forms.BusinessType], isAgent: Boolean, service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -25,10 +25,18 @@ $(document).ready(function() {
 </script>
 @errors(businessTypeForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
-<h1 id="business-verification-header">@Messages("bc.business-verification.header")</h1>
-<p id="business-lookup-text">@Messages("bc.business-verification.lookup-text")</p>
 
+@if(isAgent) {
+<h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.agent.header"))</h1>
+}else{
+<h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.user.header"))</h1>
+}
 
+@if(isAgent) {
+<p id="business-lookup-text">@Messages("bc.business-verification.agent.lookup-text")</p>
+}else{
+<p id="business-lookup-text">@Messages("bc.business-verification.user.lookup-text")</p>
+}
 
 @form(action = controllers.routes.BusinessVerificationController.continue(service)) {
 <div class="form-group">
