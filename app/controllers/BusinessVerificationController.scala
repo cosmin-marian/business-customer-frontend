@@ -26,13 +26,13 @@ trait BusinessVerificationController extends FrontendController with Actions {
 
   def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_verification(businessTypeForm, service))
+      Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service))
   }
 
   def continue(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessTypeForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, service))),
+        formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service))),
         value => {
           value.businessType match {
             case "NUK" => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
