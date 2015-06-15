@@ -17,6 +17,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
+import builders.AuthBuilder
 
 
 class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
@@ -650,7 +651,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -664,7 +665,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -678,7 +679,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -692,7 +693,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -706,7 +707,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -720,7 +721,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -734,7 +735,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -748,7 +749,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP").withSession(
       SessionKeys.sessionId -> sessionId,
