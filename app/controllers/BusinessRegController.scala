@@ -6,6 +6,7 @@ import forms.BusinessRegistrationForms._
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.AuthUtils
 
 import scala.concurrent.Future
 
@@ -21,7 +22,7 @@ trait BusinessRegController extends FrontendController with Actions {
 
   def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_registration(businessRegistrationForm, service))
+      Ok(views.html.business_registration(businessRegistrationForm, AuthUtils.isAgent, service))
   }
 
   def back(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
@@ -34,7 +35,7 @@ trait BusinessRegController extends FrontendController with Actions {
     implicit user => implicit request =>
       businessRegistrationForm.bindFromRequest.fold(
         formWithErrors => {
-          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service)))
+          Future.successful(BadRequest(views.html.business_registration(formWithErrors, AuthUtils.isAgent, service)))
         },
         registrationData => {
           businessRegistrationService.registerNonUk(registrationData).map {

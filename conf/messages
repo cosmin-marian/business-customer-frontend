@@ -61,7 +61,8 @@ bc.unauthorised.title=Unauthorised
 bc.unauthorised.heading=Unauthorised
 
 business-registration.title = Business Registration
-bc.business-registration.header = Non-UK business details
+bc.business-registration.user.header = Non-UK business details
+bc.business-registration.agent.header = Non-UK agent details
 bc.business-registration.subheader = You need to tell us the details of your business.
 bc.business-registration.text=ATED account registration
 bc.business-registration.businessName = Business name

@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], service: String)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -8,7 +8,11 @@
 
 @errors(businessRegistrationForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
-<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.header"))</h1>
+@if(isAgent) {
+<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.agent.header"))</h1>
+}else{
+<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.user.header"))</h1>
+}
 <p class="text-section" id="business-registration-subheader">@Messages("bc.business-registration.subheader")</p>
 
 @form(action = controllers.routes.BusinessRegController.send(service)) {

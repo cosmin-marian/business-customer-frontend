@@ -73,7 +73,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     "Authorised Users" must {
 
-      "return business registration view" in {
+      "return business registration view for a user" in {
 
         registerWithAuthorisedUser {
           result =>
@@ -83,6 +83,30 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.title() must be("Business Registration")
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("business-registration.header").text() must be("Non-UK business details")
+            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your business.")
+            document.getElementById("businessName_field").text() must be("Business name")
+            document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
+            document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+            document.getElementById("businessAddress.country_field").text() must be("Country")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Id (optional)")
+            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("submit").text() must be("Continue")
+            document.getElementById("back").text() must be("Back")
+        }
+      }
+
+      "return business registration view for an agent" in {
+
+        registerWithAuthorisedAgent {
+          result =>
+            status(result) must be(OK)
+            val document = Jsoup.parse(contentAsString(result))
+
+            document.title() must be("Business Registration")
+            document.getElementById("business-verification-text").text() must be("ATED account registration")
+            document.getElementById("business-registration.header").text() must be("Non-UK agent details")
             document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your business.")
             document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
@@ -236,6 +260,20 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def registerWithAuthorisedAgent(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
     val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
