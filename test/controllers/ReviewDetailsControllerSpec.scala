@@ -92,7 +92,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("banner").text must be("You are about to register the following business for ATED.")
         document.getElementById("bc.business-registration.text").text() must be("ATED account registration")
         document.getElementById("business-name-label").text must be("Business name")
-        document.getElementById("business-type-label").text must be("Type of business")
         document.getElementById("business-address-label").text must be("Registered address")
 
         document.select(".button").text must be("Continue")
