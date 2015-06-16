@@ -15,9 +15,12 @@ object AuthBuilder {
   }
 
   def createAgentAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createAgentAuthority(userId), nameFromSession = Some(userName))
+    AuthContext(authority = createAgentAuthority(userId, AgentAdmin), nameFromSession = Some(userName))
   }
 
+  def createAgentAssistantAuthContext(userId: String, userName: String) :AuthContext = {
+    AuthContext(authority = createAgentAuthority(userId, AgentAssistant), nameFromSession = Some(userName))
+  }
   def createInvalidAuthContext(userId: String, userName: String) :AuthContext = {
     AuthContext(authority = createInvalidAuthority(userId),  nameFromSession = Some(userName))
   }
@@ -30,7 +33,7 @@ object AuthBuilder {
 
   def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector)  {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
-      Future.successful(Some(createAgentAuthority(userId)))
+      Future.successful(Some(createAgentAuthority(userId, AgentAdmin)))
     }
   }
 
@@ -48,11 +51,11 @@ object AuthBuilder {
     Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None)
   }
 
-  private def createAgentAuthority(userId: String) :Authority = {
+  private def createAgentAuthority(userId: String, agentRole : AgentRole) :Authority = {
     val agentAccount = AgentAccount(link = "agent/1234",
       agentCode = AgentCode(""),
       agentUserId = AgentUserId(userId),
-      agentUserRole = AgentAdmin,
+      agentUserRole = agentRole,
       payeReference = None)
     Authority(userId, Accounts(agent = Some(agentAccount)), None, None)
   }
