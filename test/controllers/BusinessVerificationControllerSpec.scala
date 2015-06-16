@@ -138,11 +138,21 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("firstName_field").text() must be("First Name")
           document.getElementById("lastName_field").text() must be("Last Name")
           document.getElementById("saUTR_field").text() must be("Self Assessment Unique Tax Reference")
       }
+    }
 
+    "display correct heading for agent selecting Sole Trader" in {
+      businessLookupWithAuthorisedAgent("SOP") {
+        result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-type-header").text() must be("Search agent details")
+      }
     }
   }
 
@@ -162,8 +172,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("businessName_field").text() must be("Business Name")
           document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+      }
+    }
+
+    "display correct heading for agent selecting Limited Company" in {
+      businessLookupWithAuthorisedAgent("LTD") {
+        result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-type-header").text() must be("Search agent details")
       }
     }
   }
@@ -184,8 +205,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("businessName_field").text() must be("Business Name")
           document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+      }
+    }
+
+    "display correct heading for agent selecting Unincorporated Association option" in {
+      businessLookupWithAuthorisedAgent("UIB") {
+        result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-type-header").text() must be("Search agent details")
       }
     }
 
@@ -205,8 +237,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(OK)
 
             val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must be("Business Name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+
+      "display correct heading for agent selecting Ordinary Business Partnership option" in {
+        businessLookupWithAuthorisedAgent("OBP") {
+          result =>
+            status(result) must be(OK)
+
+            val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-type-header").text() must be("Search agent details")
         }
       }
     }
@@ -227,9 +270,18 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(OK)
 
             val document = Jsoup.parse(contentAsString(result))
-
+            document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must be("Business Name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+
+      "display correct heading for agent selecting Limited Liability Partnership option" in {
+        businessLookupWithAuthorisedAgent("LLP") {
+          result =>
+            status(result) must be(OK)
+            val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-type-header").text() must be("Search agent details")
         }
       }
     }
@@ -250,9 +302,18 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(OK)
 
             val document = Jsoup.parse(contentAsString(result))
-
+            document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must be("Business Name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+        }
+      }
+
+      "display correct heading for agent selecting Limited Partnership option" in {
+        businessLookupWithAuthorisedAgent("LLP") {
+          result =>
+            status(result) must be(OK)
+            val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-type-header").text() must be("Search agent details")
         }
       }
     }
@@ -752,6 +813,20 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP").withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def businessLookupWithAuthorisedAgent(businessType: String)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

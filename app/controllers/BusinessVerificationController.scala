@@ -50,12 +50,12 @@ trait BusinessVerificationController extends FrontendController with Actions {
   def businessForm(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       businessType match {
-        case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, service, businessType))
-        case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, service, businessType))
-        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, service, businessType))
-        case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, service, businessType))
-        case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, service, businessType))
-        case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, service, businessType))
+        case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, AuthUtils.isAgent, service, businessType))
+        case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, AuthUtils.isAgent, service, businessType))
+        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, AuthUtils.isAgent, service, businessType))
+        case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, AuthUtils.isAgent, service, businessType))
+        case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, AuthUtils.isAgent, service, businessType))
+        case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, AuthUtils.isAgent, service, businessType))
       }
   }
 
@@ -74,7 +74,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String,
                               service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     unincorporatedBodyForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, AuthUtils.isAgent, service, businessType))),
       unincorporatedFormData => {
         val organisation = Organisation(unincorporatedFormData.businessName, "unincorporated body")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
@@ -89,7 +89,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = unincorporatedBodyForm.withError(key = "cotaxUTR", message = errorMsg).fill(unincorporatedFormData)
-                BadRequest(views.html.business_lookup_UIB(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_UIB(errorForm, AuthUtils.isAgent, service, businessType))
               }
             }
           }
@@ -101,7 +101,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String)
                              (implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     soleTraderForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, AuthUtils.isAgent, service,  businessType))),
       soleTraderFormData => {
         val individual = Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)
         businessMatchingService.matchBusinessWithIndividualName(isAnAgent = AuthUtils.isAgent,
@@ -116,7 +116,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = soleTraderForm.withError(key = "saUTR", message = errorMsg).fill(soleTraderFormData)
-                BadRequest(views.html.business_lookup_SOP(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_SOP(errorForm, AuthUtils.isAgent, service,  businessType))
               }
             }
           }
@@ -128,7 +128,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def llpFormHandling(limitedLiabilityPartnershipForm: Form[LimitedLiabilityPartnershipMatch], businessType: String,
                               service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       llpFormData => {
         val organisation = Organisation(llpFormData.businessName, "LLP")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
@@ -143,7 +143,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = limitedLiabilityPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(llpFormData)
-                BadRequest(views.html.business_lookup_LLP(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_LLP(errorForm, AuthUtils.isAgent, service, businessType))
               }
             }
           }
@@ -155,7 +155,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)
                             (implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       lpFormData => {
         val organisation = Organisation(lpFormData.businessName, "partnership")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
@@ -170,7 +170,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = limitedPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(lpFormData)
-                BadRequest(views.html.business_lookup_LP(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_LP(errorForm, AuthUtils.isAgent, service, businessType))
               }
             }
           }
@@ -182,7 +182,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def obpFormHandling(ordinaryBusinessPartnershipForm: Form[OrdinaryBusinessPartnershipMatch], businessType: String,
                               service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       obpFormData => {
         val organisation = Organisation(obpFormData.businessName, "partnership")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
@@ -197,7 +197,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = ordinaryBusinessPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(obpFormData)
-                BadRequest(views.html.business_lookup_OBP(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_OBP(errorForm, AuthUtils.isAgent, service, businessType))
               }
             }
           }
@@ -209,7 +209,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
   private def ltdFormHandling(limitedCompanyForm: Form[LimitedCompanyMatch], businessType: String,
                               service: String)(implicit user: AuthContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     limitedCompanyForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, AuthUtils.isAgent, service, businessType))),
       limitedCompanyFormData => {
         val organisation = Organisation(limitedCompanyFormData.businessName, "corporate body")
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
@@ -224,7 +224,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
                 //form with errors
                 val errorMsg = (returnedResponse \ "reason").as[String]
                 val errorForm = limitedCompanyForm.withError(key = "cotaxUTR", message = errorMsg).fill(limitedCompanyFormData)
-                BadRequest(views.html.business_lookup_LTD(errorForm, service, businessType))
+                BadRequest(views.html.business_lookup_LTD(errorForm, AuthUtils.isAgent, service, businessType))
               }
             }
           }
