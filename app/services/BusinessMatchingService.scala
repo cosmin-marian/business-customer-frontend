@@ -64,16 +64,26 @@ trait BusinessMatchingService {
       case true => Future.successful(dataReturned)
       case false => {
         val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
+        val sapNumber = (dataReturned \ "sapNumber").as[String]
+        val safeId = (dataReturned \ "safeId").as[String]
+        val agentReferenceNumber = (dataReturned \ "agentReferenceNumber").as[String]
         isAnIndividual match {
           case true => {
             val businessType = "Sole Trader"
             val individual = (dataReturned \ "individual").as[Individual]
             val addressReturned = (dataReturned \ "address").as[EtmpAddress]
+
             val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
               line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
               postcode = addressReturned.postalCode, country = addressReturned.countryCode)
             val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}",
-              businessType = businessType, businessAddress = address)
+              businessType = businessType, businessAddress = address,
+              sapNumber = sapNumber,
+              safeId = safeId,
+              agentReferenceNumber = agentReferenceNumber,
+              firstName = Some(individual.firstName),
+              lastName = Some(individual.lastName)
+            )
             dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
               reviewDetailsReturned =>
                 Future.successful(Json.toJson(reviewDetails))
@@ -87,7 +97,12 @@ trait BusinessMatchingService {
             val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
               line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
               postcode = addressReturned.postalCode, country = addressReturned.countryCode)
-            val reviewDetails = ReviewDetails(businessName = businessName, businessType = businessType, businessAddress = address)
+            val reviewDetails = ReviewDetails(businessName = businessName,
+              businessType = businessType,
+              businessAddress = address,
+              sapNumber = sapNumber,
+              safeId = safeId,
+              agentReferenceNumber = agentReferenceNumber)
             dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
               reviewDetailsReturned =>
                 Future.successful(Json.toJson(reviewDetails))

@@ -616,7 +616,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
             val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-            val successModel = ReviewDetails("ACME", "Unincorporated body", address)
+            val successModel = ReviewDetails("ACME", "Unincorporated body", address, "sap123", "safe123", "agent123")
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
             continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(inputJsonForUIB)) {
