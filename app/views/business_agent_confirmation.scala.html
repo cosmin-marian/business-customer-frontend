@@ -1,0 +1,19 @@
+@(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import views.html.helpers.error._
+
+
+@bcMain(title = Messages("bc.business-agent.confirmation.title")) {
+
+<div id ="banner" class = "greenBanner form-field">
+    <h1 id="message"><img class="tick" src="../../assets/images/tick.png">@Messages("bc.business-agent.confirmation.message")</h1>
+</div>
+        <p id="confirm">@Messages("bc.business-agent.confirmation.instruction")</p>
+
+<div>
+    <button class="button" id="submit" type="submit">@Messages("bc.business-agent.confirmation.finish")</button>
+</div>
+
+}

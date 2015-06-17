@@ -17,6 +17,10 @@ business-review.registration-button = Continue
 bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
 
+bc.business-agent.confirmation.message = You have successfully created your agent ATED account
+bc.business-agent.confirmation.instruction = What happens next: Give your agent reference number to your client. They must create an ATED account, with your agent reference, to appoint you as their agent.
+bc.business-agent.confirmation.finish = Finish and sign out
+bc.business-agent.confirmation.title = Business Confirmation
 
 bc.business-verification.text=ATED account registration
 bc.business-verification.title=Business Verification
