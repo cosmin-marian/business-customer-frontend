@@ -317,7 +317,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -335,7 +335,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -353,7 +353,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -371,7 +371,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -389,7 +389,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -407,7 +407,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").size() must be(1)
+            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
