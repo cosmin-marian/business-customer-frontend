@@ -30,4 +30,3 @@ GET         /:service                                                           
 
 GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 
-

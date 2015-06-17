@@ -12,6 +12,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
+import org.jsoup.Jsoup
 
 
 class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
@@ -50,11 +51,17 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
 
     "Authorised Users" must {
 
-      "return confirmation view" in {
+      "return confirmation view for an agent" in {
 
         registerWithAuthorisedUser {
           result =>
             status(result) must be(OK)
+
+            val document = Jsoup.parse(contentAsString(result))
+            document.title() must be("Business Confirmation")
+            document.getElementById("message").text() must be("You have successfully created your agent ATED account")
+            document.getElementById("submit").text() must be("Finish and sign out")
+            document.getElementById("confirm").text() must startWith("What happens next:")
         }
       }
     }

@@ -20,6 +20,6 @@ trait AgentController extends FrontendController with Actions {
 
   def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-        Ok
+        Ok(views.html.business_agent_confirmation(request))
   }
 }
