@@ -63,6 +63,7 @@ bc.business-verification-error.psautr.length=Partnership Self Assessment Unique 
 bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference is not valid
 bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
+bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and up-to-date and try again
 
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised

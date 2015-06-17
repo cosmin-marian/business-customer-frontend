@@ -14,6 +14,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
 
 import scala.concurrent.Future
+import play.api.i18n.Messages
 
 object BusinessVerificationController extends BusinessVerificationController {
   override val businessMatchingService: BusinessMatchingService = BusinessMatchingService
@@ -87,7 +88,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = unincorporatedBodyForm.withError(key = "cotaxUTR", message = errorMsg).fill(unincorporatedFormData)
                 BadRequest(views.html.business_lookup_UIB(errorForm, AuthUtils.isAgent, service, businessType))
               }
@@ -114,7 +115,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = soleTraderForm.withError(key = "saUTR", message = errorMsg).fill(soleTraderFormData)
                 BadRequest(views.html.business_lookup_SOP(errorForm, AuthUtils.isAgent, service,  businessType))
               }
@@ -141,7 +142,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = limitedLiabilityPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(llpFormData)
                 BadRequest(views.html.business_lookup_LLP(errorForm, AuthUtils.isAgent, service, businessType))
               }
@@ -168,7 +169,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = limitedPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(lpFormData)
                 BadRequest(views.html.business_lookup_LP(errorForm, AuthUtils.isAgent, service, businessType))
               }
@@ -195,7 +196,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = ordinaryBusinessPartnershipForm.withError(key = "psaUTR", message = errorMsg).fill(obpFormData)
                 BadRequest(views.html.business_lookup_OBP(errorForm, AuthUtils.isAgent, service, businessType))
               }
@@ -222,7 +223,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
               }
               case None => {
                 //form with errors
-                val errorMsg = (returnedResponse \ "reason").as[String]
+                val errorMsg = Messages("bc.business-verification-error.not-found")
                 val errorForm = limitedCompanyForm.withError(key = "cotaxUTR", message = errorMsg).fill(limitedCompanyFormData)
                 BadRequest(views.html.business_lookup_LTD(errorForm, AuthUtils.isAgent, service, businessType))
               }
