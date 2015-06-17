@@ -77,10 +77,10 @@ trait BusinessRegistrationService {
 
     ReviewDetails(businessName = registerData.businessName,
       businessType = nonUKbusinessType,
-      businessAddress = registerData.businessAddress
-      //      sapNumber = response.sapNumber,
-      //      safeId  = response.safeId,
-      //      agentReferenceNumber = response.agentReferenceNumber
+      businessAddress = registerData.businessAddress,
+      sapNumber = response.sapNumber,
+      safeId  = response.safeId,
+      agentReferenceNumber = response.agentReferenceNumber
     )
   }
 
