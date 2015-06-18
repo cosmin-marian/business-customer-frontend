@@ -24,7 +24,7 @@ $(document).ready(function() {
  });
 </script>
 @errors(businessTypeForm)
-<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
+<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 
 @if(isAgent) {
 <h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.agent.header"))</h1>

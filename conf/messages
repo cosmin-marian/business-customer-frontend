@@ -22,7 +22,7 @@ bc.business-agent.confirmation.instruction = What happens next: Give your agent 
 bc.business-agent.confirmation.finish = Finish and sign out
 bc.business-agent.confirmation.title = Business Confirmation
 
-bc.business-verification.text=ATED account registration
+bc.business-verification.text={0} account registration
 bc.business-verification.title=Business Verification
 bc.business-verification.user.header = About your business details
 bc.business-verification.agent.header = About your agent details
@@ -73,7 +73,7 @@ business-registration.title = Business Registration
 bc.business-registration.user.header = Non-UK business details
 bc.business-registration.agent.header = Non-UK agent details
 bc.business-registration.subheader = You need to tell us the details of your business.
-bc.business-registration.text=ATED account registration
+bc.business-registration.text={0} account registration
 bc.business-registration.businessName = Business name
 bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2

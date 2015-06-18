@@ -3,7 +3,7 @@
 
 @bcMain(title = Messages("bc.business-review.title", service)) {
 
-<p class="text-section" id="bc.business-registration.text">@Messages("bc.business-registration.text")</p>
+<p class="text-section" id="bc.business-registration.text">@Messages("bc.business-registration.text", service.toUpperCase)</p>
 @if(isAgent){
 <h1 aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
 }else{

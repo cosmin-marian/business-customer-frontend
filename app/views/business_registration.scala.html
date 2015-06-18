@@ -7,7 +7,7 @@
 @bcMain(title = Messages("business-registration.title")) {
 
 @errors(businessRegistrationForm)
-<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text")</p>
+<p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 @if(isAgent) {
 <h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.agent.header"))</h1>
 }else{
