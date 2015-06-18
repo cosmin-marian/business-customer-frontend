@@ -13,7 +13,8 @@
         <p id="confirm">@Messages("bc.business-agent.confirmation.instruction")</p>
 
 <div>
-    <button class="button" id="submit" type="submit">@Messages("bc.business-agent.confirmation.finish")</button>
+    <a href="@routes.ApplicationController.logout" id="submit" class="button">
+        @Messages("bc.business-agent.confirmation.finish")</a>
 </div>
 
 }

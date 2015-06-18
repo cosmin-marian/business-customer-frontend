@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.auth.ExternalUrls
 import play.api.Play
 import play.api.mvc.Action
 import uk.gov.hmrc.play.config.RunMode
@@ -16,9 +17,12 @@ trait ApplicationController extends FrontendController with RunMode {
   }
 
   def cancel = Action { implicit request =>
-
     val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.cancelRedirectUrl")
     Redirect(serviceRedirectUrl.getOrElse("https://www.gov.uk/"))
+  }
+
+  def logout = Action { implicit request =>
+    Redirect(ExternalUrls.signOut)
   }
 
 }

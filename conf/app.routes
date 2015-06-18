@@ -22,6 +22,7 @@ POST        /send                                                               
 GET         /review-details-continue/:service                                   controllers.ReviewDetailsController.continue(service: String)
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
+GET         /logout                                                             controllers.ApplicationController.logout
 
 GET         /back/:service                                                      controllers.BusinessRegController.back(service: String)
 
