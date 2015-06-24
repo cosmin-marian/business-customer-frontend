@@ -30,7 +30,7 @@ trait BusinessMatchingService {
   }
 
   def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String)
-                                     (implicit hc: HeaderCarrier): Future[JsValue] = {
+                                     (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     businessMatchingConnector.lookup(searchData) flatMap {
@@ -40,7 +40,7 @@ trait BusinessMatchingService {
   }
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String)
-                                       (implicit hc: HeaderCarrier): Future[JsValue] = {
+                                       (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     businessMatchingConnector.lookup(searchData) flatMap {
