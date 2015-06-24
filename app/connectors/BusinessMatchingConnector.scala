@@ -9,6 +9,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http._
+import utils.AuthUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -22,7 +23,9 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
   val http: HttpGet with HttpPost = WSHttp
 
   def lookup(lookupData: MatchBusinessData)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
-    http.POST( s"""$serviceURL/$baseURI/$lookupURI""", Json.toJson(lookupData)) map {
+    val authLink = AuthUtils.getAuthLink()
+    val postUrl = s"""$serviceURL$authLink/$baseURI/$lookupURI"""
+    http.POST( postUrl, Json.toJson(lookupData)) map {
       response =>
         response.status match {
           case OK | NOT_FOUND => Json.parse(response.body)
