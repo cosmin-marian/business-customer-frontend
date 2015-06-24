@@ -3,6 +3,7 @@ package connectors
 
 import java.util.UUID
 
+import builders.AuthBuilder
 import config.BusinessCustomerFrontendAuditConnector
 import models.MatchBusinessData
 import org.mockito.Matchers
@@ -30,6 +31,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
   }
 
   val mockWSHttp = mock[MockHttp]
+  implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
 
   object TestBusinessMatchingConnector extends BusinessMatchingConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
@@ -47,6 +49,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "for a successful match, return business details" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
       await(result) must be(matchSuccessResponse)

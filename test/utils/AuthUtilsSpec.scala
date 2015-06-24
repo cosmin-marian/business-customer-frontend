@@ -17,14 +17,12 @@ class AuthUtilsSpec extends PlaySpec {
       implicit val aut = builders.AuthBuilder.createAgentAuthContext("agentId", "Agent Bloggs")
       val link = AuthUtils.getAuthLink()
       link must startWith("agent")
-      link must endWith("/admin")
     }
 
     "Return the agent link if we have agent assistant authorisation" in {
       implicit val aut = builders.AuthBuilder.createAgentAssistantAuthContext("agentId", "Agent Bloggs")
       val link = AuthUtils.getAuthLink()
       link must startWith("agent")
-      link must endWith("/assistant")
     }
 
     "throws an exception if the user does not have the correct authorisation" in {

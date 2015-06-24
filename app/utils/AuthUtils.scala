@@ -16,11 +16,7 @@ trait AuthUtils {
   }
 
   private def getAgentLink(agentAccount : AgentAccount) = {
-    if (agentAccount.agentUserRole.satisfiesRequiredRole(AgentAdmin)) {
-      agentAccount.link + "/admin"
-    } else {
-      agentAccount.link + "/assistant"
-    }
+    agentAccount.link
   }
 
   def isAgent()(implicit user: AuthContext) = {
