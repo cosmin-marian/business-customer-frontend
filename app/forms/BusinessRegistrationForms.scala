@@ -14,6 +14,7 @@ object BusinessRegistrationForms {
   val length0 = 0
   val length2 = 2
   val length60 = 60
+  val num = """(\D+)"""
 
   val businessRegistrationForm = Form(
     mapping(
@@ -37,12 +38,14 @@ object BusinessRegistrationForms {
         "country" -> text.
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
           .verifying(Messages("bc.business-registration-error.country.length", length2), x => x.isEmpty || (x.nonEmpty && x.length <= length2))
+          .verifying(Messages("bc.business-registration-error.country.number"), x => x.matches(num))
+
       )(Address.apply)(Address.unapply),
       "businessUniqueId" -> optional(text)
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
         .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40))
-   )(BusinessRegistration.apply)(BusinessRegistration.unapply)
+    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
@@ -51,7 +54,6 @@ object BusinessRegistrationForms {
       case None => true
     }
   }
-
 
 }
 

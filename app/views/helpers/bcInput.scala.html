@@ -41,6 +41,8 @@
         name="@elements.field.name"
         id="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}"
         value="@value"
+        @if(elements.args.contains('_maxLength)) {maxlength = "@elements.args.get('_maxLength)"}
+        @if(elements.args.contains('_size)) {size = "@elements.args.get('_size)"}
         />
         @if(elements.args.contains('_nested)) {
         @elements.args.get('_nested)
