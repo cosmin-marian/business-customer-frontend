@@ -89,7 +89,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessAddress.country_field").text() must be("Country")
+            document.getElementById("businessAddress.country_field").text() must include("ISO country code")
+            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Id (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
@@ -113,7 +114,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessAddress.country_field").text() must be("Country")
+            document.getElementById("businessAddress.country_field").text() must include("ISO country code")
+            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Id (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
@@ -136,7 +138,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Business name must be entered")
               contentAsString(result) must include("Address Line 1 must be entered")
               contentAsString(result) must include("Address Line 2 must be entered")
-              contentAsString(result) must include("Country must be entered")
+              contentAsString(result) must include("Country Code must be entered")
           }
         }
 
@@ -193,13 +195,23 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
-        "Country must be maximum of 2 characters" in {
+        "Country Code must be maximum of 2 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country must not be more than 2 characters")
+              contentAsString(result) must include("Country Code must not be more than 2 characters")
+          }
+        }
+
+        "Country Code must not contain numbers" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D1"} }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("Country Code must not contain numbers")
           }
         }
 

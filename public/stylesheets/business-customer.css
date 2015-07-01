@@ -26,6 +26,10 @@ th {
   font-weight: 700;
 }
 
+.field-1-4 {
+    width: 15%;
+}
+
 
    .greenBanner{
    background-color:#28a197;
