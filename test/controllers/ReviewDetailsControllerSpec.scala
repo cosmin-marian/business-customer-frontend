@@ -3,13 +3,16 @@ package controllers
 import java.util.UUID
 
 import connectors.DataCacheConnector
-import models.{ReviewDetails, Address}
+import models.{EnrolResponse, ReviewDetails, Address}
 import org.jsoup.Jsoup
+import org.mockito.Matchers
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AgentRegistrationService
 
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -23,6 +26,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
+  val mockAgentRegistrationService = mock[AgentRegistrationService]
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
@@ -38,6 +42,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
+      override val agentRegistrationService = mockAgentRegistrationService
     }
   }
 
@@ -55,6 +60,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
+      override val agentRegistrationService = mockAgentRegistrationService
     }
   }
 
@@ -117,7 +123,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
 
-  "conmtinue " must {
+  "continue " must {
 
     "unauthorised users" must {
       "respond with a redirect" in {
@@ -197,6 +203,9 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAuthorisedAgent(service : String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
+    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
     val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
