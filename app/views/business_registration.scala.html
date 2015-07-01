@@ -46,14 +46,13 @@
         '_id -> "businessAddress.line_4",
         '_showConstraints -> false)
 
-        <p class="panel-indent">@Messages("bc.business-registration.country.instruction")</p>
-
         @bcInput(businessRegistrationForm("businessAddress.country"),
         '_label ->  Html(Messages("bc.business-registration.country")),
         '_id -> "businessAddress.country",
         '_maxLength -> "2",
         '_inputClass -> "field-1-4",
         '_size -> "4",
+        '_hintText -> Messages("bc.business-registration.country.instruction"),
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessUniqueId"),
