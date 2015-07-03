@@ -2,16 +2,17 @@ package services
 
 import connectors.{DataCacheConnector, GovernmentGatewayConnector}
 import models.{EnrolResponse, EnrolRequest}
-import play.api.Logger
+import play.api.{Play, Logger}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import utils.GovernmentGatewayConstants
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
+import uk.gov.hmrc.play.config.RunMode
+import play.api.Play.current
 
-
-trait AgentRegistrationService {
+trait AgentRegistrationService extends RunMode  {
 
   val governmentGatewayConnector: GovernmentGatewayConnector
   val dataCacheConnector: DataCacheConnector
@@ -31,10 +32,20 @@ trait AgentRegistrationService {
   }
 
   private def createEnrolRequest(serviceName: String, agentReferenceNumber: String) :EnrolRequest = {
-    EnrolRequest(portalIdentifier = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
-      serviceName = serviceName,
-      friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
-      knownFact = agentReferenceNumber)
+    val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
+    agentEnrolmentService match {
+      case Some(enrolServiceName) => {
+        EnrolRequest(portalIdentifier = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
+          serviceName = enrolServiceName,
+          friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
+          knownFact = agentReferenceNumber)
+      }
+      case _ => {
+        Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = ${serviceName}")
+        throw new RuntimeException(Messages("bc.agent-service.error.no-agent-enrolment-service-name", serviceName, serviceName.toLowerCase))
+      }
+    }
+
   }
 }
 
