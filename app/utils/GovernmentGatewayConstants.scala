@@ -2,6 +2,6 @@ package utils
 
 object GovernmentGatewayConstants {
 
-  val PORTAL_IDENTIFIER = "HRMC_ATED"
-  val FRIENDLY_NAME = "Main Enrolment"
+  val PORTAL_IDENTIFIER = "MDTP"
+  val FRIENDLY_NAME = "Agent Enrolment"
 }

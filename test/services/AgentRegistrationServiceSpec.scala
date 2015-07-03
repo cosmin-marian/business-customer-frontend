@@ -60,5 +60,21 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
       val thrown = the[RuntimeException] thrownBy await(result)
       thrown.getMessage must include("No Details were found")
     }
+
+    "enrolAgent throw an exception if we have no service config" in {
+      val enrolSuccessResponse = EnrolResponse(serviceName = "INVALID_SERVICE_NAME", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
+      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType="",
+        businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        sapNumber="sap123",
+        safeId="safe123",
+        agentReferenceNumber="agent123")
+
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+      val result = TestAgentRegistrationService.enrolAgent("INVALID_SERVICE_NAME")
+      val thrown = the[RuntimeException] thrownBy await(result)
+      thrown.getMessage must startWith("Agent Enrolment Service Name does not exist for")
+    }
   }
 }
