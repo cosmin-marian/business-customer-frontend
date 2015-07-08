@@ -2,6 +2,7 @@ package connectors
 
 import config.WSHttp
 import models.{NonUKRegistrationResponse, NonUKRegistrationRequest}
+import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json.{Reads, JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -31,10 +32,22 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
       response =>
         response.status match {
           case OK => response.json.as[NonUKRegistrationResponse]
-          case NOT_FOUND => throw new InternalServerException(Messages("bc.connector.error.not-found"))
-          case SERVICE_UNAVAILABLE => throw new ServiceUnavailableException(Messages("bc.connector.error.service-unavailable"))
-          case BAD_REQUEST | INTERNAL_SERVER_ERROR => throw new InternalServerException(Messages("bc.connector.error.bad-request"))
-          case status => throw new InternalServerException(Messages("bc.connector.error.unknown-response", status))
+          case NOT_FOUND => {
+            Logger.warn(s"[BusinessCustomerConnector][registerNonUk] - Not Found Exception ${registerData.organisation.organisationName}")
+            throw new InternalServerException(Messages("bc.connector.error.not-found"))
+          }
+          case SERVICE_UNAVAILABLE => {
+            Logger.warn(s"[BusinessCustomerConnector][registerNonUk] - Service Unavailable Exception ${registerData.organisation.organisationName}")
+            throw new ServiceUnavailableException(Messages("bc.connector.error.service-unavailable"))
+          }
+          case BAD_REQUEST | INTERNAL_SERVER_ERROR => {
+            Logger.warn(s"[BusinessCustomerConnector][registerNonUk] - Bad Request Exception ${registerData.organisation.organisationName}")
+            throw new InternalServerException(Messages("bc.connector.error.bad-request"))
+          }
+          case status => {
+            Logger.warn(s"[BusinessCustomerConnector][registerNonUk] - $status Exception ${registerData.organisation.organisationName}")
+            throw new InternalServerException(Messages("bc.connector.error.unknown-response", status))
+          }
         }
     }
   }
