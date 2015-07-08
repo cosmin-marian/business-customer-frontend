@@ -18,11 +18,12 @@ trait BusinessMatchingService {
 
   def matchBusinessWithUTR(isAnAgent: Boolean)
                           (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
-    getUserUtr map {
-      userUTR =>
+    getUserUtrAndType map {
+      userUtrAndType =>
+        val (userUTR, userType) = userUtrAndType
         val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
-        businessMatchingConnector.lookup(searchData) flatMap {
+        businessMatchingConnector.lookup(searchData, userType) flatMap {
           dataReturned =>
             validateAndCache(dataReturned = dataReturned)
         }
@@ -33,7 +34,8 @@ trait BusinessMatchingService {
                                      (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
-    businessMatchingConnector.lookup(searchData) flatMap {
+    val userType = "sa"
+    businessMatchingConnector.lookup(searchData, userType) flatMap {
       dataReturned =>
         validateAndCache(dataReturned = dataReturned)
     }
@@ -43,16 +45,17 @@ trait BusinessMatchingService {
                                        (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgementReference = SessionKeys.sessionId,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
-    businessMatchingConnector.lookup(searchData) flatMap {
+    val userType = "org"
+    businessMatchingConnector.lookup(searchData, userType) flatMap {
       dataReturned =>
         validateAndCache(dataReturned = dataReturned)
     }
   }
 
-  private def getUserUtr(implicit user: AuthContext): Option[String] = {
+  private def getUserUtrAndType(implicit user: AuthContext): Option[(String, String)] = {
     (user.principal.accounts.sa, user.principal.accounts.ct) match {
-      case (Some(sa), x) => Some(sa.utr.utr.toString)
-      case (None, Some(ct)) => Some(ct.utr.utr.toString)
+      case (Some(sa), None) => Some((sa.utr.utr.toString, "sa"))
+      case (None, Some(ct)) => Some((ct.utr.utr.toString, "org"))
       case _ => None
     }
   }
