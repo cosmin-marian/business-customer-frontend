@@ -36,6 +36,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
   object TestBusinessMatchingConnector extends BusinessMatchingConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
   }
+  val userType ="sa"
 
   override def beforeEach = {
     reset(mockWSHttp)
@@ -51,7 +52,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       await(result) must be(matchSuccessResponse)
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
     }
@@ -60,7 +61,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       await(result) must be(matchFailureResponse)
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
     }
@@ -69,7 +70,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE, None)))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       val thrown = the[ServiceUnavailableException] thrownBy await(result)
       thrown.getMessage must include("Service unavailable")
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -79,7 +80,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       val thrown = the[BadRequestException] thrownBy await(result)
       thrown.getMessage must include("Bad Request")
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -89,7 +90,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, None)))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       val thrown = the[InternalServerException] thrownBy await(result)
       thrown.getMessage must include("Internal server error")
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -99,7 +100,7 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, None)))
-      val result = TestBusinessMatchingConnector.lookup(matchBusinessData)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType)
       val thrown = the[RuntimeException] thrownBy await(result)
       thrown.getMessage must include("Unknown response")
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
