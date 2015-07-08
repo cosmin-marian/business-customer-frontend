@@ -2,7 +2,7 @@ package services
 
 import _root_.java.util.UUID
 
-import builders.AuthBuilder
+import builders.{TestAudit, AuthBuilder}
 import connectors.{DataCacheConnector, BusinessCustomerConnector}
 import models._
 import org.scalatest.BeforeAndAfter
@@ -13,6 +13,7 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{Json, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import uk.gov.hmrc.play.http.logging.SessionId
@@ -29,6 +30,8 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
     val businessCustomerConnector: BusinessCustomerConnector = TestConnector
     val dataCacheConnector = mockDataCacheConnector
     val nonUKbusinessType = "Non UK-based Company"
+    override val audit: Audit = new TestAudit
+    override val appName: String = "Test"
   }
 
   object TestConnector extends BusinessCustomerConnector {

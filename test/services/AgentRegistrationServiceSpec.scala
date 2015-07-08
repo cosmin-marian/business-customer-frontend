@@ -1,6 +1,6 @@
 package services
 
-import builders.AuthBuilder
+import builders.{TestAudit, AuthBuilder}
 import connectors.{GovernmentGatewayConnector, BusinessCustomerConnector, DataCacheConnector}
 import models._
 import org.mockito.Matchers
@@ -10,6 +10,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import uk.gov.hmrc.play.http.logging.SessionId
@@ -26,6 +27,8 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
   object TestAgentRegistrationService extends AgentRegistrationService {
     val governmentGatewayConnector: GovernmentGatewayConnector = mockGGConnector
     val dataCacheConnector = mockDataCacheConnector
+    override val audit: Audit = new TestAudit
+    override val appName: String = "Test"
   }
 
   "AgentRegistrationService" must {

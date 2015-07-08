@@ -2,6 +2,7 @@ package connectors
 
 import config.WSHttp
 import models._
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -25,10 +26,30 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
       response =>
         response.status match {
           case OK => response.json.as[EnrolResponse]
-          case BAD_REQUEST => throw new BadRequestException(response.body)
-          case NOT_FOUND => throw new NotFoundException(response.body)
-          case SERVICE_UNAVAILABLE => throw new ServiceUnavailableException(response.body)
-          case _ => throw new InternalServerException(response.body)
+          case BAD_REQUEST => {
+            Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"Bad Request Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Service: ${enrolRequest.serviceName}}")
+            throw new BadRequestException(response.body)
+          }
+          case NOT_FOUND => {
+            Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"Not Found Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Service: ${enrolRequest.serviceName}}")
+            throw new NotFoundException(response.body)
+          }
+          case SERVICE_UNAVAILABLE => {
+            Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"Service Unavailable Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Service: ${enrolRequest.serviceName}}")
+            throw new ServiceUnavailableException(response.body)
+          }
+          case status => {
+            Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"status:${status} Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Service: ${enrolRequest.serviceName}}")
+            throw new InternalServerException(response.body)
+          }
         }
     }
 

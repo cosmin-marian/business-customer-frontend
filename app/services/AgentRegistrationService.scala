@@ -1,18 +1,21 @@
 package services
 
+import audit.Auditable
+import config.BusinessCustomerFrontendAuditConnector
 import connectors.{DataCacheConnector, GovernmentGatewayConnector}
 import models.{EnrolResponse, EnrolRequest}
 import play.api.{Play, Logger}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
 import utils.GovernmentGatewayConstants
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
-import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.config.{AppName, RunMode}
 import play.api.Play.current
 
-trait AgentRegistrationService extends RunMode  {
+trait AgentRegistrationService extends RunMode with Auditable {
 
   val governmentGatewayConnector: GovernmentGatewayConnector
   val dataCacheConnector: DataCacheConnector
@@ -28,7 +31,9 @@ trait AgentRegistrationService extends RunMode  {
   }
 
   private def enrolAgent(serviceName: String, agentReferenceNumber: String)(implicit headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
-    governmentGatewayConnector.enrol(createEnrolRequest(serviceName, agentReferenceNumber))
+    val enrolResponse = governmentGatewayConnector.enrol(createEnrolRequest(serviceName, agentReferenceNumber))
+    auditEnrolAgent(agentReferenceNumber, enrolResponse)
+    enrolResponse
   }
 
   private def createEnrolRequest(serviceName: String, agentReferenceNumber: String) :EnrolRequest = {
@@ -47,10 +52,24 @@ trait AgentRegistrationService extends RunMode  {
     }
 
   }
+
+  private def auditEnrolAgent(agentReferenceNumber: String, enrolResponse: Future[EnrolResponse])(implicit hc: HeaderCarrier) = {
+    enrolResponse.map { response =>
+      sendDataEvent("enrolAgent", detail = Map(
+        "txName" -> "enrolAgent",
+        "agentReferenceNumber" -> agentReferenceNumber,
+        "service" -> response.serviceName,
+        "identifiersForDisplay" -> response.identifiersForDisplay,
+        "friendlyName" -> response.friendlyName)
+      )
+    }
+  }
 }
 
 object AgentRegistrationService extends AgentRegistrationService {
   override val governmentGatewayConnector = GovernmentGatewayConnector
   override val dataCacheConnector = DataCacheConnector
+  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  override val appName: String = AppName.appName
 }
 

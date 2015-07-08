@@ -2,10 +2,14 @@ package services
 
 import java.util.UUID
 
+import audit.Auditable
+import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.AuthUtils
@@ -13,14 +17,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-object BusinessRegistrationService extends BusinessRegistrationService {
+object BusinessRegistrationService extends BusinessRegistrationService  {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
   val nonUKbusinessType = "Non UK-based Company"
+  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  override val appName: String = AppName.appName
 }
 
-trait BusinessRegistrationService {
+trait BusinessRegistrationService extends Auditable {
   val businessCustomerConnector: BusinessCustomerConnector
   val dataCacheConnector: DataCacheConnector
   val nonUKbusinessType: String
@@ -36,7 +42,10 @@ trait BusinessRegistrationService {
         val reviewDetails = createReviewDetails(registerResponse, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
-    } yield (reviewDetailsCache.getOrElse(throw new InternalServerException(Messages("bc.connector.error.registration-failed"))))
+    } yield {
+      auditRegisterBusiness(registerData)
+      reviewDetailsCache.getOrElse(throw new InternalServerException(Messages("bc.connector.error.registration-failed")))
+    }
   }
 
 
@@ -89,5 +98,15 @@ trait BusinessRegistrationService {
       case Some(sessionId) => sessionId.value
       case None => UUID.randomUUID().toString.replace("-", "")
     }
+  }
+
+  private def auditRegisterBusiness(registerData: BusinessRegistration)(implicit hc: HeaderCarrier) = {
+    sendDataEvent("registerNonUk", detail = Map(
+      "txName" -> "registerNonUk",
+      "businessName" -> registerData.businessName,
+      "businessAddressLine1" -> registerData.businessAddress.line_1,
+      "businessUniqueId" -> registerData.businessUniqueId.getOrElse(""),
+      "issuingInstitution" -> registerData.issuingInstitution.getOrElse(""))
+    )
   }
 }

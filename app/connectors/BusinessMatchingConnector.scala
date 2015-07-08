@@ -3,6 +3,7 @@ package connectors
 
 import config.WSHttp
 import models.MatchBusinessData
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
@@ -29,10 +30,22 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
       response =>
         response.status match {
           case OK | NOT_FOUND => Json.parse(response.body)
-          case SERVICE_UNAVAILABLE => throw new ServiceUnavailableException("Service unavailable")
-          case BAD_REQUEST => throw new BadRequestException("Bad Request")
-          case INTERNAL_SERVER_ERROR => throw new InternalServerException("Internal server error")
-          case _ => throw new RuntimeException("Unknown response")
+          case SERVICE_UNAVAILABLE => {
+            Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
+            throw new ServiceUnavailableException("Service unavailable")
+          }
+          case BAD_REQUEST => {
+            Logger.warn(s"[BusinessMatchingConnector][lookup] - Bad Request Exception ${lookupData.utr}")
+            throw new BadRequestException("Bad Request")
+          }
+          case INTERNAL_SERVER_ERROR => {
+            Logger.warn(s"[BusinessMatchingConnector][lookup] - Service Internal server error ${lookupData.utr}")
+            throw new InternalServerException("Internal server error")
+          }
+          case status => {
+            Logger.warn(s"[BusinessMatchingConnector][lookup] - $status Exception ${lookupData.utr}")
+            throw new RuntimeException("Unknown response")
+          }
         }
     }
   }

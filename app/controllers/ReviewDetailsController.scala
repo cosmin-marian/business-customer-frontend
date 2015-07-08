@@ -1,12 +1,16 @@
 package controllers
 
-import config.FrontendAuthConnector
+import audit.Auditable
+import config.{BusinessCustomerFrontendAuditConnector, FrontendAuthConnector}
 import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
+import models.EnrolResponse
 import play.api.{Logger, Play}
 import play.api.i18n.Messages
 import services.AgentRegistrationService
-import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
@@ -17,6 +21,7 @@ object ReviewDetailsController extends ReviewDetailsController {
   override val dataCacheConnector = DataCacheConnector
   override val authConnector = FrontendAuthConnector
   override val agentRegistrationService = AgentRegistrationService
+
 }
 
 trait ReviewDetailsController extends FrontendController with Actions with RunMode {
@@ -58,4 +63,6 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
         }
       }
   }
+
+
 }
