@@ -56,6 +56,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   private def auditEnrolAgent(agentReferenceNumber: String, enrolResponse: Future[EnrolResponse])(implicit hc: HeaderCarrier) = {
     enrolResponse.map { response =>
       sendDataEvent("enrolAgent", detail = Map(
+        "txName" -> "enrolAgent",
         "agentReferenceNumber" -> agentReferenceNumber,
         "service" -> response.serviceName,
         "identifiersForDisplay" -> response.identifiersForDisplay,

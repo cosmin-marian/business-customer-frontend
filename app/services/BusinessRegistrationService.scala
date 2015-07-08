@@ -102,6 +102,7 @@ trait BusinessRegistrationService extends Auditable {
 
   private def auditRegisterBusiness(registerData: BusinessRegistration)(implicit hc: HeaderCarrier) = {
     sendDataEvent("registerNonUk", detail = Map(
+      "txName" -> "registerNonUk",
       "businessName" -> registerData.businessName,
       "businessAddressLine1" -> registerData.businessAddress.line_1,
       "businessUniqueId" -> registerData.businessUniqueId.getOrElse(""),
