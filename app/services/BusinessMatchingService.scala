@@ -54,9 +54,8 @@ trait BusinessMatchingService {
 
   private def getUserUtrAndType(implicit user: AuthContext): Option[(String, String)] = {
     (user.principal.accounts.sa, user.principal.accounts.ct) match {
-      case (Some(sa), Some(ct)) => None
-      case (Some(sa), None) => Some(sa.utr.utr.toString, "sa")
-      case (None, Some(ct)) => Some(ct.utr.utr.toString, "org")
+      case (Some(sa), None) => Some((sa.utr.utr.toString, "sa"))
+      case (None, Some(ct)) => Some((ct.utr.utr.toString, "org"))
       case _ => None
     }
   }
