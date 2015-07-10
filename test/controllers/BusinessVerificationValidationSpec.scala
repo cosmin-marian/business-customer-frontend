@@ -34,9 +34,18 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
   val matchFailureResponse = Json.parse( """{"reason":"Sorry. Business details not found. Try with correct UTR and/or name."}""")
 
-  object TestBusinessVerificationController extends BusinessVerificationController {
-    override val businessMatchingService = mockBusinessMatchingService
-    val authConnector = mockAuthConnector
+  def submitWithUnAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.submit(service, businessType).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
   }
 
   "BusinessVerificationController" must {
@@ -251,7 +260,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
         }
       }
 
@@ -299,7 +308,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
+            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
         }
       }
     }
@@ -317,7 +326,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-obp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -335,7 +344,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-llp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -353,7 +362,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-lp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -371,7 +380,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-sop-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -389,7 +398,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-uib-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -407,7 +416,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.select(".error-notification").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-ltd-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
         }
       }
     }
@@ -428,20 +437,6 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-  }
-
-  def submitWithUnAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
-
-    builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-
-    val result = TestBusinessVerificationController.submit(service, businessType).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
-
-    test(result)
   }
 
   def submitWithAuthorisedUserSuccessOrg(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
@@ -519,4 +514,10 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
+  object TestBusinessVerificationController extends BusinessVerificationController {
+    override val businessMatchingService = mockBusinessMatchingService
+    val authConnector = mockAuthConnector
+  }
+
 }
+
