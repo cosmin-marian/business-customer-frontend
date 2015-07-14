@@ -173,8 +173,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
-          document.getElementById("businessName_field").text() must be("Business Name")
-          document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+          document.getElementById("businessName_field").text() must include("Registered name")
+          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+          document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
+
       }
     }
 
@@ -206,8 +209,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
-          document.getElementById("businessName_field").text() must be("Business Name")
-          document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+          document.getElementById("businessName_field").text() must be("Registered name")
+          document.getElementById("cotaxUTR_field").text() must be("Corporation Tax Unique Tax Reference (UTR)")
       }
     }
 
@@ -238,7 +241,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
+            document.getElementById("businessName_field").text() must be("Registered name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
       }
@@ -271,7 +274,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
+            document.getElementById("businessName_field").text() must be("Registered name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
       }
@@ -303,7 +306,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
+            document.getElementById("businessName_field").text() must be("Registered name")
             document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
         }
       }
@@ -413,11 +416,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
 
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
-                document.getElementById("cotaxUTR_field").text() must include("COTAX Unique Tax Reference")
+                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
 
@@ -453,11 +456,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
-                document.getElementById("cotaxUTR_field").text() must include("COTAX Unique Tax Reference")
+                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
 
@@ -494,10 +497,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -534,10 +537,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -575,10 +578,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -607,8 +610,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
         }
-
-
 
         "submit of continue" must {
 
