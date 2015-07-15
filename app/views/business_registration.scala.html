@@ -66,13 +66,12 @@
         '_showConstraints -> false)
     </div>
 
-</div>
 
     <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
+</div>
 
-    <div>
-       <p> <a href="@controllers.routes.BusinessRegController.back(service: String)"  id="back">@Messages("bc.business-registration.back")</a> </p>
-    </div>
+<a href="@controllers.routes.BusinessRegController.back(service: String)"  id="back">@Messages("bc.business-registration.back")</a>
+
 }
 
 }

@@ -15,24 +15,27 @@
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
 }
-
+<div class="form-group">
 @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
 <div id="business-type-lp-form" class="form-field">
 
     @bcInput(limitedPartnershipForm("businessName"),
     '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    '_hintText -> Messages("bc.business-verification.registered-name.hint"),
     '_id -> "businessName",
     '_showConstraints -> false)
 
     @bcInput(limitedPartnershipForm("psaUTR"),
     '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
     '_id -> "psaUTR",
+    '_hintText -> Messages("bc.business-verification.saUTR.hint"),
     '_showConstraints -> false)
 
 </div>
-<button class="button" id="submit" type="submit">Continue</button>
+<button class="button" id="submit" type="submit">Search</button>
 }
-
+</div>
+<a href="@controllers.routes.BusinessVerificationController.businessVerification(service: String)">Back</a>
 
 }

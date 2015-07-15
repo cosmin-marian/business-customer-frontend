@@ -141,7 +141,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("firstName_field").text() must be("First Name")
           document.getElementById("lastName_field").text() must be("Last Name")
-          document.getElementById("saUTR_field").text() must be("Self Assessment Unique Tax Reference")
+          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("saUTR_hint").text() must be("In the header of any letter received from HMRC")
       }
     }
 
@@ -209,8 +210,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
-          document.getElementById("businessName_field").text() must be("Registered name")
-          document.getElementById("cotaxUTR_field").text() must be("Corporation Tax Unique Tax Reference (UTR)")
+          document.getElementById("businessName_field").text() must include("Registered name")
+          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+          document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
       }
     }
 
@@ -241,8 +244,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Registered name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 
@@ -274,8 +279,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Registered name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 
@@ -306,8 +313,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Registered name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 

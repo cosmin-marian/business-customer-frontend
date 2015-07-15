@@ -41,10 +41,12 @@ bc.business-verification.SOP=Sole Trader / Self-employed
 bc.business-verification.radio-legend=What type of business is it?
 bc.business-verification.firstNameField=First Name
 bc.business-verification.lastNameField=Last Name
-bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
+bc.business-verification.saUTRField=Self Assessment Unique Tax Reference (UTR)
+bc.business-verification.saUTR.hint=In the header of any letter received from HMRC
 bc.business-verification.coUTRField=Corporation Tax Unique Tax Reference (UTR)
 bc.business-verification.businessNamefield=Registered name
-bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference
+bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference (UTR)
+bc.business-verification.partnerUTRField.hint=In the header of any letter received from HMRC
 bc.business-verification.registered-name.hint=The name on your incorporation certificate
 bc.business-verification.ctutr.hint=In the header of any letter received from HMRC
 
