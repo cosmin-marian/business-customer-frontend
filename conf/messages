@@ -5,7 +5,7 @@ business-review.user.title = Verify business details
 business-review.agent.title = Verify agent details
 bc.business-review.title = Welcome to {0} subscription
 
-business-review.name = Business name
+business-review.name = Name
 business-review.type = Type of business
 business-review.address = Registered address
 business-review.telephone = Telephone
