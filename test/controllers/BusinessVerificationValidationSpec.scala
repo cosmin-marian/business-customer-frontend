@@ -74,11 +74,11 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
 
-      "Business Name must not be more than 40 characters" in {
+      "Registered Name must not be more than 40 characters" in {
         submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Business Name must not be more than 40 characters")
+            contentAsString(result) must include("Registered name must not be more than 40 characters")
         }
       }
 
@@ -130,11 +130,11 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
 
-      "Business Name must not be more than 40 characters" in {
+      "Register Name must not be more than 40 characters" in {
         submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Business Name must not be more than 40 characters")
+            contentAsString(result) must include("Registered name must not be more than 40 characters")
         }
       }
 
@@ -232,11 +232,11 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "Business Name must not be more than 40 characters" in {
+      "Registered name must not be more than 40 characters" in {
         submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Business Name must not be more than 40 characters")
+            contentAsString(result) must include("Registered name must not be more than 40 characters")
         }
       }
 
