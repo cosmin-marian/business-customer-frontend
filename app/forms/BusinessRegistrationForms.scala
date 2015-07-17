@@ -5,6 +5,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 
+import scalaz.Alpha.W
+
 
 object BusinessRegistrationForms {
 
@@ -15,6 +17,8 @@ object BusinessRegistrationForms {
   val length2 = 2
   val length60 = 60
   val num = """(\D+)"""
+  val chars = """[a-zA-Z]{2}"""
+  val special = """(\\D\\d\\W)"""
 
   val businessRegistrationForm = Form(
     mapping(
@@ -37,8 +41,7 @@ object BusinessRegistrationForms {
             x => checkFieldLengthIfPopulated(x, postcodeLength)),
         "country" -> text.
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
-          .verifying(Messages("bc.business-registration-error.country.length", length2), x => x.isEmpty || (x.nonEmpty && x.length <= length2))
-          .verifying(Messages("bc.business-registration-error.country.number"), x => x.matches(num))
+          .verifying(Messages("bc.business-registration-error.country.letters"), x => x.matches(chars))
 
       )(Address.apply)(Address.unapply),
       "businessUniqueId" -> optional(text)

@@ -195,25 +195,30 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
-        "Country Code must be maximum of 2 characters" in {
+
+        "Country Code must only contain letters with maximun of 2 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
+          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D?"} }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country Code must not be more than 2 characters")
+              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
+          }
+          val inputJson2 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D1"} }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson2)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
+          }
+          val inputJson3 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson3)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
           }
         }
 
-        "Country Code must not contain numbers" in {
-          implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D1"} }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country Code must not contain numbers")
-          }
-        }
+
 
         "businessUniqueId must be maximum of 60 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
