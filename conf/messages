@@ -5,7 +5,7 @@ business-review.user.title = Verify business details
 business-review.agent.title = Verify agent details
 bc.business-review.title = Welcome to {0} subscription
 
-business-review.name = Business name
+business-review.name = Name
 business-review.type = Type of business
 business-review.address = Registered address
 business-review.telephone = Telephone
@@ -41,10 +41,14 @@ bc.business-verification.SOP=Sole Trader / Self-employed
 bc.business-verification.radio-legend=What type of business is it?
 bc.business-verification.firstNameField=First Name
 bc.business-verification.lastNameField=Last Name
-bc.business-verification.saUTRField=Self Assessment Unique Tax Reference
-bc.business-verification.coUTRField=COTAX Unique Tax Reference
-bc.business-verification.businessNamefield=Business Name
-bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference
+bc.business-verification.saUTRField=Self Assessment Unique Tax Reference (UTR)
+bc.business-verification.saUTR.hint=In the header of any letter received from HMRC
+bc.business-verification.coUTRField=Corporation Tax Unique Tax Reference (UTR)
+bc.business-verification.businessNamefield=Registered name
+bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference (UTR)
+bc.business-verification.partnerUTRField.hint=In the header of any letter received from HMRC
+bc.business-verification.registered-name.hint=The name on your incorporation certificate
+bc.business-verification.ctutr.hint=In the header of any letter received from HMRC
 
 bc.business-verification-error.summaryHeader=There is a problem with the form
 bc.business-verification-error.firstname=First Name must be entered
@@ -54,7 +58,7 @@ bc.business-verification-error.surname.length=Last Name must not be more than 40
 bc.business-verification-error.sautr=Self Assessment Unique Tax Reference must be entered
 bc.business-verification-error.sautr.length=Self Assessment Unique Tax Reference must be 10 digits
 bc.business-verification-error.utr=Unique Tax Reference must be 10 digits
-bc.business-verification-error.businessName=Business Name must be entered
+bc.business-verification-error.businessName=Registered name must be entered
 bc.business-verification-error.businessName.length=Business Name must not be more than 40 characters
 bc.business-verification-error.cotaxutr=Corporation Tax Unique Tax Reference must be entered
 bc.business-verification-error.cotaxutr.length=Corporation Tax Unique Tax Reference must be 10 digits
@@ -64,6 +68,8 @@ bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference
 bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
 bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and up-to-date and try again
+
+bc.business-verification-error.registeredName.length=Registered name must not be more than 40 characters
 
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised
@@ -81,11 +87,12 @@ bc.business-registration.line_3 = Address line 3 (optional)
 bc.business-registration.line_4 = Address line 4 (optional)
 bc.business-registration.country = ISO country code
 bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
-bc.business-registration.businessUniqueId = Business Unique Id (optional)
+bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
 bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
+bc.business-registration.search= Search
 
 bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address Line 1 must be entered

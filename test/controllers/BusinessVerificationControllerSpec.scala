@@ -141,7 +141,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("firstName_field").text() must be("First Name")
           document.getElementById("lastName_field").text() must be("Last Name")
-          document.getElementById("saUTR_field").text() must be("Self Assessment Unique Tax Reference")
+          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("saUTR_hint").text() must be("In the header of any letter received from HMRC")
       }
     }
 
@@ -173,8 +174,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
-          document.getElementById("businessName_field").text() must be("Business Name")
-          document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+          document.getElementById("businessName_field").text() must include("Registered name")
+          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+          document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
+
       }
     }
 
@@ -206,8 +210,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
-          document.getElementById("businessName_field").text() must be("Business Name")
-          document.getElementById("cotaxUTR_field").text() must be("COTAX Unique Tax Reference")
+          document.getElementById("businessName_field").text() must include("Registered name")
+          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+          document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
       }
     }
 
@@ -238,8 +244,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 
@@ -271,8 +279,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 
@@ -303,8 +313,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("businessName_field").text() must be("Business Name")
-            document.getElementById("psaUTR_field").text() must be("Partnership Self Assessment Unique Tax Reference")
+            document.getElementById("businessName_field").text() must include("Registered name")
+            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+            document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
       }
 
@@ -413,19 +425,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
 
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
-                document.getElementById("cotaxUTR_field").text() must include("COTAX Unique Tax Reference")
+                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
 
-          "if entered, Business Name must be less than 40 characters" in {
+          "if entered, Registered Name must be less than 40 characters" in {
             submitWithAuthorisedUser("LTD", FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Business Name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 40 characters")
             }
           }
 
@@ -453,19 +465,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
-                document.getElementById("cotaxUTR_field").text() must include("COTAX Unique Tax Reference")
+                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
 
-          "if entered, Business Name must be less than 40 characters" in {
+          "if entered, Register Name must be less than 40 characters" in {
             submitWithAuthorisedUser("UIB", FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Business Name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 40 characters")
             }
           }
 
@@ -494,19 +506,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
 
-          "if entered, Business Name must be less than 40 characters" in {
+          "if entered, Registered Name must be less than 40 characters" in {
             submitWithAuthorisedUser("OBP", FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Business Name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 40 characters")
             }
           }
 
@@ -534,19 +546,19 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
 
-          "if entered, Business Name must be less than 40 characters" in {
+          "if entered, Registered name must be less than 40 characters" in {
             submitWithAuthorisedUser("LLP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Business Name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 40 characters")
             }
           }
 
@@ -575,10 +587,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               result =>
                 status(result) must be(BAD_REQUEST)
                 val document = Jsoup.parse(contentAsString(result))
-                contentAsString(result) must include("Business Name must be entered")
+                contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Business Name")
+                document.getElementById("businessName_field").text() must include("Registered name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -587,7 +599,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Business Name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 40 characters")
             }
           }
 
@@ -607,8 +619,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
         }
-
-
 
         "submit of continue" must {
 

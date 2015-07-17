@@ -15,7 +15,7 @@
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
 }
-
+<div class="form-group">
 @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
 <div id="business-type-sop-form" class="form-field">
@@ -32,10 +32,13 @@
 
     @bcInput(soleTraderForm("saUTR"),
     '_label -> Html(Messages("bc.business-verification.saUTRField")),
+    '_hintText -> Messages("bc.business-verification.saUTR.hint"),
     '_id -> "saUTR",
     '_showConstraints -> false)
 
 </div>
-<button class="button" id="submit" type="submit">Continue</button>
+<button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
 }
+</div>
+<a href="@controllers.routes.BusinessVerificationController.businessVerification(service: String)">@Messages("bc.business-registration.back")</a>
 }
