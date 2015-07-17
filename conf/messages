@@ -92,6 +92,7 @@ bc.business-registration.issuingInstitution = Institution that issued the Busine
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
+bc.business-registration.search= Search
 
 bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address Line 1 must be entered
