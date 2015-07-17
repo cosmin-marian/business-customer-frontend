@@ -16,9 +16,8 @@ object BusinessRegistrationForms {
   val length0 = 0
   val length2 = 2
   val length60 = 60
-  val num = """(\D+)"""
   val chars = """[a-zA-Z]{2}"""
-  val special = """(\\D\\d\\W)"""
+
 
   val businessRegistrationForm = Form(
     mapping(
