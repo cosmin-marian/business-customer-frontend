@@ -102,7 +102,7 @@ object BusinessVerificationForms {
   val ordinaryBusinessPartnershipForm = Form(mapping(
     "businessName"   -> text
       .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > 0)
-      .verifying(Messages("bc.business-verification-error.businessName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
+      .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= 40)),
     "psaUTR"   -> text
       .verifying(Messages("bc.business-verification-error.psautr"),  x => x.length > 0)
       .verifying(Messages("bc.business-verification-error.psautr.length"),  x => x.isEmpty || (x.nonEmpty && x.matches("""^[0-9]{10}$""")))
