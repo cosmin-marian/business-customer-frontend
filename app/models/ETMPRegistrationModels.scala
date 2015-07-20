@@ -15,6 +15,15 @@ object EtmpOrganisation {
   implicit val formats = Json.format[EtmpOrganisation]
 }
 
+case class EtmpContactDetails(phoneNumber: Option[String] = None,
+                              mobileNumber: Option[String] = None,
+                              faxNumber: Option[String] = None,
+                              eMailAddress: Option[String] = None)
+
+object EtmpContactDetails {
+  implicit val formats = Json.format[EtmpContactDetails]
+}
+
 case class NonUKIdentification(idNumber: Option[String], issuingInstitution : Option[String], issuingCountryCode : Option[String])
 
 object NonUKIdentification {
@@ -23,10 +32,11 @@ object NonUKIdentification {
 
 case class NonUKRegistrationRequest(acknowledgmentReference: String,
                         organisation: EtmpOrganisation,
-                        address : EtmpAddress,
-                        isAnAgent : Boolean,
-                        isAGroup : Boolean,
-                        nonUKIdentification : Option[NonUKIdentification])
+                        address: EtmpAddress,
+                        isAnAgent: Boolean,
+                        isAGroup: Boolean,
+                        nonUKIdentification: Option[NonUKIdentification],
+                        contactDetails: EtmpContactDetails)
 
 object NonUKRegistrationRequest {
   implicit val formats = Json.format[NonUKRegistrationRequest]

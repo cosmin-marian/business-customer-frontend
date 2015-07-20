@@ -77,7 +77,8 @@ trait BusinessRegistrationService extends Auditable {
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,
       isAGroup = false,
-      nonUKIdentification = nonUKIdentification
+      nonUKIdentification = nonUKIdentification,
+      contactDetails = EtmpContactDetails()
     )
   }
 
