@@ -6,7 +6,7 @@ case class Individual(firstName: String, lastName: String, dateOfBirth: Option[S
 
 case class Organisation(organisationName: String, organisationType: String)
 
-case class MatchBusinessData(acknowledgementReference: String,
+case class MatchBusinessData(acknowledgmentReference: String,
                              utr: String,
                              requiresNameMatch: Boolean = false,
                              isAnAgent: Boolean = false,
@@ -25,7 +25,7 @@ object MatchBusinessData {
   implicit val formats = Json.format[MatchBusinessData]
 }
 
-case class MatchFailureResponse(reason: String)
+case class MatchFailureResponse(Reason: String)
 
 object MatchFailureResponse {
   implicit val formats = Json.format[MatchFailureResponse]

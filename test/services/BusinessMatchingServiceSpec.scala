@@ -23,7 +23,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "UK")
   val testReviewDetails = ReviewDetails("ACME", "Limited", testAddress, "1234567890", "EX0012345678909", "01234567890")
-  val matchFailureResponse = MatchFailureResponse(reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
+  val matchFailureResponse = MatchFailureResponse(Reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909","agentReferenceNumber":"01234567890", "isEditable":true,"isAnAgent":false,"isAnIndividual":false, "organisation":{"organisationName":"Real Business Inc","isAGroup":true,"organisationType":"unincorporated body"},
 "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
