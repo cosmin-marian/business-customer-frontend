@@ -202,19 +202,19 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
+              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
           }
           val inputJson2 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D1"} }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson2)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
+              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
           }
           val inputJson3 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson3)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Country Code must only contain letters and 2 of them")
+              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
           }
         }
 
