@@ -45,7 +45,8 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
       address = businessAddress,
       isAnAgent = false,
       isAGroup = false,
-      nonUKIdentification = Some(nonUKIdentification)
+      nonUKIdentification = Some(nonUKIdentification),
+      contactDetails = EtmpContactDetails()
     )
 
 
