@@ -1,6 +1,6 @@
 package services
 
-import java.util.UUID
+
 
 import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
@@ -12,7 +12,7 @@ import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
-import utils.AuthUtils
+import utils.{SessionUtils, AuthUtils}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -72,7 +72,7 @@ trait BusinessRegistrationService extends Auditable {
       countryCode = registerData.businessAddress.country)
 
     NonUKRegistrationRequest(
-      acknowledgmentReference = sessionOrUUID,
+      acknowledgmentReference = SessionUtils.sessionOrUUID,
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,
@@ -94,12 +94,6 @@ trait BusinessRegistrationService extends Auditable {
     )
   }
 
-  private def sessionOrUUID(implicit hc: HeaderCarrier): String = {
-    hc.sessionId match {
-      case Some(sessionId) => sessionId.value
-      case None => UUID.randomUUID().toString.replace("-", "")
-    }
-  }
 
   private def auditRegisterBusiness(registerData: BusinessRegistration)(implicit hc: HeaderCarrier) = {
     sendDataEvent("registerNonUk", detail = Map(
