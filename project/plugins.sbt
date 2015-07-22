@@ -7,6 +7,8 @@ resolvers ++= Seq("hmrc-snapshots" at hmrcRepoHost + "/content/repositories/hmrc
   "hmrc-releases" at hmrcRepoHost + "/content/repositories/hmrc-releases",
   "typesafe-releases" at hmrcRepoHost + "/content/repositories/typesafe-releases")
 
+resolvers ++= Seq("sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/")
+
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.5")
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.8")
