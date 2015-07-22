@@ -38,64 +38,29 @@ $(document).ready(function() {
 <p id="business-lookup-text">@Messages("bc.business-verification.user.lookup-text")</p>
 }
 
-@form(action = controllers.routes.BusinessVerificationController.continue(service)) {
-<div class="form-group">
+    @form(action = controllers.routes.BusinessVerificationController.continue(service)) {
+        <div class="form-group">
 
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("NUK" -> Messages("bc.business-verification.NUK")),
-        '_legend -> Messages("bc.business-verification.radio-legend"),
-        '_labelClass -> "block-label",
-        '_legendClass -> "bold-small",
-        '_labelAfter -> true
-    )
+            @inputRadioGroup(
+            businessTypeForm("businessType"),
+            Seq(
+            "NUK" -> Messages("bc.business-verification.NUK"),
+            "LTD" -> Messages("bc.business-verification.LTD"),
+            "SOP" -> Messages("bc.business-verification.SOP"),
+            "OBP" -> Messages("bc.business-verification.PRT"),
+            "LP" -> Messages("bc.business-verification.LP"),
+            "LLP" -> Messages("bc.business-verification.LLP"),
+            "UIB" -> Messages("bc.business-verification.UIB")
+            ),
+                '_legend -> Messages("bc.business-verification.radio-legend"),
+                '_labelClass -> "block-label",
+                '_legendClass -> "bold-small",
+                '_labelAfter -> true
+            )
 
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("LTD" -> Messages("bc.business-verification.LTD")),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
-    )
+        </div>
 
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("SOP" -> Messages("bc.business-verification.SOP")),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("OBP" -> Messages("bc.business-verification.PRT")),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("LP" -> Messages("bc.business-verification.LP")),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("LLP" -> Messages("bc.business-verification.LLP")),
-    '_labelClass -> "block-label",
-    '_labelAfter -> true
-    )
-
-    @inputRadioGroup(
-    businessTypeForm("businessType"),
-    Seq("UIB" -> Messages("bc.business-verification.UIB")),
-        '_labelClass -> "block-label",
-        '_labelAfter -> true
-    )
-
-
-</div>
-
-    <button class="button" id="submit" type="submit">Continue</button><br><br>
+        <button class="button" id="submit" type="submit">Continue</button><br><br>
 
     }
 
