@@ -7,6 +7,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
+  val service = "ATED"
 
   "ApplicationController" must {
 
@@ -36,6 +37,20 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
       "be redirected to the login page" in {
         val result = controllers.ApplicationController.cancel().apply(FakeRequest())
         redirectLocation(result).get must include("https://www.gov.uk/")
+      }
+
+    }
+
+    "Not the right business link" must {
+
+      "respond with a redirect" in {
+        val result = controllers.ApplicationController.logoutAndRedirectToHome(service).apply(FakeRequest())
+        status(result) must be(SEE_OTHER)
+      }
+
+      "be redirected to login page" in {
+        val result = controllers.ApplicationController.logoutAndRedirectToHome(service).apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/agent/ATED")
       }
 
     }
