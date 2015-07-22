@@ -72,7 +72,7 @@ trait BusinessRegistrationService extends Auditable {
       countryCode = registerData.businessAddress.country)
 
     NonUKRegistrationRequest(
-      acknowledgmentReference = SessionUtils.sessionOrUUID,
+      acknowledgmentReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,

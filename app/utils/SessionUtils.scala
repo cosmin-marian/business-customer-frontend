@@ -1,14 +1,16 @@
 package utils
 
-import java.util.UUID
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import org.apache.commons.lang3.RandomStringUtils
 
 object SessionUtils {
 
-  def sessionOrUUID(implicit hc: HeaderCarrier): String = {
-    hc.sessionId match {
-      case Some(sessionId) => sessionId.value
-      case None => UUID.randomUUID().toString.replace("-", "")
-    }
+  def getUniqueAckNo : String = {
+    val length = 32
+    val nanoTime = System.nanoTime()
+    val restChars = length-nanoTime.toString.length
+    val randomChars = RandomStringUtils.randomAlphanumeric(restChars)
+    randomChars+nanoTime
   }
+
+
 }
