@@ -11,17 +11,17 @@ trait ApplicationController extends FrontendController with RunMode {
 
   import play.api.Play.current
 
-  def unauthorised() = Action {
+  def unauthorised() = UnauthorisedAction {
     implicit request =>
       Ok(views.html.unauthorised(request))
   }
 
-  def cancel = Action { implicit request =>
+  def cancel = UnauthorisedAction { implicit request =>
     val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.cancelRedirectUrl")
     Redirect(serviceRedirectUrl.getOrElse("https://www.gov.uk/"))
   }
 
-  def logout = Action { implicit request =>
+  def logout = UnauthorisedAction { implicit request =>
     Redirect(ExternalUrls.signOut)
   }
 
