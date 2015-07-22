@@ -94,7 +94,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
-            document.getElementById("back").text() must be("Back")
         }
       }
 
@@ -119,7 +118,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
-            document.getElementById("back").text() must be("Back")
         }
       }
     }

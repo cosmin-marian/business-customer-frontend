@@ -31,3 +31,5 @@ GET         /:service                                                           
 
 GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 
+GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
+
