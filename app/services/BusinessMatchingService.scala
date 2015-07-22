@@ -6,7 +6,6 @@ import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.SessionKeys
 import utils.SessionUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,7 +21,7 @@ trait BusinessMatchingService {
     getUserUtrAndType map {
       userUtrAndType =>
         val (userUTR, userType) = userUtrAndType
-        val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.sessionOrUUID,
+        val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
         businessMatchingConnector.lookup(searchData, userType) flatMap {
           dataReturned =>
@@ -33,7 +32,7 @@ trait BusinessMatchingService {
 
   def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String)
                                      (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
-    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.sessionOrUUID,
+    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
     businessMatchingConnector.lookup(searchData, userType) flatMap {
@@ -44,7 +43,7 @@ trait BusinessMatchingService {
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String)
                                        (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
-    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.sessionOrUUID,
+    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType) flatMap {
