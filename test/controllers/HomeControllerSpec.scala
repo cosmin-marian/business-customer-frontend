@@ -28,7 +28,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val mockBusinessMatchingService = mock[BusinessMatchingService]
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-  val testReviewDetails = ReviewDetails("ACME", "Limited", testAddress, "sap123", "safe123", "agent123")
+  val testReviewDetails = ReviewDetails("ACME", Some("Limited"), testAddress, "sap123", "safe123", "agent123")
 
   object TestHomeController extends HomeController {
     val businessMatchService: BusinessMatchingService = mockBusinessMatchingService

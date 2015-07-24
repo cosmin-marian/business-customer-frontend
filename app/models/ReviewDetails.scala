@@ -3,7 +3,7 @@ package models
 import play.api.libs.json.Json
 
 case class ReviewDetails(businessName: String,
-                         businessType: String,
+                         businessType: Option[String],
                          businessAddress: Address,
                          sapNumber: String,
                          safeId: String,

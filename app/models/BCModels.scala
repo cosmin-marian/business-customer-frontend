@@ -6,6 +6,8 @@ case class Individual(firstName: String, lastName: String, dateOfBirth: Option[S
 
 case class Organisation(organisationName: String, organisationType: String)
 
+case class OrganisationResponse(organisationName: String, organisationType: Option[String])
+
 case class MatchBusinessData(acknowledgmentReference: String,
                              utr: String,
                              requiresNameMatch: Boolean = false,
@@ -20,6 +22,11 @@ object Individual {
 object Organisation {
   implicit val formats = Json.format[Organisation]
 }
+
+object OrganisationResponse {
+  implicit val formats = Json.format[OrganisationResponse]
+}
+
 
 object MatchBusinessData {
   implicit val formats = Json.format[MatchBusinessData]

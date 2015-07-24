@@ -86,7 +86,7 @@ trait BusinessRegistrationService extends Auditable {
                                   registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,
-      businessType = nonUKbusinessType,
+      businessType = Some(nonUKbusinessType),
       businessAddress = registerData.businessAddress,
       sapNumber = response.sapNumber,
       safeId  = response.safeId,

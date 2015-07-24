@@ -64,7 +64,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
         issuingInstitution = Some("issuingInstitution")
       )
 
-      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress,
+      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
         sapNumber="sap123", safeId="safe123", agentReferenceNumber="agent123")
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
@@ -86,7 +86,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
         issuingInstitution = None
       )
 
-      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress,
+      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
         sapNumber="sap123", safeId="safe123", agentReferenceNumber="agent123")
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
@@ -106,7 +106,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
         issuingInstitution = Some("issuingInstitution")
       )
 
-      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType="", businessAddress=busRegData.businessAddress,
+      val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
         sapNumber="sap123", safeId="safe123", agentReferenceNumber="agent123")
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
