@@ -39,7 +39,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
     "enrolAgent return the status if it worked" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
-      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType="",
+      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
@@ -66,7 +66,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
     "enrolAgent throw an exception if we have no service config" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "INVALID_SERVICE_NAME", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
-      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType="",
+      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
