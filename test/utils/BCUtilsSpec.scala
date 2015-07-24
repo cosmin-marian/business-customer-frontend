@@ -29,6 +29,21 @@ class BCUtilsSpec extends PlaySpec {
         BCUtils.validateUTR(None) must be(false)
       }
     }
+
+    "getSelectedCountry" must {
+      "bring the correct country from the file" in {
+        BCUtils.getSelectedCountry("GB") must be("United Kingdom of Great Britain and Northern Ireland")
+        BCUtils.getSelectedCountry("US") must be("United States of America")
+        BCUtils.getSelectedCountry("zz") must be(null)
+      }
+    }
+
+    "getIsoCodeMap" must {
+      "return map of country iso-code to country name" in {
+        BCUtils.getIsoCodeTupleList must contain(("US" , "United States of America"))
+        BCUtils.getIsoCodeTupleList must contain(("GB" , "United Kingdom of Great Britain and Northern Ireland"))
+      }
+    }
   }
 
 }

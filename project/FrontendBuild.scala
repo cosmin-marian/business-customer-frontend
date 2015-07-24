@@ -17,7 +17,8 @@ private object AppDependencies {
 
   private val frontendBootstrapVersion = "0.6.0"
   private val govukTemplateVersion = "2.6.0"
-  private val playUiVersion = "1.9.0"
+//  private val playUiVersion = "1.9.0"
+  private val playUiVersion = "3.0.0"
   private val httpCachingClientVersion = "2.5.0"
 
   val compile = Seq(

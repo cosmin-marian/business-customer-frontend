@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String, listOfIsoCode: List[(String, String)])(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -59,6 +59,11 @@
         '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
         '_id -> "businessUniqueId",
         '_showConstraints -> false)
+
+        @bcDropdown(businessRegistrationForm("businessUniqueId"),
+        elementOptions = listOfIsoCode,
+        displayEmptyValue = true,
+        '_label ->  Html(Messages("bc.business-registration.businessUniqueId")))
 
         @bcInput(businessRegistrationForm("issuingInstitution"),
         '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
