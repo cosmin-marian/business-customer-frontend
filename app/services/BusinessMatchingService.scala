@@ -91,7 +91,8 @@ trait BusinessMatchingService {
       line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
       postcode = addressReturned.postalCode, country = addressReturned.countryCode)
     val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}",
-      businessType = businessType, businessAddress = address,
+      businessType = Some(businessType),
+      businessAddress = address,
       sapNumber = sapNumber,
       safeId = safeId,
       agentReferenceNumber = agentReferenceNumber,
@@ -105,7 +106,7 @@ trait BusinessMatchingService {
   }
 
   private def cacheOrg(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
-    val organisation = (dataReturned \ "organisation").as[Organisation]
+    val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
     val addressReturned = (dataReturned \ "address").as[EtmpAddress]

@@ -22,15 +22,15 @@ import scala.concurrent.Future
 class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "UK")
-  val testReviewDetails = ReviewDetails("ACME", "Limited", testAddress, "1234567890", "EX0012345678909", "01234567890")
+  val testReviewDetails = ReviewDetails("ACME", Some("Limited"), testAddress, "1234567890", "EX0012345678909", "01234567890")
   val matchFailureResponse = MatchFailureResponse(Reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909","agentReferenceNumber":"01234567890", "isEditable":true,"isAnAgent":false,"isAnIndividual":false, "organisation":{"organisationName":"Real Business Inc","isAGroup":true,"organisationType":"unincorporated body"},
 "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
-  val successOrgReviewDetails = ReviewDetails("Real Business Inc", "unincorporated body", testAddress, "1234567890", "EX0012345678909", "01234567890")
+  val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", "01234567890")
   val successOrgReviewDetailsJson = Json.toJson(successOrgReviewDetails)
   val successIndividualJson = Json.parse( """{"sapNumber":"1234567890", "safeId":"EX0012345678909", "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
-  val successIndReviewDetails = ReviewDetails("first name last name", "Sole Trader", testAddress, "1234567890", "EX0012345678909", "01234567890", Some("first name"), Some("last name"))
+  val successIndReviewDetails = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909", "01234567890", Some("first name"), Some("last name"))
   val successIndReviewDetailsJson = Json.toJson(successIndReviewDetails)
   val errorJson = Json.parse( """{"error" : "Some Error"}""")
   val utr = "1234567890"
