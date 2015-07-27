@@ -87,6 +87,7 @@ bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3 (optional)
 bc.business-registration.line_4 = Address line 4 (optional)
 bc.business-registration.country = ISO country code
+bc.business-registration.country.select = please select one country
 bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
 bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
 bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)

@@ -6,6 +6,33 @@
 
 @bcMain(title = Messages("business-registration.title")) {
 
+<script>
+
+        <!--<div class="form-group" id="businessAddress-country_div">-->
+            <!--<label for="businessAddress-country" class=" " id="businessAddress-country_field">  ISO country code </label>-->
+            <!--<select id="businessAddress.country" name="businessAddress.country" class="">-->
+                <!--<option>please select one country</option>-->
+                <!--<option id="businessAddress.country-AF" value="AF">-->
+                    <!--Afghanistan-->
+                <!--</option>-->
+            <!--</select>-->
+        <!--</div>-->
+function getDropDownList(name, id, optionList) {
+            var combo = $("<select></select>").attr("id", id).attr("name", name);
+            console.log("#### optionList = " + optionList)
+            $.each(optionList, function (i, el) {
+                combo.append("<option>" + el + "</option>");
+            });
+
+            // return combo;
+            // OR
+            $("#SELECTOR").append(combo);
+        }
+    $(document).ready(function(){
+        getDropDownList("abc", "abc-id", @listOfIsoCode.mkString)
+    });
+</script>
+
 @errors(businessRegistrationForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 @if(isAgent) {
@@ -46,24 +73,18 @@
         '_id -> "businessAddress.line_4",
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.country"),
-        '_label ->  Html(Messages("bc.business-registration.country")),
-        '_id -> "businessAddress.country",
-        '_maxLength -> "2",
-        '_inputClass -> "field-1-4",
-        '_size -> "4",
-        '_hintText -> Messages("bc.business-registration.country.instruction"),
-        '_showConstraints -> false)
+        @bcDropdown(businessRegistrationForm("businessAddress.country"),
+        elementOptions = listOfIsoCode,
+        displayEmptyValue = true,
+        '_emptyValueText -> Messages("bc.business-registration.country.select"),
+        '_label -> Html(Messages("bc.business-registration.country")))
+
+        <div id="SELECTOR"></div>
 
         @bcInput(businessRegistrationForm("businessUniqueId"),
         '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
         '_id -> "businessUniqueId",
         '_showConstraints -> false)
-
-        @bcDropdown(businessRegistrationForm("businessUniqueId"),
-        elementOptions = listOfIsoCode,
-        displayEmptyValue = true,
-        '_label ->  Html(Messages("bc.business-registration.businessUniqueId")))
 
         @bcInput(businessRegistrationForm("issuingInstitution"),
         '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),

@@ -31,11 +31,14 @@ th {
 }
 
 
-   .greenBanner{
-   background-color:#28a197;
-   color:white;
-   text-align:center;
-   padding:10px;
-   padding-bottom:20px;
-   }
+.greenBanner{
+    background-color:#28a197;
+    color:white;
+    text-align:center;
+    padding:10px;
+    padding-bottom:20px;
+}
 
+select {
+    margin: 0px;
+}
