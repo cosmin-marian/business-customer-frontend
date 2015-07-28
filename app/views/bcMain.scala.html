@@ -8,12 +8,15 @@
     }
 }
 
+@scriptElement = {
+<script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
+<script src='@controllers.routes.Assets.at("javascript/ated.js")'></script>
+}
+
 @linkElement = {
 <link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/business-customer.css")'/>
 <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.min.css")'/>
 <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
-<script src='@controllers.routes.Assets.at("jquery/jquery/jquery.js")'></script>
-<script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
 }
 
 @main(
@@ -21,6 +24,7 @@
     title = title,
     userLoggedIn = userLoggedIn,
     getHelpForm = getHelpForm,
+    scriptElement = Some(scriptElement),
     linkElement = Some(linkElement)){
         <div class="text">
             @mainContent
