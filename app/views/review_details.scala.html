@@ -1,5 +1,6 @@
 @(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
+@import utils._
 
 @bcMain(title = Messages("bc.business-review.title", service)) {
 
@@ -36,7 +37,7 @@
                     @businessDetails.businessAddress.postcode.map {postcode =>
                     <div id="registered-postcode">@postcode</div>
                     }
-                    <div id="registered-country">@businessDetails.businessAddress.country</div>
+                    <div id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</div>
                 </div>
             </td>
         </tr>
