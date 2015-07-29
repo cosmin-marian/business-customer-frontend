@@ -6,7 +6,7 @@
 
 @bcMain(title = Messages("business-registration.title")) {
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
         countryCodeAutoComplete()
@@ -58,8 +58,6 @@
         displayEmptyValue = true,
         '_emptyValueText -> Messages("bc.business-registration.country.select"),
         '_label -> Html(Messages("bc.business-registration.country")))
-
-        <div id="SELECTOR"></div>
 
         @bcInput(businessRegistrationForm("businessUniqueId"),
         '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
