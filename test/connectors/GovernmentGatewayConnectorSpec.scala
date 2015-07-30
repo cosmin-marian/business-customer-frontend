@@ -4,7 +4,7 @@ import java.util.UUID
 
 import builders.AuthBuilder
 import config.BusinessCustomerFrontendAuditConnector
-import models.{EnrolResponse, EnrolRequest}
+import models.{EnrolResponse, EnrolRequest, Identifier}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -41,8 +41,8 @@ class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite wi
   }
 
   "GovernmentGatewayConnector" must {
-    val request = EnrolRequest(portalIdentifier = "ATED", serviceName = "ATED", friendlyName = "Main Enrolment", knownFact = "ATED-123")
-    val response = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
+    val request = EnrolRequest(portalId = "ATED", serviceName = "ATED", friendlyName = "Main Enrolment", knownFacts = List("ATED-123"))
+    val response = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     val successfulSubscribeJson = Json.toJson(response)
     val subscribeFailureResponseJson = Json.parse( """{"reason" : "Error happened"}""")
     implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))

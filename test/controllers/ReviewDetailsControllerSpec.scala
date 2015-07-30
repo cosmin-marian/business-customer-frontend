@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import connectors.DataCacheConnector
-import models.{EnrolResponse, ReviewDetails, Address}
+import models.{Identifier, EnrolResponse, ReviewDetails, Address}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -206,7 +206,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiersForDisplay = "Ated_Ref_No")
+    val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", friendlyName = "Main Enrolment",  identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
     val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)

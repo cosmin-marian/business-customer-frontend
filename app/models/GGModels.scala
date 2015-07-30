@@ -2,13 +2,19 @@ package models
 
 import play.api.libs.json.Json
 
-case class EnrolRequest(portalIdentifier: String, serviceName: String, friendlyName: String,  knownFact: String)
+case class EnrolRequest(portalId: String, serviceName: String, friendlyName: String,  knownFacts: Seq[String])
 
 object EnrolRequest {
   implicit val formats = Json.format[EnrolRequest]
 }
 
-case class EnrolResponse(serviceName: String, state:String, friendlyName: String, identifiersForDisplay: String)
+case class Identifier(`type`: String, value: String)
+
+object Identifier {
+  implicit val formats = Json.format[Identifier]
+}
+
+case class EnrolResponse(serviceName: String, state:String, friendlyName: String, identifiers: Seq[Identifier])
 
 object EnrolResponse {
   implicit val formats = Json.format[EnrolResponse]

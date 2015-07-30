@@ -29,27 +29,27 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
           case BAD_REQUEST => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
               s"gg url:${postUrl}, " +
-              s"Bad Request Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Bad Request Exception account Ref:${enrolRequest.knownFacts}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new BadRequestException(response.body)
           }
           case NOT_FOUND => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
-              s"Not Found Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Not Found Exception account Ref:${enrolRequest.knownFacts}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new NotFoundException(response.body)
           }
           case SERVICE_UNAVAILABLE => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
               s"gg url:${postUrl}, " +
-              s"Service Unavailable Exception account Ref:${enrolRequest.knownFact}, " +
+              s"Service Unavailable Exception account Ref:${enrolRequest.knownFacts}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new ServiceUnavailableException(response.body)
           }
           case status => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
               s"gg url:${postUrl}, " +
-              s"status:${status} Exception account Ref:${enrolRequest.knownFact}, " +
+              s"status:${status} Exception account Ref:${enrolRequest.knownFacts}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new InternalServerException(response.body)
           }
