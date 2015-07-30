@@ -22,10 +22,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
   def enrol(enrolRequest : EnrolRequest)(implicit headerCarrier: HeaderCarrier) :Future[EnrolResponse]= {
     val jsonData = Json.toJson(enrolRequest)
     val postUrl = s"""$serviceURL/$enrolURI"""
-    println(s"[GovernmentGatewayConnector][enrol] - " +
-      s"gg url:${postUrl}, " +
-      s"Bad Request Exception account Ref:${jsonData}, " +
-      s"Service: ${enrolRequest.serviceName}}")
+
     http.POST[JsValue, HttpResponse](postUrl, jsonData) map {
       response =>
         response.status match {
