@@ -4,12 +4,12 @@ import org.apache.commons.lang3.RandomStringUtils
 
 object SessionUtils {
 
-  def getUniqueAckNo : String = {
+  def getUniqueAckNo: String = {
     val length = 32
     val nanoTime = System.nanoTime()
-    val restChars = length-nanoTime.toString.length
+    val restChars = length - nanoTime.toString.length
     val randomChars = RandomStringUtils.randomAlphanumeric(restChars)
-    randomChars+nanoTime
+    randomChars + nanoTime
   }
 
 

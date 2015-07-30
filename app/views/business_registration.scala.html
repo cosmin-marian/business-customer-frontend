@@ -1,10 +1,17 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String, listOfIsoCode: List[(String, String)])(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 @import views.html.helpers.error._
 
 @bcMain(title = Messages("business-registration.title")) {
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        countryCodeAutoComplete()
+    });
+</script>
 
 @errors(businessRegistrationForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
@@ -46,14 +53,12 @@
         '_id -> "businessAddress.line_4",
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.country"),
-        '_label ->  Html(Messages("bc.business-registration.country")),
+        @bcDropdown(businessRegistrationForm("businessAddress.country"),
+        elementOptions = listOfIsoCode,
+        displayEmptyValue = true,
         '_id -> "businessAddress.country",
-        '_maxLength -> "2",
-        '_inputClass -> "field-1-4",
-        '_size -> "4",
-        '_hintText -> Messages("bc.business-registration.country.instruction"),
-        '_showConstraints -> false)
+        '_emptyValueText -> Messages("bc.business-registration.country.select"),
+        '_label -> Html(Messages("bc.business-registration.country")))
 
         @bcInput(businessRegistrationForm("businessUniqueId"),
         '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
@@ -74,4 +79,3 @@
 }
 
 }
-

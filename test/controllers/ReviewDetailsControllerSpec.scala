@@ -27,7 +27,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockAgentRegistrationService = mock[AgentRegistrationService]
-  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "GB")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = SessionCache

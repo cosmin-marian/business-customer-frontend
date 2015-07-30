@@ -3,7 +3,8 @@
     contentHeader: Option[Html] = None,
     userLoggedIn: Boolean = false,
     getHelpForm: Html  = HtmlFormat.empty,
-    linkElement : Option[Html] = None)(mainContent: Html = HtmlFormat.empty)
+    linkElement : Option[Html] = None,
+    scriptElement: Option[Html] = None)(mainContent: Html = HtmlFormat.empty)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
@@ -36,7 +37,7 @@
         analyticsHost = applicationConfig.analyticsHost,
         assetsPrefix = applicationConfig.assetsPrefix,
         ssoUrl = None,
-        scriptElem = None,
+        scriptElem = scriptElement,
         gaCalls = None)
 }
 

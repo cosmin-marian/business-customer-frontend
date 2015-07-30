@@ -1,6 +1,13 @@
 package utils
 
+import java.util.Properties
+
+import scala.io.Source
+
 object BCUtils {
+
+  lazy val p = new Properties
+  p.load(Source.fromURL(getClass.getResource("/country-code.properties")).bufferedReader())
 
   private val ZERO = 0
   private val ONE = 1
@@ -22,8 +29,8 @@ object BCUtils {
           val checkDigit = actualUtr.head.asDigit
           val restOfUtr = actualUtr.tail
           val weights = List(SIX, SEVEN, EIGHT, NINE, TEN, FIVE, FOUR, THREE, TWO)
-          val weightedUtr = for((w1,u1) <- weights zip restOfUtr) yield {
-            w1*(u1.asDigit)
+          val weightedUtr = for ((w1, u1) <- weights zip restOfUtr) yield {
+            w1 * (u1.asDigit)
           }
           val total = weightedUtr.sum
           val remainder = total % 11
@@ -33,21 +40,25 @@ object BCUtils {
       case None => false
     }
   }
-  //scalastyle:off cyclomatic.complexity
+
   private def isValidUtr(remainder: Int, checkDigit: Int): Boolean = {
-    remainder match {
-      case ZERO => checkDigit == TWO
-      case ONE => checkDigit == ONE
-      case TWO => checkDigit == NINE
-      case THREE => checkDigit == EIGHT
-      case FOUR => checkDigit == SEVEN
-      case FIVE => checkDigit == SIX
-      case SIX => checkDigit == FIVE
-      case SEVEN => checkDigit == FOUR
-      case EIGHT => checkDigit == THREE
-      case NINE => checkDigit == TWO
-      case TEN => checkDigit == ONE
+    val mapOfRemainders = Map(ZERO -> TWO, ONE -> ONE, TWO -> NINE, THREE -> EIGHT, FOUR -> SEVEN, FIVE -> SIX,
+      SIX -> FIVE, SEVEN -> FOUR, EIGHT -> THREE, NINE -> TWO, TEN -> ONE)
+    Some(checkDigit) == mapOfRemainders.get(remainder)
+  }
+
+  def getIsoCodeTupleList: List[(String, String)] = {
+    val keys = p.propertyNames()
+    val listOfCountryCodes: scala.collection.mutable.MutableList[(String, String)] = scala.collection.mutable.MutableList()
+    while (keys.hasMoreElements) {
+      val key = keys.nextElement().toString
+      listOfCountryCodes.+=:((key , p.getProperty(key)))
     }
+    listOfCountryCodes.toList.sortBy(_._2)
+  }
+
+  def getSelectedCountry(isoCode: String): String = {
+    p.getProperty(isoCode.toUpperCase)
   }
 
 }

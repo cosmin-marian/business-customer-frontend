@@ -7,35 +7,54 @@ th {
 }
 
 .tick{
-  position:inherit;
-  padding-right:10px;
-  left:590px;
-  top:230px;
- }
-
+    position:inherit;
+    padding-right:10px;
+    left:590px;
+    top:230px;
+}
 
 #banner h1 {
-  margin-top: 30px;
-  margin-bottom: 15px;
-  color: #fff;
-  font-family: "nta", Arial, sans-serif;
-  font-size: 36px;
-  line-height: 1.11111;
-  font-weight: 400;
-  text-transform: none;
-  font-weight: 700;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #fff;
+    font-family: "nta", Arial, sans-serif;
+    font-size: 36px;
+    line-height: 1.11111;
+    font-weight: 400;
+    text-transform: none;
+    font-weight: 700;
 }
 
 .field-1-4 {
     width: 15%;
 }
 
+.greenBanner{
+    background-color:#28a197;
+    color:white;
+    text-align:center;
+    padding:10px;
+    padding-bottom:20px;
+}
 
-   .greenBanner{
-   background-color:#28a197;
-   color:white;
-   text-align:center;
-   padding:10px;
-   padding-bottom:20px;
-   }
+select {
+    margin: 0px;
+}
 
+.custom-combobox {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+}
+
+.custom-combobox-input {
+    margin: 0;
+    padding: 5px 10px;
+}

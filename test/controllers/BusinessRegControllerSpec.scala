@@ -2,8 +2,6 @@ package controllers
 
 import java.util.UUID
 
-import builders.AuthBuilder
-import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -15,7 +13,6 @@ import play.api.mvc.{AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BusinessRegistrationService
-import uk.gov.hmrc.domain.{Nino, Org}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
@@ -89,8 +86,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessAddress.country_field").text() must include("ISO country code")
-            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
+            document.getElementById("businessAddress.country_field").text() must include("Country")
+//            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
@@ -113,8 +110,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessAddress.country_field").text() must include("ISO country code")
-            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
+            document.getElementById("businessAddress.country_field").text() must include("Country")
+//            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
