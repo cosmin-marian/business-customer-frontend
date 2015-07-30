@@ -1,8 +1,8 @@
 package utils
 
-import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 
-class BCUtilsSpec extends PlaySpec {
+class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
   "BCUtils" must {
     "validateUTR" must {
