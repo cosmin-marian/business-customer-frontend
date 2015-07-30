@@ -2,12 +2,14 @@ package utils
 
 import java.util.Properties
 
+import play.api.Play
+
 import scala.io.Source
 
 object BCUtils {
 
   val p = new Properties
-  p.load(Source.fromURL(getClass.getResource("/country-code.properties")).bufferedReader())
+  p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties")).bufferedReader())
 
   private val ZERO = 0
   private val ONE = 1
