@@ -8,6 +8,9 @@ import scala.io.Source
 
 object BCUtils {
 
+  val p = new Properties
+  p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
+
   private val ZERO = 0
   private val ONE = 1
   private val TWO = 2
@@ -47,8 +50,6 @@ object BCUtils {
   }
 
   def getIsoCodeTupleList: List[(String, String)] = {
-    val p = new Properties
-    p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties")).bufferedReader())
     val keys = p.propertyNames()
     val listOfCountryCodes: scala.collection.mutable.MutableList[(String, String)] = scala.collection.mutable.MutableList()
     while (keys.hasMoreElements) {
@@ -59,8 +60,6 @@ object BCUtils {
   }
 
   def getSelectedCountry(isoCode: String): String = {
-    val p = new Properties
-    p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties")).bufferedReader())
     p.getProperty(isoCode.toUpperCase)
   }
 
