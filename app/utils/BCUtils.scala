@@ -6,7 +6,7 @@ import scala.io.Source
 
 object BCUtils {
 
-  lazy val p = new Properties
+  val p = new Properties
   p.load(Source.fromURL(getClass.getResource("/country-code.properties")).bufferedReader())
 
   private val ZERO = 0
