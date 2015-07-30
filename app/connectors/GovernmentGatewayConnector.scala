@@ -28,6 +28,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
           case OK => response.json.as[EnrolResponse]
           case BAD_REQUEST => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"gg url:${postUrl}, " +
               s"Bad Request Exception account Ref:${enrolRequest.knownFact}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new BadRequestException(response.body)
@@ -40,12 +41,14 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
           }
           case SERVICE_UNAVAILABLE => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"gg url:${postUrl}, " +
               s"Service Unavailable Exception account Ref:${enrolRequest.knownFact}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new ServiceUnavailableException(response.body)
           }
           case status => {
             Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+              s"gg url:${postUrl}, " +
               s"status:${status} Exception account Ref:${enrolRequest.knownFact}, " +
               s"Service: ${enrolRequest.serviceName}}")
             throw new InternalServerException(response.body)
