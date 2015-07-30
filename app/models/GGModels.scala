@@ -14,7 +14,7 @@ object Identifier {
   implicit val formats = Json.format[Identifier]
 }
 
-case class EnrolResponse(serviceName: String, state:String, friendlyName: String, identifiers: Seq[Identifier])
+case class EnrolResponse(serviceName: String, state:String, identifiers: Seq[Identifier])
 
 object EnrolResponse {
   implicit val formats = Json.format[EnrolResponse]

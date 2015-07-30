@@ -59,8 +59,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
         "txName" -> "enrolAgent",
         "agentReferenceNumber" -> agentReferenceNumber,
         "service" -> response.serviceName,
-        "identifiers" -> response.identifiers.toString(),
-        "friendlyName" -> response.friendlyName)
+        "identifiers" -> response.identifiers.toString())
       )
     }
   }
