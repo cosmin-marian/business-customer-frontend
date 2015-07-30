@@ -20,7 +20,7 @@ case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String
 
 case class LimitedPartnershipMatch(businessName: String, psaUTR: String)
 
-case class BusinessType (businessType: String)
+case class BusinessType (businessType: Option[String] = None)
 
 case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch],
                             uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch],
@@ -61,9 +61,13 @@ object BusinessDetails {
 object BusinessVerificationForms {
 
   val businessTypeForm = Form(mapping(
-      "businessType" -> nonEmptyText
+      "businessType" -> optional(text)
+        .verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined)
     )(BusinessType.apply)(BusinessType.unapply)
   )
+
+
+
 
   val soleTraderForm = Form(mapping(
     "firstName" -> text

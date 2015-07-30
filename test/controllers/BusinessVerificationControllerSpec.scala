@@ -105,6 +105,17 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
+      "selecting continue with no business type selected" must {
+        "display error message" in {
+          continueWithAuthorisedUserJson("", FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}"""))) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("Please select a type of business")
+          }
+        }
+
+      }
+
 
       "unauthorised users" must {
         "respond with a redirect" in {
