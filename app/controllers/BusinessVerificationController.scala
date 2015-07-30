@@ -36,13 +36,13 @@ trait BusinessVerificationController extends FrontendController with Actions {
         formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service))),
         value => {
           value.businessType match {
-            case "NUK" => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
-            case "SOP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
-            case "UIB" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
-            case "LTD" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
-            case "OBP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
-            case "LLP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
-            case "LP" => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
+            case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
+            case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
+            case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
+            case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
+            case Some("OBP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
+            case Some("LLP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
+            case Some("LP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
           }
         }
       )
