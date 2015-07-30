@@ -40,10 +40,10 @@ trait AgentRegistrationService extends RunMode with Auditable {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
-        EnrolRequest(portalIdentifier = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
+        EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
           serviceName = enrolServiceName,
           friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
-          knownFact = agentReferenceNumber)
+          knownFacts = List(agentReferenceNumber))
       }
       case _ => {
         Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = ${serviceName}")
@@ -59,8 +59,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
         "txName" -> "enrolAgent",
         "agentReferenceNumber" -> agentReferenceNumber,
         "service" -> response.serviceName,
-        "identifiersForDisplay" -> response.identifiersForDisplay,
-        "friendlyName" -> response.friendlyName)
+        "identifiers" -> response.identifiers.toString())
       )
     }
   }
