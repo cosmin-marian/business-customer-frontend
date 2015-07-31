@@ -24,19 +24,19 @@ object EtmpContactDetails {
   implicit val formats = Json.format[EtmpContactDetails]
 }
 
-case class NonUKIdentification(idNumber: Option[String], issuingInstitution : Option[String], issuingCountryCode : Option[String])
+case class EtmpIdentification(idNumber: String, issuingInstitution : String, issuingCountryCode : String)
 
-object NonUKIdentification {
-  implicit val formats = Json.format[NonUKIdentification]
+object EtmpIdentification {
+  implicit val formats = Json.format[EtmpIdentification]
 }
 
 case class NonUKRegistrationRequest(acknowledgmentReference: String,
-                        organisation: EtmpOrganisation,
-                        address: EtmpAddress,
-                        isAnAgent: Boolean,
-                        isAGroup: Boolean,
-                        nonUKIdentification: Option[NonUKIdentification],
-                        contactDetails: EtmpContactDetails)
+                                    isAnAgent: Boolean,
+                                    isAGroup: Boolean,
+                                    identification: Option[EtmpIdentification],
+                                    organisation: EtmpOrganisation,
+                                    address: EtmpAddress,
+                                    contactDetails: EtmpContactDetails)
 
 object NonUKRegistrationRequest {
   implicit val formats = Json.format[NonUKRegistrationRequest]

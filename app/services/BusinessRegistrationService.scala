@@ -56,9 +56,9 @@ trait BusinessRegistrationService extends Auditable {
 
     val nonUKIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
-        Some(NonUKIdentification(idNumber = registerData.businessUniqueId,
-          issuingInstitution= registerData.issuingInstitution,
-          issuingCountryCode = Some(registerData.businessAddress.country)))
+        Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
+          issuingInstitution= registerData.issuingInstitution.getOrElse(""),
+          issuingCountryCode = registerData.businessAddress.country))
       } else {
         None
       }
@@ -77,7 +77,7 @@ trait BusinessRegistrationService extends Auditable {
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,
       isAGroup = false,
-      nonUKIdentification = nonUKIdentification,
+      identification = nonUKIdentification,
       contactDetails = EtmpContactDetails()
     )
   }
