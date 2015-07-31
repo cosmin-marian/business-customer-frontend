@@ -87,7 +87,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
             document.getElementById("businessAddress.country_field").text() must include("Country")
-//            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
@@ -111,7 +110,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
             document.getElementById("businessAddress.country_field").text() must include("Country")
-//            document.getElementById("businessAddress.country_hint").text() must be("The ISO country code is internationally recognised and identifies a specific country e.g. United States = 'US'; Germany = 'DE'")
             document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
             document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
             document.getElementById("submit").text() must be("Continue")
@@ -133,7 +131,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Business name must be entered")
               contentAsString(result) must include("Address Line 1 must be entered")
               contentAsString(result) must include("Address Line 2 must be entered")
-              contentAsString(result) must include("Country Code must be entered")
+              contentAsString(result) must include("Country must be entered")
           }
         }
 
@@ -189,31 +187,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Address line 4 must not be more than 35 characters")
           }
         }
-
-
-        "Country Code must only contain letters with maximun of 2 characters" in {
-          implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D?"} }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
-          }
-          val inputJson2 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "D1"} }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson2)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
-          }
-          val inputJson3 = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1"} }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson3)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You have entered invalid characters. Enter 2 letters for the country code")
-          }
-        }
-
-
 
         "businessUniqueId must be maximum of 60 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -342,7 +315,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "U.K.")
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", "agent123")
 
     when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
@@ -356,3 +329,4 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   }
 
 }
+
