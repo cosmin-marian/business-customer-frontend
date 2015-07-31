@@ -13,7 +13,6 @@ object BusinessRegistrationForms {
   val length0 = 0
   val length2 = 2
   val length60 = 60
-//  val chars = """[a-zA-Z]{2}"""
 
 
   val businessRegistrationForm = Form(
@@ -54,5 +53,6 @@ object BusinessRegistrationForms {
   }
 
 }
+
 
 
