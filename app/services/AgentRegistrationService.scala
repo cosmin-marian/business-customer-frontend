@@ -2,12 +2,15 @@ package services
 
 import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
-import connectors.{DataCacheConnector, GovernmentGatewayConnector}
-import models.{EnrolResponse, EnrolRequest}
+import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
+import models.{KnownFactsForService, KnownFact, EnrolResponse, EnrolRequest}
+import play.api.http.Status._
 import play.api.{Play, Logger}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.http.HttpResponse
 import utils.GovernmentGatewayConstants
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -19,8 +22,9 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   val governmentGatewayConnector: GovernmentGatewayConnector
   val dataCacheConnector: DataCacheConnector
+  val businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
+  def enrolAgent(serviceName: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails.agentReferenceNumber)
       case _ => {
@@ -30,10 +34,15 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
-  private def enrolAgent(serviceName: String, agentReferenceNumber: String)(implicit headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
-    val enrolResponse = governmentGatewayConnector.enrol(createEnrolRequest(serviceName, agentReferenceNumber))
-    auditEnrolAgent(agentReferenceNumber, enrolResponse)
-    enrolResponse
+  private def enrolAgent(serviceName: String, agentReferenceNumber: String)
+                        (implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
+    for {
+      addKnowFactsResponse <- businessCustomerConnector.addKnownFacts(createKnownFacts(agentReferenceNumber))
+      enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, agentReferenceNumber))
+    } yield {
+      auditEnrolAgent(agentReferenceNumber, enrolResponse)
+      enrolResponse
+    }
   }
 
   private def createEnrolRequest(serviceName: String, agentReferenceNumber: String) :EnrolRequest = {
@@ -53,21 +62,25 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   }
 
-  private def auditEnrolAgent(agentReferenceNumber: String, enrolResponse: Future[EnrolResponse])(implicit hc: HeaderCarrier) = {
-    enrolResponse.map { response =>
-      sendDataEvent("enrolAgent", detail = Map(
-        "txName" -> "enrolAgent",
-        "agentReferenceNumber" -> agentReferenceNumber,
-        "service" -> response.serviceName,
-        "identifiers" -> response.identifiers.toString())
-      )
-    }
+  private def createKnownFacts(agentReferenceNumber: String) = {
+    val knownFacts = List(KnownFact(GovernmentGatewayConstants.AGENT_REFERENCE_NO_TYPE, agentReferenceNumber))
+    KnownFactsForService(knownFacts)
+  }
+
+  private def auditEnrolAgent(agentReferenceNumber: String, enrolResponse: EnrolResponse)(implicit hc: HeaderCarrier) = {
+    sendDataEvent("enrolAgent", detail = Map(
+      "txName" -> "enrolAgent",
+      "agentReferenceNumber" -> agentReferenceNumber,
+      "service" -> enrolResponse.serviceName,
+      "identifiers" -> enrolResponse.identifiers.toString())
+    )
   }
 }
 
 object AgentRegistrationService extends AgentRegistrationService {
   override val governmentGatewayConnector = GovernmentGatewayConnector
   override val dataCacheConnector = DataCacheConnector
+  override val businessCustomerConnector = BusinessCustomerConnector
   override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
   override val appName: String = AppName.appName
 }

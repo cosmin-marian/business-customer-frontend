@@ -207,7 +207,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
-    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
+    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
     val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
