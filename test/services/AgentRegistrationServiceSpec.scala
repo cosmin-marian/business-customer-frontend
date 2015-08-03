@@ -12,7 +12,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.InternalServerException
+import uk.gov.hmrc.play.http.{HttpResponse, InternalServerException}
 import uk.gov.hmrc.play.http.logging.SessionId
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,10 +23,11 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
   val mockGGConnector = mock[GovernmentGatewayConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
-
+  val mockBusinessCustomerConnector = mock[BusinessCustomerConnector]
   object TestAgentRegistrationService extends AgentRegistrationService {
     val governmentGatewayConnector: GovernmentGatewayConnector = mockGGConnector
     val dataCacheConnector = mockDataCacheConnector
+    val businessCustomerConnector = mockBusinessCustomerConnector
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
   }
@@ -47,6 +48,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+      when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
 
       val result = TestAgentRegistrationService.enrolAgent("ATED")
@@ -58,7 +60,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(None))
-
+      when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = TestAgentRegistrationService.enrolAgent("ATED")
       val thrown = the[RuntimeException] thrownBy await(result)
       thrown.getMessage must include("No Details were found")
@@ -74,7 +76,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
-
+      when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = TestAgentRegistrationService.enrolAgent("INVALID_SERVICE_NAME")
       val thrown = the[RuntimeException] thrownBy await(result)
       thrown.getMessage must startWith("Agent Enrolment Service Name does not exist for")
