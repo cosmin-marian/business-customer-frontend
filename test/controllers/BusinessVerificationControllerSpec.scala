@@ -154,6 +154,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("lastName_field").text() must be("Last Name")
           document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
           document.getElementById("saUTR_hint").text() must be("In the header of any letter received from HMRC")
+          document.getElementById("saUTR").attr("type") must be("number")
       }
     }
 
@@ -189,6 +190,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
           document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
           document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
+          document.getElementById("cotaxUTR").attr("type") must be("number")
 
       }
     }
@@ -259,6 +261,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
+            document.getElementById("psaUTR").attr("type") must be("number")
         }
       }
 
@@ -294,6 +297,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
+            document.getElementById("psaUTR").attr("type") must be("number")
         }
       }
 
