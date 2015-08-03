@@ -9,7 +9,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http._
-import utils.AuthUtils
+import utils.{GovernmentGatewayConstants, AuthUtils}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -27,7 +27,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
 
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {
     val authLink = AuthUtils.getAuthLink()
-    val postUrl = s"""$serviceURL$authLink/$baseURI/$knownFactsURI"""
+    val postUrl = s"""$serviceURL$authLink/$baseURI/${GovernmentGatewayConstants.AGENT_SERVICE_NAME}/$knownFactsURI"""
     val jsonData = Json.toJson(knownFacts)
     http.POST[JsValue, HttpResponse](postUrl, jsonData)  map {
       response =>
