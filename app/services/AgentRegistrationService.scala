@@ -3,7 +3,7 @@ package services
 import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
-import models.{KnownFactsForService, KnownFact, EnrolResponse, EnrolRequest}
+import models._
 import play.api.http.Status._
 import play.api.{Play, Logger}
 import play.api.i18n.Messages
@@ -26,7 +26,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   def enrolAgent(serviceName: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
-      case Some(businessDetails) => enrolAgent(serviceName, businessDetails.agentReferenceNumber)
+      case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ => {
         Logger.warn(s"[AgentRegistrationService][enrolAgent] - No Service details found in DataCache for")
         throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -34,25 +34,25 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
-  private def enrolAgent(serviceName: String, agentReferenceNumber: String)
+  private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
                         (implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
     for {
-      addKnowFactsResponse <- businessCustomerConnector.addKnownFacts(createKnownFacts(agentReferenceNumber))
-      enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, agentReferenceNumber))
+      addKnowFactsResponse <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
+      enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
     } yield {
-      auditEnrolAgent(agentReferenceNumber, enrolResponse)
+      auditEnrolAgent(businessDetails, enrolResponse)
       enrolResponse
     }
   }
 
-  private def createEnrolRequest(serviceName: String, agentReferenceNumber: String) :EnrolRequest = {
+  private def createEnrolRequest(serviceName: String,  businessDetails: ReviewDetails)(implicit user: AuthContext) :EnrolRequest = {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
         EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
           serviceName = enrolServiceName,
           friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
-          knownFacts = List(agentReferenceNumber))
+          knownFacts = List(businessDetails.agentReferenceNumber, businessDetails.safeId))
       }
       case _ => {
         Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = ${serviceName}")
@@ -62,15 +62,18 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   }
 
-  private def createKnownFacts(agentReferenceNumber: String) = {
-    val knownFacts = List(KnownFact(GovernmentGatewayConstants.AGENT_REFERENCE_NO_TYPE, agentReferenceNumber))
+  private def createKnownFacts( businessDetails: ReviewDetails)(implicit user: AuthContext) = {
+    val knownFacts = List(
+      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, businessDetails.agentReferenceNumber),
+      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
+    )
     KnownFactsForService(knownFacts)
   }
 
-  private def auditEnrolAgent(agentReferenceNumber: String, enrolResponse: EnrolResponse)(implicit hc: HeaderCarrier) = {
+  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: EnrolResponse)(implicit hc: HeaderCarrier) = {
     sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
-      "agentReferenceNumber" -> agentReferenceNumber,
+      "agentReferenceNumber" -> businessDetails.agentReferenceNumber,
       "service" -> enrolResponse.serviceName,
       "identifiers" -> enrolResponse.identifiers.toString())
     )
