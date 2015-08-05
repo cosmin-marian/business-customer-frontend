@@ -29,7 +29,10 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
     http.POST( postUrl, Json.toJson(lookupData)) map {
       response =>
         response.status match {
-          case OK | NOT_FOUND => Json.parse(response.body)
+          case OK | NOT_FOUND => {
+            Logger.info(s"[BusinessMatchingConnector][lookup] - response.status = ${response.status}   response.body = ${response.body}")
+            Json.parse(response.body)
+          }
           case SERVICE_UNAVAILABLE => {
             Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
             throw new ServiceUnavailableException("Service unavailable")

@@ -137,7 +137,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "redirect to next screen to allow additional form fields to be entered" in {
         continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
           result =>
-            status(result) must be(303)
+            status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
@@ -174,7 +174,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "redirect to next screen to allow additional form fields to be entered" in {
       continueWithAuthorisedUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) {
         result =>
-          status(result) must be(303)
+          status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
       }
     }
@@ -211,7 +211,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "redirect to next screen to allow additional form fields to be entered" in {
       continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}"""))) {
         result =>
-          status(result) must be(303)
+          status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
       }
     }
@@ -244,7 +244,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "redirect to next screen to allow additional form fields to be entered" in {
         continueWithAuthorisedUserJson("OBP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}"""))) {
           result =>
-            status(result) must be(303)
+            status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
@@ -280,7 +280,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "redirect to next screen to allow additional form fields to be entered" in {
         continueWithAuthorisedUserJson("LLP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
           result =>
-            status(result) must be(303)
+            status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
@@ -315,7 +315,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "redirect to next screen to allow additional form fields to be entered" in {
         continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
           result =>
-            status(result) must be(303)
+            status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
@@ -360,6 +360,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-customer/register")
+      }
+    }
+
+    "for any other option, redirect to home page again" in {
+      continueWithAuthorisedUserJson("XYZ", FakeRequest().withJsonBody(Json.parse("""{"businessType" : "XYZ"}"""))) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some("/business-customer/agent/ATED"))
       }
     }
 

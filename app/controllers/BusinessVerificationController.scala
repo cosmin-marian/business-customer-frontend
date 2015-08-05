@@ -43,6 +43,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
             case Some("OBP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
             case Some("LLP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
             case Some("LP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
+            case _ => Future.successful(Redirect(controllers.routes.HomeController.homePage(service)))
           }
         }
       )
