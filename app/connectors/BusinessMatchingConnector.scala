@@ -30,7 +30,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
       response =>
         response.status match {
           case OK | NOT_FOUND => {
-            Logger.info(s"[BusinessMatchingConnector][lookup] - response.status = ${response.status}   response.body = ${response.body}")
+            Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = ${postUrl}  response.status = ${response.status}   response.body = ${response.body}")
             Json.parse(response.body)
           }
           case SERVICE_UNAVAILABLE => {
