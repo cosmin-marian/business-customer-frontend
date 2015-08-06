@@ -79,7 +79,8 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
 
     "registerNonUk" must {
       "for successful save, return Response as Json" in {
-        val businessResponseData = NonUKRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123", agentReferenceNumber = "AREF123123")
+        val businessResponseData = NonUKRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
+          agentReferenceNumber = Some("AREF123123"))
         val successResponse = Json.toJson(businessResponseData)
 
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))

@@ -38,13 +38,31 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
       AgentRegistrationService.governmentGatewayConnector must be(GovernmentGatewayConnector)
     }
 
+    "enrolAgent throw exception if we have no agent ref no" in {
+      val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
+      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
+        businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        sapNumber="sap123",
+        safeId="safe123",
+        agentReferenceNumber=None)
+
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+      when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
+
+      val result = TestAgentRegistrationService.enrolAgent("ATED")
+      val thrown = the[RuntimeException] thrownBy await(result)
+      thrown.getMessage must include("No Agent Reference Number Found")
+    }
+
     "enrolAgent return the status if it worked" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
       val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
-        agentReferenceNumber="agent123")
+        agentReferenceNumber=Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
@@ -72,7 +90,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
-        agentReferenceNumber="agent123")
+        agentReferenceNumber=Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
