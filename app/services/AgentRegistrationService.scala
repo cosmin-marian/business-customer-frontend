@@ -49,10 +49,11 @@ trait AgentRegistrationService extends RunMode with Auditable {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
+        val knownFactsList =  List(businessDetails.agentReferenceNumber, Some(businessDetails.safeId)).flatten
         EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
           serviceName = enrolServiceName,
           friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
-          knownFacts = List(businessDetails.agentReferenceNumber, businessDetails.safeId))
+          knownFacts = knownFactsList)
       }
       case _ => {
         Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = ${serviceName}")
@@ -63,9 +64,13 @@ trait AgentRegistrationService extends RunMode with Auditable {
   }
 
   private def createKnownFacts( businessDetails: ReviewDetails)(implicit user: AuthContext) = {
+    val agentRefNo = businessDetails.agentReferenceNumber.getOrElse{
+      Logger.warn(s"[AgentRegistrationService][createKnownFacts] - No Agent Reference Number Found")
+      throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))
+    }
     val knownFacts = List(
-      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, businessDetails.agentReferenceNumber),
-      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
+        KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, agentRefNo),
+        KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
     )
     KnownFactsForService(knownFacts)
   }
@@ -73,7 +78,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: EnrolResponse)(implicit hc: HeaderCarrier) = {
     sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
-      "agentReferenceNumber" -> businessDetails.agentReferenceNumber,
+      "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
       "service" -> enrolResponse.serviceName,
       "identifiers" -> enrolResponse.identifiers.toString())
     )

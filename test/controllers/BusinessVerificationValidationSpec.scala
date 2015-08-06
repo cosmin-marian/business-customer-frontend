@@ -455,7 +455,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchSuccessResponse))
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "U.K.")
-    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", "agent123")
+    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", Some("agent123"))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

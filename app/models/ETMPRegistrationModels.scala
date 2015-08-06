@@ -46,7 +46,7 @@ object NonUKRegistrationRequest {
 case class NonUKRegistrationResponse(processingDate : String,
                                      sapNumber: String,
                                      safeId: String,
-                                     agentReferenceNumber : String)
+                                     agentReferenceNumber : Option[String])
 
 object NonUKRegistrationResponse {
   implicit val formats = Json.format[NonUKRegistrationResponse]
