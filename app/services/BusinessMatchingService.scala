@@ -82,7 +82,7 @@ trait BusinessMatchingService {
   private def cacheIndividual(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val businessType = "Sole Trader"
     val individual = (dataReturned \ "individual").as[Individual]
-    val addressReturned = (dataReturned \ "addressDetails").as[EtmpAddress]
+    val addressReturned = (dataReturned \ "address").as[EtmpAddress]
     val sapNumber = (dataReturned \ "sapNumber").as[String]
     val safeId = (dataReturned \ "safeId").as[String]
     val agentReferenceNumber = (dataReturned \ "agentReferenceNumber").as[Option[String]]
@@ -109,7 +109,7 @@ trait BusinessMatchingService {
     val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
-    val addressReturned = (dataReturned \ "addressDetails").as[EtmpAddress]
+    val addressReturned = (dataReturned \ "address").as[EtmpAddress]
     val sapNumber = (dataReturned \ "sapNumber").as[String]
     val safeId = (dataReturned \ "safeId").as[String]
     val agentReferenceNumber = (dataReturned \ "agentReferenceNumber").as[Option[String]]
