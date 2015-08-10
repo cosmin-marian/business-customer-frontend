@@ -217,6 +217,27 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               redirectLocation(result).get must include(s"/business-customer/review-details/$service")
           }
         }
+
+        "show an error if only business unique ID is entered and missing issuing institution " in {
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "id1", "issuingInstitution": "" }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
+          }
+        }
+
+        "show an error if only issuing institution is entered and missing business unique ID" in {
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "", "issuingInstitution": "institutionName" }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
+          }
+        }
+
+
+
       }
 
       "Back" must {
@@ -327,6 +348,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     test(result)
   }
+
 
 }
 
