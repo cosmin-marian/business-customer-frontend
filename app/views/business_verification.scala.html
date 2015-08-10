@@ -4,7 +4,7 @@
 @import views.html.helpers._
 @import views.html.helpers.error._
 
-@bcMain(title = Messages("bc.business-verification.title")) {
+@bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
 @errors(businessTypeForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 

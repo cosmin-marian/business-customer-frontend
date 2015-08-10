@@ -2,7 +2,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils._
 
-@bcMain(title = Messages("bc.business-review.title", service)) {
+@bcMain(title = Messages("bc.business-review.title", service), service = Some(service)) {
 
 <p class="text-section" id="bc.business-registration.text">@Messages("bc.business-registration.text",
     service.toUpperCase)</p>

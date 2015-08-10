@@ -44,6 +44,20 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
         BCUtils.getIsoCodeTupleList must contain(("GB" , "United Kingdom"))
       }
     }
+    "getNavTitle" must {
+      "for ated as service name, return ated" in {
+        BCUtils.getNavTitle(Some("ated")) must be(Some("Annual Tax on Enveloped Dwellings (ATED)"))
+      }
+      "for awrs as service name, return awrs" in {
+        BCUtils.getNavTitle(Some("awrs")) must be(Some("Alcohol Wholesaler Registration Scheme (AWRS)"))
+      }
+      "for other as service name, return None" in {
+        BCUtils.getNavTitle(Some("abcd")) must be(None)
+      }
+      "for None as service name, return None" in {
+        BCUtils.getNavTitle(None) must be(None)
+      }
+    }
   }
 
 }
