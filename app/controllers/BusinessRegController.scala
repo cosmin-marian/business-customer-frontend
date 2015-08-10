@@ -9,6 +9,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.{BCUtils, AuthUtils}
 
 import scala.concurrent.Future
+import play.api.i18n.Messages
 
 
 object BusinessRegController extends BusinessRegController {
@@ -38,8 +39,22 @@ trait BusinessRegController extends FrontendController with Actions {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, AuthUtils.isAgent, service, BCUtils.getIsoCodeTupleList)))
         },
         registrationData => {
-          businessRegistrationService.registerNonUk(registrationData).map {
-            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          (registrationData.businessUniqueId, registrationData.issuingInstitution) match {
+            case (Some(id), None) => {
+              val errorMsg = Messages("bc.business-registration-error.issuingInstitution.select")
+              val errorForm = businessRegistrationForm.withError(key = "issuingInstitution", message = errorMsg).fill(registrationData)
+              Future.successful(BadRequest(views.html.business_registration(errorForm, AuthUtils.isAgent, service, BCUtils.getIsoCodeTupleList)))
+            }
+            case(None, Some(inst)) => {
+              val errorMsg = Messages("bc.business-registration-error.businessUniqueId.select")
+              val errorForm = businessRegistrationForm.withError(key = "businessUniqueId", message = errorMsg).fill(registrationData)
+              Future.successful(BadRequest(views.html.business_registration(errorForm, AuthUtils.isAgent, service, BCUtils.getIsoCodeTupleList)))
+            }
+            case _ => {
+              businessRegistrationService.registerNonUk(registrationData).map {
+                registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+              }
+            }
           }
         }
       )

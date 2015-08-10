@@ -70,6 +70,8 @@ bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique 
 bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and up-to-date and try again
 bc.business-verification-error.not-selected=Please select a type of business
 bc.business-verification-link=Not the right business?
+bc.business-registration-error.businessUniqueId.select=You need to enter both a Business Unique Identifier and the institution that issued it
+bc.business-registration-error.issuingInstitution.select=You need to enter both a Business Unique Identifier and the institution that issued it
 
 bc.business-verification-error.registeredName.length=Registered name must not be more than 40 characters
 
