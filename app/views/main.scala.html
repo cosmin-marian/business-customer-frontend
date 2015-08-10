@@ -1,5 +1,6 @@
 @(applicationConfig: config.ApplicationConfig = config.ApplicationConfig,
     title: String,
+    navTitle: Option[String] = None,
     contentHeader: Option[Html] = None,
     userLoggedIn: Boolean = false,
     getHelpForm: Html  = HtmlFormat.empty,
@@ -23,7 +24,7 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-        navTitle = None,
+        navTitle = navTitle,
         navTitleLink = None,
         showBetaLink = false,
         navLinks = Some(headerNavLinks))

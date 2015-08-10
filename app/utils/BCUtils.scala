@@ -3,6 +3,7 @@ package utils
 import java.util.Properties
 
 import play.api.Play
+import play.api.i18n.Messages
 
 import scala.io.Source
 
@@ -61,6 +62,19 @@ object BCUtils {
 
   def getSelectedCountry(isoCode: String): String = {
     p.getProperty(isoCode.toUpperCase)
+  }
+
+  def getNavTitle(service:Option[String]): Option[String] = {
+    service match {
+      case Some(serviceName) => {
+        serviceName.toLowerCase match {
+          case "ated" => Some(Messages("bc.ated.serviceName"))
+          case "awrs" => Some(Messages("bc.awrs.serviceName"))
+          case _ => None
+        }
+      }
+      case None => None
+    }
   }
 
 }

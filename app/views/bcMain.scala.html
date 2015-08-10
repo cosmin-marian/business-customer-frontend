@@ -1,6 +1,7 @@
-@(title: String, userLoggedIn: Boolean = false, supportLinkEnabled: Boolean = true)(mainContent: Html)(implicit request: Request[_])
+@(title: String, userLoggedIn: Boolean = false, supportLinkEnabled: Boolean = true, service: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
+@import utils.BCUtils
 
 @getHelpForm = {
     @if(supportLinkEnabled) {
@@ -22,6 +23,7 @@
 @main(
     applicationConfig = config.ApplicationConfig,
     title = title,
+    navTitle = BCUtils.getNavTitle(service),
     userLoggedIn = userLoggedIn,
     getHelpForm = getHelpForm,
     scriptElement = Some(scriptElement),

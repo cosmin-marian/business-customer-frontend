@@ -1,6 +1,9 @@
 bc.title = Business Customer
 bc.business-verification.title = Business Customer
 
+bc.ated.serviceName = Annual Tax on Enveloped Dwellings (ATED)
+bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
+
 business-review.user.title = Verify business details
 business-review.agent.title = Verify agent details
 bc.business-review.title = Welcome to {0} subscription
