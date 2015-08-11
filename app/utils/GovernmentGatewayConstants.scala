@@ -4,7 +4,6 @@ object GovernmentGatewayConstants {
 
   val PORTAL_IDENTIFIER = "MDTP"
   val FRIENDLY_NAME = "Agent Enrolment"
-  val AGENT_SERVICE_NAME = "HMRC-ATED-AGENT"
 
   val KNOWN_FACTS_AGENT_SERVICE_NAME = "HMRC-AGENT-AGENT"
   val KNOWN_FACTS_AGENT_REF_NO = "AgentRefNumber"
