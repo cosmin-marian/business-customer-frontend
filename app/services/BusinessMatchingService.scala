@@ -62,7 +62,7 @@ trait BusinessMatchingService {
 
   private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
-    Logger.info(s" ###### dataReturned = ${dataReturned}       ~~~~~ isFailureResponse = ${isFailureResponse}")
+    Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = ${dataReturned}, isFailureResponse = ${isFailureResponse}")
     isFailureResponse match {
       case true => Future.successful(dataReturned)
       case false => {
@@ -79,23 +79,22 @@ trait BusinessMatchingService {
     }
   }
 
+
   private def cacheIndividual(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val businessType = "Sole Trader"
     val individual = (dataReturned \ "individual").as[Individual]
-    val addressReturned = (dataReturned \ "address").as[EtmpAddress]
-    val sapNumber = (dataReturned \ "sapNumber").as[String]
-    val safeId = (dataReturned \ "safeId").as[String]
-    val agentReferenceNumber = (dataReturned \ "agentReferenceNumber").as[Option[String]]
+    val addressReturned = getAddress(dataReturned)
 
     val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
       line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
       postcode = addressReturned.postalCode, country = addressReturned.countryCode)
+
     val reviewDetails = ReviewDetails(businessName = s"${individual.firstName} ${individual.lastName}",
       businessType = Some(businessType),
       businessAddress = address,
-      sapNumber = sapNumber,
-      safeId = safeId,
-      agentReferenceNumber = agentReferenceNumber,
+      sapNumber = getSapNumber(dataReturned),
+      safeId = getSafeId(dataReturned),
+      agentReferenceNumber = getAgentRefNum(dataReturned),
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )
@@ -109,10 +108,7 @@ trait BusinessMatchingService {
     val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
-    val addressReturned = (dataReturned \ "address").as[EtmpAddress]
-    val sapNumber = (dataReturned \ "sapNumber").as[String]
-    val safeId = (dataReturned \ "safeId").as[String]
-    val agentReferenceNumber = (dataReturned \ "agentReferenceNumber").as[Option[String]]
+    val addressReturned = getAddress(dataReturned)
 
     val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
       line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
@@ -120,15 +116,32 @@ trait BusinessMatchingService {
     val reviewDetails = ReviewDetails(businessName = businessName,
       businessType = businessType,
       businessAddress = address,
-      sapNumber = sapNumber,
-      safeId = safeId,
-      agentReferenceNumber = agentReferenceNumber)
+      sapNumber = getSapNumber(dataReturned),
+      safeId = getSafeId(dataReturned),
+      agentReferenceNumber = getAgentRefNum(dataReturned))
     dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
       reviewDetailsReturned =>
         Future.successful(Json.toJson(reviewDetails))
     }
   }
 
+  private def getAddress(dataReturned: JsValue) :EtmpAddress = {
+    val addressReturned = (dataReturned \ "address").as[Option[EtmpAddress]]
+    addressReturned.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getAddress] - No Address returned from ETMP"))
+  }
+
+  private def getSafeId(dataReturned: JsValue) :String = {
+    val safeId = (dataReturned \ "safeId").as[Option[String]]
+    safeId.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getSafeId] - No Safe Id returned from ETMP"))
+  }
+
+  private def getSapNumber(dataReturned: JsValue) :String = {
+    (dataReturned \ "sapNumber").as[Option[String]].getOrElse("")
+  }
+
+  private def getAgentRefNum(dataReturned: JsValue) :Option[String] = {
+    (dataReturned \ "agentReferenceNumber").as[Option[String]]
+  }
 }
 
 object BusinessMatchingService extends BusinessMatchingService {

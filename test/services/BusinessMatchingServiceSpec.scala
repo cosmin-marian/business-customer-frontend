@@ -150,6 +150,30 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())
         verify(mockDataCacheConnector, times(0)).saveReviewDetails(Matchers.any())(Matchers.any())
       }
+
+      "for match found with SA user, throw an exception when no Safe Id Number" in {
+        val successNoSapNo = Json.parse( """{ "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
+
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(successNoSapNo))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        val thrown = the[RuntimeException] thrownBy await(result)
+        thrown.getMessage must include("No Safe Id returned from ETMP")
+
+      }
+
+      "for match found with SA user, throw an exception when no Address" in {
+        val successNoSapNo = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909", "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
+
+        implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))), None, None))
+        when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(successNoSapNo))
+        when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
+        val result = TestBusinessMatchingService.matchBusinessWithOrganisationName(false, testOrganisation, utr)
+        val thrown = the[RuntimeException] thrownBy await(result)
+        thrown.getMessage must include("No Address returned from ETMP")
+
+      }
     }
   }
 
