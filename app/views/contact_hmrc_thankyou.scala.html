@@ -1,0 +1,7 @@
+@(partialUrl: String)(implicit request: Request[_])
+
+@import config.CachedStaticHtmlPartialProvider
+
+@bcMain(title = "Help and contact") {
+    @CachedStaticHtmlPartialProvider.get(partialUrl)
+}
