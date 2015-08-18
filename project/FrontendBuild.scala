@@ -27,7 +27,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-partials" % "1.6.0",
     "uk.gov.hmrc" %% "play-authorised-frontend" % "1.4.0",
     "uk.gov.hmrc" %% "url-builder" % "0.8.0",
-    "uk.gov.hmrc" %% "play-config" % "1.1.0",
+    "uk.gov.hmrc" %% "play-config" % "1.0.0",
     "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
