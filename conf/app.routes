@@ -33,7 +33,4 @@ GET         /agent/register/:service                                            
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
-GET         /contact-hmrc                                                       controllers.ContactHmrcController.contactHmrc
-POST        /contact-hmrc                                                       controllers.ContactHmrcController.submitContactHmrc
-GET         /contact-hmrc/thank-you                                             controllers.ContactHmrcController.contactHmrcThankYou
 

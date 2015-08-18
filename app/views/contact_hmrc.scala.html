@@ -1,7 +1,0 @@
-@(partialUrl: String, formBody: Option[Html])(implicit request: Request[_])
-
-@import config.FormPartialProvider
-
-@bcMain(title = "Help and contact") {
-    @formBody.getOrElse(FormPartialProvider.get(partialUrl))
-}
