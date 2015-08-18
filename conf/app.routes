@@ -33,3 +33,4 @@ GET         /agent/register/:service                                            
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
+

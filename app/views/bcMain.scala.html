@@ -1,13 +1,7 @@
-@(title: String, userLoggedIn: Boolean = false, supportLinkEnabled: Boolean = true, service: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
+@(title: String, userLoggedIn: Boolean = true, supportLinkEnabled: Boolean = true, service: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 @import utils.BCUtils
-
-@getHelpForm = {
-    @if(supportLinkEnabled) {
-        @config.CachedStaticHtmlPartialProvider.get(config.ApplicationConfig.reportAProblemPartialUrl)
-    }
-}
 
 @scriptElement = {
 <script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
@@ -20,14 +14,12 @@
 <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
 }
 
-@main(
-    applicationConfig = config.ApplicationConfig,
-    title = title,
-    navTitle = BCUtils.getNavTitle(service),
+@main(applicationConfig = config.ApplicationConfig,
+    supportLinkEnabled = supportLinkEnabled,
+    title = title, navTitle = BCUtils.getNavTitle(service),
     userLoggedIn = userLoggedIn,
-    getHelpForm = getHelpForm,
     scriptElement = Some(scriptElement),
-    linkElement = Some(linkElement)){
+    linkElement = Some(linkElement)) {
         <div class="text">
             @mainContent
         </div>
