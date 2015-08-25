@@ -28,6 +28,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {
     val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/${GovernmentGatewayConstants.KNOWN_FACTS_AGENT_SERVICE_NAME}/$knownFactsURI"""
+    Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
     http.POST[JsValue, HttpResponse](postUrl, jsonData)  map {
       response =>
@@ -45,6 +46,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
   def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
     val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
+    Logger.debug(s"[BusinessCustomerConnector][registerNonUk] Call $postUrl")
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map {
       response =>

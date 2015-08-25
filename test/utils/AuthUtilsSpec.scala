@@ -13,6 +13,14 @@ class AuthUtilsSpec extends PlaySpec {
       link must startWith("org")
     }
 
+    "Return the sa link if we have an sa individual" in {
+      implicit val aut = builders.AuthBuilder.createSaAuthContext("agentId", "Agent Bloggs")
+      val link = AuthUtils.getAuthLink()
+      link must startWith("sa")
+      link mustNot startWith("sa/individual")
+    }
+
+
     "Return the agent link if we have agent admin authorisation" in {
       implicit val aut = builders.AuthBuilder.createAgentAuthContext("agentId", "Agent Bloggs")
       val link = AuthUtils.getAuthLink()
