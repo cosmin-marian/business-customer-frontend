@@ -14,6 +14,10 @@ object AuthBuilder {
     AuthContext(authority = createUserAuthority(userId),  nameFromSession = Some(userName))
   }
 
+  def createSaAuthContext(userId: String, userName: String) :AuthContext = {
+    AuthContext(authority = createSaAuthority(userId), nameFromSession = Some(userName))
+  }
+
   def createAgentAuthContext(userId: String, userName: String) :AuthContext = {
     AuthContext(authority = createAgentAuthority(userId, AgentAdmin), nameFromSession = Some(userName))
   }
@@ -50,6 +54,11 @@ object AuthBuilder {
   private def createUserAuthority(userId: String) :Authority = {
     Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None)
   }
+
+  private def createSaAuthority(userId: String) :Authority = {
+    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None)
+  }
+
 
   private def createAgentAuthority(userId: String, agentRole : AgentRole) :Authority = {
     val agentAccount = AgentAccount(link = "agent/1234",

@@ -5,7 +5,7 @@ import uk.gov.hmrc.play.frontend.auth.{AuthenticationProvider, TaxRegime}
 
 case class BusinessCustomerRegime(serviceName: String) extends TaxRegime {
 
-  override def isAuthorised(accounts: Accounts): Boolean = accounts.org.isDefined || accounts.agent.isDefined
+  override def isAuthorised(accounts: Accounts): Boolean = accounts.org.isDefined || accounts.agent.isDefined || accounts.sa.isDefined
 
   override def authenticationType: AuthenticationProvider = BusinessCustomerGovernmentGateway(serviceName)
 

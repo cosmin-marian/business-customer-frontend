@@ -26,6 +26,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads {
   def lookup(lookupData: MatchBusinessData, userType: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
     val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/$lookupURI/${lookupData.utr}/$userType"""
+    Logger.debug(s"[BusinessMatchingConnector][lookup] Call $postUrl")
     http.POST( postUrl, Json.toJson(lookupData)) map {
       response =>
         response.status match {
