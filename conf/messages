@@ -41,6 +41,10 @@ bc.business-verification.LP=Limited Partnership
 bc.business-verification.UIB=Unincorporated Association
 bc.business-verification.LTD=Limited Company
 bc.business-verification.SOP=Sole Trader / Self-employed
+
+bc.business-verification.NEW=New Business
+bc.business-verification.GROUP=Group
+
 bc.business-verification.radio-legend=What type of business is it?
 bc.business-verification.firstNameField=First Name
 bc.business-verification.lastNameField=Last Name
