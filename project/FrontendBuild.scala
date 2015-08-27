@@ -18,16 +18,16 @@ private object AppDependencies {
   private val frontendBootstrapVersion = "1.0.0"
   private val govukTemplateVersion = "3.0.0"
   private val playUiVersion = "3.0.0"
-  private val httpCachingClientVersion = "2.6.1"
+  private val httpCachingClientVersion = "3.0.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
     "uk.gov.hmrc" %% "play-partials" % "1.6.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.4.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.5.0",
     "uk.gov.hmrc" %% "url-builder" % "0.8.0",
-    "uk.gov.hmrc" %% "play-config" % "1.0.0",
+    "uk.gov.hmrc" %% "play-config" % "1.1.0",
     "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
