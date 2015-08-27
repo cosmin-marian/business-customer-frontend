@@ -35,8 +35,8 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   }
 
   object TestConnector extends BusinessCustomerConnector {
-    override def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
-      val nonUKResponse =  NonUKRegistrationResponse(processingDate = "2015-01-01",
+    override def registerNonUk(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[BusinessKRegistrationResponse] = {
+      val nonUKResponse =  BusinessKRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",
         agentReferenceNumber = Some("AREF123123"))
@@ -69,7 +69,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.registerNonUk(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
 
       val reviewDetails = await(regResult)
 
@@ -90,7 +90,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
         sapNumber="sap123", safeId="safe123", agentReferenceNumber=Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
-      val regResult = TestBusinessRegistrationService.registerNonUk(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
       val reviewDetails = await(regResult)
 
       reviewDetails.businessName must be (busRegData.businessName)
@@ -111,7 +111,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 
-      val regResult = TestBusinessRegistrationService.registerNonUk(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Registration Failed")

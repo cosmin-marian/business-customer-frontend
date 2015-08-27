@@ -1,7 +1,7 @@
 package connectors
 
 import config.WSHttp
-import models.{KnownFactsForService, NonUKRegistrationResponse, NonUKRegistrationRequest}
+import models.{KnownFactsForService, BusinessKRegistrationResponse, BusinessRegistrationRequest}
 import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json.{Reads, JsValue, Json}
@@ -43,7 +43,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
   }
 
 
-  def registerNonUk(registerData: NonUKRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[NonUKRegistrationResponse] = {
+  def registerNonUk(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[BusinessKRegistrationResponse] = {
     val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
     Logger.debug(s"[BusinessCustomerConnector][registerNonUk] Call $postUrl")
@@ -51,7 +51,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
     http.POST(postUrl, jsonData) map {
       response =>
         response.status match {
-          case OK => response.json.as[NonUKRegistrationResponse]
+          case OK => response.json.as[BusinessKRegistrationResponse]
           case NOT_FOUND => {
             Logger.warn(s"[BusinessCustomerConnector][registerNonUk] - Not Found Exception ${registerData.organisation.organisationName}")
             throw new InternalServerException(s"${Messages("bc.connector.error.not-found")}  Exception ${response.body}")

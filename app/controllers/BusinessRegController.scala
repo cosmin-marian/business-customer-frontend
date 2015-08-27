@@ -51,7 +51,7 @@ trait BusinessRegController extends FrontendController with Actions {
               Future.successful(BadRequest(views.html.business_registration(errorForm, AuthUtils.isAgent, service, BCUtils.getIsoCodeTupleList)))
             }
             case _ => {
-              businessRegistrationService.registerNonUk(registrationData).map {
+              businessRegistrationService.registerBusiness(registrationData).map {
                 registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
               }
             }

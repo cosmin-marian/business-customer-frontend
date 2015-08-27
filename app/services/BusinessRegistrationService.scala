@@ -32,12 +32,12 @@ trait BusinessRegistrationService extends Auditable {
   val nonUKbusinessType: String
 
 
-  def registerNonUk(registerData: BusinessRegistration)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
 
-    val nonUKRegisterDetails = createNonUKRegistrationRequest(registerData)
+    val businessRegisterDetails = createBusinessRegistrationRequest(registerData)
 
     for {
-      registerResponse <- businessCustomerConnector.registerNonUk(nonUKRegisterDetails)
+      registerResponse <- businessCustomerConnector.registerNonUk(businessRegisterDetails)
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
@@ -49,12 +49,12 @@ trait BusinessRegistrationService extends Auditable {
   }
 
 
-  private def createNonUKRegistrationRequest(registerData: BusinessRegistration)
-                                            (implicit user: AuthContext, headerCarrier: HeaderCarrier): NonUKRegistrationRequest = {
+  private def createBusinessRegistrationRequest(registerData: BusinessRegistration)
+                                            (implicit user: AuthContext, headerCarrier: HeaderCarrier): BusinessRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
-    val nonUKIdentification = {
+    val businessIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
         Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
           issuingInstitution= registerData.issuingInstitution.getOrElse(""),
@@ -71,18 +71,18 @@ trait BusinessRegistrationService extends Auditable {
       postalCode = registerData.businessAddress.postcode,
       countryCode = registerData.businessAddress.country)
 
-    NonUKRegistrationRequest(
+    BusinessRegistrationRequest(
       acknowledgmentReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,
       isAGroup = false,
-      identification = nonUKIdentification,
+      identification = businessIdentification,
       contactDetails = EtmpContactDetails()
     )
   }
 
-  private def createReviewDetails(response: NonUKRegistrationResponse,
+  private def createReviewDetails(response: BusinessKRegistrationResponse,
                                   registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,

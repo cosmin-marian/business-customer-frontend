@@ -30,7 +30,7 @@ object EtmpIdentification {
   implicit val formats = Json.format[EtmpIdentification]
 }
 
-case class NonUKRegistrationRequest(acknowledgmentReference: String,
+case class BusinessRegistrationRequest(acknowledgmentReference: String,
                                     isAnAgent: Boolean,
                                     isAGroup: Boolean,
                                     identification: Option[EtmpIdentification],
@@ -38,16 +38,16 @@ case class NonUKRegistrationRequest(acknowledgmentReference: String,
                                     address: EtmpAddress,
                                     contactDetails: EtmpContactDetails)
 
-object NonUKRegistrationRequest {
-  implicit val formats = Json.format[NonUKRegistrationRequest]
+object BusinessRegistrationRequest {
+  implicit val formats = Json.format[BusinessRegistrationRequest]
 }
 
 
-case class NonUKRegistrationResponse(processingDate : String,
+case class BusinessKRegistrationResponse(processingDate : String,
                                      sapNumber: String,
                                      safeId: String,
                                      agentReferenceNumber : Option[String])
 
-object NonUKRegistrationResponse {
-  implicit val formats = Json.format[NonUKRegistrationResponse]
+object BusinessKRegistrationResponse {
+  implicit val formats = Json.format[BusinessKRegistrationResponse]
 }
