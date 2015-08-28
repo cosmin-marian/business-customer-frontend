@@ -79,7 +79,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
 
     "registerNonUk" must {
       "for successful save, return Response as Json" in {
-        val businessResponseData = BusinessKRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
+        val businessResponseData = BusinessRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
           agentReferenceNumber = Some("AREF123123"))
         val successResponse = Json.toJson(businessResponseData)
 

@@ -35,8 +35,8 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   }
 
   object TestConnector extends BusinessCustomerConnector {
-    override def registerNonUk(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[BusinessKRegistrationResponse] = {
-      val nonUKResponse =  BusinessKRegistrationResponse(processingDate = "2015-01-01",
+    override def registerNonUk(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[BusinessRegistrationResponse] = {
+      val nonUKResponse =  BusinessRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",
         agentReferenceNumber = Some("AREF123123"))

@@ -82,7 +82,7 @@ trait BusinessRegistrationService extends Auditable {
     )
   }
 
-  private def createReviewDetails(response: BusinessKRegistrationResponse,
+  private def createReviewDetails(response: BusinessRegistrationResponse,
                                   registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,

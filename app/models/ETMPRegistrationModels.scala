@@ -43,11 +43,11 @@ object BusinessRegistrationRequest {
 }
 
 
-case class BusinessKRegistrationResponse(processingDate : String,
+case class BusinessRegistrationResponse(processingDate : String,
                                      sapNumber: String,
                                      safeId: String,
                                      agentReferenceNumber : Option[String])
 
-object BusinessKRegistrationResponse {
-  implicit val formats = Json.format[BusinessKRegistrationResponse]
+object BusinessRegistrationResponse {
+  implicit val formats = Json.format[BusinessRegistrationResponse]
 }
