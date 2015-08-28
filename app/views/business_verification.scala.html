@@ -3,6 +3,7 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 @import views.html.helpers.error._
+@import utils.BCUtils
 
 @bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
 @errors(businessTypeForm)
@@ -10,13 +11,9 @@
 
 @if(isAgent) {
 <h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.agent.header"))</h1>
-}else{
-<h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.user.header"))</h1>
-}
-
-@if(isAgent) {
 <p id="business-lookup-text">@Messages("bc.business-verification.agent.lookup-text")</p>
 }else{
+<h1 id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.user.header"))</h1>
 <p id="business-lookup-text">@Messages("bc.business-verification.user.lookup-text")</p>
 }
 
@@ -24,15 +21,7 @@
         <div class="form-group" id="businessType">
             @inputRadioGroup(
             businessTypeForm("businessType"),
-            Seq(
-            "NUK" -> Messages("bc.business-verification.NUK"),
-            "LTD" -> Messages("bc.business-verification.LTD"),
-            "SOP" -> Messages("bc.business-verification.SOP"),
-            "OBP" -> Messages("bc.business-verification.PRT"),
-            "LP" -> Messages("bc.business-verification.LP"),
-            "LLP" -> Messages("bc.business-verification.LLP"),
-            "UIB" -> Messages("bc.business-verification.UIB")
-            ),
+            BCUtils.businessTypeMap(service),
                 '_legend -> Messages("bc.business-verification.radio-legend"),
                 '_labelClass -> "block-label",
                 '_legendClass -> "bold-small",

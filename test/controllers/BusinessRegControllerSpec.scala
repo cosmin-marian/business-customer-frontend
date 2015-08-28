@@ -37,31 +37,31 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   "BusinessRegController" must {
 
     "respond to /register" in {
-      val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName")).get
+      val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName/NUK")).get
       status(result) must not be (NOT_FOUND)
     }
 
     "unauthorised users" must {
       "respond with a redirect for /register" in {
-        registerWithUnAuthorisedUser { result =>
+        registerWithUnAuthorisedUser("NUK") { result =>
           status(result) must be(SEE_OTHER)
         }
       }
 
       "be redirected to the unauthorised page for /register" in {
-        registerWithUnAuthorisedUser { result =>
+        registerWithUnAuthorisedUser("NUK") { result =>
           redirectLocation(result).get must include("/business-customer/unauthorised")
         }
       }
 
       "respond with a redirect for /send" in {
-        submitWithUnAuthorisedUser { result =>
+        submitWithUnAuthorisedUser("NUK") { result =>
           status(result) must be(SEE_OTHER)
         }
       }
 
       "be redirected to the unauthorised page for /send" in {
-        submitWithUnAuthorisedUser { result =>
+        submitWithUnAuthorisedUser("NUK") { result =>
           redirectLocation(result).get must include("/business-customer/unauthorised")
         }
       }
@@ -70,9 +70,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     "Authorised Users" must {
 
-      "return business registration view for a user" in {
+      "return business registration view for a user for Non-UK" in {
 
-        registerWithAuthorisedUser {
+        registerWithAuthorisedUser(serviceName, "NUK") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
@@ -93,9 +93,54 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
       }
 
+      "return business registration view for a user for New Business" in {
+
+        registerWithAuthorisedUser("awrs","NEW") {
+          result =>
+            status(result) must be(OK)
+            val document = Jsoup.parse(contentAsString(result))
+
+            document.title() must be("Business Registration")
+            document.getElementById("business-verification-text").text() must be("AWRS account registration")
+            document.getElementById("business-registration.header").text() must be("New business details")
+            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your business.")
+            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
+            document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+            document.getElementById("businessAddress.country_field").text() must include("Country")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
+            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+      "return business registration view for a user for Group" in {
+
+        registerWithAuthorisedUser("awrs", "GROUP") {
+          result =>
+            status(result) must be(OK)
+            val document = Jsoup.parse(contentAsString(result))
+
+            document.title() must be("Business Registration")
+            document.getElementById("business-verification-text").text() must be("AWRS account registration")
+            document.getElementById("business-registration.header").text() must be("Group representative details")
+            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your group representative.")
+            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
+            document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+            document.getElementById("businessAddress.country_field").text() must include("Country")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
+            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("submit").text() must be("Continue")
+        }
+      }
       "return business registration view for an agent" in {
 
-        registerWithAuthorisedAgent {
+        registerWithAuthorisedAgent(serviceName, "NUK") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
@@ -261,12 +306,12 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     }
   }
 
-  def registerWithUnAuthorisedUser(test: Future[Result] => Any) {
+  def registerWithUnAuthorisedUser(businessType: String="NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -274,13 +319,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def registerWithAuthorisedAgent(test: Future[Result] => Any) {
+  def registerWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -288,13 +333,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def registerWithAuthorisedUser(test: Future[Result] => Any) {
+  def registerWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -316,13 +361,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithUnAuthorisedUser(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(businessType: String="NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.send(service).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -330,7 +375,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String="NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -339,9 +384,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", Some("agent123"))
 
-    when(mockBusinessRegistrationService.registerNonUk(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
-    val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
+    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

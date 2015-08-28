@@ -39,7 +39,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution="HRMC", issuingCountryCode = "UK")
     val businessAddress = EtmpAddress("line1", "line2", None, None, None, "GB")
 
-    val businessRequestData = NonUKRegistrationRequest(
+    val businessRequestData = BusinessRegistrationRequest(
       acknowledgmentReference = "SESS:123123123",
       organisation = businessOrgData,
       address = businessAddress,
@@ -79,7 +79,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
 
     "registerNonUk" must {
       "for successful save, return Response as Json" in {
-        val businessResponseData = NonUKRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
+        val businessResponseData = BusinessRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
           agentReferenceNumber = Some("AREF123123"))
         val successResponse = Json.toJson(businessResponseData)
 
