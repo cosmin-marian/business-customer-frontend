@@ -125,8 +125,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
             document.title() must be("Business Registration")
             document.getElementById("business-verification-text").text() must be("AWRS account registration")
-            document.getElementById("business-registration.header").text() must be("Group details")
-            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your group.")
+            document.getElementById("business-registration.header").text() must be("Group representative details")
+            document.getElementById("business-registration-subheader").text() must be("You need to tell us the details of your group representative.")
             document.getElementById("businessNameNUK_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")

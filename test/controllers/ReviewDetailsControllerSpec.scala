@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 
+import config.AtedSessionCache
 import connectors.DataCacheConnector
 import models.{Identifier, EnrolResponse, ReviewDetails, Address}
 import org.jsoup.Jsoup
@@ -30,7 +31,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "GB")
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = SessionCache
+      val sessionCache = AtedSessionCache
 
       var reads: Int = 0
 
@@ -48,7 +49,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   def testReviewDetailsControllerNotFound = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = SessionCache
+      val sessionCache = AtedSessionCache
 
       var reads: Int = 0
 
