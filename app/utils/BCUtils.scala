@@ -79,14 +79,12 @@ object BCUtils {
 
 
   def businessTypeMap(service:String) : Seq[(String, String)]= {
-    val optionalBusinessTypes = service.toLowerCase match {
-        case "ated" => Seq("NUK" -> Messages("bc.business-verification.NUK"))
-        case "awrs" => {
-          Seq("NEW" -> Messages("bc.business-verification.NEW"),
-            "GROUP" -> Messages("bc.business-verification.GROUP")
-          )
-        }
-        case _ => Seq()
+    val optionalBusinessTypes = if (service.toLowerCase.equals("awrs")) {
+      Seq("NEW" -> Messages("bc.business-verification.NEW"),
+        "GROUP" -> Messages("bc.business-verification.GROUP")
+      )
+    } else {
+      Seq("NUK" -> Messages("bc.business-verification.NUK"))
     }
 
     val fixedBusinessTypes = Seq(

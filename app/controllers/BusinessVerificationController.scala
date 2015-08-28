@@ -36,7 +36,9 @@ trait BusinessVerificationController extends FrontendController with Actions {
         formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service))),
         value => {
           value.businessType match {
-            case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service)))
+            case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))
+            case Some("NEW") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NEW")))
+            case Some("GROUP") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "GROUP")))
             case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
             case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
             case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))

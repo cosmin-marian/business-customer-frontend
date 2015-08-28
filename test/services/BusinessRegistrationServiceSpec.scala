@@ -69,7 +69,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true)
 
       val reviewDetails = await(regResult)
 
@@ -90,7 +90,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
         sapNumber="sap123", safeId="safe123", agentReferenceNumber=Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true)
       val reviewDetails = await(regResult)
 
       reviewDetails.businessName must be (busRegData.businessName)
@@ -111,7 +111,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Registration Failed")

@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], isAgent: Boolean, service: String, listOfIsoCode: List[(String, String)])(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -15,14 +15,11 @@
 
 @errors(businessRegistrationForm)
 <p class="text-section" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
-@if(isAgent) {
-<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.agent.header"))</h1>
-}else{
-<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(Messages("bc.business-registration.user.header"))</h1>
-}
-<p class="text-section" id="business-registration-subheader">@Messages("bc.business-registration.subheader")</p>
+<h1 id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
-@form(action = controllers.routes.BusinessRegController.send(service)) {
+<p class="text-section" id="business-registration-subheader">@displayDetails.businessRegSubHeader</p>
+
+@form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 <div class="form-group">
 
     <div id="business-registration-form">
@@ -54,7 +51,7 @@
         '_showConstraints -> false)
 
         @bcDropdown(businessRegistrationForm("businessAddress.country"),
-        elementOptions = listOfIsoCode,
+        elementOptions = displayDetails.listOfIsoCode,
         displayEmptyValue = true,
         '_id -> "businessAddress.country",
         '_emptyValueText -> Messages("bc.business-registration.country.select"),

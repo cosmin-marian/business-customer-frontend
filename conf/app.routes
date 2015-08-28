@@ -13,11 +13,11 @@ GET         /review-details/:service                                            
 
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
 
-GET         /register/:service                                                  controllers.BusinessRegController.register(service: String)
+GET         /register/:service/:businessType                                    controllers.BusinessRegController.register(service: String, businessType: String)
 
 POST        /business-verification/:service/submit/:businessType                controllers.BusinessVerificationController.submit(service: String, businessType: String)
 
-POST        /send                                                               controllers.BusinessRegController.send(service: String)
+POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
 
 GET         /review-details-continue/:service                                   controllers.ReviewDetailsController.continue(service: String)
 

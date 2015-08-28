@@ -2,6 +2,10 @@ package models
 
 import play.api.libs.json.Json
 
+case class BusinessRegistrationDisplayDetails(businessType: String,
+                                              businessRegHeader: String,
+                                              businessRegSubHeader: String,
+                                              listOfIsoCode: List[(String, String)])
 
 case class BusinessRegistration(businessName: String, businessAddress: Address, businessUniqueId: Option[String], issuingInstitution: Option[String])
 

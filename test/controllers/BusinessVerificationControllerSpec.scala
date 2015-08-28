@@ -359,10 +359,25 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include("/business-customer/register")
+          redirectLocation(result).get must include(s"/business-customer/register/$service/NUK")
       }
     }
 
+    "if new, continue to registration page" in {
+      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NEW"}"""))) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/register/$service/NEW")
+      }
+    }
+
+    "if group, continue to registration page" in {
+      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) {
+        result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/register/$service/GROUP")
+      }
+    }
     "for any other option, redirect to home page again" in {
       continueWithAuthorisedUserJson("XYZ", FakeRequest().withJsonBody(Json.parse("""{"businessType" : "XYZ"}"""))) {
         result =>

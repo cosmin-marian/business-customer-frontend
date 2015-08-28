@@ -32,9 +32,9 @@ trait BusinessRegistrationService extends Auditable {
   val nonUKbusinessType: String
 
 
-  def registerBusiness(registerData: BusinessRegistration)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
 
-    val businessRegisterDetails = createBusinessRegistrationRequest(registerData)
+    val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
     for {
       registerResponse <- businessCustomerConnector.registerNonUk(businessRegisterDetails)
@@ -49,7 +49,7 @@ trait BusinessRegistrationService extends Auditable {
   }
 
 
-  private def createBusinessRegistrationRequest(registerData: BusinessRegistration)
+  private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
                                             (implicit user: AuthContext, headerCarrier: HeaderCarrier): BusinessRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
@@ -76,7 +76,7 @@ trait BusinessRegistrationService extends Auditable {
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = AuthUtils.isAgent,
-      isAGroup = false,
+      isAGroup = isGroup,
       identification = businessIdentification,
       contactDetails = EtmpContactDetails()
     )
