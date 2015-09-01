@@ -66,7 +66,7 @@ bc.business-verification-error.sautr=Self Assessment Unique Tax Reference must b
 bc.business-verification-error.sautr.length=Self Assessment Unique Tax Reference must be 10 digits
 bc.business-verification-error.utr=Unique Tax Reference must be 10 digits
 bc.business-verification-error.businessName=Registered name must be entered
-bc.business-verification-error.businessName.length=Business Name must not be more than 40 characters
+bc.business-verification-error.businessName.length=Business Name must not be more than 105 characters
 bc.business-verification-error.cotaxutr=Corporation Tax Unique Tax Reference must be entered
 bc.business-verification-error.cotaxutr.length=Corporation Tax Unique Tax Reference must be 10 digits
 bc.business-verification-error.psautr=Partnership Self Assessment Unique Tax Reference must be entered
@@ -80,7 +80,7 @@ bc.business-verification-link=Not the right business?
 bc.business-registration-error.businessUniqueId.select=You need to enter both a Business Unique Identifier and the institution that issued it
 bc.business-registration-error.issuingInstitution.select=You need to enter both a Business Unique Identifier and the institution that issued it
 
-bc.business-verification-error.registeredName.length=Registered name must not be more than 40 characters
+bc.business-verification-error.registeredName.length=Registered name must not be more than 105 characters
 
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised

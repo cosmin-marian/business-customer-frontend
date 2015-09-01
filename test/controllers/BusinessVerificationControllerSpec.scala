@@ -471,11 +471,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
 
-          "if entered, Registered Name must be less than 40 characters" in {
-            submitWithAuthorisedUser("LTD", FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+          "if entered, Registered Name must be less than 105 characters" in {
+            submitWithAuthorisedUser("LTD", FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Registered name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 105 characters")
             }
           }
 
@@ -511,11 +511,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
 
-          "if entered, Register Name must be less than 40 characters" in {
-            submitWithAuthorisedUser("UIB", FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+          "if entered, Register Name must be less than 105 characters" in {
+            submitWithAuthorisedUser("UIB", FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Registered name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 105 characters")
             }
           }
 
@@ -552,11 +552,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
 
-          "if entered, Registered Name must be less than 40 characters" in {
-            submitWithAuthorisedUser("OBP", FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+          "if entered, Registered Name must be less than 105 characters" in {
+            submitWithAuthorisedUser("OBP", FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Registered name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 105 characters")
             }
           }
 
@@ -592,11 +592,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
 
-          "if entered, Registered name must be less than 40 characters" in {
-            submitWithAuthorisedUser("LLP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+          "if entered, Registered name must be less than 105 characters" in {
+            submitWithAuthorisedUser("LLP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Registered name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 105 characters")
             }
           }
 
@@ -633,11 +633,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             }
           }
 
-          "if entered, Business Name must be less than 40 characters" in {
-            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1")) {
+          "if entered, Business Name must be less than 105 characters" in {
+            submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12")) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("Registered name must not be more than 40 characters")
+                contentAsString(result) must include("Registered name must not be more than 105 characters")
             }
           }
 
