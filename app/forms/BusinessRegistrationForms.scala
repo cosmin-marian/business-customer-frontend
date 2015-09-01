@@ -13,13 +13,14 @@ object BusinessRegistrationForms {
   val length0 = 0
   val length2 = 2
   val length60 = 60
+  val length105 = 105
 
 
   val businessRegistrationForm = Form(
     mapping(
       "businessName" -> text.
         verifying(Messages("bc.business-registration-error.businessName"), x => x.length > length0)
-        .verifying(Messages("bc.business-registration-error.businessName.length", length40), x => x.isEmpty || (x.nonEmpty && x.length <= length40)),
+        .verifying(Messages("bc.business-registration-error.businessName.length", length105), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
       "businessAddress" -> mapping(
         "line_1" -> text.
           verifying(Messages("bc.business-registration-error.line_1"), x => x.length > length0)

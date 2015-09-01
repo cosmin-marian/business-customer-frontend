@@ -181,14 +181,14 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
 
 
-        "If entered, Business name must be maximum of 40 characters" in {
+        "If entered, Business name must be maximum of 105 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "AAAAAAAAAABBBBBBBBBBCCCCCCCCCCDDDDDDDDDD1", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": "" }""")
+          val inputJson = Json.parse( """{ "businessName": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": "" }""")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Business name must not be more than 40 characters")
+              contentAsString(result) must include("Business name must not be more than 105 characters")
           }
         }
 
