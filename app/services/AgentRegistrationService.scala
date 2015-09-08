@@ -49,7 +49,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
-        val knownFactsList =  List(businessDetails.agentReferenceNumber, Some(businessDetails.safeId)).flatten
+        val knownFactsList =  List(businessDetails.agentReferenceNumber, Some(""), Some(""), Some(businessDetails.safeId)).flatten
         EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
           serviceName = enrolServiceName,
           friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
