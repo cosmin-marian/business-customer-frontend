@@ -4,15 +4,15 @@
 
 @bcMain(title = Messages("bc.business-review.title", service), service = Some(service)) {
 
-<p class="text-section" id="bc.business-registration.text">@Messages("bc.business-registration.text",
+<p class="heading-sub" id="bc.business-registration.text">@Messages("bc.business-registration.text",
     service.toUpperCase)</p>
 @if(isAgent){
-<h1 aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
+<h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
 }else{
-<h1 aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
+<h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
 }
 <div id="banner">
-    <p>@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
+    <p class="lede">@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
 </div>
 
 <div class="form-group">
