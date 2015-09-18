@@ -7,23 +7,30 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 import org.jsoup.Jsoup
+import connectors.DataCacheConnector
+import builders.{SessionBuilder, AuthBuilder}
+import org.mockito.Mockito._
+import play.api.mvc.Result
+import org.mockito.Matchers
+import services.AgentRegistrationService
 
 
 class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
-  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockDataCacheConnector =  mock[DataCacheConnector]
+
 
   object TestAgentController extends AgentController {
     override val authConnector = mockAuthConnector
-    override val businessRegistrationService = mockBusinessRegistrationService
+    override  val dataCacheConnector = mockDataCacheConnector
+
   }
 
   val serviceName: String = "ATED"
@@ -60,6 +67,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             val document = Jsoup.parse(contentAsString(result))
             document.title() must be("Business Confirmation")
             document.getElementById("message").text() must be("You have successfully created your agent ATED account")
+            document.getElementById("agent-reference").text() must startWith("Your agent reference is")
             document.getElementById("submit").text() must be("Finish and sign out")
             document.getElementById("confirm").text() must startWith("What happens next:")
         }
@@ -93,6 +101,19 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
 
     test(result)
   }
+
+
+//  def getWithAuthorisedAgent(test: Future[Result] => Any) {
+//    val userId = s"user-${UUID.randomUUID}"
+//    AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+//
+//
+//    when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession.(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(s))
+//
+//    val result = TestAgentController.register().apply(SessionBuilder.buildRequestWithSession(userId))
+//    test(result)
+//  }
+
 
 
 }

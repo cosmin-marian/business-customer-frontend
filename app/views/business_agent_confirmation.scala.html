@@ -1,4 +1,4 @@
-@(implicit request: Request[_])
+@(agentReference: Option[String])(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -9,6 +9,7 @@
 
 <div id ="banner" class = "greenBanner form-field">
     <h1 id="message"><img class="tick" src="../../assets/images/tick.png">@Messages("bc.business-agent.confirmation.message")</h1>
+    <h2 id="agent-reference">@Messages("bc.business-agent.confirmation.reference") @agentReference.map(reference => reference)</h2>
 </div>
         <h2 class="heading-medium" id="confirm">@Messages("bc.business-agent.confirmation.instruction")</h2>
 

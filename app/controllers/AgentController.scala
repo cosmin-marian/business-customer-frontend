@@ -2,24 +2,33 @@ package controllers
 
 import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
-import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
+import connectors.DataCacheConnector
 
 
 object AgentController extends AgentController {
   override val authConnector = FrontendAuthConnector
-  override val businessRegistrationService = BusinessRegistrationService
+  override val dataCacheConnector = DataCacheConnector
+
 }
 
 trait AgentController extends FrontendController with Actions {
 
-  val businessRegistrationService : BusinessRegistrationService
 
-  def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  val dataCacheConnector: DataCacheConnector
+  val authConnector: AuthConnector
+
+  def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-        Ok(views.html.business_agent_confirmation(request))
+      dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
+        reviewDetails => reviewDetails match {
+          case Some(reviewData) => Ok(views.html.business_agent_confirmation(reviewData.agentReferenceNumber))
+          case _ => throw new RuntimeException("AgentReferenceNumber not found")
+        }
+      }
   }
 }
