@@ -1,7 +1,7 @@
 package utils
 
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{SaAccount, AgentAdmin, AgentAccount, AgentRole}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{AgentAccount, SaAccount}
 
 object AuthUtils extends AuthUtils
 
@@ -16,11 +16,11 @@ trait AuthUtils {
     }
   }
 
-  private def getAgentLink(agentAccount : AgentAccount) = {
+  private def getAgentLink(agentAccount: AgentAccount) = {
     agentAccount.link
   }
 
-  private def stripIndividual(saAccount : SaAccount) = {
+  private def stripIndividual(saAccount: SaAccount) = {
     saAccount.link.replaceAllLiterally("/individual", "")
   }
 

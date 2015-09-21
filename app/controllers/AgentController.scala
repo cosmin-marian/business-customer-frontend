@@ -6,8 +6,6 @@ import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-import scala.concurrent.Future
-
 
 object AgentController extends AgentController {
   override val authConnector = FrontendAuthConnector

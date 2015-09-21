@@ -4,19 +4,17 @@ import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
 import models._
-import play.api.http.Status._
-import play.api.{Play, Logger}
+import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.{Logger, Play}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.HttpResponse
-import utils.GovernmentGatewayConstants
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import scala.concurrent.Future
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import play.api.Play.current
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import utils.GovernmentGatewayConstants
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait AgentRegistrationService extends RunMode with Auditable {
 
@@ -24,7 +22,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   val dataCacheConnector: DataCacheConnector
   val businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
+  def enrolAgent(serviceName: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ => {
@@ -35,7 +33,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   }
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
-                        (implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[EnrolResponse] = {
+                        (implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     for {
       addKnowFactsResponse <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
@@ -45,11 +43,11 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
-  private def createEnrolRequest(serviceName: String,  businessDetails: ReviewDetails)(implicit user: AuthContext) :EnrolRequest = {
+  private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit user: AuthContext): EnrolRequest = {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
-        val knownFactsList =  List(businessDetails.agentReferenceNumber, Some(""), Some(""), Some(businessDetails.safeId)).flatten
+        val knownFactsList = List(businessDetails.agentReferenceNumber, Some(""), Some(""), Some(businessDetails.safeId)).flatten
         EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
           serviceName = enrolServiceName,
           friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
@@ -63,14 +61,14 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   }
 
-  private def createKnownFacts( businessDetails: ReviewDetails)(implicit user: AuthContext) = {
-    val agentRefNo = businessDetails.agentReferenceNumber.getOrElse{
+  private def createKnownFacts(businessDetails: ReviewDetails)(implicit user: AuthContext) = {
+    val agentRefNo = businessDetails.agentReferenceNumber.getOrElse {
       Logger.warn(s"[AgentRegistrationService][createKnownFacts] - No Agent Reference Number Found")
       throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))
     }
     val knownFacts = List(
-        KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, agentRefNo),
-        KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
+      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, agentRefNo),
+      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
     )
     KnownFactsForService(knownFacts)
   }

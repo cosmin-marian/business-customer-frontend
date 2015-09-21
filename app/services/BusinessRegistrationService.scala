@@ -1,7 +1,6 @@
 package services
 
 
-
 import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
@@ -12,12 +11,12 @@ import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
-import utils.{SessionUtils, AuthUtils}
-import scala.concurrent.ExecutionContext.Implicits.global
+import utils.{AuthUtils, SessionUtils}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object BusinessRegistrationService extends BusinessRegistrationService  {
+object BusinessRegistrationService extends BusinessRegistrationService {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
@@ -32,7 +31,7 @@ trait BusinessRegistrationService extends Auditable {
   val nonUKbusinessType: String
 
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
@@ -50,14 +49,14 @@ trait BusinessRegistrationService extends Auditable {
 
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
-                                            (implicit user: AuthContext, headerCarrier: HeaderCarrier): BusinessRegistrationRequest = {
+                                               (implicit user: AuthContext, headerCarrier: HeaderCarrier): BusinessRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
     val businessIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
         Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
-          issuingInstitution= registerData.issuingInstitution.getOrElse(""),
+          issuingInstitution = registerData.issuingInstitution.getOrElse(""),
           issuingCountryCode = registerData.businessAddress.country))
       } else {
         None
@@ -89,7 +88,7 @@ trait BusinessRegistrationService extends Auditable {
       businessType = Some(nonUKbusinessType),
       businessAddress = registerData.businessAddress,
       sapNumber = response.sapNumber,
-      safeId  = response.safeId,
+      safeId = response.safeId,
       agentReferenceNumber = response.agentReferenceNumber
     )
   }
