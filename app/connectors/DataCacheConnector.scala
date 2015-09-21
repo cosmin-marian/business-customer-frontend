@@ -1,16 +1,15 @@
 package connectors
 
-import config.AtedSessionCache
+import config.BusinessCustomerSessionCache
 import models.ReviewDetails
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object DataCacheConnector extends DataCacheConnector {
-  val sessionCache: SessionCache = AtedSessionCache
+  val sessionCache: SessionCache = BusinessCustomerSessionCache
 }
 
 trait DataCacheConnector {

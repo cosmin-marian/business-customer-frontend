@@ -26,7 +26,7 @@ object FrontendAuthConnector extends AuthConnector with ServicesConfig {
   lazy val http = WSHttp
 }
 
-object AtedSessionCache extends SessionCache with AppName with ServicesConfig {
+object BusinessCustomerSessionCache extends SessionCache with AppName with ServicesConfig {
   override lazy val http = WSHttp
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")
