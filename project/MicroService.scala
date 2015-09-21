@@ -79,10 +79,6 @@ private object Repositories {
   import PublishingSettings._
   import NexusPublishing._
 
-  lazy val dist = com.typesafe.sbt.SbtNativePackager.NativePackagerKeys.dist
-
-  val publishDist = TaskKey[sbt.File]("publish-dist", "publish the dist artifact")
-
   lazy val playPublishingSettings : Seq[sbt.Setting[_]] = sbtrelease.ReleasePlugin.releaseSettings ++ Seq(
 
     credentials += SbtCredentials,
