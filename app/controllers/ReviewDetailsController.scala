@@ -1,16 +1,12 @@
 package controllers
 
-import audit.Auditable
-import config.{BusinessCustomerFrontendAuditConnector, FrontendAuthConnector}
+import config.FrontendAuthConnector
 import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
-import models.EnrolResponse
-import play.api.{Logger, Play}
 import play.api.i18n.Messages
+import play.api.{Logger, Play}
 import services.AgentRegistrationService
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.Audit
-import uk.gov.hmrc.play.config.{AppName, RunMode}
+import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
@@ -29,6 +25,7 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
   import play.api.Play.current
 
   def dataCacheConnector: DataCacheConnector
+
   def agentRegistrationService: AgentRegistrationService
 
 
@@ -57,7 +54,7 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
           }
         }
         case true => {
-          agentRegistrationService.enrolAgent(service).map{response =>
+          agentRegistrationService.enrolAgent(service).map { response =>
             Redirect(controllers.routes.AgentController.register(service))
           }
         }

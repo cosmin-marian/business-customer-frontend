@@ -1,6 +1,6 @@
 package connectors
 
-import config.AtedSessionCache
+import config.BusinessCustomerSessionCache
 import models.{Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,7 +26,7 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
     "fetchAndGetBusinessDetailsForSession" must {
 
       "use the correct session cache" in {
-        DataCacheConnector.sessionCache must be(AtedSessionCache)
+        DataCacheConnector.sessionCache must be(BusinessCustomerSessionCache)
       }
 
       "fetch saved BusinessDetails from SessionCache" in {

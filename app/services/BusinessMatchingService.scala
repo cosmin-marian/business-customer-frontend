@@ -125,21 +125,21 @@ trait BusinessMatchingService {
     }
   }
 
-  private def getAddress(dataReturned: JsValue) :EtmpAddress = {
+  private def getAddress(dataReturned: JsValue): EtmpAddress = {
     val addressReturned = (dataReturned \ "address").as[Option[EtmpAddress]]
     addressReturned.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getAddress] - No Address returned from ETMP"))
   }
 
-  private def getSafeId(dataReturned: JsValue) :String = {
+  private def getSafeId(dataReturned: JsValue): String = {
     val safeId = (dataReturned \ "safeId").as[Option[String]]
     safeId.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getSafeId] - No Safe Id returned from ETMP"))
   }
 
-  private def getSapNumber(dataReturned: JsValue) :String = {
+  private def getSapNumber(dataReturned: JsValue): String = {
     (dataReturned \ "sapNumber").as[Option[String]].getOrElse("")
   }
 
-  private def getAgentRefNum(dataReturned: JsValue) :Option[String] = {
+  private def getAgentRefNum(dataReturned: JsValue): Option[String] = {
     (dataReturned \ "agentReferenceNumber").as[Option[String]]
   }
 }

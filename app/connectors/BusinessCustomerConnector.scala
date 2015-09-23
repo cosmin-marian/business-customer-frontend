@@ -4,7 +4,7 @@ import config.WSHttp
 import models.{KnownFactsForService, BusinessRegistrationResponse, BusinessRegistrationRequest}
 import play.api.Logger
 import play.api.i18n.Messages
-import play.api.libs.json.{Reads, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.AuthContext

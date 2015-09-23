@@ -2,9 +2,9 @@ package controllers
 
 import controllers.auth.ExternalUrls
 import play.api.Play
-import play.api.mvc.{DiscardingCookie, Action}
+import play.api.mvc.DiscardingCookie
 import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 
 
 trait ApplicationController extends FrontendController with RunMode {

@@ -13,22 +13,27 @@ private object AppDependencies {
   import play.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "0.8.0"
+  private val playHealthVersion = "1.1.0"
 
-  private val frontendBootstrapVersion = "1.0.0"
-  private val govukTemplateVersion = "3.0.0"
-  private val playUiVersion = "3.0.0"
-  private val httpCachingClientVersion = "4.0.0"
+  private val frontendBootstrapVersion = "2.0.0"
+  private val govukTemplateVersion = "4.0.0"
+  private val playUiVersion = "4.0.0"
+  private val httpCachingClientVersion = "5.0.0"
+  private val playAuthorisedFrontendVersion = "3.1.0"
+  private val playPartialsVersion = "2.0.0"
+  private val playJsonLoggerVersion = "2.1.0"
+  private val playConfigVersion = "2.0.0"
+  private val urlBuilderVersion = "0.8.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-    "uk.gov.hmrc" %% "play-partials" % "1.6.0",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "1.5.0",
-    "uk.gov.hmrc" %% "url-builder" % "0.8.0",
-    "uk.gov.hmrc" %% "play-config" % "1.1.0",
-    "uk.gov.hmrc" %% "play-json-logger" % "1.0.0",
+    "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
+    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
+    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
+    "uk.gov.hmrc" %% "play-config" % playConfigVersion,
+    "uk.gov.hmrc" %% "play-json-logger" % playJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
