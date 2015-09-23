@@ -2,9 +2,9 @@ package controllers
 
 import java.util.UUID
 
-import config.AtedSessionCache
+import config.BusinessCustomerSessionCache
 import connectors.DataCacheConnector
-import models.{Identifier, EnrolResponse, ReviewDetails, Address}
+import models.{Address, EnrolResponse, Identifier, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -14,8 +14,6 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AgentRegistrationService
-
-import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
@@ -28,10 +26,11 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockAgentRegistrationService = mock[AgentRegistrationService]
-  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"),Some("NE98 1ZZ"), "GB")
+  val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "GB")
+
   def testReviewDetailsController = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = AtedSessionCache
+      val sessionCache = BusinessCustomerSessionCache
 
       var reads: Int = 0
 
@@ -42,6 +41,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
+
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
     }
@@ -49,7 +49,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   def testReviewDetailsControllerNotFound = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = AtedSessionCache
+      val sessionCache = BusinessCustomerSessionCache
 
       var reads: Int = 0
 
@@ -60,6 +60,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
+
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
     }
@@ -181,7 +182,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
 
-  private def fakeRequestWithSession(userId : String) = {
+  private def fakeRequestWithSession(userId: String) = {
     val sessionId = s"session-${UUID.randomUUID}"
     FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -189,21 +190,21 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       SessionKeys.userId -> userId)
   }
 
-  private def continueWithUnAuthorisedUser(service : String)(test: Future[Result] => Any) {
+  private def continueWithUnAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
-  private def continueWithAuthorisedUser(service : String)(test: Future[Result] => Any) {
+  private def continueWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
-  private def continueWithAuthorisedAgent(service : String)(test: Future[Result] => Any) {
+  private def continueWithAuthorisedAgent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 

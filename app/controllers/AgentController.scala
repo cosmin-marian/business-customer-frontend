@@ -1,13 +1,11 @@
 package controllers
 
 import config.FrontendAuthConnector
+import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-
-import scala.concurrent.Future
-import connectors.DataCacheConnector
 
 
 object AgentController extends AgentController {
