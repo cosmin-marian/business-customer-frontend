@@ -24,6 +24,7 @@ bc.business-agent.confirmation.message = You have successfully created your agen
 bc.business-agent.confirmation.instruction = What happens next: Give your agent reference number to your client. They must create an ATED account, with your agent reference, to appoint you as their agent.
 bc.business-agent.confirmation.finish = Finish and sign out
 bc.business-agent.confirmation.title = Business Confirmation
+bc.business-agent.confirmation.reference = Your agent reference is
 
 bc.business-verification.text={0} account registration
 bc.business-verification.title=Business Verification

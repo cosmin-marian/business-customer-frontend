@@ -4,26 +4,32 @@ import java.util.UUID
 
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 import org.jsoup.Jsoup
+import connectors.DataCacheConnector
+import builders.{SessionBuilder, AuthBuilder}
+import org.mockito.Mockito._
+import play.api.mvc.Result
+import org.mockito.Matchers
+import models.{Address, ReviewDetails}
 
 
 class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
-  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockDataCacheConnector =  mock[DataCacheConnector]
+
 
   object TestAgentController extends AgentController {
     override val authConnector = mockAuthConnector
-    override val businessRegistrationService = mockBusinessRegistrationService
+    override  val dataCacheConnector = mockDataCacheConnector
+
   }
 
   val serviceName: String = "ATED"
@@ -60,9 +66,21 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             val document = Jsoup.parse(contentAsString(result))
             document.title() must be("Business Confirmation")
             document.getElementById("message").text() must be("You have successfully created your agent ATED account")
+            document.getElementById("agent-reference").text() must startWith("Your agent reference is")
             document.getElementById("submit").text() must be("Finish and sign out")
             document.getElementById("confirm").text() must startWith("What happens next:")
         }
+      }
+      "return exception if no ARN present" in {
+
+        val userId = s"user-${UUID.randomUUID}"
+
+        builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+        when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(None))
+
+        val result = TestAgentController.register(serviceName).apply(SessionBuilder.buildRequestWithSession(userId))
+        val thrown = the[RuntimeException] thrownBy await(result)
+        thrown.getMessage must include("AgentReferenceNumber not found")
       }
     }
   }
@@ -81,18 +99,18 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
   }
 
   def registerWithAuthorisedUser(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    val reviewDetails = ReviewDetails(businessName = "ABC",
+      businessType = Some("corporate body"),
+      businessAddress = Address(line_1 = "line1", line_2 = "line2", line_3 = None, line_4 = None, postcode = None, country = "GB"),
+      sapNumber = "1234567890", safeId = "XW0001234567890", agentReferenceNumber = Some("JARN1234567"))
+    when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(reviewDetails)))
 
-    val result = TestAgentController.register(serviceName).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
+    val result = TestAgentController.register(serviceName).apply(SessionBuilder.buildRequestWithSession(userId))
 
     test(result)
   }
-
 
 }
