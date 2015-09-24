@@ -13,6 +13,7 @@ import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
+import utils.BusinessCustomerConstants._
 
 import scala.concurrent.Future
 
@@ -80,7 +81,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     unincorporatedBodyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, AuthUtils.isAgent, service, businessType))),
       unincorporatedFormData => {
-        val organisation = Organisation(unincorporatedFormData.businessName, "unincorporated body")
+        val organisation = Organisation(unincorporatedFormData.businessName, UNINCORPORATED_BODY)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = unincorporatedFormData.cotaxUTR) map {
           returnedResponse => {
@@ -133,7 +134,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       llpFormData => {
-        val organisation = Organisation(llpFormData.businessName, "LLP")
+        val organisation = Organisation(llpFormData.businessName, LLP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = llpFormData.psaUTR) map {
           returnedResponse => {
@@ -159,7 +160,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       lpFormData => {
-        val organisation = Organisation(lpFormData.businessName, "partnership")
+        val organisation = Organisation(lpFormData.businessName, PARTNERSHIP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = lpFormData.psaUTR) map {
           returnedResponse => {
@@ -185,7 +186,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, AuthUtils.isAgent, service, businessType))),
       obpFormData => {
-        val organisation = Organisation(obpFormData.businessName, "partnership")
+        val organisation = Organisation(obpFormData.businessName, PARTNERSHIP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = obpFormData.psaUTR) map {
           returnedResponse => {
@@ -211,7 +212,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
     limitedCompanyForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, AuthUtils.isAgent, service, businessType))),
       limitedCompanyFormData => {
-        val organisation = Organisation(limitedCompanyFormData.businessName, "corporate body")
+        val organisation = Organisation(limitedCompanyFormData.businessName, CORPORATE_BODY)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
           organisation = organisation, utr = limitedCompanyFormData.cotaxUTR) map {
           returnedResponse => {
