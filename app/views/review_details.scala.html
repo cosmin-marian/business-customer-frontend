@@ -1,5 +1,6 @@
 @(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
 
 @bcMain(title = Messages("bc.business-review.title", service), service = Some(service)) {
@@ -43,8 +44,10 @@
         </tr>
     </table>
 
-    <a href="@routes.ReviewDetailsController.continue(service)" id="submit" class="button">
-        @Messages("business-review.registration-button", service.toUpperCase)</a>
+    @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
+        <button class="button" id="submit" type="submit">@Messages("business-review.registration-button", service.toUpperCase)</button>
+    }
+
 </div>
 <div class="form-group">
     <a href="@controllers.routes.ApplicationController.logoutAndRedirectToHome(service:String)">@Messages("bc.business-verification-link")</a>
