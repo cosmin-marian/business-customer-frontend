@@ -59,10 +59,24 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
           .thenReturn(Future.successful(HttpResponse(200, Some(successResponse))))
 
         val result = TestBusinessCustomerConnector.addKnownFacts(knownFacts)
+        await(result).status must be(OK)
         await(result).json must be(successResponse)
       }
 
-      "for knownfacts Internal Server errror, throw an exception" in {
+      "for knownfacts Internal Server errror, allow this through" in {
+        val knownFacts = KnownFactsForService(List(KnownFact("type", "value")))
+        val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
+
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+        when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(matchFailureResponse))))
+
+        val result = TestBusinessCustomerConnector.addKnownFacts(knownFacts)
+        await(result).status must be(INTERNAL_SERVER_ERROR)
+        await(result).json must be(matchFailureResponse)
+      }
+
+      "for knownfacts Unknown Status, throw an exception" in {
         val knownFacts = KnownFactsForService(List(KnownFact("type", "value")))
         val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 

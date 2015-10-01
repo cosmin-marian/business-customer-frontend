@@ -35,7 +35,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
                         (implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     for {
-      addKnowFactsResponse <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
+      _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
     } yield {
       auditEnrolAgent(businessDetails, enrolResponse)

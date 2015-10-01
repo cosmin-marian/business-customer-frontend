@@ -34,6 +34,10 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads {
       response =>
         response.status match {
           case OK => response
+          case INTERNAL_SERVER_ERROR => {
+            Logger.warn(s"[BusinessCustomerConnector][addKnownFacts] - Internal Server Error: ${response.body}")
+            response
+          }
           case status => {
             Logger.warn(s"[BusinessCustomerConnector][addKnownFacts] - $status Exception ${response.body}")
             throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)} Exception ${response.body}")
