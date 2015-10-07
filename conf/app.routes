@@ -19,7 +19,7 @@ POST        /business-verification/:service/submit/:businessType                
 
 POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
 
-GET         /review-details-continue/:service                                   controllers.ReviewDetailsController.continue(service: String)
+POST        /review-details-continue/:service                                   controllers.ReviewDetailsController.continue(service: String)
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
 GET         /logout                                                             controllers.ApplicationController.logout
