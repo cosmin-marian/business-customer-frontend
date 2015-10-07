@@ -33,8 +33,7 @@ object BusinessRegistrationForms {
         "line_4" -> optional(text)
           .verifying(Messages("bc.business-registration-error.line_4.length", length35), x => x.isEmpty || (x.nonEmpty && x.get.length <= length35)),
         "postcode" -> optional(text)
-          .verifying(Messages("ated.error.length", Messages("ated.address.postcode"), postcodeLength),
-            x => checkFieldLengthIfPopulated(x, postcodeLength)),
+          .verifying(Messages("bc.business-registration-error.postcode.length", postcodeLength), x => x.isEmpty || (x.nonEmpty && x.get.length <= postcodeLength)),
         "country" -> text.
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
 
