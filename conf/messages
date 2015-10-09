@@ -3,7 +3,6 @@ bc.business-verification.title = Business Customer
 
 bc.ated.serviceName = Annual Tax on Enveloped Dwellings (ATED)
 bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
-bc.amls.serviceName = Anti Money Laundering Scheme (AMLS)
 
 business-review.user.title = Verify business details
 business-review.agent.title = Verify agent details
