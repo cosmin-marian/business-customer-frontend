@@ -161,7 +161,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }
-      }
+      } 
       
       "return service start page correctly for AMLS Users" in {
 
