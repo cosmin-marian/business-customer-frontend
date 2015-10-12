@@ -70,6 +70,7 @@ object BCUtils {
         serviceName.toLowerCase match {
           case "ated" => Some(Messages("bc.ated.serviceName"))
           case "awrs" => Some(Messages("bc.awrs.serviceName"))
+          case "amls" => Some(Messages("bc.amls.serviceName"))
           case _ => None
         }
       }
