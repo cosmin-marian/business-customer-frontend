@@ -75,7 +75,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
       "Registered Name must not be more than 105 characters" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12", "cotaxUTR" -> "")) {
+        val businessName = "a"*106
+        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("Registered name must not be more than 105 characters")
@@ -131,7 +132,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
       "Register Name must not be more than 105 characters" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12", "cotaxUTR" -> "")) {
+        val businessName = "a"*106
+        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("Registered name must not be more than 105 characters")
@@ -191,7 +193,9 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "First Name and Last Name must not be more than 40 characters" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "lastName" -> "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")) {
+        val fName = "a"*41
+        val lName = "a"*41
+        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> s"$fName", "lastName" -> s"$lName")) {
           result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("First Name must not be more than 40 characters")
@@ -233,7 +237,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "Registered name must not be more than 105 characters" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12", "psaUTR" -> "")) {
+        val businessName = "a"*106
+        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("Registered name must not be more than 105 characters")
@@ -281,7 +286,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "Registered Name must not be more than 105 characters" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa12", "psaUTR" -> "")) {
+        val businessName = "a"*106
+        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("Registered name must not be more than 105 characters")
