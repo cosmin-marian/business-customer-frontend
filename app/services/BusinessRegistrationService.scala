@@ -7,7 +7,7 @@ import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
@@ -100,7 +100,8 @@ trait BusinessRegistrationService extends Auditable {
       "businessName" -> registerData.businessName,
       "businessAddressLine1" -> registerData.businessAddress.line_1,
       "businessUniqueId" -> registerData.businessUniqueId.getOrElse(""),
-      "issuingInstitution" -> registerData.issuingInstitution.getOrElse(""))
+      "issuingInstitution" -> registerData.issuingInstitution.getOrElse("")),
+      eventType = EventTypes.Succeeded
     )
   }
 }

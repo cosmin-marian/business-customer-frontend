@@ -7,6 +7,7 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.{Logger, Play}
+import uk.gov.hmrc.play.audit.model.EventTypes
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.{AppName, RunMode}
@@ -78,7 +79,8 @@ trait AgentRegistrationService extends RunMode with Auditable {
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
       "service" -> enrolResponse.serviceName,
-      "identifiers" -> enrolResponse.identifiers.toString())
+      "identifiers" -> enrolResponse.identifiers.toString()),
+      eventType = EventTypes.Succeeded
     )
   }
 }
