@@ -51,6 +51,9 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       "for awrs as service name, return awrs" in {
         BCUtils.getNavTitle(Some("awrs")) must be(Some("Alcohol Wholesaler Registration Scheme (AWRS)"))
       }
+      "for amls as service name, return amls" in {
+        BCUtils.getNavTitle(Some("amls")) must be(Some("Anti Money Laundering Scheme (AMLS)"))
+      }
       "for other as service name, return None" in {
         BCUtils.getNavTitle(Some("abcd")) must be(None)
       }
