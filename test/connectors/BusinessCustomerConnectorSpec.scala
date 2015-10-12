@@ -2,7 +2,7 @@ package connectors
 
 import java.util.UUID
 
-import builders.AuthBuilder
+import builders.{AuthBuilder, TestAudit}
 import config.BusinessCustomerFrontendAuditConnector
 import models._
 import org.mockito.Matchers
@@ -10,13 +10,14 @@ import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.Play
-import play.api.libs.json.{JsSuccess, JsError, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
-import uk.gov.hmrc.play.http._
 
 import scala.concurrent.Future
 
@@ -31,6 +32,8 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
 
   object TestBusinessCustomerConnector extends BusinessCustomerConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
+    override val audit: Audit = new TestAudit
+    override val appName: String = "Test"
   }
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
 

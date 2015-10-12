@@ -34,7 +34,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
         auditMatchCall(lookupData, userType, response)
         response.status match {
           case OK | NOT_FOUND => {
-            Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = ${postUrl}  response.status = ${response.status}   response.body = ${response.body}")
+            Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = ${postUrl} && " +
+              s"response.status = ${response.status} &&  response.body = ${response.body}")
             Json.parse(response.body)
           }
           case SERVICE_UNAVAILABLE => {
@@ -57,7 +58,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
     }
   }
 
-  def auditMatchCall(input: MatchBusinessData, userType: String, response: HttpResponse)(implicit hc: HeaderCarrier) = {
+  private def auditMatchCall(input: MatchBusinessData, userType: String, response: HttpResponse)(implicit hc: HeaderCarrier) = {
     val eventType = response.status match {
       case OK | NOT_FOUND => EventTypes.Succeeded
       case _ => EventTypes.Failed
