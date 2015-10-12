@@ -157,7 +157,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       "return service start page correctly for AWRS Users" in {
 
         continueWithAuthorisedUser("AWRS") {
-          result =>
+          result => 
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }
