@@ -1,18 +1,20 @@
 package connectors
 
-import config.WSHttp
+import audit.Auditable
+import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
 import models._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
+import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
+trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads with Auditable {
 
   lazy val serviceURL = baseUrl("government-gateway")
 
@@ -25,6 +27,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
 
     http.POST[JsValue, HttpResponse](postUrl, jsonData) map {
       response =>
+        auditEnrolCall(enrolRequest, response)
         response.status match {
           case OK => response.json.as[EnrolResponse]
           case BAD_REQUEST => {
@@ -58,6 +61,26 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads {
     }
 
   }
+
+  private def auditEnrolCall(input: EnrolRequest, response: HttpResponse)(implicit hc: HeaderCarrier) = {
+    val eventType = response.status match {
+      case OK => EventTypes.Succeeded
+      case _ => EventTypes.Failed
+    }
+    sendDataEvent(transactionName = "ggEnrolCall",
+      detail = Map("txName" -> "ggEnrolCall",
+        "friendlyName" -> s"${input.friendlyName}",
+        "serviceName" -> s"${input.serviceName}",
+        "portalId" -> s"${input.portalId}",
+        "knownFacts" -> s"${input.knownFacts}",
+        "responseStatus" -> s"${response.status}",
+        "responseBody" -> s"${response.body}"),
+      eventType = eventType)
+  }
+
 }
 
-object GovernmentGatewayConnector extends GovernmentGatewayConnector
+object GovernmentGatewayConnector extends GovernmentGatewayConnector {
+  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  override val appName: String = AppName.appName
+}

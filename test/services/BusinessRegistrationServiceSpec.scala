@@ -2,23 +2,22 @@ package services
 
 import _root_.java.util.UUID
 
-import builders.{TestAudit, AuthBuilder}
-import connectors.{DataCacheConnector, BusinessCustomerConnector}
+import builders.{AuthBuilder, TestAudit}
+import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
-import org.scalatest.BeforeAndAfter
-import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfter
+import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.{Json, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import uk.gov.hmrc.play.http.logging.SessionId
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
@@ -43,6 +42,8 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
 
       Future(nonUKResponse)
     }
+    override val audit: Audit = new TestAudit
+    override val appName: String = "Test"
   }
 
   "BusinessRegistrationService" must {

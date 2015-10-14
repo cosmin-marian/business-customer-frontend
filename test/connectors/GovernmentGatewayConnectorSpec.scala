@@ -2,7 +2,7 @@ package connectors
 
 import java.util.UUID
 
-import builders.AuthBuilder
+import builders.{TestAudit, AuthBuilder}
 import config.BusinessCustomerFrontendAuditConnector
 import models.{EnrolResponse, EnrolRequest, Identifier}
 import org.mockito.Matchers
@@ -15,6 +15,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
@@ -34,6 +35,8 @@ class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite wi
 
   object TestGovernmentGatewayConnector extends GovernmentGatewayConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
+    override val audit: Audit = new TestAudit
+    override val appName: String = "Test"
   }
 
   override def beforeEach = {

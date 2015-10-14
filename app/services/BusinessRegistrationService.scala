@@ -7,7 +7,7 @@ import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.audit.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
@@ -31,7 +31,7 @@ trait BusinessRegistrationService extends Auditable {
   val nonUKbusinessType: String
 
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
@@ -49,7 +49,7 @@ trait BusinessRegistrationService extends Auditable {
 
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
-                                               (implicit user: AuthContext, headerCarrier: HeaderCarrier): BusinessRegistrationRequest = {
+                                               (implicit user: AuthContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
 
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
@@ -100,7 +100,8 @@ trait BusinessRegistrationService extends Auditable {
       "businessName" -> registerData.businessName,
       "businessAddressLine1" -> registerData.businessAddress.line_1,
       "businessUniqueId" -> registerData.businessUniqueId.getOrElse(""),
-      "issuingInstitution" -> registerData.issuingInstitution.getOrElse(""))
+      "issuingInstitution" -> registerData.issuingInstitution.getOrElse("")),
+      eventType = EventTypes.Succeeded
     )
   }
 }

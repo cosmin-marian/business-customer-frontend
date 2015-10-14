@@ -31,6 +31,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service))
   }
 
+  // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessTypeForm.bindFromRequest.fold(
