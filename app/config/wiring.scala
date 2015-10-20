@@ -1,13 +1,12 @@
 package config
 
+import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.partials.CachedStaticHtmlPartial
-import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
 
 object BusinessCustomerFrontendAuditConnector extends AuditConnector with AppName with RunMode {
   override lazy val auditingConfig = LoadAuditingConfig(s"$env.auditing")
@@ -17,7 +16,7 @@ object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName wi
   override val auditConnector = BusinessCustomerFrontendAuditConnector
 }
 
-object CachedStaticHtmlPartialProvider extends CachedStaticHtmlPartial {
+object CachedStaticHtmlPartialProvider extends CachedStaticHtmlPartialRetriever {
   override val httpGet = WSHttp
 }
 

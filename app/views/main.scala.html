@@ -1,6 +1,8 @@
 @(applicationConfig: config.ApplicationConfig = config.ApplicationConfig,
     supportLinkEnabled: Boolean = false,
     title: String,
+    sidebarLinks: Option[Html] = None,
+    sidebarClass: Option[String] = None,
     navTitle: Option[String] = None,
     contentHeader: Option[Html] = None,
     userLoggedIn: Boolean = false,
@@ -21,7 +23,15 @@
 }
 
 @headerNavLinks = {
-<li><a id="logOutNavHref" href="@routes.ApplicationController.logout">Sign out</a></li>
+    <li><a id="logOutNavHref" href="@routes.ApplicationController.logout">Sign out</a></li>
+}
+
+@article = {
+    @uiLayouts.article(content = mainContent, includeGridWrapper = false, articleClasses = None)
+}
+
+@sidebar = {
+    @uiLayouts.sidebar(sidebarLinks = sidebarLinks.fold(HtmlFormat.empty)(x=>x), sidebarClass = sidebarClass)
 }
 
 @insideHeader = {
@@ -76,7 +86,8 @@
 
 @content = {
     @uiLayouts.main_content(
-        article = mainContent,
+        article = article,
+        sidebar = sidebar,
         mainContentHeader = mainContentHeader,
         serviceInfo = serviceInfo,
         getHelpForm = getHelpForm)

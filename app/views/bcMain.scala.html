@@ -1,4 +1,9 @@
-@(title: String, userLoggedIn: Boolean = true, supportLinkEnabled: Boolean = true, service: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
+@(title: String,
+    userLoggedIn: Boolean = true,
+    supportLinkEnabled: Boolean = true,
+    service: Option[String] = None,
+    sidebarLinks: Option[Html] = None,
+    sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 @import utils.BCUtils
@@ -17,10 +22,10 @@
 @main(applicationConfig = config.ApplicationConfig,
     supportLinkEnabled = supportLinkEnabled,
     title = title, navTitle = BCUtils.getNavTitle(service),
+    sidebarLinks = sidebarLinks,
+    sidebarClass = sidebarClass,
     userLoggedIn = userLoggedIn,
     scriptElement = Some(scriptElement),
     linkElement = Some(linkElement)) {
-        <div class="text">
             @mainContent
-        </div>
 }
