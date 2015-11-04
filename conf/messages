@@ -86,7 +86,7 @@ bc.business-verification-error.registeredName.length=Registered name must not be
 
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised
-bc.unauthorised.heading=Unauthorised
+bc.unauthorised.heading=You are not authorised to use this service
 
 business-registration.title = Business Registration
 bc.business-registration.user.non-uk.header = Non-UK business details
