@@ -68,7 +68,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             document.getElementById("message").text() must be("You have successfully created your agent ATED account")
             document.getElementById("agent-reference").text() must startWith("Your agent reference is")
             document.getElementById("submit").text() must be("Finish and sign out")
-            document.getElementById("confirm").text() must startWith("What happens next:")
+            document.getElementById("confirm").text() must be("This is your receipt, you will not receive an email confirmation.")
         }
       }
       "return exception if no ARN present" in {
