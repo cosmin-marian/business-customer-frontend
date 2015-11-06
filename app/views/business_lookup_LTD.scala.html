@@ -16,7 +16,10 @@
     service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
 }
+<p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
 <div class="form-group">
+
+
 @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
 <div id="business-type-ltd-form" class="form-field">

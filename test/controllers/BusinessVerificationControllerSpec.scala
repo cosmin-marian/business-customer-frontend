@@ -70,8 +70,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
               document.title() must be("Business Verification")
               document.getElementById("business-verification-text").text() must be("ATED account registration")
-              document.getElementById("business-lookup-text").text() must be("Before registering, you need to confirm your business details.")
-              document.getElementById("business-verification-header").text() must be("About your business details")
+              document.getElementById("business-verification-header").text() must be("What is your business type?")
               document.select(".block-label").text() must include("Unincorporated Association")
               document.select(".block-label").text() must include("Limited Company")
               document.select(".block-label").text() must include("Sole Trader / Self-employed")
@@ -91,8 +90,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
               document.title() must be("Business Verification")
               document.getElementById("business-verification-text").text() must be("ATED account registration")
-              document.getElementById("business-lookup-text").text() must be("Before registering, you need to confirm your agent business details.")
-              document.getElementById("business-verification-header").text() must be("About your agent details")
+
+              document.getElementById("business-verification-header").text() must be("What type of business is your agency?")
               document.select(".block-label").text() must include("Unincorporated Association")
               document.select(".block-label").text() must include("Limited Company")
               document.select(".block-label").text() must include("Sole Trader / Self-employed")
@@ -164,7 +163,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-type-header").text() must be("Search agent details")
+          document.getElementById("business-type-header").text() must be("Match agent details")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
   }
@@ -187,7 +187,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("businessName_field").text() must include("Registered name")
-          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
           document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
           document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
           document.getElementById("cotaxUTR").attr("type") must be("number")
@@ -201,7 +201,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-type-header").text() must be("Search agent details")
+          document.getElementById("business-type-header").text() must be("Match agent details")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
   }
@@ -224,7 +225,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED account registration")
           document.getElementById("businessName_field").text() must include("Registered name")
-          document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
           document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
           document.getElementById("cotaxUTR_hint").text() must be("In the header of any letter received from HMRC")
       }
@@ -236,7 +237,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-type-header").text() must be("Search agent details")
+          document.getElementById("business-type-header").text() must be("Match agent details")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
 
@@ -258,7 +260,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must include("Registered name")
-            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
             document.getElementById("psaUTR").attr("type") must be("number")
@@ -271,7 +273,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(OK)
 
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-header").text() must be("Search agent details")
+            document.getElementById("business-type-header").text() must be("Match agent details")
+            document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
     }
@@ -294,7 +297,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must include("Registered name")
-            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
             document.getElementById("psaUTR").attr("type") must be("number")
@@ -306,7 +309,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-header").text() must be("Search agent details")
+            document.getElementById("business-type-header").text() must be("Match agent details")
+            document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
     }
@@ -329,7 +333,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("businessName_field").text() must include("Registered name")
-            document.getElementById("businessName_hint").text() must be("The name on your incorporation certificate")
+            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("In the header of any letter received from HMRC")
         }
@@ -340,7 +344,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-header").text() must be("Search agent details")
+            document.getElementById("business-type-header").text() must be("Match agent details")
         }
       }
     }

@@ -17,8 +17,6 @@
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
-<p class="lede" id="business-registration-subheader">@displayDetails.businessRegSubHeader</p>
-
 @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 <div class="form-group">
 

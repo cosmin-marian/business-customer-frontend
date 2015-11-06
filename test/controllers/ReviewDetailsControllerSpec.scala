@@ -96,13 +96,13 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     "return Review Details view for a user" in {
       businessDetailsWithAuthorisedUser { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Verify business details")
+        document.select("h1").text must be("Your business details")
         document.getElementById("banner").text must be("You are about to register the following business for ATED.")
         document.getElementById("bc.business-registration.text").text() must be("ATED account registration")
         document.getElementById("business-name-label").text must be("Name")
         document.getElementById("business-address-label").text must be("Registered address")
 
-        document.select(".button").text must be("Continue")
+        document.select(".button").text must be("Confirm and continue")
       }
     }
 
@@ -110,7 +110,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       businessDetailsWithAuthorisedAgent { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Verify agent details")
+        document.select("h1").text must be("Your agent details")
         document.getElementById("banner").text must be("You are about to register the following business for ATED.")
       }
     }

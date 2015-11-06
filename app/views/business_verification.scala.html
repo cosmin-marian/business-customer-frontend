@@ -11,10 +11,10 @@
 
 @if(isAgent) {
 <h1 class="heading-xlarge" id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.agent.header"))</h1>
-<p id="business-lookup-text">@Messages("bc.business-verification.agent.lookup-text")</p>
+
 }else{
 <h1 class="heading-xlarge" id="business-verification-header"  aria-level="1" role="heading">@Html(Messages("bc.business-verification.user.header"))</h1>
-<p class="lede" id="business-lookup-text">@Messages("bc.business-verification.user.lookup-text")</p>
+
 }
 
     @form(action = controllers.routes.BusinessVerificationController.continue(service)) {
@@ -22,7 +22,6 @@
             @inputRadioGroup(
             businessTypeForm("businessType"),
             BCUtils.businessTypeMap(service),
-                '_legend -> Messages("bc.business-verification.radio-legend"),
                 '_labelClass -> "block-label",
                 '_legendClass -> "heading-medium",
                 '_labelAfter -> true
