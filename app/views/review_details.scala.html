@@ -9,12 +9,14 @@
     service.toUpperCase)</p>
 @if(isAgent){
 <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
+<p class="lede" id="banner">@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
+
 }else{
 <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
+<p class="lede" id="banner2">@Messages("business-review.subscribe-banner2", service.toUpperCase)</p>
+
 }
-<div id="banner">
-    <p class="lede">@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
-</div>
+
 
 <div class="form-group">
 

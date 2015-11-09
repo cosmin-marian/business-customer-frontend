@@ -17,6 +17,7 @@ business-review.email = Email
 business-review.button = Subscribe
 business-review.cancel-subscription = Cancel
 business-review.subscribe-banner = You are about to register the following business for {0}. You only need to do this once to cover all your {0} clients.
+business-review.subscribe-banner2 = You are about to register the following business for {0}.
 business-review.registration-button = Confirm and continue
 bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
