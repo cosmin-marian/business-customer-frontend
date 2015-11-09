@@ -8,11 +8,10 @@
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
 @errors(soleTraderForm)
-
+<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 @if(isAgent) {
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
 }else{
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
 }
 <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>

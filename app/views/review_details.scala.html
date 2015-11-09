@@ -9,46 +9,46 @@
     service.toUpperCase)</p>
 @if(isAgent){
 <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
+<p class="lede" id="banner">@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
+
 }else{
 <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
+<p class="lede" id="banner2">@Messages("business-review.subscribe-banner2", service.toUpperCase)</p>
+
 }
-<div id="banner">
-    <p class="lede">@Messages("business-review.subscribe-banner", service.toUpperCase)</p>
-</div>
+
 
 <div class="form-group">
 
-    <table>
-        <tr>
-            <th id="business-name-label">@Messages("business-review.name")</th>
-            <td id="business-name">@businessDetails.businessName</td>
-        </tr>
-        <tr>
-            <th id="business-address-label" style="vertical-align:top">@Messages("business-review.address")</th>
-            <td id="business-address">
-                <div class="form-group">
-                    <div id="registered-address-line-1">@businessDetails.businessAddress.line_1</div>
-                    <div id="registered-address-line-2">@businessDetails.businessAddress.line_2</div>
+            <h2 id="business-name-label">@Messages("business-review.name")</h2>
+            <p id="business-name">@businessDetails.businessName</p>
+
+
+            <h2 id="business-address-label">@Messages("business-review.address")</h2>
+            <ul id="business-address">
+
+                    <li id="registered-address-line-1">@businessDetails.businessAddress.line_1</li>
+                    <li id="registered-address-line-2">@businessDetails.businessAddress.line_2</li>
                     @businessDetails.businessAddress.line_3.map {line_3 =>
-                    <div id="registered-address-line-3">@line_3</div>
+                    <li id="registered-address-line-3">@line_3</li>
                     }
                     @businessDetails.businessAddress.line_4.map {line_4 =>
-                    <div id="registered-address-line-4">@line_4</div>
+                    <li id="registered-address-line-4">@line_4</li>
                     }
                     @businessDetails.businessAddress.postcode.map {postcode =>
-                    <div id="registered-postcode">@postcode</div>
+                    <li id="registered-postcode">@postcode</li>
                     }
-                    <div id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</div>
-                </div>
-            </td>
-        </tr>
-    </table>
+                    <li id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</li>
+            </ul>
 
+</div>
+
+<div class="form-group">
     @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
         <button class="button" id="submit" type="submit">@Messages("business-review.registration-button", service.toUpperCase)</button>
     }
-
 </div>
+
 <div class="form-group">
     <a href="@controllers.routes.ApplicationController.logoutAndRedirectToHome(service:String)">@Messages("bc.business-verification-link")</a>
 </div>
