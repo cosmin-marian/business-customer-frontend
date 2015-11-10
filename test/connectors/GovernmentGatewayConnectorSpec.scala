@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.{TestAudit, AuthBuilder}
 import config.BusinessCustomerFrontendAuditConnector
+import metrics.Metrics
 import models.{EnrolResponse, EnrolRequest, Identifier}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -37,6 +38,7 @@ class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite wi
     override val http: HttpGet with HttpPost = mockWSHttp
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
+    override def metrics = Metrics
   }
 
   override def beforeEach = {
@@ -44,6 +46,9 @@ class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite wi
   }
 
   "GovernmentGatewayConnector" must {
+    "use correct metrics" in {
+      GovernmentGatewayConnector.metrics must be(Metrics)
+    }
     val request = EnrolRequest(portalId = "ATED", serviceName = "ATED", friendlyName = "Main Enrolment", knownFacts = List("ATED-123"))
     val response = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     val successfulSubscribeJson = Json.toJson(response)
