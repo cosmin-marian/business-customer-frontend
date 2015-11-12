@@ -73,3 +73,17 @@ select {
     color: #808080;
     margin-bottom:0.4em;
 }
+
+@media screen and (min-width: 480px) {
+    input[type=number] {
+    -moz-appearance: textfield;
+    }
+
+    ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    }
+
+    ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    }
+}
