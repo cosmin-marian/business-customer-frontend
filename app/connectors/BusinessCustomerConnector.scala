@@ -1,7 +1,7 @@
 package connectors
 
 import audit.Auditable
-import config.{WSHttpWithAudit, BusinessCustomerFrontendAuditConnector, WSHttp}
+import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
 import models.{KnownFactsForService, BusinessRegistrationResponse, BusinessRegistrationRequest}
 import play.api.Logger
 import play.api.i18n.Messages
@@ -24,7 +24,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   val registerURI = "register"
   val knownFactsURI = "known-facts"
 
-  val http: HttpGet with HttpPost = WSHttpWithAudit
+  val http: HttpGet with HttpPost = WSHttp
 
 
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {

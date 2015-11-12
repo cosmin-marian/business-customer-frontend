@@ -23,7 +23,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
   val baseURI = "business-matching"
   val lookupURI = "business-lookup"
 
-  val http: HttpGet with HttpPost = WSHttpWithAudit
+  val http: HttpGet with HttpPost = WSHttp
 
   def lookup(lookupData: MatchBusinessData, userType: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
     val authLink = AuthUtils.getAuthLink()
