@@ -3,10 +3,8 @@ package controllers
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
 import controllers.auth.BusinessCustomerRegime
-import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-
+import uk.gov.hmrc.play.frontend.auth._
 
 object AgentController extends AgentController {
   override val authConnector = FrontendAuthConnector
@@ -14,13 +12,12 @@ object AgentController extends AgentController {
 
 }
 
-trait AgentController extends FrontendController with Actions {
-
+trait AgentController extends BaseController {
 
   val dataCacheConnector: DataCacheConnector
   val authConnector: AuthConnector
 
-  def register(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def register(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
         reviewDetails => reviewDetails match {

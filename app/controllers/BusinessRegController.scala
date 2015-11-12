@@ -18,23 +18,23 @@ object BusinessRegController extends BusinessRegController {
   override val businessRegistrationService = BusinessRegistrationService
 }
 
-trait BusinessRegController extends FrontendController with Actions {
+trait BusinessRegController extends BaseController {
 
   val businessRegistrationService: BusinessRegistrationService
 
-  def register(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType)))
   }
 
 
-  def back(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def back(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
   }
 
 
-  def send(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessRegistrationForm.bindFromRequest.fold(
         formWithErrors => {

@@ -6,7 +6,7 @@ import models.{KnownFactsForService, BusinessRegistrationResponse, BusinessRegis
 import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext

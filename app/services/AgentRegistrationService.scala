@@ -8,7 +8,7 @@ import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.{Logger, Play}
 import uk.gov.hmrc.play.audit.model.EventTypes
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.auth.AuthContext

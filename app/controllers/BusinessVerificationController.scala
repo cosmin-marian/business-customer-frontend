@@ -9,7 +9,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
@@ -22,17 +22,17 @@ object BusinessVerificationController extends BusinessVerificationController {
   override val authConnector = FrontendAuthConnector
 }
 
-trait BusinessVerificationController extends FrontendController with Actions {
+trait BusinessVerificationController extends BaseController {
 
   val businessMatchingService: BusinessMatchingService
 
-  def businessVerification(service: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def businessVerification(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service))
   }
 
   // scalastyle:off cyclomatic.complexity
-  def continue(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def continue(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessTypeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service))),
@@ -53,7 +53,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       )
   }
 
-  def businessForm(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)) {
+  def businessForm(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       businessType match {
         case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, AuthUtils.isAgent, service, businessType))
@@ -65,7 +65,7 @@ trait BusinessVerificationController extends FrontendController with Actions {
       }
   }
 
-  def submit(service: String, businessType: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def submit(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessType match {
         case "UIB" => uibFormHandling(unincorporatedBodyForm, businessType, service)

@@ -2,7 +2,7 @@ package builders
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.model.{AuditAsMagnet, Audit}
 import config.BusinessCustomerFrontendAuditConnector
