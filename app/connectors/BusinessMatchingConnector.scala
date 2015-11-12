@@ -2,7 +2,7 @@ package connectors
 
 
 import audit.Auditable
-import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
+import config.{WSHttpWithAudit, BusinessCustomerFrontendAuditConnector, WSHttp}
 import models.MatchBusinessData
 import play.api.Logger
 import play.api.http.Status._
@@ -23,7 +23,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
   val baseURI = "business-matching"
   val lookupURI = "business-lookup"
 
-  val http: HttpGet with HttpPost = WSHttp
+  val http: HttpGet with HttpPost = WSHttpWithAudit
 
   def lookup(lookupData: MatchBusinessData, userType: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
     val authLink = AuthUtils.getAuthLink()

@@ -2,7 +2,7 @@ package connectors
 
 import _root_.metrics.MetricsEnum
 import audit.Auditable
-import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
+import config.{WSHttpWithAudit, BusinessCustomerFrontendAuditConnector, WSHttp}
 import models._
 import play.api.Logger
 import play.api.http.Status._
@@ -21,7 +21,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
   lazy val serviceURL = baseUrl("government-gateway")
 
   val enrolURI = "enrol"
-  val http: HttpGet with HttpPost = WSHttp
+  val http: HttpGet with HttpPost = WSHttpWithAudit
 
   def metrics: Metrics
 
