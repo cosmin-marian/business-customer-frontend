@@ -14,10 +14,11 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.Play
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
 
@@ -27,9 +28,7 @@ import scala.concurrent.Future
 class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   class MockHttp extends WSGet with WSPost {
-    override def auditConnector: AuditConnector = BusinessCustomerFrontendAuditConnector
-
-    override def appName = Play.configuration.getString("appName").getOrElse("business-customer-frontend")
+    override val hooks: Seq[HttpHook] = NoneRequired
   }
 
   val mockWSHttp = mock[MockHttp]

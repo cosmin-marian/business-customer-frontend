@@ -1,6 +1,7 @@
 package audit
 
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.AuditExtensions
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
 
 trait Auditable {
@@ -14,8 +15,9 @@ trait Auditable {
                     detail: Map[String, String], eventType: String)
                    (implicit hc: HeaderCarrier) =
     audit.sendDataEvent(DataEvent(appName, auditType = eventType,
-      tags = hc.toAuditTags(transactionName, path) ++ tags,
-      detail = hc.toAuditDetails(detail.toSeq: _*)))
+      tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName, path) ++ tags,
+      detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails(detail.toSeq: _*)))
+
 
 }
 

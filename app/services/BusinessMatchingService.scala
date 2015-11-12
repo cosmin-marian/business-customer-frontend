@@ -4,7 +4,7 @@ import connectors.{BusinessMatchingConnector, DataCacheConnector}
 import models._
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.SessionUtils
 

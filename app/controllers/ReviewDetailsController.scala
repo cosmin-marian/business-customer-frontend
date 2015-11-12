@@ -20,7 +20,7 @@ object ReviewDetailsController extends ReviewDetailsController {
 
 }
 
-trait ReviewDetailsController extends FrontendController with Actions with RunMode {
+trait ReviewDetailsController extends BaseController with RunMode {
 
   import play.api.Play.current
 
@@ -29,7 +29,7 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
   def agentRegistrationService: AgentRegistrationService
 
 
-  def businessDetails(serviceName: String) = AuthorisedFor(BusinessCustomerRegime(serviceName)).async {
+  def businessDetails(serviceName: String) = AuthorisedForGG(BusinessCustomerRegime(serviceName)).async {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
         case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, AuthUtils.isAgent, businessDetails)))
@@ -40,7 +40,7 @@ trait ReviewDetailsController extends FrontendController with Actions with RunMo
       }
   }
 
-  def continue(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def continue(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       AuthUtils.isAgent match {
         case false => {

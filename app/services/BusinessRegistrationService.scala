@@ -6,7 +6,7 @@ import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.auth.AuthContext

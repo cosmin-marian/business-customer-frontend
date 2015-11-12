@@ -11,11 +11,11 @@ import utils.AuthUtils
 
 import scala.concurrent.Future
 
-trait HomeController extends FrontendController with Actions {
+trait HomeController extends BaseController {
 
   val businessMatchService: BusinessMatchingService
 
-  def homePage(service: String) = AuthorisedFor(BusinessCustomerRegime(service)).async {
+  def homePage(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessMatchService.matchBusinessWithUTR(isAnAgent = AuthUtils.isAgent) match {
         case Some(futureJsValue) => {

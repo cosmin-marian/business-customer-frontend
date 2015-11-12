@@ -2,12 +2,12 @@ package connectors
 
 
 import audit.Auditable
-import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
+import config.{WSHttpWithAudit, BusinessCustomerFrontendAuditConnector, WSHttp}
 import models.MatchBusinessData
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext

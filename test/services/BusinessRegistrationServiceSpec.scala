@@ -1,6 +1,6 @@
 package services
 
-import _root_.java.util.UUID
+import java.util.UUID
 
 import builders.{AuthBuilder, TestAudit}
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
@@ -11,7 +11,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
