@@ -20,6 +20,7 @@
         linkElem = linkElement,
         headScripts = None)
     <meta name="format-detection" content="telephone=no" />
+    @views.html.helpers.ga(applicationConfig.analyticsToken.getOrElse("UA-123456"))
 }
 
 @headerNavLinks = {
