@@ -60,9 +60,7 @@ object BCUtils {
     listOfCountryCodes.toList.sortBy(_._2)
   }
 
-  def getSelectedCountry(isoCode: String): String = {
-    p.getProperty(isoCode.toUpperCase)
-  }
+
 
   def getNavTitle(service:Option[String]): Option[String] = {
     service match {
@@ -77,6 +75,8 @@ object BCUtils {
       case None => None
     }
   }
+
+
 
 
   def businessTypeMap(service:String) : Seq[(String, String)]= {
@@ -98,4 +98,29 @@ object BCUtils {
     )
     optionalBusinessTypes ++ fixedBusinessTypes
   }
+
+  def getSelectedCountry(isoCode: String): String = {
+    def trimCountry(selectedCountry: String) = {
+      val position = selectedCountry.indexOf(":")
+      if (position > 0) {
+        selectedCountry.substring(0, position).trim
+      } else {
+        selectedCountry
+      }
+    }
+
+    def getCountry(isoCode: String): Option[String] = {
+      val country = Option(p.getProperty(isoCode.toUpperCase))
+      country.map{ selectedCountry =>
+        trimCountry(selectedCountry)
+      }
+    }
+
+    getCountry(isoCode.toUpperCase).fold(isoCode){x=>x}
+  }
+
+
 }
+
+
+
