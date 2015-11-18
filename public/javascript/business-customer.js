@@ -1,42 +1,14 @@
+function trimCountry(countryVal) {
+    var trimmedCountry = countryVal
+    var position = countryVal.search(":");
+    if (position > 0){
+      trimmedCountry = countryVal.substring(0, position).trim();
+    }
+    return trimmedCountry
+}
+
 function countryCodeAutoComplete() {
-//    var input = $("<input></input>")
-//    .attr("id", "businessAddress.country")
-//    .attr("name", "businessAddress.country")
-//    .attr("class", "form-control")
-//    .attr("type", "text");
-//    var isoListMap = [];
-//    var select = $('select');
-//    var selected = "";
-//    $(select).each(function(){
-//        $(this).find('option').each(function(){
-//            var item = $(this);
-//            var label = (item.text());
-//            var value = "";
-//            if(item.attr('value')) {
-//                value = item.attr('value')
-//                if(item.attr('selected') == "selected") {
-//                    selected = item.attr('value')
-//                }
-//            }
-//            isoListMap.push({
-//                'label': label,
-//                'value': value
-//            });
-//        });
-//    });
-//    $("select").remove();
-//    input.attr('value')
-//    var isErrorThere = $("#businessAddress-country_div").has("div.form-field--error").length
-//    console.log(isErrorThere)
-//    if(isErrorThere != 0) {
-//        $("#businessAddress-country_div").find("div.form-field--error").append(input)
-//    }else{
-//        $("#businessAddress-country_div").append(input);
-//    }
-//    $("#businessAddress\\.country").autocomplete({
-//        source: isoListMap,
-//        minLength: 2
-//    });
+
 ////////////////////////////////////////////
 (function( $ ) {
     $.widget( "custom.combobox", {
@@ -50,9 +22,10 @@ function countryCodeAutoComplete() {
         this.element.attr("id", this.element.attr("id")+"_");
       },
 
+
       _createAutocomplete: function() {
         var selected = this.element.children( ":selected" ),
-          value = selected.val() ? selected.text() : "";
+          value = selected.val() ? trimCountry(selected.text()): "";
 
         this.input = $( "<input>" )
           .appendTo( this.wrapper )
@@ -82,10 +55,11 @@ function countryCodeAutoComplete() {
         var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
         response( this.element.children( "option" ).map(function() {
           var text = $( this ).text();
+          var trimmedCountry = trimCountry(text);
           if ( this.value && ( !request.term || matcher.test(text) ) )
             return {
-              label: text,
-              value: text,
+              label: trimmedCountry,
+              value: trimmedCountry,
               option: this
             };
         }) );

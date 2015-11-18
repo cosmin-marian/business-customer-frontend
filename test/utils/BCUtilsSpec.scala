@@ -34,16 +34,21 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       "bring the correct country from the file" in {
         BCUtils.getSelectedCountry("GB") must be("United Kingdom")
         BCUtils.getSelectedCountry("US") must be("USA")
-        BCUtils.getSelectedCountry("zz") must be(null)
+        BCUtils.getSelectedCountry("VG") must be("British Virgin Islands")
+        BCUtils.getSelectedCountry("UG") must be("Uganda")
+        BCUtils.getSelectedCountry("zz") must be("zz")
       }
     }
 
     "getIsoCodeMap" must {
       "return map of country iso-code to country name" in {
-        BCUtils.getIsoCodeTupleList must contain(("US" , "USA"))
-        BCUtils.getIsoCodeTupleList must contain(("GB" , "United Kingdom"))
+        BCUtils.getIsoCodeTupleList must contain(("US" , "USA :United States of America"))
+        BCUtils.getIsoCodeTupleList must contain(("GB" , "United Kingdom :UK, GB, Great Britain"))
+        BCUtils.getIsoCodeTupleList must contain(("UG" , "Uganda"))
       }
     }
+
+
     "getNavTitle" must {
       "for ated as service name, return ated" in {
         BCUtils.getNavTitle(Some("ated")) must be(Some("Annual Tax on Enveloped Dwellings (ATED)"))
