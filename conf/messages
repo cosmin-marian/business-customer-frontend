@@ -146,3 +146,10 @@ bc.business-review.error.no-service=Service does not exist for : {0}. This shoul
 bc.agent-service.error.no-agent-enrolment-service-name=Agent Enrolment Service Name does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.agentEnrolmentService'
 bc.agent-service.error.no-agent-reference={0} - No Agent Reference Number Found
 
+
+## Signed out page
+bc.signout-title = You have successfully signed out
+bc.signout-header = You''re signed out
+bc.signout-info = You''re now signed out of your account.
+bc.signout-explore-gov-uk = Explore GOV.UK
+
