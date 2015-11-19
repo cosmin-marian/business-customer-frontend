@@ -64,8 +64,14 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
       "be redirected to the logout page" in {
         val result = controllers.ApplicationController.logout().apply(FakeRequest())
-        redirectLocation(result).get must include("http://localhost:9025/account/sign-out")
+        redirectLocation(result).get must include("/business-customer/signed-out")
       }
+
+      "send to signed out page" in {
+        val result = controllers.ApplicationController.signedOut().apply(FakeRequest())
+        status(result) must be(OK)
+      }
+
 
     }
   }

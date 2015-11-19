@@ -22,7 +22,11 @@ trait ApplicationController extends FrontendController with RunMode {
   }
 
   def logout = UnauthorisedAction { implicit request =>
-    Redirect(ExternalUrls.signOut).withNewSession
+    Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
+  }
+
+  def signedOut =  UnauthorisedAction { implicit request =>
+    Ok(views.html.logout(request))
   }
 
   def logoutAndRedirectToHome(service:String) = UnauthorisedAction {
