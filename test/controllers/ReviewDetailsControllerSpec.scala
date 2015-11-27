@@ -219,7 +219,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -230,7 +230,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -241,7 +241,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsControllerNotFound
-    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -252,7 +252,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
 
     test(result)
   }

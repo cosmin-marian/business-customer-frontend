@@ -54,7 +54,7 @@ trait BusinessRegController extends BaseController {
             }
             case _ => {
               businessRegistrationService.registerBusiness(registrationData, isGroup(businessType)).map {
-                registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
             }
           }

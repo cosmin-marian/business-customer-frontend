@@ -9,7 +9,7 @@ GET         /business-verification/:service/businessForm/:businessType          
 
 POST        /business-verification/:service/continue                            controllers.BusinessVerificationController.continue(service: String)
 
-GET         /review-details/:service                                            controllers.ReviewDetailsController.businessDetails(service: String)
+GET         /review-details/:service/:directMatch                               controllers.ReviewDetailsController.businessDetails(service: String, directMatch: Boolean)
 
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
 

@@ -29,7 +29,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
   def agentRegistrationService: AgentRegistrationService
 
 
-  def businessDetails(serviceName: String) = AuthorisedForGG(BusinessCustomerRegime(serviceName)).async {
+  def businessDetails(serviceName: String, directMatch: Boolean) = AuthorisedForGG(BusinessCustomerRegime(serviceName)).async {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
         case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, AuthUtils.isAgent, businessDetails)))

@@ -89,7 +89,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -115,7 +115,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -142,7 +142,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -168,7 +168,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -194,7 +194,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -220,7 +220,7 @@ trait BusinessVerificationController extends BaseController {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
               case Some(reviewDetailsValidated) => {
-                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
               case None => {
                 val errorMsg = Messages("bc.business-verification-error.not-found")
