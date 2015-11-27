@@ -94,7 +94,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user" in {
-      businessDetailsWithAuthorisedUser { result =>
+      businessDetailsWithAuthorisedUser(false){ result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Your business details")
         document.getElementById("banner2").text must be("You are about to register the following business for ATED.")
@@ -103,6 +103,16 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-address-label").text must be("Registered address")
 
         document.select(".button").text must be("Confirm and continue")
+        document.getElementById("wrong-account-title").text must be("Not the right address?")
+        document.getElementById("wrong-account-text").text must startWith("Contact Companies House to update your information, you can still register for")
+      }
+    }
+
+    "return Review Details view for a user when we directly found this user" in {
+      businessDetailsWithAuthorisedUser(true) { result =>
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("wrong-account-title").text must be("Not the right business?")
+        document.getElementById("wrong-account-text").text must startWith("If this is not the right business, you should sign out and change to another account")
       }
     }
 
@@ -116,7 +126,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "read existing business details data from cache (without updating data)" in {
-      val testDetailsController = businessDetailsWithAuthorisedUser { result =>
+      val testDetailsController = businessDetailsWithAuthorisedUser(false) { result =>
         status(result) must be(OK)
       }
       testDetailsController.dataCacheConnector.reads must be(1)
@@ -225,12 +235,12 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     testDetailsController
   }
 
-  def businessDetailsWithAuthorisedUser(test: Future[Result] => Any) = {
+  def businessDetailsWithAuthorisedUser(directMatch: Boolean)(test: Future[Result] => Any) = {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
+    val result = testDetailsController.businessDetails(service, directMatch).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
