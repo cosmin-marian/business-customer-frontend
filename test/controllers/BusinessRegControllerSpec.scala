@@ -170,8 +170,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include("Business name must be entered")
-              contentAsString(result) must include("Address Line 1 must be entered")
-              contentAsString(result) must include("Address Line 2 must be entered")
+              contentAsString(result) must include("Address line 1 must be entered")
+              contentAsString(result) must include("Address line 2 must be entered")
               contentAsString(result) must include("Country must be entered")
           }
         }
