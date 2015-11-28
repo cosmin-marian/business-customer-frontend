@@ -34,6 +34,13 @@ trait ApplicationController extends FrontendController with RunMode {
       Redirect(controllers.routes.HomeController.homePage(service)).discardingCookies(DiscardingCookie("mdtp"))
   }
 
+  def redirectToAgentSummary(service: String) = UnauthorisedAction {
+    implicit request =>
+      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.atedRedirectUrl")
+      Redirect(serviceRedirectUrl.getOrElse("/ated/summary?subscribed=true"))
+
+  }
+
 }
 
 object ApplicationController extends ApplicationController {}

@@ -1,4 +1,4 @@
-@(agentReference: Option[String])(implicit request: Request[_])
+@(agentReference: Option[String], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -15,7 +15,7 @@
         reference)</h1>
 </div>
 <h3 class="heading-medium" id="confirm">@Messages("bc.business-agent.confirmation.instruction")</h3>
-<div>
+<div class="form-group">
 
     <hr>
 
@@ -29,14 +29,16 @@
         <li id="happens-next-item1">@Messages("bc.business-agent.confirmation.happens-next-item1")</li>
         <li id="happens-next-item2">@Messages("bc.business-agent.confirmation.happens-next-item2")</li>
         <li id="happens-next-item3">@Messages("bc.business-agent.confirmation.happens-next-item3")</li>
+        <li id="happens-next-item4">@Messages("bc.business-agent.confirmation.happens-next-item4")</li>
     </ol>
 
-
-    <p id="happens-next-message2">@Messages("bc.business-agent.confirmation.happens-next-message2")</p>
 
 
     <a href="@routes.ApplicationController.logout" id="submit" class="button">
         @Messages("bc.business-agent.confirmation.finish")</a>
+
 </div>
+
+    <a href="@controllers.routes.ApplicationController.redirectToAgentSummary(service)"> Go to my account</a>
 
 }

@@ -22,8 +22,8 @@ business-review.registration-button = Confirm and continue
 bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
 
-bc.business-agent.confirmation.message = You have successfully created your agent ATED account
-bc.business-agent.confirmation.instruction = This is your receipt, you will not receive an email confirmation.
+bc.business-agent.confirmation.message = You have successfully created your ATED account
+bc.business-agent.confirmation.instruction = You will not receive an email confirmation. Your agent reference number is displayed in your account.
 bc.business-agent.confirmation.finish = Finish and sign out
 bc.business-agent.confirmation.title = Business Confirmation
 bc.business-agent.confirmation.reference = Your agent reference is
@@ -49,6 +49,7 @@ bc.business-verification.LP=Limited Partnership
 bc.business-verification.UIB=Unincorporated Association
 bc.business-verification.LTD=Limited Company
 bc.business-verification.SOP=Sole Trader / Self-employed
+bc.business-agent.confirmation.happens-next-item4 = let you know they have sent you the request. You will have 28 days to sign in and accept the agent request. You won’t receive an email notification
 
 bc.business-verification.NEW=New Business
 bc.business-verification.GROUP=Group
