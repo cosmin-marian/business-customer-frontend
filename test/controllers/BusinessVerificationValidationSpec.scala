@@ -173,13 +173,13 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
 
-            contentAsString(result) must include("First Name must be entered")
-            contentAsString(result) must include("Last Name must be entered")
+            contentAsString(result) must include("First name must be entered")
+            contentAsString(result) must include("Last name must be entered")
             contentAsString(result) must include("Self Assessment Unique Tax Reference must be entered")
 
 
-            document.getElementById("firstName_field").text() must include("First Name")
-            document.getElementById("lastName_field").text() must include("Last Name")
+            document.getElementById("firstName_field").text() must include("First name")
+            document.getElementById("lastName_field").text() must include("Last name")
             document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference")
         }
       }
@@ -198,8 +198,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> s"$fName", "lastName" -> s"$lName")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("First Name must not be more than 40 characters")
-            contentAsString(result) must include("Last Name must not be more than 40 characters")
+            contentAsString(result) must include("First name must not be more than 40 characters")
+            contentAsString(result) must include("Last name must not be more than 40 characters")
         }
       }
 
@@ -332,7 +332,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-obp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-obp-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
@@ -350,7 +350,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-llp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-llp-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
@@ -368,7 +368,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-lp-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-lp-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
@@ -386,7 +386,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-sop-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-sop-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
@@ -404,7 +404,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-uib-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-uib-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
@@ -422,7 +422,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-ltd-form").text() must be("Your business details have not been found. Please check that your details are correct and up-to-date and try again")
+            document.getElementById("#business-type-ltd-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
