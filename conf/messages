@@ -69,6 +69,7 @@ bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax 
 bc.business-verification.partnerUTRField.hint=In the header of any letter received from HMRC
 bc.business-verification.registered-name.hint=This is the registered name on your incorporation certificate
 bc.business-verification.ctutr.hint=In the header of any letter received from HMRC
+bc.business-verification.back=Back
 
 bc.business-verification-error.summaryHeader=There is a problem with the form
 bc.business-verification-error.firstname=First name must be entered
