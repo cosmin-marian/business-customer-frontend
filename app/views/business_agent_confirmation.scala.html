@@ -34,11 +34,11 @@
 
 
 
-    <a href="@routes.ApplicationController.logout" id="submit" class="button">
+    <a href="@controllers.routes.ApplicationController.redirectToAgentLogout(service)" id="submit" class="button">
         @Messages("bc.business-agent.confirmation.finish")</a>
 
 </div>
 
-    <a href="@controllers.routes.ApplicationController.redirectToAgentSummary(service)"> Go to my account</a>
+    <a href="@controllers.routes.ApplicationController.redirectToAgentSummary(service)">@Messages("bc.business-agent.confirmation.home-link")</a>
 
 }

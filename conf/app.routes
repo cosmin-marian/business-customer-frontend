@@ -35,4 +35,6 @@ GET         /logoutAndRedirectToHome/:service                                   
 
 GET         /redirectToAgentSummary/:service                                    controllers.ApplicationController.redirectToAgentSummary(service:String)
 
+GET         /redirectToAgentLogout/:service                                     controllers.ApplicationController.redirectToAgentLogout(service:String)
+
 

@@ -36,11 +36,17 @@ trait ApplicationController extends FrontendController with RunMode {
 
   def redirectToAgentSummary(service: String) = UnauthorisedAction {
     implicit request =>
-      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.atedRedirectUrl")
-      Redirect(serviceRedirectUrl.getOrElse("/ated/summary?subscribed=true"))
+      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.agentHomeUrl")
+      Redirect(serviceRedirectUrl.getOrElse("/ated/home"))
 
   }
 
+  def redirectToAgentLogout(service: String) = UnauthorisedAction {
+    implicit request =>
+      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.agentLogoutUrl")
+      Redirect(serviceRedirectUrl.getOrElse("/ated/logout"))
+
+  }
 }
 
 object ApplicationController extends ApplicationController {}
