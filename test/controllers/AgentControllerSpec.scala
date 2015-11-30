@@ -65,10 +65,10 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
 
             val document = Jsoup.parse(contentAsString(result))
             document.title() must be("Business Confirmation")
-            document.getElementById("message").text() must be("You have successfully created your agent ATED account")
+            document.getElementById("message").text() must be("You have successfully created your ATED account")
             document.getElementById("agent-reference").text() must startWith("Your agent reference is")
             document.getElementById("submit").text() must be("Finish and sign out")
-            document.getElementById("confirm").text() must be("This is your receipt, you will not receive an email confirmation.")
+            document.getElementById("confirm").text() must be("You will not receive an email confirmation. Your agent reference number is displayed in your account.")
 
             document.getElementById("what-happens-next").text() must be("What happens next")
             document.getElementById("what-happens-next-instruction").text() must startWith("You should give your clients your ATED agent reference number.")
@@ -76,7 +76,8 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             document.getElementById("happens-next-item1").text() must be("login or create a government gateway account")
             document.getElementById("happens-next-item2").text() must be("register their company to use the new ATED online service")
             document.getElementById("happens-next-item3").text() must startWith("enter the agent reference number you gave them")
-            document.getElementById("happens-next-message2").text() must include("Your clients need to let you know once they have sent the request.")
+            document.getElementById("happens-next-item4").text() must startWith("let you know they have sent you the request. You will have 28 days to sign in and accept the agent request")
+
         }
       }
       "return exception if no ARN present" in {

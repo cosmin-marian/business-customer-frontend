@@ -21,7 +21,7 @@ trait AgentController extends BaseController {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
         reviewDetails => reviewDetails match {
-          case Some(reviewData) => Ok(views.html.business_agent_confirmation(reviewData.agentReferenceNumber))
+          case Some(reviewData) => Ok(views.html.business_agent_confirmation(reviewData.agentReferenceNumber, service))
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }

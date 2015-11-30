@@ -72,8 +72,20 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
         status(result) must be(OK)
       }
 
+    }
 
+    "Account summary link" must {
+      "respond with a redirect" in {
+        val result = controllers.ApplicationController.redirectToAgentSummary(service).apply(FakeRequest())
+        status(result) must be(SEE_OTHER)
+      }
+
+      "be redirected to the ated agent account summary page" in {
+        val result = controllers.ApplicationController.redirectToAgentSummary(service).apply(FakeRequest())
+        redirectLocation(result).get must include("/ated/summary?subscribed=true")
+      }
     }
   }
 
 }
+
