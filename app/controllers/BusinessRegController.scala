@@ -3,7 +3,7 @@ package controllers
 import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{BusinessRegistration, BusinessRegistrationDisplayDetails, Address}
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -12,6 +12,7 @@ import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.Future
 import play.api.i18n.Messages
+import play.api.data.Form
 
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
@@ -24,7 +25,7 @@ trait BusinessRegController extends BaseController {
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType)))
+      Ok(viewsBusinessRegForm(businessRegistrationForm, service, businessType))
   }
 
 
@@ -38,7 +39,7 @@ trait BusinessRegController extends BaseController {
     implicit user => implicit request =>
       businessRegistrationForm.bindFromRequest.fold(
         formWithErrors => {
-          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType))))
+          Future.successful(BadRequest(viewsBusinessRegForm(formWithErrors, service, businessType)))
         },
         registrationData => {
           (registrationData.businessUniqueId, registrationData.issuingInstitution) match {
@@ -60,6 +61,13 @@ trait BusinessRegController extends BaseController {
           }
         }
       )
+  }
+
+  private def viewsBusinessRegForm(formToView: Form[BusinessRegistration], service: String, businessType: String)(implicit user: AuthContext, request: play.api.mvc.Request[_]) = {
+    isGroup(businessType) match {
+      case true => views.html.business_group_registration(formToView, service, displayDetails(businessType))
+      case false => views.html.business_registration(formToView, service, displayDetails(businessType))
+    }
   }
 
   private def isGroup(businessType: String) = {

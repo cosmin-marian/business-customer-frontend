@@ -1,0 +1,82 @@
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import views.html.helpers.error._
+@import utils.BCUtils
+
+@bcMain(title = Messages("business-registration.title"), service = Some(service)) {
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        countryCodeAutoComplete()
+    });
+</script>
+
+@errors(businessRegistrationForm)
+<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
+<h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
+
+@form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
+<div class="form-group">
+
+    <div id="business-registration-form">
+
+        @bcInput(businessRegistrationForm("businessName"),
+        '_label ->  Html(Messages("bc.business-registration.businessName")),
+        '_labelClass -> "form-label",
+        '_id -> "businessNameNUK",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.line_1"),
+        '_label ->  Html(Messages("bc.business-registration.line_1")),
+        '_id -> "businessAddress.line_1",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.line_2"),
+        '_label ->  Html(Messages("bc.business-registration.line_2")),
+        '_id -> "businessAddress.line_2",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.line_3"),
+        '_label ->  Html(Messages("bc.business-registration.line_3")),
+        '_id -> "businessAddress.line_3",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.line_4"),
+        '_label ->  Html(Messages("bc.business-registration.line_4")),
+        '_id -> "businessAddress.line_4",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.postcode"),
+        '_label ->  Html(Messages("bc.business-registration.postcode")),
+        '_id -> "businessAddress.postcode",
+        '_showConstraints -> false)
+
+
+        @bcInput(businessRegistrationForm("businessUniqueId"),
+        '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
+        '_id -> "businessUniqueId",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("issuingInstitution"),
+        '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
+        '_id -> "issuingInstitution",
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.country"),
+        '_id -> "businessAddress.country",
+        '_type -> "hidden",
+        '_value -> "GB")
+    </div>
+
+
+    <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
+</div>
+
+
+}
+
+}
+
