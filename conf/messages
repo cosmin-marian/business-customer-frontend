@@ -38,6 +38,8 @@ bc.business-agent.confirmation.happens-next-item1 = login or create a government
 bc.business-agent.confirmation.happens-next-item2 = register their company to use the new ATED online service
 bc.business-agent.confirmation.happens-next-item3 = enter the agent reference number you gave them
 bc.business-agent.confirmation.happens-next-message2 = Your clients need to let you know once they have sent the request. You have 28 days to logon and accept the agent request, you won’t receive an email notification.
+bc.business-agent.confirmation.home-link =  Go to my account
+
 bc.business-verification.text={0} account registration
 bc.business-verification.title=Business Verification
 bc.business-verification.user.header = What is your business type?
