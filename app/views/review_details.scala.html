@@ -1,4 +1,4 @@
-@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails, directMatch: Boolean)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
@@ -49,7 +49,25 @@
     }
 </div>
 
-<div class="form-group">
-    <a href="@controllers.routes.ApplicationController.logoutAndRedirectToHome(service:String)">@Messages("bc.business-verification-link")</a>
-</div>
+<details>
+    <summary><span id="wrong-account-title" class="summary">
+    @if(directMatch){
+    @Messages("business-review.invalid-business.header")
+    }else {
+    @Messages("business-review.invalid-address.header")
+    }
+    </span></summary>
+
+    <div class="panel-indent">
+        <p id="wrong-account-text">
+            @if(directMatch){
+            @Messages("business-review.invalid-business.text")
+            }else {
+            @Messages("business-review.invalid-address.text", service)
+            }
+        </p>
+
+    </div>
+</details>
+
 }
