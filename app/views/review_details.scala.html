@@ -41,13 +41,7 @@
                     <li id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</li>
             </ul>
 
-</div>
 
-<div class="form-group">
-    @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
-        <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>@Messages("business-review.registration-button", service.toUpperCase)</button>
-    }
-</div>
 
 <details>
     <summary><span id="wrong-account-title" class="summary">
@@ -62,12 +56,36 @@
         <p id="wrong-account-text">
             @if(directMatch){
             @Messages("business-review.invalid-business.text")
+        <h4 class="heading-small">Not the right address</h4>
+        <p> If you registered with Companies House you need to inform
+            <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">Companies House</a>.</p>
+        If you are a Sole Trader, you need to inform
+        <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank">HMRC</a>.
+        </p>
+
             }else {
             @Messages("business-review.invalid-address.text", service)
-            }
+
+
+        <p> If you registered with Companies House you need to inform
+            <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">Companies House</a>.</p>
+        If you are a Sole Trader, you need to inform
+        <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank">HMRC</a>.
         </p>
+            }
+
 
     </div>
 </details>
+
+</div>
+
+<div class="form-group">
+    @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
+        <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>@Messages("business-review.registration-button", service.toUpperCase)</button>
+    }
+</div>
+
+
 
 }
