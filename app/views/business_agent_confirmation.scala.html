@@ -25,13 +25,14 @@
 
     <p id="happens-next-message1">@Messages("bc.business-agent.confirmation.message1")</p>
 
-    <ol>
-        <li id="happens-next-item1">@Messages("bc.business-agent.confirmation.happens-next-item1")</li>
-        <li id="happens-next-item2">@Messages("bc.business-agent.confirmation.happens-next-item2")</li>
-        <li id="happens-next-item3">@Messages("bc.business-agent.confirmation.happens-next-item3")</li>
-        <li id="happens-next-item4">@Messages("bc.business-agent.confirmation.happens-next-item4")</li>
-    </ol>
 
+    <ul class="list-number" type="1">
+        <li id="happens-next-message2">@Messages("bc.business-agent.happens-next4")</li>
+        <li id="happens-next-message3">@Messages("bc.business-agent.happens-next5")</li>
+        <li id="happens-next-message4">@Messages("bc.business-agent.happens-next6")</li>
+    </ul>
+
+    <p>@Messages("bc.business-agent.happens-next6b")</p>
 
 
     <a href="@controllers.routes.ApplicationController.redirectToAgentLogout(service)" id="submit" class="button">
