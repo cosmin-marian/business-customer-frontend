@@ -7,13 +7,6 @@
 
 @bcMain(title = Messages("business-registration.title"), service = Some(service)) {
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        countryCodeAutoComplete()
-    });
-</script>
-
 @errors(businessRegistrationForm)
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
@@ -65,14 +58,21 @@
         '_id -> "issuingInstitution",
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.country"),
-        '_id -> "businessAddress.country",
-        '_type -> "hidden",
-        '_value -> "GB")
     </div>
 
 
     <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
+
+    <div>
+        <p> <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back">@Messages("bc.business-verification.back")</a> </p>
+    </div>
+
+    @bcInput(businessRegistrationForm("businessAddress.country"),
+            '_id -> "businessAddress.country",
+            '_type -> "hidden")
+    @bcInput(businessRegistrationForm("businessType"),
+            '_id -> "businessType",
+            '_type -> "hidden")
 </div>
 
 

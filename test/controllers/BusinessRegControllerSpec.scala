@@ -134,7 +134,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("submit").text() must be("Continue")
 
             document.getElementById("businessAddress.postcode_field").text() must be("Postcode")
-            document.getElementById("businessAddress.country_field").attr("value") must be("GB")
+            document.getElementById("businessAddress.country").attr("value") must be("GB")
         }
       }
       "return business registration view for an agent" in {
@@ -175,6 +175,24 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Address line 1 must be entered")
               contentAsString(result) must include("Address line 2 must be entered")
               contentAsString(result) must include("Country must be entered")
+              contentAsString(result) mustNot include("Postcode must be entered")
+          }
+        }
+
+        "not be empty for a Group" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = Json.parse(
+            """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""},
+              |"businessUniqueId": "", "issuingInstitution": "", "businessType":"Group"}""".stripMargin)
+
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("Business name must be entered")
+              contentAsString(result) must include("Address line 1 must be entered")
+              contentAsString(result) must include("Address line 2 must be entered")
+              contentAsString(result) must include("Country must be entered")
+              contentAsString(result) must include("Postcode must be entered")
           }
         }
 
@@ -296,8 +314,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
           }
         }
-
-
 
       }
 

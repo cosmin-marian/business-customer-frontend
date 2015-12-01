@@ -25,7 +25,7 @@ trait BusinessRegController extends BaseController {
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(viewsBusinessRegForm(businessRegistrationForm, service, businessType))
+      Ok(viewsBusinessRegForm(businessRegistrationForm.copy(data = Map("businessType" -> businessType)), service, businessType))
   }
 
 
@@ -37,35 +37,42 @@ trait BusinessRegController extends BaseController {
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      businessRegistrationForm.bindFromRequest.fold(
+      validateForm(businessRegistrationForm.bindFromRequest, businessType).fold(
         formWithErrors => {
           Future.successful(BadRequest(viewsBusinessRegForm(formWithErrors, service, businessType)))
         },
         registrationData => {
-          (registrationData.businessUniqueId, registrationData.issuingInstitution) match {
-            case (Some(id), None) => {
-              val errorMsg = Messages("bc.business-registration-error.issuingInstitution.select")
-              val errorForm = businessRegistrationForm.withError(key = "issuingInstitution", message = errorMsg).fill(registrationData)
-              Future.successful(BadRequest(views.html.business_registration(errorForm, service, displayDetails(businessType))))
-            }
-            case(None, Some(inst)) => {
-              val errorMsg = Messages("bc.business-registration-error.businessUniqueId.select")
-              val errorForm = businessRegistrationForm.withError(key = "businessUniqueId", message = errorMsg).fill(registrationData)
-              Future.successful(BadRequest(views.html.business_registration(errorForm, service, displayDetails(businessType))))
-            }
-            case _ => {
               businessRegistrationService.registerBusiness(registrationData, isGroup(businessType)).map {
                 registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
-            }
-          }
         }
       )
   }
 
-  private def viewsBusinessRegForm(formToView: Form[BusinessRegistration], service: String, businessType: String)(implicit user: AuthContext, request: play.api.mvc.Request[_]) = {
+  private def validateForm(registrationData: Form[BusinessRegistration], businessType: String) = {
+    validateInstitution(registrationData, businessType)
+  }
+
+  private def validateInstitution(registrationData: Form[BusinessRegistration], businessType: String) = {
+    val businessUniqueId = registrationData.data.get("businessUniqueId")
+    val issuingInstitution = registrationData.data.get("issuingInstitution")
+    (businessUniqueId, issuingInstitution) match {
+      case (Some(id), None) => registrationData.withError(key = "issuingInstitution",
+        message = Messages("bc.business-registration-error.issuingInstitution.select"))
+      case(None, Some(inst)) => registrationData.withError(key = "businessUniqueId",
+        message = Messages("bc.business-registration-error.businessUniqueId.select"))
+      case _ => registrationData
+    }
+  }
+
+  private def viewsBusinessRegForm(formToView: Form[BusinessRegistration], service: String, businessType: String)
+                                  (implicit user: AuthContext, request: play.api.mvc.Request[_]) = {
     isGroup(businessType) match {
-      case true => views.html.business_group_registration(formToView, service, displayDetails(businessType))
+      case true => {
+        val newMapping = formToView.data + ("businessAddress.country" -> "GB")
+        views.html.business_group_registration(formToView.copy(data = newMapping),
+          service, displayDetails(businessType))
+      }
       case false => views.html.business_registration(formToView, service, displayDetails(businessType))
     }
   }
