@@ -68,16 +68,14 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             document.getElementById("message").text() must be("You have successfully created your ATED account")
             document.getElementById("agent-reference").text() must startWith("Your agent reference is")
             document.getElementById("submit").text() must be("Finish and sign out")
-            document.getElementById("confirm").text() must be("You will not receive an email confirmation. Your agent reference number is displayed in your account.")
+            document.getElementById("confirm").text() must be("Your agent reference is also displayed in your account. You will not receive an email confirmation.")
 
             document.getElementById("what-happens-next").text() must be("What happens next")
-            document.getElementById("what-happens-next-instruction").text() must startWith("You should give your clients your ATED agent reference number.")
+            document.getElementById("what-happens-next-instruction").text() must startWith("You should give your clients your agent reference.")
             document.getElementById("happens-next-message1").text() must be("Your clients will then need to:")
-            document.getElementById("happens-next-item1").text() must be("login or create a government gateway account")
-            document.getElementById("happens-next-item2").text() must be("register their company to use the new ATED online service")
-            document.getElementById("happens-next-item3").text() must startWith("enter the agent reference number you gave them")
-            document.getElementById("happens-next-item4").text() must startWith("let you know they have sent you the request. You will have 28 days to sign in and accept the agent request")
-
+            document.getElementById("happens-next-message2").text() must be("register their company for the new ATED service")
+            document.getElementById("happens-next-message3").text() must be("create an agent request using the reference you gave them")
+            document.getElementById("happens-next-message4").text() must startWith("let you know that they have completed this process")
         }
       }
       "return exception if no ARN present" in {

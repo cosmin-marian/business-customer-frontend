@@ -39,11 +39,11 @@ bc.business-agent.confirmation.happens-next-item2 = register their company to us
 bc.business-agent.confirmation.happens-next-item3 = enter the agent reference number you gave them
 bc.business-agent.confirmation.happens-next-message2 = Your clients need to let you know once they have sent the request. You have 28 days to logon and accept the agent request, you won’t receive an email notification.
 bc.business-agent.confirmation.home-link =  Go to my account
-ated.agent-startpage-text3 = Your client will then need to:
-ated.agent-startpage-text4 = register their company for the new ATED service
-ated.agent-startpage-text5 = create an agent request using the reference you gave them
-ated.agent-startpage-text6 = let you know that they have completed this process
-ated.agent-startpage-text6b = You will have 28 days to sign in and accept the agent request. You will not receive an email notification.
+bc.business-agent.happens-next3 = Your client will then need to:
+bc.business-agent.happens-next4 = register their company for the new ATED service
+bc.business-agent.happens-next5 = create an agent request using the reference you gave them
+bc.business-agent.happens-next6 = let you know that they have completed this process
+bc.business-agent.happens-next6b = You will have 28 days to sign in and accept the agent request. You will not receive an email notification.
 
 bc.business-verification.text={0} account registration
 bc.business-verification.title=Business Verification

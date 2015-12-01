@@ -104,14 +104,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
         document.select(".button").text must be("Confirm and continue")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
-        document.getElementById("wrong-account-text").text must startWith("Contact Companies House to update your information, you can still register for")
+        document.getElementById("wrong-account-text").text must startWith("You can still register for ATED but you need to update your information.")
       }
     }
 
     "return Review Details view for a user when we directly found this user" in {
       businessDetailsWithAuthorisedUser(true) { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.getElementById("wrong-account-title").text must be("Not the right business?")
+        document.getElementById("wrong-account-title").text must be("Not the right details?")
         document.getElementById("wrong-account-text").text must startWith("If this is not the right business, you should sign out and change to another account")
       }
     }
@@ -120,8 +120,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       businessDetailsWithAuthorisedAgent { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Your agent details")
-        document.getElementById("banner").text must be("You are about to register the following business for ATED. You only need to do this once to cover all your ATED clients.")
+        document.select("h1").text must be("Your agency details")
+        document.getElementById("banner").text must be("You are about to register your agency for ATED. You only need to do this once to cover all your ATED clients.")
       }
     }
 
