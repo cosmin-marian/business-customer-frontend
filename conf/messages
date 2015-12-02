@@ -20,9 +20,17 @@ business-review.subscribe-banner = You are about to register your agency for {0}
 business-review.subscribe-banner2 = You are about to register the following business for {0}.
 business-review.invalid-address.header = Not the right address?
 business-review.invalid-address.text = You can still register for {0} but you need to update your information.
+business-review.invalid-business.address-header = Not the right address
 business-review.invalid-business.header = Not the right details?
 business-review.invalid-business.text = If this is not the right business, you should sign out and change to another account
 business-review.registration-button = Confirm and continue
+business-review.registered-with-companies-house.text = If you registered with Companies House you need to
+business-review.registered-with-companies-house.link-text = inform Companies House (opens in a new window).
+business-review.registered-with-companies-house.link = https://www.gov.uk/file-changes-to-a-company-with-companies-house
+business-review.sole-trader.text = If you are a Sole Trader, you need to
+business-review.sole-trader.link-text = inform HMRC separately (opens in a new window).
+business-review.sole-trader.link = https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address
+
 bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
 

@@ -56,23 +56,18 @@
         <p id="wrong-account-text">
             @if(directMatch){
             @Messages("business-review.invalid-business.text")
-        <h4 class="heading-small">Not the right address</h4>
-        <p> If you registered with Companies House you need to inform
-            <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">Companies House</a>.</p>
-        If you are a Sole Trader, you need to inform
-        <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank">HMRC</a>.
-        </p>
-
+            <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
             }else {
             @Messages("business-review.invalid-address.text", service)
-
-
-        <p> If you registered with Companies House you need to inform
-            <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank">Companies House</a>.</p>
-        If you are a Sole Trader, you need to inform
-        <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank">HMRC separately</a>.
-        </p>
             }
+        <p>@Messages("business-review.registered-with-companies-house.text")
+            <a href="@Messages("business-review.registered-with-companies-house.link") target="_blank">
+            @Messages("business-review.registered-with-companies-house.link-text")</a>
+        </p>
+        <p>@Messages("business-review.sole-trader.text")
+            <a href="@Messages("business-review.sole-trader.link") target="_blank">
+            @Messages("business-review.sole-trader.link-text")</a>
+        </p>
 
 
     </div>
