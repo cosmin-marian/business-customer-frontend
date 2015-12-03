@@ -37,7 +37,7 @@ trait BusinessRegController extends BaseController {
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      validateForm(businessRegistrationForm.bindFromRequest, businessType).fold(
+      validateForm(businessRegistrationForm.bindFromRequest, isGroup(businessType)).fold(
         formWithErrors => {
           Future.successful(BadRequest(viewsBusinessRegForm(formWithErrors, service, businessType)))
         },
@@ -49,19 +49,30 @@ trait BusinessRegController extends BaseController {
       )
   }
 
-  private def validateForm(registrationData: Form[BusinessRegistration], businessType: String) = {
-    validateInstitution(registrationData, businessType)
+  private def validateForm(registrationData: Form[BusinessRegistration], isGroup: Boolean) = {
+
+    validatePostCode(validateInstitution(registrationData), isGroup)
   }
 
-  private def validateInstitution(registrationData: Form[BusinessRegistration], businessType: String) = {
-    val businessUniqueId = registrationData.data.get("businessUniqueId")
-    val issuingInstitution = registrationData.data.get("issuingInstitution")
+  private def validateInstitution(registrationData: Form[BusinessRegistration]) = {
+    val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
+    val issuingInstitution = registrationData.data.get("issuingInstitution") map {_.trim} filterNot {_.isEmpty}
     (businessUniqueId, issuingInstitution) match {
       case (Some(id), None) => registrationData.withError(key = "issuingInstitution",
         message = Messages("bc.business-registration-error.issuingInstitution.select"))
       case(None, Some(inst)) => registrationData.withError(key = "businessUniqueId",
         message = Messages("bc.business-registration-error.businessUniqueId.select"))
       case _ => registrationData
+    }
+  }
+
+  private def validatePostCode(registrationData: Form[BusinessRegistration], isGroup: Boolean) = {
+    val postCode = registrationData.data.get("postcode") map {_.trim} filterNot {_.isEmpty}
+    if (isGroup && !postCode.isDefined) {
+      registrationData.withError(key = "postcode",
+        message = Messages("bc.business-registration-error.postcode"))
+    } else {
+      registrationData
     }
   }
 

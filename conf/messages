@@ -154,7 +154,7 @@ bc.business-registration-error.postcode.length = Postcode must not be more than 
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
-
+bc.business-registration-error.postcode = Postcode must be entered
 
 ## Errors
 bc.connector.error.service-unavailable=Service unavailable

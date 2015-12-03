@@ -163,7 +163,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     "send" must {
 
       "validate form" must {
-
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": ""}""")
@@ -183,9 +182,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = Json.parse(
             """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""},
-              |"businessUniqueId": "", "issuingInstitution": "", "businessType":"Group"}""".stripMargin)
+              |"businessUniqueId": "", "issuingInstitution": ""}""".stripMargin)
 
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "GROUP") {
             result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include("Business name must be entered")
