@@ -49,13 +49,8 @@
 
 
         @bcInput(businessRegistrationForm("businessUniqueId"),
-        '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
+        '_label ->  Html(Messages("bc.business-registration.businessUniqueUtr")),
         '_id -> "businessUniqueId",
-        '_showConstraints -> false)
-
-        @bcInput(businessRegistrationForm("issuingInstitution"),
-        '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
-        '_id -> "issuingInstitution",
         '_showConstraints -> false)
 
     </div>

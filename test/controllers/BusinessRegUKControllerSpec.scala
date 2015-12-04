@@ -85,8 +85,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier")
             document.getElementById("submit").text() must be("Continue")
 
             document.getElementById("businessAddress.postcode_field").text() must be("Postcode")
@@ -109,8 +108,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier")
             document.getElementById("submit").text() must be("Continue")
         }
       }
