@@ -2,6 +2,7 @@ package controllers
 
 import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
+import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{BusinessRegistration, BusinessRegistrationDisplayDetails, Address}
 import services.BusinessRegistrationService
@@ -25,7 +26,7 @@ trait BusinessRegController extends BaseController {
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(viewsBusinessRegForm(businessRegistrationForm.copy(data = Map("businessType" -> businessType)), service, businessType))
+      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType)))
   }
 
 
@@ -37,9 +38,9 @@ trait BusinessRegController extends BaseController {
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      validateForm(businessRegistrationForm.bindFromRequest, isGroup(businessType)).fold(
+      BusinessRegistrationForms.validateForm(businessRegistrationForm.bindFromRequest, false).fold(
         formWithErrors => {
-          Future.successful(BadRequest(viewsBusinessRegForm(formWithErrors, service, businessType)))
+          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType))))
         },
         registrationData => {
               businessRegistrationService.registerBusiness(registrationData, isGroup(businessType)).map {
@@ -47,45 +48,6 @@ trait BusinessRegController extends BaseController {
               }
         }
       )
-  }
-
-  private def validateForm(registrationData: Form[BusinessRegistration], isGroup: Boolean) = {
-
-    validatePostCode(validateInstitution(registrationData), isGroup)
-  }
-
-  private def validateInstitution(registrationData: Form[BusinessRegistration]) = {
-    val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
-    val issuingInstitution = registrationData.data.get("issuingInstitution") map {_.trim} filterNot {_.isEmpty}
-    (businessUniqueId, issuingInstitution) match {
-      case (Some(id), None) => registrationData.withError(key = "issuingInstitution",
-        message = Messages("bc.business-registration-error.issuingInstitution.select"))
-      case(None, Some(inst)) => registrationData.withError(key = "businessUniqueId",
-        message = Messages("bc.business-registration-error.businessUniqueId.select"))
-      case _ => registrationData
-    }
-  }
-
-  private def validatePostCode(registrationData: Form[BusinessRegistration], isGroup: Boolean) = {
-    val postCode = registrationData.data.get("postcode") map {_.trim} filterNot {_.isEmpty}
-    if (isGroup && !postCode.isDefined) {
-      registrationData.withError(key = "postcode",
-        message = Messages("bc.business-registration-error.postcode"))
-    } else {
-      registrationData
-    }
-  }
-
-  private def viewsBusinessRegForm(formToView: Form[BusinessRegistration], service: String, businessType: String)
-                                  (implicit user: AuthContext, request: play.api.mvc.Request[_]) = {
-    isGroup(businessType) match {
-      case true => {
-        val newMapping = formToView.data + ("businessAddress.country" -> "GB")
-        views.html.business_group_registration(formToView.copy(data = newMapping),
-          service, displayDetails(businessType))
-      }
-      case false => views.html.business_registration(formToView, service, displayDetails(businessType))
-    }
   }
 
   private def isGroup(businessType: String) = {
@@ -107,10 +69,6 @@ trait BusinessRegController extends BaseController {
             BCUtils.getIsoCodeTupleList)
         }
       }
-      case "GROUP" =>  new BusinessRegistrationDisplayDetails(businessType,
-        Messages("bc.business-registration.user.group.header"),
-        Messages("bc.business-registration.group.subheader"),
-        BCUtils.getIsoCodeTupleList)
       case _ => new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),

@@ -381,7 +381,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register/$service/GROUP")
+          redirectLocation(result).get must include(s"/business-customer/register-group/$service/GB")
       }
     }
     "for any other option, redirect to home page again" in {

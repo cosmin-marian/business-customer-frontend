@@ -40,7 +40,7 @@ trait BusinessVerificationController extends BaseController {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))
             case Some("NEW") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NEW")))
-            case Some("GROUP") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "GROUP")))
+            case Some("GROUP") => Future.successful(Redirect(controllers.routes.BusinessRegGroupGBController.register(service)))
             case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
             case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
             case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
