@@ -54,11 +54,26 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateForm(registrationData: Form[BusinessRegistration], isGroup: Boolean) = {
-    validateInstitution(validatePostCode(isGroup, registrationData))
+  def validateNonUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+    validateNonUkInstitution(registrationData)
   }
 
-  def validateInstitution(registrationData: Form[BusinessRegistration]) = {
+  def validateUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+    validateUkInstitution(validatePostCode(registrationData))
+  }
+
+  def validateUkInstitution(registrationData: Form[BusinessRegistration]) = {
+    val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
+    if (!businessUniqueId.isDefined){
+      registrationData.withError(key = "businessUniqueId",
+        message = Messages("bc.business-registration-error.businessUniqueId"))
+    } else {
+      registrationData
+    }
+
+  }
+
+  def validateNonUkInstitution(registrationData: Form[BusinessRegistration]) = {
     val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
     val issuingInstitution = registrationData.data.get("issuingInstitution") map {_.trim} filterNot {_.isEmpty}
     (businessUniqueId, issuingInstitution) match {
@@ -70,9 +85,9 @@ object BusinessRegistrationForms {
     }
   }
 
-  private def validatePostCode(isGroup: Boolean, registrationData: Form[BusinessRegistration]) = {
+  private def validatePostCode(registrationData: Form[BusinessRegistration]) = {
     val postCode = registrationData.data.get("businessAddress.postcode") map {_.trim} filterNot {_.isEmpty}
-    if (isGroup && !postCode.isDefined) {
+    if (!postCode.isDefined) {
       registrationData.withError(key = "businessAddress.postcode",
         message = Messages("bc.business-registration-error.postcode"))
     } else {

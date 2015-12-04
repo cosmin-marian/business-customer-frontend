@@ -134,6 +134,8 @@ bc.business-registration.country.select = please select one country
 bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
 bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
 bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)
+bc.business-registration.corporationTaxUtr = Corporation Tax Unique Tax Reference ''UTR''
+bc.business-registration.selfAssessmentUtr = Self-assessment Unique Tax Reference 'UTR'
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -155,6 +157,8 @@ bc.business-registration-error.businessUniqueId.length = Business Unique Id must
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
 bc.business-registration-error.postcode = Postcode must be entered
+bc.business-registration-error.corporationTaxUtr = Corporation Tax Unique Tax Reference ''UTR'' must be entered
+bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
 
 ## Errors
 bc.connector.error.service-unavailable=Service unavailable

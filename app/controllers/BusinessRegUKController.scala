@@ -15,46 +15,50 @@ import scala.concurrent.Future
 import play.api.i18n.Messages
 import play.api.data.Form
 
-object BusinessRegController extends BusinessRegController {
+object BusinessRegUKController extends BusinessRegUKController {
   override val authConnector = FrontendAuthConnector
   override val businessRegistrationService = BusinessRegistrationService
 }
 
-trait BusinessRegController extends BaseController {
+trait BusinessRegUKController extends BaseController {
 
   val businessRegistrationService: BusinessRegistrationService
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType)))
+      val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
+      Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+      BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
-          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType))))
+          Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
         },
         registrationData => {
-              businessRegistrationService.registerBusiness(registrationData, false).map {
-                registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
-              }
+          businessRegistrationService.registerBusiness(registrationData, isGroup(businessType)).map {
+            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
+          }
         }
       )
   }
 
+  private def isGroup(businessType: String) = {
+    businessType.equals("GROUP")
+  }
+
   private def displayDetails(businessType: String)(implicit user: AuthContext) = {
-    if (AuthUtils.isAgent) {
+    if (isGroup(businessType))
       new BusinessRegistrationDisplayDetails(businessType,
-        Messages("bc.business-registration.agent.non-uk.header"),
+        Messages("bc.business-registration.user.group.header"),
+        Messages("bc.business-registration.group.subheader"),
+        BCUtils.getIsoCodeTupleList)
+    else
+      new BusinessRegistrationDisplayDetails(businessType,
+        Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),
         BCUtils.getIsoCodeTupleList)
-    } else {
-      new BusinessRegistrationDisplayDetails(businessType,
-        Messages("bc.business-registration.user.non-uk.header"),
-        Messages("bc.business-registration.business.subheader"),
-        BCUtils.getIsoCodeTupleList)
-    }
   }
 }
 

@@ -92,28 +92,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
       }
 
-      "return business registration view for a user for New Business" in {
-
-        registerWithAuthorisedUser("awrs","NEW") {
-          result =>
-            status(result) must be(OK)
-            val document = Jsoup.parse(contentAsString(result))
-
-            document.title() must be("Business Registration")
-            document.getElementById("business-verification-text").text() must be("AWRS account registration")
-            document.getElementById("business-registration.header").text() must be("New business details")
-            document.getElementById("businessNameNUK_field").text() must be("Business name")
-            document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
-            document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("businessAddress.country_field").text() must include("Country")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
-            document.getElementById("submit").text() must be("Continue")
-        }
-      }
-
       "return business registration view for an agent" in {
 
         registerWithAuthorisedAgent(serviceName, "NUK") {
@@ -274,25 +252,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
 
       }
-
-      "Back" must {
-
-        "respond with redirect" in {
-          backWithAuthorisedUser {
-            result =>
-              status(result) must be(SEE_OTHER)
-          }
-        }
-
-        "be redirected to the business verification page" in {
-
-          backWithAuthorisedUser {
-            result =>
-              redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
-          }
-
-        }
-      }
     }
   }
 
@@ -330,20 +289,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
-
-    test(result)
-  }
-
-  def backWithAuthorisedUser(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
-
-    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-
-    val result = TestBusinessRegController.back(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

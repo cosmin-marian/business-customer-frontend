@@ -20,24 +20,24 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 
-class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
   val request = FakeRequest()
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationService = mock[BusinessRegistrationService]
 
-  object TestBusinessRegController extends BusinessRegGroupGBController {
+  object TestBusinessRegController extends BusinessRegUKController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationService = mockBusinessRegistrationService
   }
 
   val serviceName: String = "ATED"
 
-  "BusinessRegGroupGBController" must {
+  "BusinessGBController" must {
 
     "respond to /register" in {
-      val result = route(FakeRequest(GET, s"/business-customer/register-group/$serviceName/GB")).get
+      val result = route(FakeRequest(GET, s"/business-customer/register-gb/$serviceName/GROUP")).get
       status(result) must not be (NOT_FOUND)
     }
 
@@ -72,7 +72,7 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
 
        "return business registration view for a user for Group" in {
 
-        registerWithAuthorisedUser("awrs") {
+        registerWithAuthorisedUser("awrs", "GROUP") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
@@ -93,16 +93,17 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
             document.getElementById("businessAddress.country").attr("value") must be("GB")
         }
       }
-      "return business registration view for an agent" in {
 
-        registerWithAuthorisedAgent(serviceName) {
+      "return business registration view for a user for New Business" in {
+
+        registerWithAuthorisedUser("awrs","NEW") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
 
             document.title() must be("Business Registration")
-            document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("business-registration.header").text() must be("Group representative details")
+            document.getElementById("business-verification-text").text() must be("AWRS account registration")
+            document.getElementById("business-registration.header").text() must be("New business details")
             document.getElementById("businessNameNUK_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
@@ -132,6 +133,7 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
               contentAsString(result) must include("Address line 1 must be entered")
               contentAsString(result) must include("Address line 2 must be entered")
               contentAsString(result) must include("Postcode must be entered")
+              contentAsString(result) must include("Business Unique Identifier must be entered")
           }
         }
 
@@ -215,55 +217,25 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
           }
         }
 
-        "issuingInstitution must be maximum of 40 characters" in {
-          implicit val hc: HeaderCarrier = HeaderCarrier()
-          val instId = "a"*41
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": "$instId" }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Institution that issued the Business Unique Identifier must not be more than 40 characters")
-          }
-        }
-
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NW123456", "country": "GB"}, "businessUniqueId": "id1", "issuingInstitution": "institutionName" }""")
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NW123456", "country": "GB"}, "businessUniqueId": "id1" }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(SEE_OTHER)
               redirectLocation(result).get must include(s"/business-customer/review-details/$service")
           }
         }
-
-        "show an error if only business unique ID is entered and missing issuing institution " in {
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "id1", "issuingInstitution": "" }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
-          }
-        }
-
-        "show an error if only issuing institution is entered and missing business unique ID" in {
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "", "issuingInstitution": "institutionName" }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
-          }
-        }
-
       }
     }
   }
 
-  def registerWithUnAuthorisedUser()(test: Future[Result] => Any) {
+  def registerWithUnAuthorisedUser(businessType: String="GROUP")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = TestBusinessRegController.register(serviceName).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -271,27 +243,13 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
     test(result)
   }
 
-  def registerWithAuthorisedAgent(service: String)(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
-    val userId = s"user-${UUID.randomUUID}"
-
-    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-
-    val result = TestBusinessRegController.register(service).apply(FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId))
-
-    test(result)
-  }
-
-  def registerWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
+  def registerWithAuthorisedUser(service: String, businessType: String="GROUP")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.register(service).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -300,13 +258,13 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
   }
 
 
-  def submitWithUnAuthorisedUser()(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(businessType: String="GROUP")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.send(service).apply(FakeRequest().withSession(
+    val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -314,7 +272,7 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String="GROUP")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -325,7 +283,7 @@ class BusinessRegGroupGBControllerSpec extends PlaySpec with OneServerPerSuite w
 
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
-    val result = TestBusinessRegController.send(service).apply(fakeRequest.withSession(
+    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
