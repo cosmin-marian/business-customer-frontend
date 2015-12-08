@@ -95,6 +95,8 @@ trait BusinessMatchingService {
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned),
+      //TODO
+      isAGroup = false,
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )
@@ -118,8 +120,9 @@ trait BusinessMatchingService {
       businessAddress = address,
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
+     isAGroup = false,
       agentReferenceNumber = getAgentRefNum(dataReturned))
-    dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
+      dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
       reviewDetailsReturned =>
         Future.successful(Json.toJson(reviewDetails))
     }

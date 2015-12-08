@@ -66,7 +66,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
-        sapNumber="sap123", safeId="safe123", agentReferenceNumber=Some("agent123"))
+        sapNumber="sap123", safeId="safe123", false, agentReferenceNumber=Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
@@ -88,7 +88,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
-        sapNumber="sap123", safeId="safe123", agentReferenceNumber=Some("agent123"))
+        sapNumber="sap123", safeId="safe123", false, agentReferenceNumber=Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
       val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true)
@@ -108,7 +108,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
-        sapNumber="sap123", safeId="safe123", agentReferenceNumber=Some("agent123"))
+        sapNumber="sap123", safeId="safe123", false, agentReferenceNumber=Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 

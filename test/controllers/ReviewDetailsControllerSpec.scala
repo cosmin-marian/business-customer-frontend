@@ -36,7 +36,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        Future.successful(Some(ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", Some("agent123"))))
+        Future.successful(Some(ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", false, Some("agent123"))))
       }
     }
     new ReviewDetailsController {
