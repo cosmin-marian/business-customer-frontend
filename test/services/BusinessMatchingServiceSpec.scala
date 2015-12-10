@@ -27,7 +27,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909","agentReferenceNumber":"01234567890", "isEditable":true,"isAnAgent":false,"isAnIndividual":false, "organisation":{"organisationName":"Real Business Inc","isAGroup":true,"organisationType":"unincorporated body"},
 "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
-  val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", false, Some("01234567890"))
+  val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", true, Some("01234567890"))
   val successOrgReviewDetailsJson = Json.toJson(successOrgReviewDetails)
   val successIndividualJson = Json.parse( """{"sapNumber":"1234567890", "safeId":"EX0012345678909", "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
   val successIndReviewDetails = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909", false, Some("01234567890"), Some("first name"), Some("last name"))
@@ -36,7 +36,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
   val testIndividual = Individual("firstName", "lastName", None)
-  val testOrganisation = Organisation("org name", "org type")
+  val testOrganisation = Organisation("org name", Some(false), "org type")
   implicit val hc = HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
 

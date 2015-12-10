@@ -4,9 +4,9 @@ import play.api.libs.json.Json
 
 case class Individual(firstName: String, lastName: String, dateOfBirth: Option[String])
 
-case class Organisation(organisationName: String, organisationType: String)
+case class Organisation(organisationName: String, isAGroup: Option[Boolean], organisationType: String)
 
-case class OrganisationResponse(organisationName: String, organisationType: Option[String])
+case class OrganisationResponse(organisationName: String, isAGroup: Option[Boolean], organisationType: Option[String])
 
 case class MatchBusinessData(acknowledgmentReference: String,
                              utr: String,
