@@ -58,6 +58,12 @@ trait BusinessRegistrationService extends Auditable {
         Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
           issuingInstitution = registerData.issuingInstitution.getOrElse(""),
           issuingCountryCode = registerData.businessAddress.country))
+      } else if (registerData.utr.isDefined) {
+        Some(EtmpIdentification(idNumber = registerData.utr.getOrElse(""),
+        // needs to be done here as if you default the institution in the register method (like the country code)
+          // it won't fail the above test and fall into this branch
+          issuingInstitution = registerData.issuingInstitution.getOrElse("HMRC"),
+          issuingCountryCode = registerData.businessAddress.country))
       } else {
         None
       }
