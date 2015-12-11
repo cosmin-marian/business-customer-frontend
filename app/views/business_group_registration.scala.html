@@ -5,7 +5,7 @@
 @import views.html.helpers.error._
 @import utils.BCUtils
 
-@bcMain(title = Messages("business-registration.title"), service = Some(service)) {
+@bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
 
 @errors(businessRegistrationForm)
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
@@ -17,7 +17,7 @@
     <div id="business-registration-form">
 
         @bcInput(businessRegistrationForm("businessName"),
-        '_label ->  Html(Messages("bc.business-registration.businessName")),
+        '_label ->  Html(Messages("bc.business-registration.group.businessName")),
         '_labelClass -> "form-label",
         '_id -> "businessNameNUK",
         '_showConstraints -> false)
@@ -45,12 +45,6 @@
         @bcInput(businessRegistrationForm("businessAddress.postcode"),
         '_label ->  Html(Messages("bc.business-registration.postcode")),
         '_id -> "businessAddress.postcode",
-        '_showConstraints -> false)
-
-
-        @bcInput(businessRegistrationForm("utr"),
-        '_label ->  Html(Messages("bc.business-registration.utr")),
-        '_id -> "utr",
         '_showConstraints -> false)
 
     </div>

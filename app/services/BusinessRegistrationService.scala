@@ -50,19 +50,12 @@ trait BusinessRegistrationService extends Auditable {
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
                                                (implicit user: AuthContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
-
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
     val businessIdentification = {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
         Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
           issuingInstitution = registerData.issuingInstitution.getOrElse(""),
-          issuingCountryCode = registerData.businessAddress.country))
-      } else if (registerData.utr.isDefined) {
-        Some(EtmpIdentification(idNumber = registerData.utr.getOrElse(""),
-        // needs to be done here as if you default the institution in the register method (like the country code)
-          // it won't fail the above test and fall into this branch
-          issuingInstitution = registerData.issuingInstitution.getOrElse("HMRC"),
           issuingCountryCode = registerData.businessAddress.country))
       } else {
         None

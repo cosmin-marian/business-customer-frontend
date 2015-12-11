@@ -77,17 +77,15 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
 
-            document.title() must be("Business Registration")
+            document.title() must be("Create AWRS group")
             document.getElementById("business-verification-text").text() must be("AWRS account registration")
-            document.getElementById("business-registration.header").text() must be("Group representative details")
-            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("business-registration.header").text() must be("Create AWRS group")
+            document.getElementById("businessNameNUK_field").text() must be("Group representative name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("utr_field").text() must be("UTR")
             document.getElementById("submit").text() must be("Continue")
-
             document.getElementById("businessAddress.postcode_field").text() must be("Postcode")
             document.getElementById("businessAddress.country").attr("value") must be("GB")
         }
@@ -100,15 +98,14 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
 
-            document.title() must be("Business Registration")
+            document.title() must be("Create AWRS group")
             document.getElementById("business-verification-text").text() must be("AWRS account registration")
             document.getElementById("business-registration.header").text() must be("New business details")
-            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("businessNameNUK_field").text() must be("Group representative name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-            document.getElementById("utr_field").text() must be("UTR")
             document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -121,8 +118,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "not be empty for a Group" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = Json.parse(
-            """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""},
-              |"businessUniqueId": "", "issuingInstitution": ""}""".stripMargin)
+            """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "issuingInstitution": ""}""".stripMargin)
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
@@ -131,7 +127,6 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
               contentAsString(result) must include("Address line 1 must be entered")
               contentAsString(result) must include("Address line 2 must be entered")
               contentAsString(result) must include("Postcode must be entered")
-              contentAsString(result) must include("Business Unique Identifier must be entered")
           }
         }
 
@@ -204,20 +199,9 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
           }
         }
 
-        "businessUniqueId must be maximum of 60 characters" in {
-          implicit val hc: HeaderCarrier = HeaderCarrier()
-          val bUID = "a"*61
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "businessUniqueId": "$bUID", "issuingInstitution": "" }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Business Unique Id must not be more than 60 characters")
-          }
-        }
-
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NW123456", "country": "GB"}, "businessUniqueId": "id1" }""")
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NE8 1AP", "country": "GB"}}""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(SEE_OTHER)
