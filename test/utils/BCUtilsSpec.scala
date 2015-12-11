@@ -76,10 +76,9 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
       "return the correct map for awrs" in {
         val typeMap = BCUtils.businessTypeMap("awrs")
-        typeMap.size must be(8)
-        typeMap(0)._1 must be("NEW")
-        typeMap(1)._1 must be("GROUP")
-        typeMap(2)._1 must be("LTD")
+        typeMap.size must be(7)
+        typeMap(0)._1 must be("GROUP")
+        typeMap(1)._1 must be("LTD")
       }
     }
   }
