@@ -14,6 +14,7 @@ object BusinessRegistrationForms {
   val length2 = 2
   val length60 = 60
   val length105 = 105
+  // scalastyle:off line.size.limit
   val postcodeRegex = """(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$"""
 
 
@@ -86,14 +87,13 @@ object BusinessRegistrationForms {
       registrationData.withError(key = "businessAddress.postcode",
         message = Messages("bc.business-registration-error.postcode"))
     } else {
-      if(!postCode.fold("")(x => x).matches(postcodeRegex))
-      {
+      if(!postCode.fold("")(x => x).matches(postcodeRegex)) {
         registrationData.withError(key = "businessAddress.postcode",
           message = Messages("bc.business-registration-error.postcode.invalid"))
-      } else registrationData
+      } else {
+        registrationData
+      }
     }
   }
+
 }
-
-
-

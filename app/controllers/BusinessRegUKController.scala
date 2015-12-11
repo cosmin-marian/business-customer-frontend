@@ -49,16 +49,18 @@ trait BusinessRegUKController extends BaseController {
   }
 
   private def displayDetails(businessType: String)(implicit user: AuthContext) = {
-    if (isGroup(businessType))
+    if (isGroup(businessType)) {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.group.header"),
         Messages("bc.business-registration.group.subheader"),
         BCUtils.getIsoCodeTupleList)
-    else
+    }
+    else {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),
         BCUtils.getIsoCodeTupleList)
+    }
   }
 }
 
