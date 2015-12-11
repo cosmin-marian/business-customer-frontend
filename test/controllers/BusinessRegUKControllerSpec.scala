@@ -84,8 +84,8 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             document.getElementById("businessName_field").text() must be("Group representative name This is your registered company name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (Optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (Optional)")
             document.getElementById("submit").text() must be("Continue")
             document.getElementById("businessAddress.postcode_field").text() must be("Postcode")
             document.getElementById("businessAddress.country").attr("value") must be("GB")
@@ -105,8 +105,8 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
             document.getElementById("businessName_field").text() must be("Group representative name This is your registered company name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address line 1")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+            document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (Optional)")
+            document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (Optional)")
             document.getElementById("submit").text() must be("Continue")
         }
       }
