@@ -122,6 +122,7 @@ bc.business-registration.user.new-business.header = New business details
 business-registration.group.title = Create AWRS group
 bc.business-registration.user.group.header = Create AWRS group
 bc.business-registration.group.businessName = Group representative name
+bc.business-registration.group.businessName.hintText = This is your registered company name
 bc.business-registration.business.subheader = You need to tell us the details of your business.
 bc.business-registration.group.subheader = You need to tell us the details of your group representative.
 bc.business-registration.text={0} account registration

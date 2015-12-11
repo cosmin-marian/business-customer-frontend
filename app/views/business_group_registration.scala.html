@@ -7,8 +7,8 @@
 
 @bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
 
-@errors(businessRegistrationForm)
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
+@errors(businessRegistrationForm)
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
 @form(action = controllers.routes.BusinessRegUKController.send(service, displayDetails.businessType)) {
@@ -19,33 +19,42 @@
         @bcInput(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.group.businessName")),
         '_labelClass -> "form-label",
-        '_id -> "businessNameNUK",
+        '_id -> "businessName",
+        '_showConstraints -> false,
+        '_hintText -> Messages("bc.business-registration.group.businessName.hintText"),
+        '_maxLength -> 140)
+
+
+        @bcInput(businessRegistrationForm("businessAddress.postcode"),
+        '_label ->  Html(Messages("bc.business-registration.postcode")),
+        '_id -> "businessAddress.postcode",
+        '_maxLength -> 10,
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_1"),
         '_label ->  Html(Messages("bc.business-registration.line_1")),
         '_id -> "businessAddress.line_1",
+        '_maxLength -> 35,
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_2"),
         '_label ->  Html(Messages("bc.business-registration.line_2")),
         '_id -> "businessAddress.line_2",
+        '_maxLength -> 35,
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_3"),
         '_label ->  Html(Messages("bc.business-registration.line_3")),
         '_id -> "businessAddress.line_3",
+        '_maxLength -> 35,
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_4"),
         '_label ->  Html(Messages("bc.business-registration.line_4")),
         '_id -> "businessAddress.line_4",
+        '_maxLength -> 35,
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.postcode"),
-        '_label ->  Html(Messages("bc.business-registration.postcode")),
-        '_id -> "businessAddress.postcode",
-        '_showConstraints -> false)
 
     </div>
 
