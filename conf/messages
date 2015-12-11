@@ -106,6 +106,7 @@ bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique 
 bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and try again
 bc.business-verification-error.not-selected=Please select a type of business
 bc.business-registration-error.businessUniqueId.select=You need to enter both a Business Unique Identifier and the institution that issued it
+bc.business-registration-error.utr.select=You need to enter both a Business Unique Identifier and the institution that issued it
 bc.business-registration-error.issuingInstitution.select=You need to enter both a Business Unique Identifier and the institution that issued it
 
 bc.business-verification-error.registeredName.length=Registered name must not be more than 105 characters
@@ -118,7 +119,10 @@ business-registration.title = Business Registration
 bc.business-registration.user.non-uk.header = Non-UK business details
 bc.business-registration.agent.non-uk.header = Non-UK agent details
 bc.business-registration.user.new-business.header = New business details
-bc.business-registration.user.group.header = Group representative details
+business-registration.group.title = Create AWRS group
+bc.business-registration.user.group.header = Create AWRS group
+bc.business-registration.group.businessName = Group representative name
+bc.business-registration.group.businessName.hintText = This is your registered company name
 bc.business-registration.business.subheader = You need to tell us the details of your business.
 bc.business-registration.group.subheader = You need to tell us the details of your group representative.
 bc.business-registration.text={0} account registration
@@ -127,12 +131,18 @@ bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3 (optional)
 bc.business-registration.line_4 = Address line 4 (optional)
+bc.business-registration.group.line_3 = Address line 3 (Optional)
+bc.business-registration.group.line_4 = Address line 4 (Optional)
+bc.business-registration.postcode = Postcode
 #bc.business-registration.country = ISO country code
 bc.business-registration.country = Country
 bc.business-registration.country.select = please select one country
 bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
 bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
+bc.business-registration.utr = Business Unique Identifier (optional)
 bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)
+bc.business-registration.businessUniqueUtr = Business Unique Identifier
+bc.business-registration.utr = UTR
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -151,9 +161,13 @@ bc.business-registration-error.postcode.length = Postcode must not be more than 
 #bc.business-registration-error.country.length = Country Code must not be more than {0} characters
 #bc.business-registration-error.country.number = Country Code must not contain numbers
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
+bc.business-registration-error.utr.length = UTR must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
-
+bc.business-registration-error.postcode = Postcode must be entered
+bc.business-registration-error.postcode.invalid = Postcode is invalid
+bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
+bc.business-registration-error.utr = UTR must be entered
 
 ## Errors
 bc.connector.error.service-unavailable=Service unavailable

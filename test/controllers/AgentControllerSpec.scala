@@ -112,7 +112,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
     val reviewDetails = ReviewDetails(businessName = "ABC",
       businessType = Some("corporate body"),
       businessAddress = Address(line_1 = "line1", line_2 = "line2", line_3 = None, line_4 = None, postcode = None, country = "GB"),
-      sapNumber = "1234567890", safeId = "XW0001234567890", agentReferenceNumber = Some("JARN1234567"))
+      sapNumber = "1234567890", safeId = "XW0001234567890",false, agentReferenceNumber = Some("JARN1234567"))
     when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(reviewDetails)))
 
     val result = TestAgentController.register(serviceName).apply(SessionBuilder.buildRequestWithSession(userId))

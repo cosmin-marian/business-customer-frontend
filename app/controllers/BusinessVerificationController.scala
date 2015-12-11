@@ -9,9 +9,8 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
 import utils.BusinessCustomerConstants._
 
@@ -39,8 +38,8 @@ trait BusinessVerificationController extends BaseController {
         value => {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))
-            case Some("NEW") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NEW")))
-            case Some("GROUP") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "GROUP")))
+            case Some("NEW") => Future.successful(Redirect(controllers.routes.BusinessRegUKController.register(service, "NEW")))
+            case Some("GROUP") => Future.successful(Redirect(controllers.routes.BusinessRegUKController.register(service, "GROUP")))
             case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
             case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
             case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))

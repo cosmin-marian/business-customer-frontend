@@ -373,7 +373,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NEW"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register/$service/NEW")
+          redirectLocation(result).get must include(s"/business-customer/register-gb/$service/NEW")
       }
     }
 
@@ -381,7 +381,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register/$service/GROUP")
+          redirectLocation(result).get must include(s"/business-customer/register-gb/$service/GROUP")
       }
     }
     "for any other option, redirect to home page again" in {
@@ -677,7 +677,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
             val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-            val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", Some("agent123"))
+            val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", false, Some("agent123"))
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
             continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(inputJsonForUIB)) {

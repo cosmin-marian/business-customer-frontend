@@ -6,7 +6,7 @@ case class Individual(firstName: String, lastName: String, dateOfBirth: Option[S
 
 case class Organisation(organisationName: String, organisationType: String)
 
-case class OrganisationResponse(organisationName: String, organisationType: Option[String])
+case class OrganisationResponse(organisationName: String, isAGroup: Option[Boolean], organisationType: Option[String])
 
 case class MatchBusinessData(acknowledgmentReference: String,
                              utr: String,

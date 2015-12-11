@@ -95,6 +95,8 @@ trait BusinessMatchingService {
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned),
+      //default value from model due to AWRS
+//      isAGroup = false,
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )
@@ -108,18 +110,19 @@ trait BusinessMatchingService {
     val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
+    val isAGroup = organisation.isAGroup
     val addressReturned = getAddress(dataReturned)
-
     val address = Address(line_1 = addressReturned.addressLine1, line_2 = addressReturned.addressLine2,
       line_3 = addressReturned.addressLine3, line_4 = addressReturned.addressLine4,
       postcode = addressReturned.postalCode, country = addressReturned.countryCode)
     val reviewDetails = ReviewDetails(businessName = businessName,
       businessType = businessType,
+      isAGroup = isAGroup.getOrElse(false),
       businessAddress = address,
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned))
-    dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
+      dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
       reviewDetailsReturned =>
         Future.successful(Json.toJson(reviewDetails))
     }
