@@ -36,7 +36,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
   val utr = "1234567890"
   val noMatchUtr = "9999999999"
   val testIndividual = Individual("firstName", "lastName", None)
-  val testOrganisation = Organisation("org name", Some(false), "org type")
+  val testOrganisation = Organisation("org name", "org type")
   implicit val hc = HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
 

@@ -95,8 +95,8 @@ trait BusinessMatchingService {
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned),
-      //TODO
-      isAGroup = false,
+      //default value from model due to AWRS
+//      isAGroup = false,
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )

@@ -4,16 +4,13 @@ import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{BusinessRegistration, BusinessRegistrationDisplayDetails, Address}
+import models.BusinessRegistrationDisplayDetails
+import play.api.i18n.Messages
 import services.BusinessRegistrationService
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.{BCUtils, AuthUtils}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import utils.{AuthUtils, BCUtils}
 
 import scala.concurrent.Future
-import play.api.i18n.Messages
-import play.api.data.Form
 
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
@@ -36,7 +33,7 @@ trait BusinessRegController extends BaseController {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType))))
         },
         registrationData => {
-              businessRegistrationService.registerBusiness(registrationData, false).map {
+              businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
                 registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
         }
