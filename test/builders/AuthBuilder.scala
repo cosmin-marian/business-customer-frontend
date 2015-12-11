@@ -48,15 +48,15 @@ object AuthBuilder {
   }
 
   private def createInvalidAuthority(userId: String) :Authority = {
-    Authority(userId, Accounts(paye = Some(PayeAccount("paye/AA026813", Nino("AA026813B")))), None, None, ConfidenceLevel.L50)
+    Authority(userId, Accounts(paye = Some(PayeAccount("paye/AA026813", Nino("AA026813B")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
   private def createUserAuthority(userId: String) :Authority = {
-    Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None, ConfidenceLevel.L50)
+    Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
   private def createSaAuthority(userId: String) :Authority = {
-    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None, ConfidenceLevel.L50)
+    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
 
@@ -66,7 +66,7 @@ object AuthBuilder {
       agentUserId = AgentUserId(userId),
       agentUserRole = agentRole,
       payeReference = None)
-    Authority(userId, Accounts(agent = Some(agentAccount)), None, None, ConfidenceLevel.L50)
+    Authority(userId, Accounts(agent = Some(agentAccount)), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
 }

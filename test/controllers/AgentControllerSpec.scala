@@ -74,8 +74,8 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
             document.getElementById("what-happens-next-instruction").text() must startWith("You should give your clients your agent reference.")
             document.getElementById("happens-next-message1").text() must be("Your clients will then need to:")
             document.getElementById("happens-next-message2").text() must be("register their company for the new ATED service")
-            document.getElementById("happens-next-message3").text() must be("create an agent request using the reference you gave them")
-            document.getElementById("happens-next-message4").text() must startWith("let you know that they have completed this process")
+            document.getElementById("happens-next-message3").text() must be("create an agent request using the reference you give them")
+            document.getElementById("happens-next-message4").text() must startWith("let you know when they have completed this process")
         }
       }
       "return exception if no ARN present" in {
