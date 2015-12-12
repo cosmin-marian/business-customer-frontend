@@ -24,13 +24,6 @@
         '_hintText -> Messages("bc.business-registration.group.businessName.hintText"),
         '_maxLength -> 140)
 
-
-        @bcInput(businessRegistrationForm("businessAddress.postcode"),
-        '_label ->  Html(Messages("bc.business-registration.postcode")),
-        '_id -> "businessAddress.postcode",
-        '_maxLength -> 10,
-        '_showConstraints -> false)
-
         @bcInput(businessRegistrationForm("businessAddress.line_1"),
         '_label ->  Html(Messages("bc.business-registration.line_1")),
         '_id -> "businessAddress.line_1",
@@ -53,6 +46,12 @@
         '_label ->  Html(Messages("bc.business-registration.group.line_4")),
         '_id -> "businessAddress.line_4",
         '_maxLength -> 35,
+        '_showConstraints -> false)
+
+        @bcInput(businessRegistrationForm("businessAddress.postcode"),
+        '_label ->  Html(Messages("bc.business-registration.postcode")),
+        '_id -> "businessAddress.postcode",
+        '_maxLength -> 10,
         '_showConstraints -> false)
 
 
