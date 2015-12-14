@@ -25,27 +25,13 @@ trait ApplicationController extends FrontendController with RunMode {
     Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
   }
 
-  def signedOut =  UnauthorisedAction { implicit request =>
+  def signedOut = UnauthorisedAction { implicit request =>
     Ok(views.html.logout(request))
   }
 
-  def logoutAndRedirectToHome(service:String) = UnauthorisedAction {
+  def logoutAndRedirectToHome(service: String) = UnauthorisedAction {
     implicit request =>
       Redirect(controllers.routes.HomeController.homePage(service)).discardingCookies(DiscardingCookie("mdtp"))
-  }
-
-  def redirectToAgentSummary(service: String) = UnauthorisedAction {
-    implicit request =>
-      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.agentHomeUrl")
-      Redirect(serviceRedirectUrl.getOrElse("/ated/home"))
-
-  }
-
-  def redirectToAgentLogout(service: String) = UnauthorisedAction {
-    implicit request =>
-      val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.agentLogoutUrl")
-      Redirect(serviceRedirectUrl.getOrElse("/ated/logout"))
-
   }
 }
 

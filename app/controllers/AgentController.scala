@@ -2,7 +2,7 @@ package controllers
 
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
-import controllers.auth.BusinessCustomerRegime
+import controllers.auth.{ExternalUrls, BusinessCustomerRegime}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth._
 
@@ -21,7 +21,7 @@ trait AgentController extends BaseController {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
         reviewDetails => reviewDetails match {
-          case Some(reviewData) => Ok(views.html.business_agent_confirmation(reviewData.agentReferenceNumber, service))
+          case Some(reviewData) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/${reviewData.agentReferenceNumber}")
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }
