@@ -10,4 +10,8 @@ object ExternalUrls extends RunMode {
   val loginPath = s"${Play.configuration.getString(s"govuk-tax.$env.services.auth.login_path").getOrElse("sign-in")}"
   val signIn = s"$companyAuthHost/account/$loginPath?continue=$loginCallback"
   val signOut = s"$companyAuthHost/account/sign-out"
+
+  def agentConfirmationPath(service:String) :String =
+    Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.agentConfirmationUrl")
+      .getOrElse("/ated-subscription/agent-confirmation")
 }
