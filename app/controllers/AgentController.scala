@@ -20,8 +20,9 @@ trait AgentController extends BaseController {
   def register(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
-        reviewDetails => reviewDetails match {
-          case Some(reviewData) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/${reviewData.agentReferenceNumber}")
+        reviewDetails =>
+          reviewDetails.flatMap(_.agentReferenceNumber)  match {
+          case Some(agentReferenceNumber) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/${agentReferenceNumber}")
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }
