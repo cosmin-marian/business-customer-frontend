@@ -108,6 +108,7 @@ bc.business-registration.business.subheader = You need to tell us the details of
 bc.business-registration.group.subheader = You need to tell us the details of your group representative.
 bc.business-registration.text={0} account registration
 bc.business-registration.businessName = Business name
+bc.business-registration.address = Address
 bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3 (optional)
