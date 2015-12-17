@@ -1,0 +1,21 @@
+@(form: Form[_], errorMessageFieldPrefix: String, formErrorMessage:Option[String] =None)(implicit lang: Lang)
+@import play.twirl.api.Html
+
+@if(form.hasErrors) {
+<div id="errors" tabindex="-1" role="group" aria-labelledby="form-error-heading" class="column-two-thirds validation-summary">
+    <h2 id="form-error-heading" class="heading-medium">@Messages("bc.business-verification-error.summaryHeader")</h2>
+    <ul class="error-summary-list">
+        @formErrorMessage.map{ formErrorText =>
+        <li id="form-error-message"><p>@formErrorText</p></li>
+        }
+        @form.errors.map(_.key).distinct.map { errorKey =>
+        <li class="validation-message" id='@errorKey.replaceAll("""[\.\[\]]""", "-")-error'>
+            <a href='#@errorKey.replaceAll("""[\.\[\]]""", "-")'>
+                @Messages(s"$errorMessageFieldPrefix.$errorKey")
+            </a>
+        </li>
+        }
+    </ul>
+    <div class="clearfix"></div>
+</div>
+}

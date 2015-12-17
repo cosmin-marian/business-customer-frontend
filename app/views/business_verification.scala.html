@@ -6,7 +6,8 @@
 @import utils.BCUtils
 
 @bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
-@errors(businessTypeForm)
+@form_error_notification(businessTypeForm, "bc.business-verification-error.general")
+
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 
 @if(isAgent) {
