@@ -44,6 +44,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
+        isAGroup = false,
         agentReferenceNumber=None)
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -62,6 +63,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
+        isAGroup = false,
         agentReferenceNumber=Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -90,6 +92,7 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
         businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         sapNumber="sap123",
         safeId="safe123",
+        isAGroup = false,
         agentReferenceNumber=Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()

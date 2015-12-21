@@ -34,25 +34,6 @@ business-review.sole-trader.link = https://www.gov.uk/tell-hmrc-change-of-detail
 bc.business-review.error.not-found = No Details were found
 bc.business-verification.cancel = Cancel
 
-bc.business-agent.confirmation.message = You have successfully created your ATED account
-bc.business-agent.confirmation.instruction = Your agent reference is also displayed in your account. You will not receive an email confirmation.
-bc.business-agent.confirmation.finish = Finish and sign out
-bc.business-agent.confirmation.title = Business Confirmation
-bc.business-agent.confirmation.reference = Your agent reference is
-bc.business-agent.confirmation.what-happens-next = What happens next
-bc.business-agent.confirmation.what-happens-next-instruction = You should give your clients your agent reference.
-bc.business-agent.confirmation.message1 = Your clients will then need to:
-bc.business-agent.confirmation.happens-next-item1 = login or create a government gateway account
-bc.business-agent.confirmation.happens-next-item2 = register their company to use the new ATED online service
-bc.business-agent.confirmation.happens-next-item3 = enter the agent reference number you gave them
-bc.business-agent.confirmation.happens-next-message2 = Your clients need to let you know once they have sent the request. You have 28 days to logon and accept the agent request, you won’t receive an email notification.
-bc.business-agent.confirmation.home-link =  Go to my account
-bc.business-agent.happens-next3 = Your client will then need to:
-bc.business-agent.happens-next4 = register their company for the new ATED service
-bc.business-agent.happens-next5 = create an agent request using the reference you give them
-bc.business-agent.happens-next6 = let you know when they have completed this process
-bc.business-agent.happens-next6b = You will have 28 days to sign in and accept the agent request. You will not receive an email notification.
-
 bc.business-verification.text={0} account registration
 bc.business-verification.title=Business Verification
 bc.business-verification.user.header = What is your business type?
@@ -109,6 +90,7 @@ bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
 bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and try again
 bc.business-registration-error.businessUniqueId.select=You need to enter both a Business Unique Identifier and the institution that issued it
+bc.business-registration-error.utr.select=You need to enter both a Business Unique Identifier and the institution that issued it
 bc.business-registration-error.issuingInstitution.select=You need to enter both a Business Unique Identifier and the institution that issued it
 
 bc.business-verification-error.registeredName.length=Registered name must not be more than 105 characters
@@ -124,21 +106,31 @@ business-registration.title = Business Registration
 bc.business-registration.user.non-uk.header = Non-UK business details
 bc.business-registration.agent.non-uk.header = Non-UK agent details
 bc.business-registration.user.new-business.header = New business details
-bc.business-registration.user.group.header = Group representative details
+business-registration.group.title = Create AWRS group
+bc.business-registration.user.group.header = Create AWRS group
+bc.business-registration.group.businessName = Group representative name
+bc.business-registration.group.businessName.hintText = This is your registered company name
 bc.business-registration.business.subheader = You need to tell us the details of your business.
 bc.business-registration.group.subheader = You need to tell us the details of your group representative.
 bc.business-registration.text={0} account registration
 bc.business-registration.businessName = Business name
+bc.business-registration.address = Address
 bc.business-registration.line_1 = Address line 1
 bc.business-registration.line_2 = Address line 2
 bc.business-registration.line_3 = Address line 3 (optional)
 bc.business-registration.line_4 = Address line 4 (optional)
+bc.business-registration.group.line_3 = Address line 3 (Optional)
+bc.business-registration.group.line_4 = Address line 4 (Optional)
+bc.business-registration.postcode = Postcode
 #bc.business-registration.country = ISO country code
 bc.business-registration.country = Country
 bc.business-registration.country.select = please select one country
 bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
 bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
+bc.business-registration.utr = Business Unique Identifier (optional)
 bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)
+bc.business-registration.businessUniqueUtr = Business Unique Identifier
+bc.business-registration.utr = UTR
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -157,14 +149,20 @@ bc.business-registration-error.postcode.length = Postcode must not be more than 
 #bc.business-registration-error.country.length = Country Code must not be more than {0} characters
 #bc.business-registration-error.country.number = Country Code must not contain numbers
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
+bc.business-registration-error.utr.length = UTR must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
+
 
 bc.business-registration-error.general.businessName = general error here
 bc.business-registration-error.general.businessAddress.line_1  = general error address 1
 bc.business-registration-error.general.businessAddress.line_2  = general error address 2
 bc.business-registration-error.general.businessAddress.country  = general error country
 
+bc.business-registration-error.postcode = Postcode must be entered
+bc.business-registration-error.postcode.invalid = Postcode is invalid
+bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
+bc.business-registration-error.utr = UTR must be entered
 
 
 ## Errors

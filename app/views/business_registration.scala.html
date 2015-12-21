@@ -29,22 +29,25 @@
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_1"),
-        '_label ->  Html(Messages("bc.business-registration.line_1")),
+        '_label ->  Html(Messages("bc.business-registration.address")),
         '_id -> "businessAddress.line_1",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_2"),
         '_label ->  Html(Messages("bc.business-registration.line_2")),
+        '_labelClass -> "visuallyhidden",
         '_id -> "businessAddress.line_2",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_3"),
         '_label ->  Html(Messages("bc.business-registration.line_3")),
+        '_labelClass -> "visuallyhidden",
         '_id -> "businessAddress.line_3",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_4"),
         '_label ->  Html(Messages("bc.business-registration.line_4")),
+        '_labelClass -> "visuallyhidden",
         '_id -> "businessAddress.line_4",
         '_showConstraints -> false)
 
@@ -72,7 +75,6 @@
 <div>
     <p> <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back">@Messages("bc.business-verification.back")</a> </p>
 </div>
-
 }
 
 }

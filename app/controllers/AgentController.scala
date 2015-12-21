@@ -2,7 +2,7 @@ package controllers
 
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
-import controllers.auth.BusinessCustomerRegime
+import controllers.auth.{ExternalUrls, BusinessCustomerRegime}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth._
 
@@ -20,8 +20,9 @@ trait AgentController extends BaseController {
   def register(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
-        reviewDetails => reviewDetails match {
-          case Some(reviewData) => Ok(views.html.business_agent_confirmation(reviewData.agentReferenceNumber, service))
+        reviewDetails =>
+          reviewDetails.flatMap(_.agentReferenceNumber)  match {
+          case Some(agentReferenceNumber) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/${agentReferenceNumber}")
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }

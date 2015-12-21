@@ -26,12 +26,12 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val mockAuthConnector = mock[AuthConnector]
   val service = "ATED"
 
-  val matchSuccessResponseUIB = Json.parse( """{ "businessName":"ACME", "businessType":"Unincorporated body", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLTD = Json.parse( """{ "businessName":"ACME", "businessType":"Limited company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseSOP = Json.parse( """{ "businessName":"ACME", "businessType":"Sole trader", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseUIB = Json.parse( """{ "businessName":"ACME", "businessType":"Unincorporated body", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseLTD = Json.parse( """{ "businessName":"ACME", "businessType":"Limited company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": true, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseSOP = Json.parse( """{ "businessName":"ACME", "businessType":"Sole trader", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": true, "agentReferenceNumber": "agent123" }""")
   val matchFailureResponse = Json.parse( """{"reason":"Sorry. Business details not found. Try with correct UTR and/or name."}""")
 
   def submitWithUnAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
@@ -460,15 +460,15 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
     when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchSuccessResponse))
-    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "U.K.")
-    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", Some("agent123"))
+    //val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "U.K.")
+    //val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", false, Some("agent123"))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
-    test(result)
+      test(result)
   }
 
   def submitWithAuthorisedUserSuccessIndividual(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {

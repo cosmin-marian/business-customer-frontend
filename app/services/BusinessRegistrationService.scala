@@ -38,7 +38,7 @@ trait BusinessRegistrationService extends Auditable {
     for {
       registerResponse <- businessCustomerConnector.registerNonUk(businessRegisterDetails)
       reviewDetailsCache <- {
-        val reviewDetails = createReviewDetails(registerResponse, registerData)
+        val reviewDetails = createReviewDetails(registerResponse, isGroup, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
     } yield {
@@ -50,7 +50,6 @@ trait BusinessRegistrationService extends Auditable {
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
                                                (implicit user: AuthContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
-
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
     val businessIdentification = {
@@ -81,7 +80,7 @@ trait BusinessRegistrationService extends Auditable {
     )
   }
 
-  private def createReviewDetails(response: BusinessRegistrationResponse,
+  private def createReviewDetails(response: BusinessRegistrationResponse, isGroup: Boolean,
                                   registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,
@@ -89,6 +88,7 @@ trait BusinessRegistrationService extends Auditable {
       businessAddress = registerData.businessAddress,
       sapNumber = response.sapNumber,
       safeId = response.safeId,
+      isAGroup = isGroup,
       agentReferenceNumber = response.agentReferenceNumber
     )
   }

@@ -14,6 +14,8 @@ object BusinessRegistrationForms {
   val length2 = 2
   val length60 = 60
   val length105 = 105
+  // scalastyle:off line.size.limit
+  val postcodeRegex = """(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$"""
 
 
   val businessRegistrationForm = Form(
@@ -42,7 +44,8 @@ object BusinessRegistrationForms {
       "businessUniqueId" -> optional(text)
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
-        .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40))
+        .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40)),
+      "utr" -> optional(text)
 
     )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
@@ -54,8 +57,43 @@ object BusinessRegistrationForms {
     }
   }
 
+  def validateNonUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+    validateNonUkInstitution(registrationData)
+  }
+
+  def validateUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+    validateUkInstitution(validatePostCode(registrationData))
+  }
+
+  def validateUkInstitution(registrationData: Form[BusinessRegistration]) = {
+      registrationData
+  }
+
+  def validateNonUkInstitution(registrationData: Form[BusinessRegistration]) = {
+    val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
+    val issuingInstitution = registrationData.data.get("issuingInstitution") map {_.trim} filterNot {_.isEmpty}
+    (businessUniqueId, issuingInstitution) match {
+      case (Some(id), None) => registrationData.withError(key = "issuingInstitution",
+        message = Messages("bc.business-registration-error.issuingInstitution.select"))
+      case(None, Some(inst)) => registrationData.withError(key = "businessUniqueId",
+        message = Messages("bc.business-registration-error.businessUniqueId.select"))
+      case _ => registrationData
+    }
+  }
+
+  private def validatePostCode(registrationData: Form[BusinessRegistration]) = {
+    val postCode = registrationData.data.get("businessAddress.postcode") map {_.trim} filterNot {_.isEmpty}
+    if (!postCode.isDefined) {
+      registrationData.withError(key = "businessAddress.postcode",
+        message = Messages("bc.business-registration-error.postcode"))
+    } else {
+      if(!postCode.fold("")(x => x).matches(postcodeRegex)) {
+        registrationData.withError(key = "businessAddress.postcode",
+          message = Messages("bc.business-registration-error.postcode.invalid"))
+      } else {
+        registrationData
+      }
+    }
+  }
 
 }
-
-
-

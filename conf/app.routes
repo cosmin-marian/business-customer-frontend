@@ -15,16 +15,16 @@ POST        /review-details-continue/:service                                   
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
 
 GET         /register/:service/:businessType                                    controllers.BusinessRegController.register(service: String, businessType: String)
+POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
+
+GET         /register-gb/:service/:businessType                                 controllers.BusinessRegUKController.register(service: String, businessType: String)
+POST        /send-gb                                                            controllers.BusinessRegUKController.send(service: String, businessType: String)
 
 POST        /business-verification/:service/submit/:businessType                controllers.BusinessVerificationController.submit(service: String, businessType: String)
-
-POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
 GET         /logout                                                             controllers.ApplicationController.logout
 GET         /signed-out                                                         controllers.ApplicationController.signedOut
-
-GET         /back/:service                                                      controllers.BusinessRegController.back(service: String)
 
 GET         /agent/:service                                                     controllers.HomeController.homePage(service: String)
 GET         /:service                                                           controllers.HomeController.homePage(service: String)
@@ -33,8 +33,5 @@ GET         /agent/register/:service                                            
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
-GET         /redirectToAgentSummary/:service                                    controllers.ApplicationController.redirectToAgentSummary(service:String)
-
-GET         /redirectToAgentLogout/:service                                     controllers.ApplicationController.redirectToAgentLogout(service:String)
 
 

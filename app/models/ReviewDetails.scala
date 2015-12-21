@@ -7,6 +7,7 @@ case class ReviewDetails(businessName: String,
                          businessAddress: Address,
                          sapNumber: String,
                          safeId: String,
+                         isAGroup: Boolean = false,
                          agentReferenceNumber: Option[String],
                          firstName : Option[String] = None,
                          lastName : Option[String] = None)

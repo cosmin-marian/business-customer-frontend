@@ -61,21 +61,8 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
 
         registerWithAuthorisedUser {
           result =>
-            status(result) must be(OK)
-
-            val document = Jsoup.parse(contentAsString(result))
-            document.title() must be("Business Confirmation")
-            document.getElementById("message").text() must be("You have successfully created your ATED account")
-            document.getElementById("agent-reference").text() must startWith("Your agent reference is")
-            document.getElementById("submit").text() must be("Finish and sign out")
-            document.getElementById("confirm").text() must be("Your agent reference is also displayed in your account. You will not receive an email confirmation.")
-
-            document.getElementById("what-happens-next").text() must be("What happens next")
-            document.getElementById("what-happens-next-instruction").text() must startWith("You should give your clients your agent reference.")
-            document.getElementById("happens-next-message1").text() must be("Your clients will then need to:")
-            document.getElementById("happens-next-message2").text() must be("register their company for the new ATED service")
-            document.getElementById("happens-next-message3").text() must be("create an agent request using the reference you give them")
-            document.getElementById("happens-next-message4").text() must startWith("let you know when they have completed this process")
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/ated-subscription/agent-confirmation")
         }
       }
       "return exception if no ARN present" in {
@@ -112,7 +99,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
     val reviewDetails = ReviewDetails(businessName = "ABC",
       businessType = Some("corporate body"),
       businessAddress = Address(line_1 = "line1", line_2 = "line2", line_3 = None, line_4 = None, postcode = None, country = "GB"),
-      sapNumber = "1234567890", safeId = "XW0001234567890", agentReferenceNumber = Some("JARN1234567"))
+      sapNumber = "1234567890", safeId = "XW0001234567890",false, agentReferenceNumber = Some("JARN1234567"))
     when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(reviewDetails)))
 
     val result = TestAgentController.register(serviceName).apply(SessionBuilder.buildRequestWithSession(userId))
