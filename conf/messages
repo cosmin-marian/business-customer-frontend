@@ -87,8 +87,9 @@ bc.business-verification.ctutr.hint=In the header of any letter received from HM
 bc.business-verification.back=Back
 
 bc.business-verification-error.summaryHeader=There is a problem with the form
-bc.business-verification-error.general.businessType=Please select a type of business
-bc.business-verification-error.not-selected=Please select a type of business
+bc.business-verification-error.general.businessType=There is a problem with the type of business question.
+bc.business-verification-error.not-selected=Select an option for type of business.
+bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
 
 bc.business-verification-error.firstname=First name must be entered
 bc.business-verification-error.firstname.length=First name must not be more than 40 characters

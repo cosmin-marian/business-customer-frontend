@@ -350,7 +350,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("#business-type-llp-form").text() must be("Your business details have not been found. Please check that your details are correct and try again")
+            document.getElementById("business-type-llp-form-error").text() must be("Your business details have not been found. Please check that your details are correct and try again")
         }
       }
     }
