@@ -69,7 +69,7 @@ bc.business-verification.back=Back
 
 bc.business-verification-error.summaryHeader=There is a problem with the form
 bc.business-verification-error.general.businessType=There is a problem with the type of business question.
-bc.business-verification-error.not-selected=Select an option for type of business.
+bc.business-verification-error.not-selected=Please select a type of business
 bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
 
 bc.business-verification-error.firstname=First name must be entered
@@ -158,6 +158,7 @@ bc.business-registration-error.general.businessName = general error here
 bc.business-registration-error.general.businessAddress.line_1  = general error address 1
 bc.business-registration-error.general.businessAddress.line_2  = general error address 2
 bc.business-registration-error.general.businessAddress.country  = general error country
+ bc.business-registration-error.general.businessAddress.postcode = Postcode must not be more than 10 characters
 
 bc.business-registration-error.postcode = Postcode must be entered
 bc.business-registration-error.postcode.invalid = Postcode is invalid
