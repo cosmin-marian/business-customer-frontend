@@ -18,10 +18,7 @@
         }
         <label for="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}" class="@elements.args.get('_divClass) @if( elements.args.get('_labelClass) ){ @elements.args.get('_labelClass) }" @if(elements.args.contains('_labelDataAttributes)){@elements.args.get('_labelDataAttributes)} id="@if( elements.args.get('_id) ) {@elements.args.get('_id)_field} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}">
 
-        @elements.errors.map { error => <span class="error-notification">@Messages(error)</span>}
-        @if(parentElements.isDefined) {
-        @parentElements.get.errors.map { error => <span class="error-notification">@Messages(error)</span>}
-        }
+
         @if(labelHighlight){<strong>}
         @if(elements.args.contains('_label)) { @elements.label }
         @if(labelHighlight){</strong>}
@@ -32,12 +29,17 @@
         </span>
         }
 
+        @elements.errors.map { error => <span class="error-notification">@Messages(error)</span>}
+        @if(parentElements.isDefined) {
+        @parentElements.get.errors.map { error => <span class="error-notification">@Messages(error)</span>}
+        }
+
         </label>
 
         @if(elements.args.contains('_symbol)) { <span class="inline-fields">@elements.args.get('_symbol)</span> }
 
         <input @if(elements.args.contains('_type)){type="@elements.args.get('_type)"}else{type="text"}
-        class="form-control @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }" @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
+        class="@if(elements.hasErrors){error } form-control @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }" @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
         name="@elements.field.name"
         id="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}"
         value="@value"

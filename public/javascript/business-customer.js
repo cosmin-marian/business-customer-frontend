@@ -105,6 +105,8 @@ function countryCodeAutoComplete() {
 ///////////////////////////////////////////
 $(function() {
     $("#businessAddress\\.country").combobox();
+    var classOfSelect = $('#businessAddress\\.country_').attr('class');
+    $("#businessAddress\\.country").addClass(classOfSelect)
 });
 
 }

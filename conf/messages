@@ -112,6 +112,9 @@ bc.business-registration-error.issuingInstitution.select=You need to enter both 
 
 bc.business-verification-error.registeredName.length=Registered name must not be more than 105 characters
 
+bc.business-verification-error.general.psaUTR = Corporation Tax Unique Tax Reference must be here in general
+bc.business-verification-error.general.businessName = generally we need a business name
+
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised
 bc.unauthorised.heading=You are not authorised to use this service
@@ -155,6 +158,12 @@ bc.business-registration-error.postcode.length = Postcode must not be more than 
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
+
+bc.business-registration-error.general.businessName = general error here
+bc.business-registration-error.general.businessAddress.line_1  = general error address 1
+bc.business-registration-error.general.businessAddress.line_2  = general error address 2
+bc.business-registration-error.general.businessAddress.country  = general error country
+
 
 
 ## Errors
