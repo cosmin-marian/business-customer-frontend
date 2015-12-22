@@ -31,7 +31,7 @@
         </span>
         }
     </label>
-    <select id="@elements.field.name" name="@elements.field.name" class="@if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }" @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}>
+    <select id="@elements.field.name" name="@elements.field.name" class="@if(elements.hasErrors){error } @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }" @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}>
         @if(displayEmptyValue) {
         <option value="">@elements.args.get('_emptyValueText)</option>
         }

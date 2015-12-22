@@ -13,7 +13,7 @@
     });
 </script>
 
-@errors(businessRegistrationForm)
+@form_error_notification(businessRegistrationForm, "bc.business-registration-error.general")
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
@@ -25,7 +25,7 @@
         @bcInput(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.businessName")),
         '_labelClass -> "form-label",
-        '_id -> "businessNameNUK",
+        '_id -> "businessName",
         '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_1"),

@@ -74,6 +74,10 @@ select {
     margin-bottom:0.4em;
 }
 
+.error {
+    border: 4px solid #b10e1e;
+}
+
 @media screen and (min-width: 480px) {
     input[type=number] {
     -moz-appearance: textfield;
@@ -87,3 +91,5 @@ select {
     -webkit-appearance: none;
     }
 }
+
+

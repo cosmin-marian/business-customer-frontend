@@ -10,7 +10,7 @@
         }
         @form.errors.map(_.key).distinct.map { errorKey =>
         <li class="validation-message" id='@errorKey.replaceAll("""[\.\[\]]""", "-")-error'>
-            <a href='#@errorKey.replaceAll("""[\.\[\]]""", "-")'>
+            <a href='#@errorKey'>
                 @Messages(s"$errorMessageFieldPrefix.$errorKey")
             </a>
         </li>

@@ -80,8 +80,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.title() must be("Business Registration")
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("business-registration.header").text() must be("Non-UK business details")
-            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address")
+
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
@@ -91,6 +92,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("submit").text() must be("Continue")
         }
       }
+
 
       "return business registration view for an agent" in {
 
@@ -102,7 +104,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.title() must be("Business Registration")
             document.getElementById("business-verification-text").text() must be("ATED account registration")
             document.getElementById("business-registration.header").text() must be("Non-UK agent details")
-            document.getElementById("businessNameNUK_field").text() must be("Business name")
+            document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
