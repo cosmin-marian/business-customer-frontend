@@ -180,6 +180,13 @@ bc.business-verification-error.general.businessAddress.line_1  = There is a prob
 bc.business-verification-error.general.businessAddress.line_2  = There is a problem with Address line 2
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
 
+bc.business-verification-error.general.business-type-obp-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.business-type-lp-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.business-type-sop-form = Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.business-type-uib-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.business-type-ltd-form =Your business details have not been found. Please check that your details are correct and try again
+
+
 bc.business-verification-error.general.firstName = There is a problem with the first name
 bc.business-verification-error.general.lastName = There is a problem with the last name
 
