@@ -67,10 +67,7 @@ bc.business-verification.registered-name.hint=This is the registered name on you
 bc.business-verification.ctutr.hint=In the header of any letter received from HMRC
 bc.business-verification.back=Back
 
-bc.business-verification-error.summaryHeader=There is a problem with the form
-bc.business-verification-error.general.businessType=There is a problem with the type of business question.
-bc.business-verification-error.not-selected=Please select a type of business
-bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
+
 
 bc.business-verification-error.firstname=First name must be entered
 bc.business-verification-error.firstname.length=First name must not be more than 40 characters
@@ -95,8 +92,7 @@ bc.business-registration-error.issuingInstitution.select=You need to enter both 
 
 bc.business-verification-error.registeredName.length=Registered name must not be more than 105 characters
 
-bc.business-verification-error.general.psaUTR = Corporation Tax Unique Tax Reference must be here in general
-bc.business-verification-error.general.businessName = generally we need a business name
+
 
 ## Unauthorised Page
 bc.unauthorised.title=Unauthorised
@@ -154,11 +150,7 @@ bc.business-registration-error.issuingInstitution.length = Institution that issu
 bc.business-registration-error.summaryHeader = There is a problem with the form
 
 
-bc.business-registration-error.general.businessName = general error here
-bc.business-registration-error.general.businessAddress.line_1  = general error address 1
-bc.business-registration-error.general.businessAddress.line_2  = general error address 2
-bc.business-registration-error.general.businessAddress.country  = general error country
- bc.business-registration-error.general.businessAddress.postcode = Postcode must not be more than 10 characters
+
 
 bc.business-registration-error.postcode = Postcode must be entered
 bc.business-registration-error.postcode.invalid = Postcode is invalid
@@ -177,6 +169,32 @@ bc.business-review.error.no-service=Service does not exist for : {0}. This shoul
 bc.agent-service.error.no-agent-enrolment-service-name=Agent Enrolment Service Name does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.agentEnrolmentService'
 bc.agent-service.error.no-agent-reference={0} - No Agent Reference Number Found
 
+bc.business-registration-error.general.businessName = There is a problem with the business name
+bc.business-registration-error.general.businessAddress.line_1  = There is a problem with Address line 1
+bc.business-registration-error.general.businessAddress.line_2  = There is a problem with Address line 2
+bc.business-registration-error.general.businessAddress.country  = There is a problem with the country
+bc.business-registration-error.general.businessAddress.postcode = Postcode must not be more than 10 characters
+
+
+bc.business-verification-error.general.businessAddress.line_1  = There is a problem with Address line 1
+bc.business-verification-error.general.businessAddress.line_2  = There is a problem with Address line 2
+bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
+
+bc.business-verification-error.general.firstName = There is a problem with the first name
+bc.business-verification-error.general.lastName = There is a problem with the last name
+
+bc.business-verification-error.general.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
+bc.business-verification-error.general.cotaxUTR = There is a problem with the Corporation Tax Unique Tax Reference number
+bc.business-verification-error.general.saUTR = There is a problem with the Self-Assessment Unique Tax Reference number
+
+
+
+bc.business-verification-error.general.businessName = There is a problem with the business name
+
+bc.business-verification-error.summaryHeader=There is a problem with the form
+bc.business-verification-error.general.businessType=There is a problem with the type of business question.
+bc.business-verification-error.not-selected=Please select a type of business
+bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
 
 ## Signed out page
 bc.signout-title = You have successfully signed out

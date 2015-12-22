@@ -7,7 +7,7 @@
 
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
-@errors(unincorporatedBodyForm)
+@form_error_notification(unincorporatedBodyForm, "bc.business-verification-error.general")
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 @if(isAgent) {
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
