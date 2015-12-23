@@ -474,7 +474,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("businessName_field").text() must include("Registered company name")
                 document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
@@ -515,7 +515,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("businessName_field").text() must include("Registered company name")
                 document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
             }
           }
@@ -557,7 +557,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("businessName_field").text() must include("Registered company name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -598,7 +598,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("businessName_field").text() must include("Registered company name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
@@ -640,7 +640,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered name")
+                document.getElementById("businessName_field").text() must include("Registered company name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }
