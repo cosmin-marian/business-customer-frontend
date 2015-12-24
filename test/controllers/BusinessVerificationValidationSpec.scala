@@ -58,7 +58,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
 
-            contentAsString(result) must include("Registered name must be entered")
+            contentAsString(result) must include("Registered company name must be entered")
 
             document.getElementById("businessName_field").text() must include("Registered company name")
             document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
@@ -79,7 +79,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered name must not be more than 105 characters")
+            contentAsString(result) must include("Registered company name must not be more than 105 characters")
         }
       }
 
@@ -116,7 +116,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
-            contentAsString(result) must include("Registered name must be entered")
+            contentAsString(result) must include("Registered company name must be entered")
             document.getElementById("businessName_field").text() must include("Registered company name")
             document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
         }
@@ -136,7 +136,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered name must not be more than 105 characters")
+            contentAsString(result) must include("Registered company name must not be more than 105 characters")
         }
       }
 
@@ -229,7 +229,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
 
-            contentAsString(result) must include("Registered name must be entered")
+            contentAsString(result) must include("Registered company name must be entered")
             contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
             document.getElementById("businessName_field").text() must include("Registered company name")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
@@ -241,7 +241,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered name must not be more than 105 characters")
+            contentAsString(result) must include("Registered company name must not be more than 105 characters")
         }
       }
 
@@ -278,7 +278,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
 
-            contentAsString(result) must include("Registered name must be entered")
+            contentAsString(result) must include("Registered company name must be entered")
             contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
             document.getElementById("businessName_field").text() must include("Registered company name")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
@@ -290,7 +290,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
         submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered name must not be more than 105 characters")
+            contentAsString(result) must include("Registered company name must not be more than 105 characters")
         }
       }
 
