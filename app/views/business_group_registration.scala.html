@@ -66,9 +66,13 @@
 
     @bcInput(businessRegistrationForm("businessAddress.country"),
             '_id -> "businessAddress.country",
+            '_label -> Html(Messages("bc.business-registration.country")),
+            '_labelClass -> "visuallyhidden",
             '_type -> "hidden")
     @bcInput(businessRegistrationForm("businessType"),
             '_id -> "businessType",
+            '_label -> Html(Messages("bc.business-verification.user.header")),
+            '_labelClass -> "visuallyhidden",
             '_type -> "hidden")
 </div>
 

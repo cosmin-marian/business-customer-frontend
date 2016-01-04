@@ -7,6 +7,12 @@ function trimCountry(countryVal) {
     return trimmedCountry
 }
 
+function createLabelForHiddenSelect(divId, fieldId, labelText) {
+    var selectDiv = $('#' + divId)
+    var newLabel = $("<label>").attr('for', fieldId).text(labelText).attr('class', "visuallyhidden");
+    selectDiv.append(newLabel);
+}
+
 function countryCodeAutoComplete() {
 
 ////////////////////////////////////////////
@@ -107,6 +113,10 @@ $(function() {
     $("#businessAddress\\.country").combobox();
     var classOfSelect = $('#businessAddress\\.country_').attr('class');
     $("#businessAddress\\.country").addClass(classOfSelect)
+    var labelText = $("#businessAddress\\.country_field").text();
+    var divId = "businessAddress\\.country_div"
+    var fieldId = "businessAddress.country_"
+    createLabelForHiddenSelect(divId, fieldId, labelText);
 });
 
 }
