@@ -1,3 +1,4 @@
+
 @(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -14,7 +15,8 @@
 </script>
 
 @form_error_notification(businessRegistrationForm, "bc.business-registration-error.general")
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
+
+<p class="heading-sub" id="business-verification-text">@Html(displayDetails.businessRegSubHeader)</p>
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
 @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {

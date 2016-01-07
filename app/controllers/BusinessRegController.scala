@@ -23,14 +23,14 @@ trait BusinessRegController extends BaseController {
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType)))
+      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
-          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType))))
+          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
         },
         registrationData => {
               businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
@@ -40,16 +40,16 @@ trait BusinessRegController extends BaseController {
       )
   }
 
-  private def displayDetails(businessType: String)(implicit user: AuthContext) = {
+  private def displayDetails(businessType: String, service: String)(implicit user: AuthContext) = {
     if (AuthUtils.isAgent) {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
-        Messages("bc.business-registration.business.subheader"),
+        Messages("bc.business-registration.text.agent", service),
         BCUtils.getIsoCodeTupleList)
     } else {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.non-uk.header"),
-        Messages("bc.business-registration.business.subheader"),
+        Messages("bc.business-registration.text.client", service),
         BCUtils.getIsoCodeTupleList)
     }
   }
