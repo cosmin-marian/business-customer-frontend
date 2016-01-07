@@ -8,10 +8,12 @@
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
 @form_error_notification(unincorporatedBodyForm, "bc.business-verification-error.general.ua")
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
+
 @if(isAgent) {
+<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
 }else{
+<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
 <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
 }
 <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
