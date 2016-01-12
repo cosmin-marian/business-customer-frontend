@@ -78,8 +78,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             val document = Jsoup.parse(contentAsString(result))
 
             document.title() must be("Business Registration")
-            document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("business-registration.header").text() must be("Non-UK business details")
+            document.getElementById("business-verification-text").text() must be("ATED registration")
+            document.getElementById("business-registration.header").text() must be("Enter your non-UK business details")
             document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address")
 
@@ -102,8 +102,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             val document = Jsoup.parse(contentAsString(result))
 
             document.title() must be("Business Registration")
-            document.getElementById("business-verification-text").text() must be("ATED account registration")
-            document.getElementById("business-registration.header").text() must be("Non-UK agent details")
+            document.getElementById("business-verification-text").text() must be("ATED agency set up")
+            document.getElementById("business-registration.header").text() must be("Enter your non-UK agent details")
             document.getElementById("businessName_field").text() must be("Business name")
             document.getElementById("businessAddress.line_1_field").text() must be("Address")
             document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
