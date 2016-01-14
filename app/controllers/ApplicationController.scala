@@ -1,10 +1,10 @@
 package controllers
 
-import controllers.auth.ExternalUrls
 import play.api.Play
 import play.api.mvc.DiscardingCookie
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
+import models.FeedbackForm.feedbackForm
 
 
 trait ApplicationController extends FrontendController with RunMode {
@@ -21,8 +21,20 @@ trait ApplicationController extends FrontendController with RunMode {
     Redirect(serviceRedirectUrl.getOrElse("https://www.gov.uk/"))
   }
 
-  def logout = UnauthorisedAction { implicit request =>
-    Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
+  def logout(service: String) = UnauthorisedAction {
+    implicit request =>
+      service.toUpperCase match {
+        case "ATED" => Redirect(controllers.routes.ApplicationController.feedback(service)).withNewSession
+        case _ => Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
+      }
+  }
+
+  def feedback(service: String) = UnauthorisedAction {
+    implicit request =>
+      service.toUpperCase match {
+        case "ATED" => Ok(views.html.feedback(feedbackForm, service))
+        case _ => Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
+      }
   }
 
   def signedOut = UnauthorisedAction { implicit request =>

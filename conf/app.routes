@@ -23,8 +23,9 @@ POST        /send-gb                                                            
 POST        /business-verification/:service/submit/:businessType                controllers.BusinessVerificationController.submit(service: String, businessType: String)
 
 GET         /cancel                                                             controllers.ApplicationController.cancel
-GET         /logout                                                             controllers.ApplicationController.logout
+GET         /logout/:service                                                    controllers.ApplicationController.logout(service: String)
 GET         /signed-out                                                         controllers.ApplicationController.signedOut
+GET         /feedback/:service                                                  controllers.ApplicationController.feedback(service: String)
 
 GET         /agent/:service                                                     controllers.HomeController.homePage(service: String)
 GET         /:service                                                           controllers.HomeController.homePage(service: String)

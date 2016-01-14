@@ -92,4 +92,14 @@ select {
     }
 }
 
+.logged-out-page textarea {
+  width: 100%;
+  padding: 0px;
+  background-color: white;
+  border: 1px solid #bfc1c3;
+}
+.logged-out-page legend, .logged-out-page #howCanWeImprove_field label {
+  font-size: 24px;
+  font-weight: bold;
+}
 
