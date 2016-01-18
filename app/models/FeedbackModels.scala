@@ -3,10 +3,10 @@ package models
 import play.api.data.Form
 import play.api.data.Forms._
 
-case class FeedBack(easyToUse: Option[Int],
-                    satisfactionLevel: Option[Int],
-                    howCanWeImprove: Option[String],
-                    referrer: Option[String]
+case class FeedBack(easyToUse: Option[Int] = None,
+                    satisfactionLevel: Option[Int] = None,
+                    howCanWeImprove: Option[String] = None,
+                    referer: Option[String] = None
                    )
 
 object FeedbackForm {
@@ -17,7 +17,7 @@ object FeedbackForm {
     "easyToUse" -> optional(number(min = 0, max = maxOptionIntSize)),
     "satisfactionLevel" -> optional(number(min = 0, max = maxOptionIntSize)),
     "howCanWeImprove" -> optional(text(maxLength = maxStringLength)),
-    "referrer" -> optional(text)
+    "referer" -> optional(text)
   )
   (FeedBack.apply)(FeedBack.unapply))
 

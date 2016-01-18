@@ -3,20 +3,21 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
+@import controllers.auth._
 
 @bcMain(title = Messages("label.signed_out", service.toUpperCase), userLoggedIn = false) {
 <div class="logged-out-page">
     <h1 class="heading-xlarge">@Messages("label.youre_signed_out")</h1>
     <p>@Messages("label.youre_now_signed_out_of_your_service_account", service.toUpperCase)</p>
 
-    <a href="#">@Messages("feedback.redirect-startpage")</a>
+    <a href="@ExternalUrls.serviceWelcomePath(service)">@Messages("feedback.redirect-startpage")</a>
 
     <p>
         <a href="http://www.gov.uk">@Messages("label.explore_gov_uk")</a>
     </p>
     <hr class="ated-hr" />
     <h2 class="heading-medium">@Messages("label.satisfaction_survey")</h2>
-    @helpers.form(action = controllers.routes.ApplicationController.logout(service)) {
+    @helpers.form(action = controllers.routes.ApplicationController.submitFeedback(service)) {
 
     @inputRadioGroup(
     feedbackForm("easyToUse"),
@@ -53,12 +54,11 @@
     'maxlength -> 1200
     )
 
-    @bcInput(feedbackForm("businessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+    @bcInput(feedbackForm("referer"),
+    '_label -> Html("referer"),
     '_labelClass -> "visuallyhidden",
-    '_id -> "businessName",
+    '_id -> "referrer",
     '_type -> "hidden",
-    '_hintText -> Messages("bc.business-verification.registered-name.hint"),
     '_showConstraints -> false)
 
     <p>@Messages("label.please_dont_include_any_personal_or_financial_information")</p>

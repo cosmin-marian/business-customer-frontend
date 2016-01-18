@@ -58,12 +58,17 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
     "Logout" must {
 
       "respond with a redirect" in {
-        val result = controllers.ApplicationController.logout().apply(FakeRequest())
+        val result = controllers.ApplicationController.logout(service).apply(FakeRequest())
         status(result) must be(SEE_OTHER)
       }
 
-      "be redirected to the logout page" in {
-        val result = controllers.ApplicationController.logout().apply(FakeRequest())
+      "be redirected to the feedback page for ATED service" in {
+        val result = controllers.ApplicationController.logout(service).apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/feedback/ATED")
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.logout("AWRS").apply(FakeRequest())
         redirectLocation(result).get must include("/business-customer/signed-out")
       }
 

@@ -1,13 +1,18 @@
 package controllers
 
-import play.api.Play
+import audit.Auditable
+import config.BusinessCustomerFrontendAuditConnector
+import models.FeedBack
+import play.api.{Logger, Play}
 import play.api.mvc.DiscardingCookie
-import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
+import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import models.FeedbackForm.feedbackForm
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 
-trait ApplicationController extends FrontendController with RunMode {
+trait ApplicationController extends FrontendController with RunMode with Auditable {
 
   import play.api.Play.current
 
@@ -32,9 +37,34 @@ trait ApplicationController extends FrontendController with RunMode {
   def feedback(service: String) = UnauthorisedAction {
     implicit request =>
       service.toUpperCase match {
-        case "ATED" => Ok(views.html.feedback(feedbackForm, service))
+        case "ATED" => Ok(views.html.feedback(feedbackForm.fill(FeedBack(referer = request.headers.get(REFERER))), service))
         case _ => Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
       }
+  }
+
+  def submitFeedback(service: String) = UnauthorisedAction {
+    implicit request =>
+      feedbackForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.feedback(formWithErrors, service)),
+      feedback => {
+        def auditFeedback(feedBack: FeedBack)(implicit hc: HeaderCarrier) = {
+          Logger.info(s"[ApplicationController][submitFeedback] feedback data = ${feedBack}")
+          sendDataEvent(s"$service-exit-survey", detail = Map(
+            "easyToUse" -> feedback.easyToUse.mkString,
+            "satisfactionLevel" -> feedback.satisfactionLevel.mkString,
+            "howCanWeImprove" -> feedback.howCanWeImprove.mkString,
+            "referer" -> feedBack.referer.mkString
+          ), eventType = EventTypes.Succeeded)
+        }
+        auditFeedback(feedback)
+        Redirect(controllers.routes.ApplicationController.feedbackThankYou(service))
+      }
+      )
+  }
+
+  def feedbackThankYou(service: String) = UnauthorisedAction {
+    implicit request =>
+      Ok(views.html.feedbackThankYou(service))
   }
 
   def signedOut = UnauthorisedAction { implicit request =>
@@ -47,4 +77,7 @@ trait ApplicationController extends FrontendController with RunMode {
   }
 }
 
-object ApplicationController extends ApplicationController {}
+object ApplicationController extends ApplicationController {
+  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  override val appName: String = AppName.appName
+}

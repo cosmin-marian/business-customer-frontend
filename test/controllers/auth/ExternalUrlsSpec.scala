@@ -25,6 +25,12 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
     "have signOut " in {
       ExternalUrls.signOut must be(s"""http://localhost:9025/account/sign-out""")
     }
+
+    "have serviceWelcomePath" in {
+      ExternalUrls.serviceWelcomePath("ATED") must be("http://localhost:9916/ated/welcome")
+      ExternalUrls.serviceWelcomePath("X") must be("#")
+    }
+
   }
   
 }
