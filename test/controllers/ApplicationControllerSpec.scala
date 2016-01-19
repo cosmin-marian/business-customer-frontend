@@ -1,8 +1,10 @@
 package controllers
 
+import models.FeedBack
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -98,6 +100,13 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
         val result = controllers.ApplicationController.submitFeedback(service).apply(FakeRequest())
         status(result) must be(SEE_OTHER)
 
+      }
+
+      "respond with BadRequest, for invalid submit"  in {
+        val feedback = FeedBack(easyToUse = None, satisfactionLevel = None, howCanWeImprove = Some("A"*1201), referer = None)
+        val testJson = Json.toJson(feedback)
+        val result = controllers.ApplicationController.submitFeedback(service).apply(FakeRequest().withJsonBody(testJson))
+        status(result) must be(BAD_REQUEST)
       }
 
       "be redirected to the logout page for any other service other than ATED" in {
