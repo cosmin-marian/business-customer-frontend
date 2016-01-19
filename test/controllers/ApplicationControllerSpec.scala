@@ -79,7 +79,44 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
     }
 
-  }
+    "feedback" must {
+      "case service name = ATED, redirected to the feedback page" in {
+        val result = controllers.ApplicationController.feedback(service).apply(FakeRequest())
+        status(result) must be(OK)
 
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.feedback("AWRS").apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/signed-out")
+      }
+
+    }
+
+    "submit feedback" must {
+      "case service name = ATED, tbe redirected to the feedback page" in {
+        val result = controllers.ApplicationController.submitFeedback(service).apply(FakeRequest())
+        status(result) must be(SEE_OTHER)
+
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.submitFeedback("AWRS").apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/thank-you/AWRS")
+      }
+
+    }
+
+    "feedback thank you" must {
+      "case service name = ATED, be redirected to the feedback page" in {
+        val result = controllers.ApplicationController.feedbackThankYou(service).apply(FakeRequest())
+        status(result) must be(OK)
+
+      }
+
+
+    }
+
+  }
 }
 
