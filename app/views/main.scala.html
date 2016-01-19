@@ -4,6 +4,7 @@
     sidebarLinks: Option[Html] = None,
     sidebarClass: Option[String] = None,
     navTitle: Option[String] = None,
+    service: Option[String] = None,
     contentHeader: Option[Html] = None,
     userLoggedIn: Boolean = false,
     scriptElement: Option[Html] = None,
@@ -24,7 +25,7 @@
 }
 
 @headerNavLinks = {
-    <li><a id="logOutNavHref" href="@routes.ApplicationController.logout">Sign out</a></li>
+    <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
 }
 
 @article = {

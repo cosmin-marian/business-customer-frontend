@@ -1,8 +1,10 @@
 package controllers
 
+import models.FeedBack
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
@@ -58,12 +60,17 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
     "Logout" must {
 
       "respond with a redirect" in {
-        val result = controllers.ApplicationController.logout().apply(FakeRequest())
+        val result = controllers.ApplicationController.logout(service).apply(FakeRequest())
         status(result) must be(SEE_OTHER)
       }
 
-      "be redirected to the logout page" in {
-        val result = controllers.ApplicationController.logout().apply(FakeRequest())
+      "be redirected to the feedback page for ATED service" in {
+        val result = controllers.ApplicationController.logout(service).apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/feedback/ATED")
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.logout("AWRS").apply(FakeRequest())
         redirectLocation(result).get must include("/business-customer/signed-out")
       }
 
@@ -74,7 +81,51 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
     }
 
-  }
+    "feedback" must {
+      "case service name = ATED, redirected to the feedback page" in {
+        val result = controllers.ApplicationController.feedback(service).apply(FakeRequest())
+        status(result) must be(OK)
 
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.feedback("AWRS").apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/signed-out")
+      }
+
+    }
+
+    "submit feedback" must {
+      "case service name = ATED, tbe redirected to the feedback page" in {
+        val result = controllers.ApplicationController.submitFeedback(service).apply(FakeRequest())
+        status(result) must be(SEE_OTHER)
+
+      }
+
+      "respond with BadRequest, for invalid submit"  in {
+        val feedback = FeedBack(easyToUse = None, satisfactionLevel = None, howCanWeImprove = Some("A"*1201), referer = None)
+        val testJson = Json.toJson(feedback)
+        val result = controllers.ApplicationController.submitFeedback(service).apply(FakeRequest().withJsonBody(testJson))
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "be redirected to the logout page for any other service other than ATED" in {
+        val result = controllers.ApplicationController.submitFeedback("AWRS").apply(FakeRequest())
+        redirectLocation(result).get must include("/business-customer/thank-you/AWRS")
+      }
+
+    }
+
+    "feedback thank you" must {
+      "case service name = ATED, be redirected to the feedback page" in {
+        val result = controllers.ApplicationController.feedbackThankYou(service).apply(FakeRequest())
+        status(result) must be(OK)
+
+      }
+
+
+    }
+
+  }
 }
 
