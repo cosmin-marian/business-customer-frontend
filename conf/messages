@@ -152,7 +152,7 @@ bc.business-registration-error.businessUniqueId.length = Business Unique Id must
 bc.business-registration-error.utr.length = UTR must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
-
+bc.business-verification-error.non-uk = You cannot select United Kingdom when entering a Non-UK address
 
 
 

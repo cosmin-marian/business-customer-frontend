@@ -245,14 +245,22 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
 
         "show an error if only issuing institution is entered and missing business unique ID" in {
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "", "issuingInstitution": "institutionName" }""")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
-          }
+            val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "", "issuingInstitution": "institutionName" }""")
+            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+              result =>
+                status(result) must be(BAD_REQUEST)
+                contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
+            }
         }
 
+        "show an error if country is selected as GB" in {
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "GB"}, "businessUniqueId": "", "issuingInstitution": "" }""")
+          submitWithAuthorisedUserFailure(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You cannot select United Kingdom when entering a Non-UK address")
+          }
+        }
       }
     }
   }
@@ -331,6 +339,19 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
+  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String="NUK")(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
 
 }
 
