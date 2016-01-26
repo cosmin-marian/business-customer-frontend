@@ -5,6 +5,7 @@ import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
+import play.api.Logger
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.AuthContext
@@ -21,6 +22,8 @@ trait BusinessRegController extends BaseController {
 
   val businessRegistrationService: BusinessRegistrationService
 
+  val countryUnitedKingdom = "GB"
+
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
       Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
@@ -33,9 +36,19 @@ trait BusinessRegController extends BaseController {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
         },
         registrationData => {
+          val businessRegCountry = registrationData.businessAddress.country
+          businessRegCountry match {
+            case `countryUnitedKingdom` => {
+              val errorMsg = Messages("bc.business-verification-error.non-uk")
+              val errorForm = businessRegistrationForm.withError(key = "businessAddress.country", message = errorMsg).fill(registrationData)
+              Future.successful(BadRequest(views.html.business_registration(errorForm, service, displayDetails(businessType, service))))
+            }
+            case _ => {
               businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
                 registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
               }
+            }
+          }
         }
       )
   }
