@@ -22,7 +22,6 @@ trait BusinessRegController extends BaseController {
 
   val businessRegistrationService: BusinessRegistrationService
 
-  val countryUnitedKingdom = "GB"
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
@@ -36,18 +35,8 @@ trait BusinessRegController extends BaseController {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
         },
         registrationData => {
-          val businessRegCountry = registrationData.businessAddress.country
-          businessRegCountry match {
-            case `countryUnitedKingdom` => {
-              val errorMsg = Messages("bc.business-verification-error.non-uk")
-              val errorForm = businessRegistrationForm.withError(key = "businessAddress.country", message = errorMsg).fill(registrationData)
-              Future.successful(BadRequest(views.html.business_registration(errorForm, service, displayDetails(businessType, service))))
-            }
-            case _ => {
-              businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
-                registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
-              }
-            }
+          businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
+            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, false))
           }
         }
       )

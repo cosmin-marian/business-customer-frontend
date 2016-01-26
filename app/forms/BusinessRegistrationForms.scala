@@ -17,6 +17,7 @@ object BusinessRegistrationForms {
   // scalastyle:off line.size.limit
   val postcodeRegex = """(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$"""
 
+  val countryUK = "GB"
 
   val businessRegistrationForm = Form(
     mapping(
@@ -58,7 +59,7 @@ object BusinessRegistrationForms {
   }
 
   def validateNonUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
-    validateNonUkInstitution(registrationData)
+    validateNonUkInstitution(validateCountryNonUK(registrationData))
   }
 
   def validateUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
@@ -94,6 +95,18 @@ object BusinessRegistrationForms {
         registrationData
       }
     }
+  }
+
+
+  private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
+    val country = registrationData.data.get("businessAddress.country") map {_.trim} filterNot {_.isEmpty}
+      if(country.fold("")(x => x).matches(countryUK)) {
+        registrationData.withError(key = "businessAddress.country",
+          message = Messages("bc.business-verification-error.non-uk"))
+      } else {
+        registrationData
+      }
+
   }
 
 
