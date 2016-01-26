@@ -31,14 +31,12 @@ trait BusinessRegController extends BaseController {
 
   def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      Logger.info(s"[BusinessRegController][send] business type = ${businessType}")
       BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
         },
         registrationData => {
           val businessRegCountry = registrationData.businessAddress.country
-          Logger.info(s"[BusinessRegController][send] businessRegCountry>>>>>>>>>>>>>>>>>>>>>>>> = ${businessRegCountry}")
           businessRegCountry match {
             case `countryUnitedKingdom` => {
               val errorMsg = Messages("bc.business-verification-error.non-uk")
