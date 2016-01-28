@@ -7,8 +7,6 @@ import play.api.i18n.Messages
 import play.api.{Logger, Play}
 import services.AgentRegistrationService
 import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.AuthUtils
 
 import scala.concurrent.Future

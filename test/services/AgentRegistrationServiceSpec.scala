@@ -1,7 +1,7 @@
 package services
 
-import builders.{TestAudit, AuthBuilder}
-import connectors.{GovernmentGatewayConnector, BusinessCustomerConnector, DataCacheConnector}
+import builders.{AuthBuilder, TestAudit}
+import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
 import models._
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -9,21 +9,18 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HttpResponse, InternalServerException}
-import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
+class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
 
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
   val mockGGConnector = mock[GovernmentGatewayConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
   val mockBusinessCustomerConnector = mock[BusinessCustomerConnector]
+
   object TestAgentRegistrationService extends AgentRegistrationService {
     val governmentGatewayConnector: GovernmentGatewayConnector = mockGGConnector
     val dataCacheConnector = mockDataCacheConnector
@@ -40,12 +37,12 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
     "enrolAgent throw exception if we have no agent ref no" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
-      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
-        businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
-        sapNumber="sap123",
-        safeId="safe123",
+      val returnedReviewDetails = new ReviewDetails(businessName = "Bus Name", businessType = None,
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        sapNumber = "sap123",
+        safeId = "safe123",
         isAGroup = false,
-        agentReferenceNumber=None)
+        agentReferenceNumber = None)
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
@@ -59,12 +56,12 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
     "enrolAgent return the status if it worked" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
-      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
-        businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
-        sapNumber="sap123",
-        safeId="safe123",
+      val returnedReviewDetails = new ReviewDetails(businessName = "Bus Name", businessType = None,
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        sapNumber = "sap123",
+        safeId = "safe123",
         isAGroup = false,
-        agentReferenceNumber=Some("agent123"))
+        agentReferenceNumber = Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
@@ -88,12 +85,12 @@ class AgentRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite with
 
     "enrolAgent throw an exception if we have no service config" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
-      val returnedReviewDetails = new ReviewDetails(businessName="Bus Name", businessType=None,
-        businessAddress=Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
-        sapNumber="sap123",
-        safeId="safe123",
+      val returnedReviewDetails = new ReviewDetails(businessName = "Bus Name", businessType = None,
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        sapNumber = "sap123",
+        safeId = "safe123",
         isAGroup = false,
-        agentReferenceNumber=Some("agent123"))
+        agentReferenceNumber = Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))

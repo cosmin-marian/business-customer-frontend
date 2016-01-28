@@ -2,16 +2,15 @@ package connectors
 
 
 import audit.Auditable
-import config.{WSHttpWithAudit, BusinessCustomerFrontendAuditConnector, WSHttp}
+import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
 import models.MatchBusinessData
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
+import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 import utils.AuthUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,13 +24,13 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
 
   val http: HttpGet with HttpPost = WSHttp
 
-  def lookup(lookupData: MatchBusinessData, userType: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
+  def lookup(lookupData: MatchBusinessData, userType: String, service: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
     val authLink = AuthUtils.getAuthLink()
     val postUrl = s"""$serviceURL$authLink/$baseURI/$lookupURI/${lookupData.utr}/$userType"""
     Logger.debug(s"[BusinessMatchingConnector][lookup] Call $postUrl")
     http.POST( postUrl, Json.toJson(lookupData)) map {
       response =>
-        auditMatchCall(lookupData, userType, response)
+        auditMatchCall(lookupData, userType, response, service)
         response.status match {
           case OK | NOT_FOUND => {
             Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = ${postUrl} && " +
@@ -58,7 +57,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
     }
   }
 
-  private def auditMatchCall(input: MatchBusinessData, userType: String, response: HttpResponse)(implicit hc: HeaderCarrier) = {
+  private def auditMatchCall(input: MatchBusinessData, userType: String, response: HttpResponse, service: String)
+                            (implicit hc: HeaderCarrier) = {
     val eventType = response.status match {
       case OK | NOT_FOUND => EventTypes.Succeeded
       case _ => EventTypes.Failed
@@ -66,6 +66,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
     sendDataEvent(transactionName = "etmpMatchCall",
         detail = Map("txName" -> "etmpMatchCall",
           "userType" -> s"${userType}",
+          "service" -> s"${service}",
           "utr" -> input.utr,
           "requiresNameMatch" -> s"${input.requiresNameMatch}",
           "isAnAgent" -> s"${input.isAnAgent}",

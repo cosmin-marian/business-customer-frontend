@@ -83,7 +83,7 @@ trait BusinessVerificationController extends BaseController {
       unincorporatedFormData => {
         val organisation = Organisation(unincorporatedFormData.businessName, UNINCORPORATED_BODY)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
-          organisation = organisation, utr = unincorporatedFormData.cotaxUTR) map {
+          organisation = organisation, utr = unincorporatedFormData.cotaxUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
@@ -109,7 +109,7 @@ trait BusinessVerificationController extends BaseController {
       soleTraderFormData => {
         val individual = Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)
         businessMatchingService.matchBusinessWithIndividualName(isAnAgent = AuthUtils.isAgent,
-          individual = individual, saUTR = soleTraderFormData.saUTR) map {
+          individual = individual, saUTR = soleTraderFormData.saUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
@@ -136,7 +136,7 @@ trait BusinessVerificationController extends BaseController {
       llpFormData => {
         val organisation = Organisation(llpFormData.businessName, LLP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
-          organisation = organisation, utr = llpFormData.psaUTR) map {
+          organisation = organisation, utr = llpFormData.psaUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
@@ -162,7 +162,7 @@ trait BusinessVerificationController extends BaseController {
       lpFormData => {
         val organisation = Organisation(lpFormData.businessName, PARTNERSHIP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
-          organisation = organisation, utr = lpFormData.psaUTR) map {
+          organisation = organisation, utr = lpFormData.psaUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
@@ -188,7 +188,7 @@ trait BusinessVerificationController extends BaseController {
       obpFormData => {
         val organisation = Organisation(obpFormData.businessName, PARTNERSHIP)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
-          organisation = organisation, utr = obpFormData.psaUTR) map {
+          organisation = organisation, utr = obpFormData.psaUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {
@@ -214,7 +214,7 @@ trait BusinessVerificationController extends BaseController {
       limitedCompanyFormData => {
         val organisation = Organisation(limitedCompanyFormData.businessName, CORPORATE_BODY)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = AuthUtils.isAgent,
-          organisation = organisation, utr = limitedCompanyFormData.cotaxUTR) map {
+          organisation = organisation, utr = limitedCompanyFormData.cotaxUTR, service = service) map {
           returnedResponse => {
             val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
             validatedReviewDetails match {

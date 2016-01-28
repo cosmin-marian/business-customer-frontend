@@ -86,7 +86,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
               result =>
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/review-details/$service")
-                verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false))(Matchers.any(), Matchers.any())
+                verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false), Matchers.eq(service))(Matchers.any(), Matchers.any())
             }
           }
 
@@ -95,7 +95,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
               result =>
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
-                verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false))(Matchers.any(), Matchers.any())
+                verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false), Matchers.eq(service))(Matchers.any(), Matchers.any())
             }
           }
         }
@@ -104,7 +104,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
             result =>
               status(result) must be(SEE_OTHER)
               redirectLocation(result).get must include(s"/business-customer/business-verification/$service")
-              verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false))(Matchers.any(), Matchers.any())
+              verify(mockBusinessMatchingService, times(1)).matchBusinessWithUTR(Matchers.eq(false), Matchers.eq(service))(Matchers.any(), Matchers.any())
           }
         }
       }
@@ -128,7 +128,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val reviewDetails = Json.toJson(testReviewDetails)
-    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Some(Future.successful(reviewDetails)))
+    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Some(Future.successful(reviewDetails)))
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -137,7 +137,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val notFound = Json.parse( """{"Reason" : "Text from reason column"}""")
-    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Some(Future.successful(notFound)))
+    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Some(Future.successful(notFound)))
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -145,7 +145,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithAuthorisedUserNoUTR(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(None)
+    when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(None)
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

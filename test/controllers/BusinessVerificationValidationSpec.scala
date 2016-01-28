@@ -2,7 +2,6 @@ package controllers
 
 import java.util.UUID
 
-import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -458,7 +457,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "LTD" => matchSuccessResponseLTD
       case "LP" => matchSuccessResponseLP
     }
-    when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchSuccessResponse))
     //val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "U.K.")
     //val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", false, Some("agent123"))
@@ -477,7 +476,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockBusinessMatchingService.matchBusinessWithIndividualName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockBusinessMatchingService.matchBusinessWithIndividualName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchSuccessResponseSOP))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
@@ -493,7 +492,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchFailureResponse))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
@@ -509,7 +508,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    when(mockBusinessMatchingService.matchBusinessWithIndividualName(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockBusinessMatchingService.matchBusinessWithIndividualName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(matchFailureResponse))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
