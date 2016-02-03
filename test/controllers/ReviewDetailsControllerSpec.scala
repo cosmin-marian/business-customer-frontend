@@ -102,9 +102,9 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 //        document.getElementById("business-name-label").text must be("Name")
 //        document.getElementById("business-address-label").text must be("Registered address")
 
-        document.select(".button").text must be("Confirm and continue")
+        document.select(".button").text must be("Continue")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
-        document.getElementById("wrong-account-text").text must startWith("You can still register for ATED but you need to update your information.")
+        document.getElementById("wrong-account-text").text must startWith("You can still set up your agency for ATED but you need to update your information.")
       }
     }
 
