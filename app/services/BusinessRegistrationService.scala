@@ -48,7 +48,7 @@ trait BusinessRegistrationService {
       if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
         Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
           issuingInstitution = registerData.issuingInstitution.getOrElse(""),
-          issuingCountryCode = registerData.businessAddress.country))
+          issuingCountryCode = registerData.issuingCountry.getOrElse(registerData.businessAddress.country)))
       } else {
         None
       }

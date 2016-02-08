@@ -5,10 +5,14 @@
 @import views.html.helpers.error._
 @import utils.BCUtils
 
+@implicitFormInstance = @{ Some(businessRegistrationForm) }
+
 @bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
 
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
-@form_error_notification(businessRegistrationForm, "bc.business-verification-error.general")
+
+@bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
+
 <h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
 @form(action = controllers.routes.BusinessRegUKController.send(service, displayDetails.businessType)) {

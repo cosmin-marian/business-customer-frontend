@@ -5,10 +5,11 @@
 @import views.html.helpers.error._
 @import utils.BCUtils
 
+@implicitFormInstance = @{ Some(businessTypeForm) }
+
 @bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
-@form_error_notification(businessTypeForm, "bc.business-verification-error.general")
 
-
+@bcErrorSummary(businessTypeForm, "bc.business-verification-error.general")
 
 @if(isAgent) {
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>

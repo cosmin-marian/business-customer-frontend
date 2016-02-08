@@ -46,8 +46,7 @@ object BusinessRegistrationForms {
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
         .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40)),
-      "utr" -> optional(text)
-
+      "issuingCountry" -> optional(text)
     )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
