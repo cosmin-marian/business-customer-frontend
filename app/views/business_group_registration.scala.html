@@ -64,7 +64,7 @@
     <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
     <div>
-        <p> <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back">@Messages("bc.business-verification.back")</a> </p>
+        <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">@Messages("bc.business-verification.back")</a>
     </div>
 
     @bcInput(businessRegistrationForm("businessAddress.country"),
