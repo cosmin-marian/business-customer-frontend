@@ -42,7 +42,7 @@
             </ul>
 
 
-
+    @if(isAgent){
 <details>
     <summary><span id="wrong-account-title" class="summary">
     @if(directMatch){
@@ -58,7 +58,7 @@
             @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
             }else {
-            @Messages("business-review.invalid-address.text", service)
+            @Messages("business-review.invalid-address.text-agent", service)
             }
         <p>@Messages("business-review.registered-with-companies-house.text")
             <a href="@Messages("business-review.registered-with-companies-house.link")" target="_blank" rel="external">
@@ -69,10 +69,40 @@
             @Messages("business-review.sole-trader.link-text")</a>
             @Messages("business-review.sole-trader.separately")
         </p>
-
-
     </div>
 </details>
+
+    }else{
+
+    <details>
+        <summary><span id="wrong-account-title" class="summary">
+    @if(directMatch){
+    @Messages("business-review.invalid-business.header")
+    }else {
+    @Messages("business-review.invalid-address.header")
+    }
+    </span></summary>
+
+        <div class="panel-indent">
+            <p id="wrong-account-text">
+                @if(directMatch){
+                @Messages("business-review.invalid-business.text")
+            <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
+            }else {
+            @Messages("business-review.invalid-address.text")
+            }
+            <p>@Messages("business-review.registered-with-companies-house.text")
+                <a href="@Messages("business-review.registered-with-companies-house.link")" target="_blank" rel="external">
+                @Messages("business-review.registered-with-companies-house.link-text")</a>
+            </p>
+            <p>@Messages("business-review.sole-trader.text")
+                <a href="@Messages("business-review.sole-trader.link")" target="_blank" rel="external">
+                @Messages("business-review.sole-trader.link-text")</a>
+                @Messages("business-review.sole-trader.separately")
+            </p>
+        </div>
+    </details>
+    }
 
 </div>
 
