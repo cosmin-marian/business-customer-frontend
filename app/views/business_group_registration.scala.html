@@ -19,7 +19,7 @@
 
     <div id="business-registration-form">
 
-        @bcInput(businessRegistrationForm("businessName"),
+        @bcInputNew(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.group.businessName")),
         '_labelClass -> "form-label",
         '_id -> "businessName",
@@ -27,31 +27,31 @@
         '_hintText -> Messages("bc.business-registration.group.businessName.hintText"),
         '_maxLength -> 140)
 
-        @bcInput(businessRegistrationForm("businessAddress.line_1"),
+        @bcInputNew(businessRegistrationForm("businessAddress.line_1"),
         '_label ->  Html(Messages("bc.business-registration.line_1")),
         '_id -> "businessAddress.line_1",
         '_maxLength -> 35,
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.line_2"),
+        @bcInputNew(businessRegistrationForm("businessAddress.line_2"),
         '_label ->  Html(Messages("bc.business-registration.line_2")),
         '_id -> "businessAddress.line_2",
         '_maxLength -> 35,
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.line_3"),
+        @bcInputNew(businessRegistrationForm("businessAddress.line_3"),
         '_label ->  Html(Messages("bc.business-registration.group.line_3")),
         '_id -> "businessAddress.line_3",
         '_maxLength -> 35,
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.line_4"),
+        @bcInputNew(businessRegistrationForm("businessAddress.line_4"),
         '_label ->  Html(Messages("bc.business-registration.group.line_4")),
         '_id -> "businessAddress.line_4",
         '_maxLength -> 35,
         '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.postcode"),
+        @bcInputNew(businessRegistrationForm("businessAddress.postcode"),
         '_label ->  Html(Messages("bc.business-registration.postcode")),
         '_id -> "businessAddress.postcode",
         '_maxLength -> 10,
@@ -67,12 +67,17 @@
         <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">@Messages("bc.business-verification.back")</a>
     </div>
 
-    @bcInput(businessRegistrationForm("businessAddress.country"),
+    @bcInputNew(businessRegistrationForm("businessAddress.country"),
             '_id -> "businessAddress.country",
             '_label -> Html(Messages("bc.business-registration.country")),
             '_labelClass -> "visuallyhidden",
             '_type -> "hidden")
-    @bcInput(businessRegistrationForm("businessType"),
+    @bcInputNew(businessRegistrationForm("hasBusinessUniqueId"),
+            '_id -> "hasBusinessUniqueIdry",
+            '_label -> Html(Messages("bc.business-registration.hasBusinessUniqueId")),
+            '_labelClass -> "visuallyhidden",
+            '_type -> "hidden")
+    @bcInputNew(businessRegistrationForm("businessType"),
             '_id -> "businessType",
             '_label -> Html(Messages("bc.business-verification.user.header")),
             '_labelClass -> "visuallyhidden",

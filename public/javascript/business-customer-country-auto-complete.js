@@ -13,7 +13,8 @@ function createLabelForHiddenSelect(divId, fieldId, labelText) {
     selectDiv.append(newLabel);
 }
 
-function countryCodeAutoComplete() {
+
+function countryCodeAutoComplete(selectId) {
 
 ////////////////////////////////////////////
 (function( $ ) {
@@ -97,7 +98,7 @@ function countryCodeAutoComplete() {
         // Remove invalid value
         this.input
           .val( "" )
-          .attr( "title", value + " didn't match any item" );
+//          .attr( "title", value + " didn't match any item" );
         this.element.val( "" );
         this.input.autocomplete( "instance" ).term = "";
       },
@@ -110,13 +111,7 @@ function countryCodeAutoComplete() {
   })( jQuery );
 ///////////////////////////////////////////
 $(function() {
-    $("#businessAddress\\.country").combobox();
-    var classOfSelect = $('#businessAddress\\.country_').attr('class');
-    $("#businessAddress\\.country").addClass(classOfSelect)
-    var labelText = $("#businessAddress\\.country_field").text();
-    var divId = "businessAddress\\.country_div"
-    var fieldId = "businessAddress.country_"
-    createLabelForHiddenSelect(divId, fieldId, labelText);
+    $(selectId).combobox();
 });
 
 }
