@@ -61,13 +61,13 @@ bc.business-verification.radio-legend=What type of business is it?
 bc.business-verification.firstNameField=First name
 bc.business-verification.lastNameField=Last name
 bc.business-verification.saUTRField=Self Assessment Unique Tax Reference (UTR)
-bc.business-verification.saUTR.hint=In the header of any letter received from HMRC
 bc.business-verification.coUTRField=Corporation Tax Unique Tax Reference (UTR)
 bc.business-verification.businessNamefield=Registered company name
 bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference (UTR)
-bc.business-verification.partnerUTRField.hint=In the header of any letter received from HMRC
 bc.business-verification.registered-name.hint=This is the registered name on your incorporation certificate
-bc.business-verification.ctutr.hint=In the header of any letter received from HMRC
+bc.business-verification.utr.hint=Example 1234567890
+bc.business-verification.utr.help.question = What is a UTR
+bc.business-verification.utr.help.answer = Your UTR number is made up of 10 or 13 digits like this, 12345 67890. It is issued by HMRC when you register your business or for Self-Assessment. If your UTR is 13 digits only enter the last 10. <br> <br> It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'
 bc.business-verification.back=Back
 
 
@@ -135,7 +135,7 @@ bc.business-registration.utr = UTR
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
-bc.business-registration.search= Continue
+bc.business-registration.search= Match
 
 bc.business-registration-error.businessName = Business name must be entered
 bc.business-registration-error.line_1 = Address line 1 must be entered

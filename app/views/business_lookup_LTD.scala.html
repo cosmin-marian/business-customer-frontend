@@ -5,9 +5,11 @@
 @import views.html.helpers._
 @import views.html.helpers.error._
 
+@implicitFormInstance = @{ Some(limitedCompanyForm) }
+
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
-@form_error_notification(limitedCompanyForm, "bc.business-verification-error.general.ltd")
+@bcErrorSummary(limitedCompanyForm, "bc.business-verification-error.general.ltd")
 
 @if(isAgent) {
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
@@ -24,17 +26,20 @@
 
 <div id="business-type-ltd-form" class="form-field">
 
-    @bcInput(limitedCompanyForm("businessName"),
+    @bcInputNew(limitedCompanyForm("businessName"),
     '_label -> Html(Messages("bc.business-verification.businessNamefield")),
     '_hintText -> Messages("bc.business-verification.registered-name.hint"),
     '_id -> "businessName",
     '_showConstraints -> false)
 
-    @bcInput(limitedCompanyForm("cotaxUTR"),
+    @bcInputNew(limitedCompanyForm("cotaxUTR"),
     '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_hintText -> Messages("bc.business-verification.ctutr.hint"),
+    '_hintText -> Messages("bc.business-verification.utr.hint"),
     '_id -> "cotaxUTR",
     '_type -> "number",
+    '_fieldsetAttributesHelpQuestion -> "cotaxUTR-HelpLink",
+    '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+    '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
     '_showConstraints -> false)
 
 </div>

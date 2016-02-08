@@ -29,11 +29,14 @@
     '_id -> "businessName",
     '_showConstraints -> false)
 
-    @bcInput(limitedPartnershipForm("psaUTR"),
+    @bcInputNew(limitedPartnershipForm("psaUTR"),
     '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+    '_hintText -> Messages("bc.business-verification.utr.hint"),
     '_id -> "psaUTR",
-    '_hintText -> Messages("bc.business-verification.saUTR.hint"),
     '_type -> "number",
+    '_fieldsetAttributesHelpQuestion -> "psaUTR-HelpLink",
+    '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+    '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
     '_showConstraints -> false)
 
 </div>

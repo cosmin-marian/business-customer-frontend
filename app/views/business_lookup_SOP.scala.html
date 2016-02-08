@@ -32,11 +32,14 @@
     '_id -> "lastName",
     '_showConstraints -> false)
 
-    @bcInput(soleTraderForm("saUTR"),
+    @bcInputNew(soleTraderForm("saUTR"),
     '_label -> Html(Messages("bc.business-verification.saUTRField")),
-    '_hintText -> Messages("bc.business-verification.saUTR.hint"),
+    '_hintText -> Messages("bc.business-verification.utr.hint"),
     '_id -> "saUTR",
     '_type -> "number",
+    '_fieldsetAttributesHelpQuestion -> "saUTR-HelpLink",
+    '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+    '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
     '_showConstraints -> false)
 
 </div>
