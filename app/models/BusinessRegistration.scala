@@ -7,8 +7,12 @@ case class BusinessRegistrationDisplayDetails(businessType: String,
                                               businessRegSubHeader: String,
                                               listOfIsoCode: List[(String, String)])
 
-case class BusinessRegistration(businessName: String, businessAddress: Address, businessUniqueId: Option[String],
-                                issuingInstitution: Option[String], issuingCountry: Option[String])
+case class BusinessRegistration(businessName: String,
+                                businessAddress: Address,
+                                hasBusinessUniqueId: Option[Boolean],
+                                businessUniqueId: Option[String],
+                                issuingInstitution: Option[String],
+                                issuingCountry: Option[String])
 
 case class Address(line_1: String, line_2: String, line_3: Option[String], line_4: Option[String],
                    postcode: Option[String] = None, country: String) {

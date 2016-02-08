@@ -42,6 +42,7 @@ object BusinessRegistrationForms {
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
 
       )(Address.apply)(Address.unapply),
+      "hasBusinessUniqueId" -> optional(boolean).verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined),
       "businessUniqueId" -> optional(text)
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
