@@ -59,8 +59,10 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
 
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(true),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
-        issuingInstitution = Some("issuingInstitution"), None
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = Some("GB")
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
@@ -81,9 +83,10 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
 
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(false),
         businessUniqueId = None,
         issuingInstitution = None,
-        utr = None
+        issuingCountry = None
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,
@@ -103,8 +106,9 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        hasBusinessUniqueId = Some(true),
         issuingInstitution = Some("issuingInstitution"),
-      utr = None
+        issuingCountry = None
       )
 
       val returnedReviewDetails = new ReviewDetails(businessName=busRegData.businessName, businessType=None, businessAddress=busRegData.businessAddress,

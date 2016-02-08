@@ -249,7 +249,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
               result =>
                 status(result) must be(BAD_REQUEST)
-                contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
+                contentAsString(result) must include("You need to enter Business Unique Identifier")
             }
         }
 

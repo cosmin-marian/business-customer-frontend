@@ -164,7 +164,6 @@ bc.business-registration-error.non-uk = You cannot select United Kingdom when en
 bc.business-registration-error.postcode = Postcode must be entered
 bc.business-registration-error.postcode.invalid = Postcode is invalid
 bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
-bc.business-registration-error.utr = UTR must be entered
 
 
 ## Errors

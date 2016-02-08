@@ -63,10 +63,10 @@ object BusinessRegistrationForms {
   }
 
   def validateUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
-    validateUkInstitution(validatePostCode(registrationData))
+    validateUkIdentifiers(validatePostCode(registrationData))
   }
 
-  def validateUkInstitution(registrationData: Form[BusinessRegistration]) = {
+  def validateUkIdentifiers(registrationData: Form[BusinessRegistration]) = {
       registrationData
   }
 

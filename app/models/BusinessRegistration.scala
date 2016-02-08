@@ -7,13 +7,6 @@ case class BusinessRegistrationDisplayDetails(businessType: String,
                                               businessRegSubHeader: String,
                                               listOfIsoCode: List[(String, String)])
 
-case class BusinessRegistration(businessName: String,
-                                businessAddress: Address,
-                                hasBusinessUniqueId: Option[Boolean],
-                                businessUniqueId: Option[String],
-                                issuingInstitution: Option[String],
-                                issuingCountry: Option[String])
-
 case class Address(line_1: String, line_2: String, line_3: Option[String], line_4: Option[String],
                    postcode: Option[String] = None, country: String) {
   override def toString = {
@@ -28,6 +21,13 @@ case class Address(line_1: String, line_2: String, line_3: Option[String], line_
 object Address {
   implicit val formats = Json.format[Address]
 }
+
+case class BusinessRegistration(businessName: String,
+                                businessAddress: Address,
+                                hasBusinessUniqueId: Option[Boolean],
+                                businessUniqueId: Option[String],
+                                issuingInstitution: Option[String],
+                                issuingCountry: Option[String])
 
 object BusinessRegistration {
   implicit val formats = Json.format[BusinessRegistration]
