@@ -87,8 +87,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
             document.getElementById("businessAddress.country_field").text() must include("Country")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("businessUniqueId_field").text() must include("Business Unique identifier")
+            document.getElementById("issuingInstitution_field").text() must be("Institution of issue")
             document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -110,8 +110,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
             document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
             document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
             document.getElementById("businessAddress.country_field").text() must include("Country")
-            document.getElementById("businessUniqueId_field").text() must be("Business Unique Identifier (optional)")
-            document.getElementById("issuingInstitution_field").text() must be("Institution that issued the Business Unique Identifier (optional)")
+            document.getElementById("businessUniqueId_field").text() must include("Business Unique identifier")
+            document.getElementById("issuingInstitution_field").text() must be("Institution of issue")
             document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -122,7 +122,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       "validate form" must {
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": ""}""")
+          val inputJson = Json.parse( """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "hasBusinessUniqueId":true, "businessUniqueId": "", "issuingInstitution": "", "issuingCountry": ""}""")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
@@ -131,6 +131,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
               contentAsString(result) must include("Address line 1 must be entered")
               contentAsString(result) must include("Address line 2 must be entered")
               contentAsString(result) must include("Country must be entered")
+              contentAsString(result) must include("You need to enter Country that issued this business unique identifier")
+              contentAsString(result) must include("You need to enter the institution that issued business unique identifier")
+              contentAsString(result) must include("You need to enter Business Unique Identifier")
               contentAsString(result) mustNot include("Postcode must be entered")
           }
         }
@@ -227,7 +230,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "id1", "issuingInstitution": "institutionName" }""")
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "FR"}, "hasBusinessUniqueId":true, "businessUniqueId": "id1", "issuingInstitution": "institutionName", "issuingCountry": "FR" }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(SEE_OTHER)
@@ -235,17 +238,27 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
-        "show an error if only business unique ID is entered and missing issuing institution " in {
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "id1", "issuingInstitution": "" }""")
+        "If registration details entered are valid and business-identifier question is selected as No, continue button must redirect to review details page" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "FR"}, "hasBusinessUniqueId":false, "businessUniqueId": "", "issuingInstitution": "", "issuingCountry": "" }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You need to enter both a Business Unique Identifier and the institution that issued it")
+              status(result) must be(SEE_OTHER)
+              redirectLocation(result).get must include(s"/business-customer/review-details/$service")
           }
         }
 
-        "show an error if only issuing institution is entered and missing business unique ID" in {
-            val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "UK"}, "businessUniqueId": "", "issuingInstitution": "institutionName" }""")
+        "show an error if missing issuing institution " in {
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "FR"}, "hasBusinessUniqueId":true, "businessUniqueId": "id1", "issuingInstitution": "", "issuingCountry": "FR" }""")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You need to enter the institution that issued business unique identifier")
+          }
+        }
+
+        "show an error if missing business unique ID" in {
+            val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "FR"}, "hasBusinessUniqueId":true, "businessUniqueId": "", "issuingInstitution": "institutionName", "issuingCountry": "FR" }""")
             submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -254,7 +267,15 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         }
 
         "show an error if country is selected as GB" in {
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "GB"}, "businessUniqueId": "", "issuingInstitution": "" }""")
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "GB"}, "hasBusinessUniqueId":true, "businessUniqueId": "", "issuingInstitution": "", "issuingCountry": "FR" }""")
+          submitWithAuthorisedUserFailure(FakeRequest().withJsonBody(inputJson)) {
+            result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You cannot select United Kingdom when entering a Non-UK address")
+          }
+        }
+        "show an error if issuing country is selected as GB" in {
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "country": "FR"}, "hasBusinessUniqueId":true, "businessUniqueId": "", "issuingInstitution": "", "issuingCountry": "GB" }""")
           submitWithAuthorisedUserFailure(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)

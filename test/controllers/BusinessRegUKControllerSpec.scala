@@ -119,7 +119,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "not be empty for a Group" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = Json.parse(
-            """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "issuingInstitution": ""}""".stripMargin)
+            """{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "country": ""}, "hasBusinessUniqueId":false}""".stripMargin)
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
@@ -135,7 +135,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "If entered, Business name must be maximum of 105 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val businessName = "a"*106
-          val inputJson = Json.parse( s"""{ "businessName": "$businessName", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": "" }""")
+          val inputJson = Json.parse( s"""{ "businessName": "$businessName", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "hasBusinessUniqueId":false, "businessUniqueId": "", "issuingInstitution": "" }""")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
@@ -147,7 +147,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "If entered, Address line 1 must be maximum of 35 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val line1 = "a"*36
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "$line1", "line_2": "", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "businessUniqueId": "", "issuingInstitution": "" }""")
+          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "$line1", "line_2": "", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "hasBusinessUniqueId":false, "businessUniqueId": "", "issuingInstitution": "" }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
@@ -158,7 +158,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "If entered, Address line 2 must be maximum of 35 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val line2 = "a"*36
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "$line2", "line_3": "", "line_4": "", "postcode": "", "country": ""} }""")
+          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "$line2", "line_3": "", "line_4": "", "postcode": "", "country": ""}, "hasBusinessUniqueId":false }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
@@ -170,7 +170,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "Address line 3 is optional but if entered, must be maximum of 35 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val line3 = "a"*36
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "$line3", "line_4": "", "postcode": "", "country": ""} }""")
+          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "$line3", "line_4": "", "postcode": "", "country": ""}, "hasBusinessUniqueId":false }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
@@ -181,7 +181,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "Address line 4 is optional but if entered, must be maximum of 35 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val line4 = "a"*36
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "$line4", "postcode": "", "country": ""} }""")
+          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "$line4", "postcode": "", "country": ""}, "hasBusinessUniqueId":false }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
@@ -192,7 +192,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
         "Postcode is optional but if entered, must be maximum of 10 characters" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val postcode = "a"*11
-          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "postcode": "$postcode", "country": ""} }""")
+          val inputJson = Json.parse( s"""{ "businessName": "", "businessAddress": {"line_1": "", "line_2": "", "line_3": "", "line_4": "", "postcode": "$postcode", "country": ""}, "hasBusinessUniqueId":false }""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
@@ -202,7 +202,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
 
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NE8 1AP", "country": "GB"}}""")
+          val inputJson = Json.parse( """{ "businessName": "ddd", "businessAddress": {"line_1": "ddd", "line_2": "ddd", "line_3": "", "line_4": "", "postcode": "NE8 1AP", "country": "GB"}, "hasBusinessUniqueId":false}""")
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(SEE_OTHER)
