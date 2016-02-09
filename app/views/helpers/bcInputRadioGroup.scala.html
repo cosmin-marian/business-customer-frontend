@@ -12,7 +12,7 @@
 <fieldset class="@fieldsetClass"
           @if(elements.args.get('_fieldsetAttributes).isDefined) {@elements.args.get('_fieldsetAttributes)}>
 @if(elements.args.get('_legend).isDefined) {
-@commonHelper(field,errors)
+
 
 <legend @if(elements.args.get('_legendClass).isDefined) {class="@elements.args.get('_legendClass)"} @if(elements.args.get('_fieldsetAttributesLegend).isDefined) {id="@elements.args.get('_fieldsetAttributesLegend)"} id="@elements.field.name.replaceAll("""[\.\[\]]""", "-")_legend">
 @elements.args.get('_legend)
@@ -30,6 +30,7 @@
     </div>
 </details>
 }}
+@commonHelper(field,errors)
 @radioOptions.map { case (value, label) =>
 @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ","_")}")  { inputId =>
 <label for="@inputId"
