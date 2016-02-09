@@ -157,7 +157,7 @@ bc.business-registration-error.businessUniqueId.length = Business Unique Id must
 bc.business-registration-error.utr.length = UTR must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
-bc.business-registration-error.non-uk = You cannot select United Kingdom when entering a Non-UK address
+bc.business-registration-error.non-uk = You cannot select United Kingdom when entering a non-UK address
 
 
 
@@ -190,8 +190,8 @@ bc.business-registration-error.general.businessAddress.line_3 = There is a probl
 bc.business-registration-error.general.businessAddress.line_4 = There is a problem with Address line 4
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
 bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
-bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution that issued field
-bc.business-registration-error.general.issuingCountry =  There is a problem with the country that issued field
+bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution of issue
+bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
 bc.business-verification-error.general.business-type-sop-form = Your business details have not been found. Please check that your details are correct and try again
 
 

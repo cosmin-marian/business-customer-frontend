@@ -271,7 +271,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           submitWithAuthorisedUserFailure(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You cannot select United Kingdom when entering a Non-UK address")
+              contentAsString(result) must include("You cannot select United Kingdom when entering a non-UK address")
           }
         }
         "show an error if issuing country is selected as GB" in {
@@ -279,7 +279,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           submitWithAuthorisedUserFailure(FakeRequest().withJsonBody(inputJson)) {
             result =>
               status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You cannot select United Kingdom when entering a Non-UK address")
+              contentAsString(result) must include("You cannot select United Kingdom when entering a non-UK address")
           }
         }
       }
