@@ -3,11 +3,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
-@import views.html.helpers.error._
+
+@implicitFormInstance = @{ Some(limitedPartnershipForm) }
 
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
-@form_error_notification(limitedPartnershipForm, "bc.business-verification-error.general.lp")
+@bcErrorSummary(limitedPartnershipForm, "bc.business-verification-error.general.lp")
 
 @if(isAgent) {
 

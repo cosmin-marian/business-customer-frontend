@@ -17,7 +17,7 @@ private object AppDependencies {
 
   private val frontendBootstrapVersion = "5.1.1"
   private val govukTemplateVersion = "4.0.0"
-  private val playUiVersion = "4.4.0"
+  private val playUiVersion = "4.7.0"
   private val httpCachingClientVersion = "5.3.0"
   private val playAuthorisedFrontendVersion = "4.5.0"
   private val playPartialsVersion = "4.2.0"
@@ -49,12 +49,12 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "2.2.1" % scope,
+        "org.scalatest" %% "scalatest" % "2.2.2" % scope,
         "org.scalatestplus" %% "play" % "1.2.0" % scope,
         "org.pegdown" % "pegdown" % "1.4.2",
         "org.jsoup" % "jsoup" % "1.7.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "uk.gov.hmrc" %% "hmrctest" % "0.4.0"
+        "uk.gov.hmrc" %% "hmrctest" % "1.4.0"
       )
     }.test
   }

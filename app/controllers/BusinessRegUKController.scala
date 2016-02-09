@@ -4,16 +4,13 @@ import config.FrontendAuthConnector
 import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{BusinessRegistration, BusinessRegistrationDisplayDetails, Address}
+import models.BusinessRegistrationDisplayDetails
+import play.api.i18n.Messages
 import services.BusinessRegistrationService
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.{BCUtils, AuthUtils}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import utils.BCUtils
 
 import scala.concurrent.Future
-import play.api.i18n.Messages
-import play.api.data.Form
 
 object BusinessRegUKController extends BusinessRegUKController {
   override val authConnector = FrontendAuthConnector
@@ -26,7 +23,7 @@ trait BusinessRegUKController extends BaseController {
 
   def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
+      val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
       Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 

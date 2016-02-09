@@ -3,11 +3,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
-@import views.html.helpers.error._
+
+@implicitFormInstance = @{ Some(unincorporatedBodyForm) }
 
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
-@form_error_notification(unincorporatedBodyForm, "bc.business-verification-error.general.ua")
+@bcErrorSummary(unincorporatedBodyForm, "bc.business-verification-error.general.ua")
 
 @if(isAgent) {
 <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>

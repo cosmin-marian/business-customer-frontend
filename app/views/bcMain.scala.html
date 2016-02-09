@@ -2,6 +2,7 @@
     userLoggedIn: Boolean = true,
     supportLinkEnabled: Boolean = true,
     service: Option[String] = None,
+    pageScripts: Option[Html] = None,
     sidebarLinks: Option[Html] = None,
     sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
 
@@ -10,7 +11,7 @@
 
 @scriptElement = {
 <script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
-<script src='@controllers.routes.Assets.at("javascript/business-customer.js")'></script>
+@pageScripts
 }
 
 @linkElement = {

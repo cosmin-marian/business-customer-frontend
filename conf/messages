@@ -1,5 +1,7 @@
 bc.title = Business Customer
 bc.business-verification.title = Business Customer
+bc.radio.yes.label = Yes
+bc.radio.no.label = No
 
 bc.ated.serviceName = Annual Tax on Enveloped Dwellings (ATED)
 bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
@@ -90,9 +92,9 @@ bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference
 bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
 bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
 bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and try again
-bc.business-registration-error.businessUniqueId.select=You need to enter both a Business Unique Identifier and the institution that issued it
-bc.business-registration-error.utr.select=You need to enter both a Business Unique Identifier and the institution that issued it
-bc.business-registration-error.issuingInstitution.select=You need to enter both a Business Unique Identifier and the institution that issued it
+bc.business-registration-error.businessUniqueId.select=You need to enter Business Unique Identifier
+bc.business-registration-error.issuingCountry.select=You need to enter Country that issued this business unique identifier
+bc.business-registration-error.issuingInstitution.select=You need to enter the institution that issued business unique identifier
 
 bc.business-verification-error.registeredName.length=Registered company name must not be more than 105 characters
 
@@ -126,13 +128,17 @@ bc.business-registration.group.line_4 = Address line 4 (Optional)
 bc.business-registration.postcode = Postcode
 #bc.business-registration.country = ISO country code
 bc.business-registration.country = Country
+bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.country.select = please select one country
-bc.business-registration.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
-bc.business-registration.businessUniqueId = Business Unique Identifier (optional)
-bc.business-registration.utr = Business Unique Identifier (optional)
-bc.business-registration.issuingInstitution = Institution that issued the Business Unique Identifier (optional)
-bc.business-registration.businessUniqueUtr = Business Unique Identifier
-bc.business-registration.utr = UTR
+bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
+bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
+bc.business-registration.hasBusinessUniqueId = Do you have a Business Unique identifier
+bc.business-registration.hasBusinessUniqueId.help.question = What is a Business Unique identifier?
+bc.business-registration.hasBusinessUniqueId.help.answer = Enter any UK Unique Taxpayer Reference number, for example - <br> Where the chargeable person is a company, enter the HMRC Corporation Tax Unique Taxpayer Reference (CT UTR) number. If you don't have a CT UTR you can use a: <br> <ul class="list-bullet"><li>VAT registration number</li><li>Employer PAYE reference </li><li>Company registration number - allocated by the Registrar of Companies where the company is incorporated</li><li>Non-resident landlord reference</li><li>Unique transaction reference number for Stamp Duty Land Tax</li></ul> Where the chargeable person isn't a company, for example a partnership, you should enter a UK tax reference such as:<ul class="list-bullet"><li>VAT registration number</li><li>mployer PAYE reference</li><li>Self Assessment Unique Taxpayer reference</li><li>Non-resident landlord reference</li><li>Unique transaction reference number for Stamp Duty Land Tax</li></ul> or enter any non-UK identifier (for example Company Registration Number).<br>If you don't have any of the above references, enter ''No reference number'' in the 'Business Unique Identifier' field and ''Not applicable'' for the ''Origin and type of Business Unique Identifier''.
+bc.business-registration.businessUniqueId = Business Unique identifier
+bc.business-registration.businessUniqueId.hint = Example, the number on the document
+bc.business-registration.issuingInstitution = Institution of issue
+bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -148,20 +154,17 @@ bc.business-registration-error.line_2.length = Address line 2 must not be more t
 bc.business-registration-error.line_3.length = Address line 3 must not be more than {0} characters
 bc.business-registration-error.line_4.length = Address line 4 must not be more than {0} characters
 bc.business-registration-error.postcode.length = Postcode must not be more than {0} characters
-#bc.business-registration-error.country.length = Country Code must not be more than {0} characters
-#bc.business-registration-error.country.number = Country Code must not contain numbers
 bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
 bc.business-registration-error.utr.length = UTR must not be more than {0} characters
 bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
 bc.business-registration-error.summaryHeader = There is a problem with the form
-bc.business-verification-error.non-uk = You cannot select United Kingdom when entering a Non-UK address
+bc.business-registration-error.non-uk = You cannot select United Kingdom when entering a non-UK address
 
 
 
 bc.business-registration-error.postcode = Postcode must be entered
 bc.business-registration-error.postcode.invalid = Postcode is invalid
 bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
-bc.business-registration-error.utr = UTR must be entered
 
 
 ## Errors
@@ -188,7 +191,8 @@ bc.business-registration-error.general.businessAddress.line_3 = There is a probl
 bc.business-registration-error.general.businessAddress.line_4 = There is a problem with Address line 4
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
 bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
-bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution that issued field
+bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution of issue
+bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
 bc.business-verification-error.general.business-type-sop-form = Your business details have not been found. Please check that your details are correct and try again
 
 

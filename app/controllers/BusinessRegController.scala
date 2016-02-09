@@ -5,7 +5,6 @@ import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
-import play.api.Logger
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.AuthContext
