@@ -1,4 +1,4 @@
-@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails, directMatch: Boolean)(implicit request: Request[_])
+@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
@@ -45,7 +45,7 @@
     @if(isAgent){
 <details>
     <summary><span id="wrong-account-title" class="summary">
-    @if(directMatch){
+    @if(businessDetails.directMatch){
     @Messages("business-review.invalid-business.header")
     }else {
     @Messages("business-review.invalid-address.header")
@@ -54,7 +54,7 @@
 
     <div class="panel-indent">
         <p id="wrong-account-text">
-            @if(directMatch){
+            @if(businessDetails.directMatch){
             @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
             }else {
@@ -76,7 +76,7 @@
 
     <details>
         <summary><span id="wrong-account-title" class="summary">
-    @if(directMatch){
+    @if(businessDetails.directMatch){
     @Messages("business-review.invalid-business.header")
     }else {
     @Messages("business-review.invalid-address.header")
@@ -85,7 +85,7 @@
 
         <div class="panel-indent">
             <p id="wrong-account-text">
-                @if(directMatch){
+                @if(businessDetails.directMatch){
                 @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
             }else {
