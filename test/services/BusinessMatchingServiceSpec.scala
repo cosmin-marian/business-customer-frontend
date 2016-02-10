@@ -23,15 +23,19 @@ import scala.concurrent.Future
 class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "UK")
-  val testReviewDetails = ReviewDetails("ACME", Some("Limited"), testAddress, "1234567890", "EX0012345678909", false, Some("01234567890"))
+  val testReviewDetails = ReviewDetails("ACME", Some("Limited"), testAddress, "1234567890", "EX0012345678909", isAGroup = false, directMatch = false, Some("01234567890"))
   val matchFailureResponse = MatchFailureResponse(Reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse( """{"sapNumber":"1234567890","safeId":"EX0012345678909","agentReferenceNumber":"01234567890", "isEditable":true,"isAnAgent":false,"isAnIndividual":false, "organisation":{"organisationName":"Real Business Inc","isAGroup":true,"organisationType":"unincorporated body"},
 "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
-  val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", true, Some("01234567890"))
+  val successOrgReviewDetailsDirect = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", isAGroup = true, directMatch = true, Some("01234567890"))
+  val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909", isAGroup = true, directMatch = false, Some("01234567890"))
+  val successOrgReviewDetailsJsonDirect = Json.toJson(successOrgReviewDetailsDirect)
   val successOrgReviewDetailsJson = Json.toJson(successOrgReviewDetails)
   val successIndividualJson = Json.parse( """{"sapNumber":"1234567890", "safeId":"EX0012345678909", "agentReferenceNumber":"01234567890", "isEditable":true, "isAnAgent":false, "isAnIndividual":true, "individual":{"firstName":"first name", "lastName":"last name"}, "address":{"addressLine1":"23 High Street","addressLine2":"Park View", "addressLine3":"Gloucester","addressLine4":"Gloucestershire","postalCode":"NE98 1ZZ","countryCode":"UK"}, "contactDetails":{"phoneNumber":"1234567890"}}""")
-  val successIndReviewDetails = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909", false, Some("01234567890"), Some("first name"), Some("last name"))
+  val successIndReviewDetailsDirect = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909", isAGroup = false, directMatch = true, Some("01234567890"), Some("first name"), Some("last name"))
+  val successIndReviewDetails = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909", isAGroup = false, directMatch = false, Some("01234567890"), Some("first name"), Some("last name"))
+  val successIndReviewDetailsJsonDirect = Json.toJson(successIndReviewDetailsDirect)
   val successIndReviewDetailsJson = Json.toJson(successIndReviewDetails)
   val errorJson = Json.parse( """{"error" : "Some Error"}""")
   val utr = "1234567890"
@@ -62,7 +66,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(successIndividualJson))
         when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
         val result = TestBusinessMatchingService.matchBusinessWithUTR(false, service)
-        await(result.get) must be(successIndReviewDetailsJson)
+        await(result.get) must be(successIndReviewDetailsJsonDirect)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())
         verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
       }
@@ -81,7 +85,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())).thenReturn(Future.successful(successOrgJson))
         when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(testReviewDetails)))
         val result = TestBusinessMatchingService.matchBusinessWithUTR(false, service)
-        await(result.get) must be(successOrgReviewDetailsJson)
+        await(result.get) must be(successOrgReviewDetailsJsonDirect)
         verify(mockBusinessMatchingConnector, times(1)).lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(),Matchers.any())
         verify(mockDataCacheConnector, times(1)).saveReviewDetails(Matchers.any())(Matchers.any())
       }

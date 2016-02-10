@@ -19,7 +19,7 @@ trait HomeController extends BaseController {
         case Some(futureJsValue) => {
           futureJsValue map {
             jsValue => jsValue.validate[ReviewDetails] match {
-              case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service, true))
+              case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
               case failure: JsError => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
             }
           }

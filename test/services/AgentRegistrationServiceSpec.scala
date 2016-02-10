@@ -42,6 +42,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
         sapNumber = "sap123",
         safeId = "safe123",
         isAGroup = false,
+        directMatch = false,
         agentReferenceNumber = None)
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -61,6 +62,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
         sapNumber = "sap123",
         safeId = "safe123",
         isAGroup = false,
+        directMatch = false,
         agentReferenceNumber = Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -90,6 +92,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
         sapNumber = "sap123",
         safeId = "safe123",
         isAGroup = false,
+        directMatch = false,
         agentReferenceNumber = Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()

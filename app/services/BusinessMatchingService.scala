@@ -25,7 +25,7 @@ trait BusinessMatchingService {
           utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
         businessMatchingConnector.lookup(searchData, userType, service) flatMap {
           dataReturned =>
-            validateAndCache(dataReturned = dataReturned)
+            validateAndCache(dataReturned = dataReturned, directMatch = true)
         }
     }
   }
@@ -37,7 +37,7 @@ trait BusinessMatchingService {
     val userType = "sa"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap {
       dataReturned =>
-        validateAndCache(dataReturned = dataReturned)
+        validateAndCache(dataReturned = dataReturned, directMatch = false)
     }
   }
 
@@ -48,7 +48,7 @@ trait BusinessMatchingService {
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap {
       dataReturned =>
-        validateAndCache(dataReturned = dataReturned)
+        validateAndCache(dataReturned = dataReturned, directMatch = false)
     }
   }
 
@@ -60,7 +60,7 @@ trait BusinessMatchingService {
     }
   }
 
-  private def validateAndCache(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def validateAndCache(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
     Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = ${dataReturned}, isFailureResponse = ${isFailureResponse}")
     isFailureResponse match {
@@ -69,10 +69,10 @@ trait BusinessMatchingService {
         val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
         isAnIndividual match {
           case true => {
-            cacheIndividual(dataReturned)
+            cacheIndividual(dataReturned, directMatch)
           }
           case false => {
-            cacheOrg(dataReturned)
+            cacheOrg(dataReturned, directMatch)
           }
         }
       }
@@ -80,7 +80,7 @@ trait BusinessMatchingService {
   }
 
 
-  private def cacheIndividual(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def cacheIndividual(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val businessType = "Sole Trader"
     val individual = (dataReturned \ "individual").as[Individual]
     val addressReturned = getAddress(dataReturned)
@@ -97,6 +97,7 @@ trait BusinessMatchingService {
       agentReferenceNumber = getAgentRefNum(dataReturned),
       //default value from model due to AWRS
 //      isAGroup = false,
+      directMatch = directMatch,
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )
@@ -106,7 +107,7 @@ trait BusinessMatchingService {
     }
   }
 
-  private def cacheOrg(dataReturned: JsValue)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def cacheOrg(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
@@ -118,6 +119,7 @@ trait BusinessMatchingService {
     val reviewDetails = ReviewDetails(businessName = businessName,
       businessType = businessType,
       isAGroup = isAGroup.getOrElse(false),
+      directMatch = directMatch,
       businessAddress = address,
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),

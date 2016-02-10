@@ -413,7 +413,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         "if businessType is Sole Trader: FirstName, Surname and UTR" must {
 
           "not be empty" in {
-            submitWithAuthorisedUser("SOP", FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "firstName" -> "", "lastName" -> "", "saUTR" -> "")) { result =>
+            submitWithAuthorisedUser("SOP", FakeRequest()
+              .withFormUrlEncodedBody("businessType" -> "SOP", "firstName" -> "", "lastName" -> "", "saUTR" -> "")) { result =>
               status(result) must be(BAD_REQUEST)
 
               val document = Jsoup.parse(contentAsString(result))
@@ -677,7 +678,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
             implicit val hc: HeaderCarrier = HeaderCarrier()
             val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-            val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", false, Some("agent123"))
+            val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
             val inputJsonForUIB = Json.parse( """{ "businessType": "UIB", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
             continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(inputJsonForUIB)) {

@@ -8,6 +8,7 @@ import models.{Address, EnrolResponse, Identifier, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.mvc.Result
@@ -21,14 +22,16 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 
-class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockAgentRegistrationService = mock[AgentRegistrationService]
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "GB")
+  val directMatchReviewDetails = ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", isAGroup = false, directMatch = true, Some("agent123"))
+  val nonDirectMatchReviewDetails = ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-  def testReviewDetailsController = {
+  def testReviewDetailsController(directMatch: Boolean) = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = BusinessCustomerSessionCache
 
@@ -36,7 +39,12 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        Future.successful(Some(ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", false, Some("agent123"))))
+        if(directMatch) {
+          Future.successful(Some(directMatchReviewDetails))
+        }
+        else {
+          Future.successful(Some(nonDirectMatchReviewDetails))
+        }
       }
     }
     new ReviewDetailsController {
@@ -64,6 +72,11 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
     }
+  }
+
+  override def beforeEach = {
+    reset(mockAgentRegistrationService)
+    reset(mockAuthConnector)
   }
 
   "ReviewDetailsController" must {
@@ -94,7 +107,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user" in {
-      businessDetailsWithAuthorisedUser(false){ result =>
+      businessDetailsWithAuthorisedUser(directMatch = false){ result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
         document.getElementById("banner2").text must be("Confirm your details are correct.")
@@ -109,7 +122,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user when we directly found this user" in {
-      businessDetailsWithAuthorisedUser(true) { result =>
+      businessDetailsWithAuthorisedUser(directMatch = true) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.getElementById("wrong-account-title").text must be("Not the right details?")
         document.getElementById("wrong-account-text").text must startWith("If this is not the right business, you should sign out and change to another account")
@@ -126,7 +139,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "read existing business details data from cache (without updating data)" in {
-      val testDetailsController = businessDetailsWithAuthorisedUser(false) { result =>
+      val testDetailsController = businessDetailsWithAuthorisedUser(directMatch = false) { result =>
         status(result) must be(OK)
       }
       testDetailsController.dataCacheConnector.reads must be(1)
@@ -203,14 +216,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithUnAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
   private def continueWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
@@ -220,7 +233,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
-    val result = testReviewDetailsController.continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
@@ -228,8 +241,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
+    val testDetailsController = testReviewDetailsController(directMatch = false)
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -239,8 +252,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val testDetailsController = testReviewDetailsController
-    val result = testDetailsController.businessDetails(service, directMatch).apply(fakeRequestWithSession(userId))
+    val testDetailsController = testReviewDetailsController(directMatch = directMatch)
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -251,7 +264,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsControllerNotFound
-    val result = testDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
+    val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
@@ -262,7 +275,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController.businessDetails(service, false).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(directMatch = false).businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
   }
