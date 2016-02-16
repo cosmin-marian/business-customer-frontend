@@ -45,15 +45,79 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
   "BusinessMatchingConnector" must {
 
     val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
+    val matchSuccessResponseInvalidJson = """{
+                                            |		"sapNumber" : "111111111111",
+                                            |		"safeId" : "XV111111111111",
+                                            |		"isEditable" : false,
+                                            |		"isAnAgent" : false,
+                                            |		"isAnIndividual" : false,
+                                            |
+                                            |		"organisation":
+                                            |			{
+                                            |		"organisationName" : "XYZ BREWERY CO LTD",
+                                            |		"isAGroup" : false
+                                            |			},
+                                            |
+                                            |			"address":
+                                            |			{
+                                            |		"addressLine1" : "XYZ  ESTATE",
+                                            |		"addressLine2" : "XYZ DRIVE",
+                                            |		"addressLine3" : "XYZ",
+                                            |		"addressLine4" : "XYZ",
+                                            |		"postalCode" : "HU24 1ST",
+                                            |		"countryCode" : "GB"
+                                            |			},
+                                            |
+                                            |			"contactDetails":
+                                            |			{
+                                            |
+                                            |			,"mobileNumber" : "0121 812222"
+                                            |			}
+                                            |
+                                            |	}""".stripMargin
+
+    val matchSuccessResponseStripContactDetailsJson = """{
+                                            |		"sapNumber" : "111111111111",
+                                            |		"safeId" : "XV111111111111",
+                                            |		"isEditable" : false,
+                                            |		"isAnAgent" : false,
+                                            |		"isAnIndividual" : false,
+                                            |
+                                            |		"organisation":
+                                            |			{
+                                            |		"organisationName" : "XYZ BREWERY CO LTD",
+                                            |		"isAGroup" : false
+                                            |			},
+                                            |
+                                            |			"address":
+                                            |			{
+                                            |		"addressLine1" : "XYZ  ESTATE",
+                                            |		"addressLine2" : "XYZ DRIVE",
+                                            |		"addressLine3" : "XYZ",
+                                            |		"addressLine4" : "XYZ",
+                                            |		"postalCode" : "HU24 1ST",
+                                            |		"countryCode" : "GB"
+                                            |			}
+                                            |	}""".stripMargin.replaceAll("[\r\n\t]", "")
+
     val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 
     "for a successful match, return business details" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-
       when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       await(result) must be(matchSuccessResponse)
+      verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    }
+
+    "for a successful match with invalid JSON response, truncate contact details and return valid json" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      val responseJson = HttpResponse(OK, responseString = Some(matchSuccessResponseInvalidJson))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(responseJson))
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
+      await(result) must be(Json.parse(matchSuccessResponseStripContactDetailsJson))
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
     }
 
