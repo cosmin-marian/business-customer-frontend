@@ -260,8 +260,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("businessName_field").text() must include("Registered Partnership name")
-            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
+            document.getElementById("businessName_field").text() must include("Partnership name")
+            document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
             document.getElementById("psaUTR_hint").text() must be("Example 1234567890")
             document.getElementById("psaUTR").attr("type") must be("number")
@@ -558,7 +558,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
                 contentAsString(result) must include("Registered company name must be entered")
                 contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
 
-                document.getElementById("businessName_field").text() must include("Registered Partnership name")
+                document.getElementById("businessName_field").text() must include("Partnership name")
                 document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
             }
           }

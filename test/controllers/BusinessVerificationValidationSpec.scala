@@ -279,7 +279,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
             contentAsString(result) must include("Registered company name must be entered")
             contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
-            document.getElementById("businessName_field").text() must include("Registered Partnership name")
+            document.getElementById("businessName_field").text() must include("Partnership name")
             document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
         }
       }
