@@ -89,7 +89,7 @@
                 @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
             }else {
-            @Messages("business-review.invalid-address.text")
+            @Messages("business-review.invalid-address.text",service.toUpperCase)
             }
             <p>@Messages("business-review.registered-with-companies-house.text")
                 <a href="@Messages("business-review.registered-with-companies-house.link")" target="_blank" rel="external">
