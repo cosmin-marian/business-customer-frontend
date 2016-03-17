@@ -80,31 +80,32 @@ object BCUtils {
 
 
   def businessTypeMap(service:String) : Seq[(String, String)]= {
-    if (service.toLowerCase.equals("amls")) {
-      Seq(
-        "LTD" -> Messages("bc.business-verification.LTD"),
-        "SOP" -> Messages("bc.business-verification.amls.SOP"),
-        "OBP" -> Messages("bc.business-verification.amls.PRT"),
-        "LP" -> Messages("bc.business-verification.amls.LP.LLP"),
-        "UIB" -> Messages("bc.business-verification.amls.UIB")
-      )
-    } else {
-      val optionalBusinessTypes = if (service.toLowerCase.equals("awrs")) {
-        Seq("GROUP" -> Messages("bc.business-verification.GROUP")
-        )
-      } else {
-        Seq("NUK" -> Messages("bc.business-verification.NUK"))
-      }
 
-      val fixedBusinessTypes = Seq(
-        "LTD" -> Messages("bc.business-verification.LTD"),
-        "SOP" -> Messages("bc.business-verification.SOP"),
-        "OBP" -> Messages("bc.business-verification.PRT"),
-        "LP" -> Messages("bc.business-verification.LP"),
-        "LLP" -> Messages("bc.business-verification.LLP"),
-        "UIB" -> Messages("bc.business-verification.UIB")
-      )
-      optionalBusinessTypes ++ fixedBusinessTypes
+    val fixedBusinessTypes = Seq(
+      "LTD" -> Messages("bc.business-verification.LTD"),
+      "SOP" -> Messages("bc.business-verification.SOP"),
+      "OBP" -> Messages("bc.business-verification.PRT"),
+      "LP" -> Messages("bc.business-verification.LP"),
+      "LLP" -> Messages("bc.business-verification.LLP"),
+      "UIB" -> Messages("bc.business-verification.UIB")
+    )
+
+    service.toLowerCase match {
+      case "ated" => {
+        Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes
+      }
+      case "awrs" => {
+        Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
+      }
+      case "amls" => {
+        Seq(
+          "LTD" -> Messages("bc.business-verification.LTD"),
+          "SOP" -> Messages("bc.business-verification.amls.SOP"),
+          "OBP" -> Messages("bc.business-verification.amls.PRT"),
+          "LP" -> Messages("bc.business-verification.amls.LP.LLP"),
+          "UIB" -> Messages("bc.business-verification.amls.UIB")
+        )
+      }
     }
   }
 
