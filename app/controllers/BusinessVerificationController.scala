@@ -11,7 +11,7 @@ import play.api.mvc._
 import services.BusinessMatchingService
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.AuthUtils
+import utils.{BCUtils, AuthUtils}
 import utils.BusinessCustomerConstants._
 
 import scala.concurrent.Future
@@ -25,16 +25,17 @@ trait BusinessVerificationController extends BaseController {
 
   val businessMatchingService: BusinessMatchingService
 
-  def businessVerification(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
+  def businessVerification(service: String) =
+    AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service))
+      Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))
   }
 
   // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
       businessTypeForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service))),
+        formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))),
         value => {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))

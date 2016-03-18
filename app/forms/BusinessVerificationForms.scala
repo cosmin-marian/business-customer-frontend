@@ -3,6 +3,7 @@ package forms
 
 import play.api.data.Forms._
 import play.api.data._
+import play.api.data.validation.{Invalid, Valid, Constraint}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.BCUtils._
@@ -20,7 +21,7 @@ case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String
 
 case class LimitedPartnershipMatch(businessName: String, psaUTR: String)
 
-case class BusinessType (businessType: Option[String] = None)
+case class BusinessType (businessType: Option[String] = None, isSaAccount: Option[Boolean])
 
 case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch],
                             uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch],
@@ -60,14 +61,22 @@ object BusinessDetails {
 
 object BusinessVerificationForms {
 
+  val ValidBusinessTypeConstraint = Constraint[BusinessType] { model: BusinessType =>
+    println("\n\nisSaAccount : "+model.isSaAccount)
+    (model.businessType.nonEmpty, model.businessType.getOrElse(""), model.isSaAccount)  match {
+      case (true, "SOP", Some(true)) => Valid
+      case (true, "SOP", _) => Invalid("bc.business-verification-error.type_of_business_organisation_invalid", "businessType")
+      case (true, _, Some(true)) => Invalid("bc.business-verification-error.type_of_business_individual_invalid", "businessType")
+      case _ => Valid
+    }
+  }
+
   val businessTypeForm = Form(mapping(
-      "businessType" -> optional(text)
-        .verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined)
+      "businessType" -> optional(text).verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined),
+      "isSaAccount" -> optional(boolean)
     )(BusinessType.apply)(BusinessType.unapply)
+    .verifying(ValidBusinessTypeConstraint)
   )
-
-
-
 
   val soleTraderForm = Form(mapping(
     "firstName" -> text

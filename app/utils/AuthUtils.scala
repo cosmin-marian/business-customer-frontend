@@ -27,4 +27,19 @@ trait AuthUtils {
   def isAgent()(implicit user: AuthContext) = {
     user.principal.accounts.agent.isDefined
   }
+
+  def isSaAccount()(implicit user: AuthContext) = {
+    println("\n User : "+user.principal.accounts.toString)
+    user.principal.accounts.sa match {
+      case Some(_) =>
+      {
+        println("\n User come...11...")
+        Some(true)
+      }
+      case None => {
+        println("\n User come......")
+        Some(false)
+      }
+    }
+  }
 }

@@ -240,6 +240,10 @@ bc.business-verification-error.general.businessType=There is a problem with the 
 bc.business-verification-error.not-selected=Please select a type of business
 bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
 
+bc.business-verification-error.type_of_business_organisation_invalid=You are logged in as an organisation with your Government Gateway ID. You cannot select Sole Trader/Self-employed as your business type. You need to have an individual Government Gateway ID and enrol for Self-Assessment online.
+bc.business-verification-error.type_of_business_individual_invalid=You are logged in as an individual with your Government Gateway ID. You cannot select Limited company/Partnership as your business type. You need to have an organisation Government Gateway ID.
+
+
 ## Signed out page
 bc.signout-title = You have successfully signed out
 bc.signout-header = You''re signed out
