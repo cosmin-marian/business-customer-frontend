@@ -55,6 +55,12 @@ bc.business-verification.LP=Limited Partnership
 bc.business-verification.UIB=Unincorporated Association
 bc.business-verification.LTD=Limited Company
 bc.business-verification.SOP=Sole Trader / Self-employed
+
+bc.business-verification.amls.SOP = Sole Proprietor
+bc.business-verification.amls.LP.LLP = Limited Partnership or Limited Liability Partnership
+bc.business-verification.amls.UIB = Unincorporated Association or Trust
+bc.business-verification.amls.PRT = Partnership
+
 bc.business-agent.confirmation.happens-next-item4 = let you know they have sent you the request. You will have 28 days to sign in and accept the agent request. You won’t receive an email notification
 
 bc.business-verification.NEW=New Business

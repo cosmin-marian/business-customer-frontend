@@ -1,6 +1,7 @@
 package utils
 
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import play.api.i18n.Messages
 
 class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
@@ -68,17 +69,44 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "businessTypeMap" must {
+
       "return the correct map for ated" in {
         val typeMap = BCUtils.businessTypeMap("ated")
         typeMap.size must be(7)
         typeMap(0)._1 must be("NUK")
         typeMap(1)._1 must be("LTD")
       }
+
       "return the correct map for awrs" in {
         val typeMap = BCUtils.businessTypeMap("awrs")
         typeMap.size must be(7)
         typeMap(0)._1 must be("GROUP")
         typeMap(1)._1 must be("LTD")
+      }
+
+      "return the correct map for amls" in {
+        val typeMap = BCUtils.businessTypeMap("amls")
+        typeMap.size must be(5)
+        typeMap mustBe Seq(
+            "LTD" -> Messages("bc.business-verification.LTD"),
+            "SOP" -> Messages("bc.business-verification.amls.SOP"),
+            "OBP" -> Messages("bc.business-verification.amls.PRT"),
+            "LP"  -> Messages("bc.business-verification.amls.LP.LLP"),
+            "UIB" -> Messages("bc.business-verification.amls.UIB")
+          )
+      }
+
+      "return default map when passed nothing" in {
+        val typeMap = BCUtils.businessTypeMap("")
+        typeMap.size must be(6)
+        typeMap mustBe Seq(
+          "LTD" -> Messages("bc.business-verification.LTD"),
+          "SOP" -> Messages("bc.business-verification.SOP"),
+          "OBP" -> Messages("bc.business-verification.PRT"),
+          "LP" -> Messages("bc.business-verification.LP"),
+          "LLP" -> Messages("bc.business-verification.LLP"),
+          "UIB" -> Messages("bc.business-verification.UIB")
+        )
       }
     }
   }
