@@ -41,6 +41,12 @@ object AuthBuilder {
     }
   }
 
+  def mockAuthorisedSaOrgUser(userId:String, mockAuthConnector: AuthConnector)  {
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      Future.successful(Some(createSaOrgAuthority(userId)))
+    }
+  }
+
   def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector)  {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createAgentAuthority(userId, AgentAdmin)))
@@ -65,6 +71,10 @@ object AuthBuilder {
     Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
+  private def createSaOrgAuthority(userId: String) :Authority = {
+    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778"))),
+      org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+  }
 
   private def createAgentAuthority(userId: String, agentRole : AgentRole) :Authority = {
     val agentAccount = AgentAccount(link = "agent/1234",

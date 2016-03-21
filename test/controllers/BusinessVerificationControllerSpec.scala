@@ -135,7 +135,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Sole Trader option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true"}"""))) {
+        continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true", "isOrgAccount":"false"}"""))) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
@@ -143,9 +143,17 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "fail with a bad request when SOP is selected for an Org user" in {
-        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"false"}"""))) {
+        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"false", "isOrgAccount":"true"}"""))) {
           result =>
             status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects SOP" in {
+        continueWithAuthorisedSaOrgUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
     }
@@ -188,9 +196,17 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     }
 
     "fail with a bad request when LTD is selected for an Sa user" in {
-      continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true"}"""))) {
+      continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"false"}"""))) {
         result =>
           status(result) must be(BAD_REQUEST)
+      }
+
+     "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
+       continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
+         result =>
+           status(result) must be(SEE_OTHER)
+           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
       }
     }
 
@@ -716,7 +732,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           "if valid text has been entered - continue to next action - SOP" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            val inputJsonForUIB = Json.parse( """{ "businessType": "SOP", "isSaAccount": "true", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
+            val inputJsonForUIB = Json.parse( """{ "businessType": "SOP", "isSaAccount": "true", "isOrgAccount":"false", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
             continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
@@ -874,6 +890,20 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedSaUser(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def continueWithAuthorisedSaOrgUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    AuthBuilder.mockAuthorisedSaOrgUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
