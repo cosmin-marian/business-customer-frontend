@@ -61,21 +61,21 @@ object BusinessDetails {
 
 object BusinessVerificationForms {
 
-  val ValidBusinessTypeConstraint = Constraint[BusinessType] { model: BusinessType =>
-    println("\n\nisSaAccount : "+model.isSaAccount)
-    (model.businessType.nonEmpty, model.businessType.getOrElse(""), model.isSaAccount)  match {
-      case (true, "SOP", Some(true)) => Valid
-      case (true, "SOP", _) => Invalid("bc.business-verification-error.type_of_business_organisation_invalid", "businessType")
-      case (true, _, Some(true)) => Invalid("bc.business-verification-error.type_of_business_individual_invalid", "businessType")
-      case _ => Valid
-    }
+  def validateBusinessType(businessTypeData: Form[BusinessType]) = {
+    val isSaAccount = businessTypeData.data.get("isSaAccount") map {_.trim} filterNot {_.isEmpty} map {_.toBoolean}
+    val businessType = businessTypeData.data.get("businessType") map {_.trim} filterNot {_.isEmpty}
+    (businessType.nonEmpty, businessType.getOrElse(""), isSaAccount)  match {
+            case (true, "SOP", Some(true)) => businessTypeData
+            case (true, "SOP", _) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_organisation_invalid")
+            case (true, _, Some(true)) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_individual_invalid")
+            case _ => businessTypeData
+          }
   }
 
   val businessTypeForm = Form(mapping(
       "businessType" -> optional(text).verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined),
       "isSaAccount" -> optional(boolean)
     )(BusinessType.apply)(BusinessType.unapply)
-    .verifying(ValidBusinessTypeConstraint)
   )
 
   val soleTraderForm = Form(mapping(

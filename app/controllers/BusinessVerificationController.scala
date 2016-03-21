@@ -34,8 +34,9 @@ trait BusinessVerificationController extends BaseController {
   // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
     implicit user => implicit request =>
-      businessTypeForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))),
+      BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
+        formWithErrors =>
+          Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))),
         value => {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))

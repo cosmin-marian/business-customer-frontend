@@ -15,6 +15,7 @@ import services.BusinessMatchingService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
+import utils.AuthUtils
 
 import scala.concurrent.Future
 import builders.AuthBuilder
@@ -134,8 +135,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Sole Trader option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
+        println("IN HERE1")
+        continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
           result =>
+            val document = Jsoup.parse(contentAsString(result))
+            println(">>>>>"+document)
+
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
@@ -703,7 +708,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             implicit val hc: HeaderCarrier = HeaderCarrier()
             val inputJsonForUIB = Json.parse( """{ "businessType": "SOP", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
-            continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
+            continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/SOP")
@@ -845,6 +850,20 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def continueWithAuthorisedSaUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    AuthBuilder.mockAuthorisedSaUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

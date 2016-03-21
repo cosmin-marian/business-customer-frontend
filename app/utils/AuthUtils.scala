@@ -29,15 +29,14 @@ trait AuthUtils {
   }
 
   def isSaAccount()(implicit user: AuthContext) = {
-    println("\n User : "+user.principal.accounts.toString)
     user.principal.accounts.sa match {
       case Some(_) =>
       {
-        println("\n User come...11...")
+        println("IN HERE")
         Some(true)
       }
       case None => {
-        println("\n User come......")
+        println("IN HERE2")
         Some(false)
       }
     }

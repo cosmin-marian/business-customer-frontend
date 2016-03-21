@@ -35,6 +35,12 @@ object AuthBuilder {
     }
   }
 
+  def mockAuthorisedSaUser(userId:String, mockAuthConnector: AuthConnector)  {
+    when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
+      Future.successful(Some(createSaAuthority(userId)))
+    }
+  }
+
   def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector)  {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createAgentAuthority(userId, AgentAdmin)))
