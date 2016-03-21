@@ -30,13 +30,10 @@ trait AuthUtils {
 
   def isSaAccount()(implicit user: AuthContext) = {
     user.principal.accounts.sa match {
-      case Some(_) =>
-      {
-        println("IN HERE")
+      case Some(_) => {
         Some(true)
       }
       case None => {
-        println("IN HERE2")
         Some(false)
       }
     }
