@@ -33,6 +33,6 @@ trait AuthUtils {
   }
 
   def isOrgAccount()(implicit user: AuthContext) = {
-    user.principal.accounts.org.isDefined
+    user.principal.accounts.ct.isDefined || user.principal.accounts.org.isDefined
   }
 }
