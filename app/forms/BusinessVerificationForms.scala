@@ -21,7 +21,7 @@ case class LimitedLiabilityPartnershipMatch(businessName: String, psaUTR: String
 
 case class LimitedPartnershipMatch(businessName: String, psaUTR: String)
 
-case class BusinessType (businessType: Option[String] = None, isSaAccount: Option[Boolean])
+case class BusinessType (businessType: Option[String] = None, isSaAccount: Boolean, isOrgAccount: Boolean)
 
 case class BusinessDetails (businessType: String, soleTrader: Option[SoleTraderMatch], ltdCompany: Option[LimitedCompanyMatch],
                             uibCompany: Option[UnincorporatedMatch], obpCompany :Option[OrdinaryBusinessPartnershipMatch],
@@ -62,19 +62,21 @@ object BusinessDetails {
 object BusinessVerificationForms {
 
   def validateBusinessType(businessTypeData: Form[BusinessType]) = {
-    val isSaAccount = businessTypeData.data.get("isSaAccount") map {_.trim} filterNot {_.isEmpty} map {_.toBoolean}
+    val isSaAccount = businessTypeData.data.get("isSaAccount").fold(false)(x => x.toBoolean)
+    val isOrgAccount = businessTypeData.data.get("isOrgAccount").fold(false)(x => x.toBoolean)
     val businessType = businessTypeData.data.get("businessType") map {_.trim} filterNot {_.isEmpty}
-    (businessType.nonEmpty, businessType.getOrElse(""), isSaAccount)  match {
-            case (true, "SOP", Some(true)) => businessTypeData
-            case (true, "SOP", _) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_organisation_invalid")
-            case (true, _, Some(true)) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_individual_invalid")
-            case _ => businessTypeData
-          }
+    (businessType.nonEmpty, businessType.getOrElse(""), isSaAccount, isOrgAccount)  match {
+      case (true, "SOP", false, true) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_organisation_invalid")
+      case (true, "SOP", true, false) => businessTypeData
+      case (true, _, true, false) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_individual_invalid")
+      case _ => businessTypeData
+    }
   }
 
   val businessTypeForm = Form(mapping(
       "businessType" -> optional(text).verifying(Messages("bc.business-verification-error.not-selected"), x => x.isDefined),
-      "isSaAccount" -> optional(boolean)
+      "isSaAccount" -> boolean,
+      "isOrgAccount" -> boolean
     )(BusinessType.apply)(BusinessType.unapply)
   )
 

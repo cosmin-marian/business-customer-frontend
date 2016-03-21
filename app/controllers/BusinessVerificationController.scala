@@ -28,7 +28,7 @@ trait BusinessVerificationController extends BaseController {
   def businessVerification(service: String) =
     AuthorisedForGG(BusinessCustomerRegime(service)) {
     implicit user => implicit request =>
-      Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))
+      Ok(views.html.business_verification(businessTypeForm, AuthUtils.isAgent, service, AuthUtils.isSaAccount(), AuthUtils.isOrgAccount()))
   }
 
   // scalastyle:off cyclomatic.complexity
@@ -36,7 +36,7 @@ trait BusinessVerificationController extends BaseController {
     implicit user => implicit request =>
       BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
         formWithErrors =>
-          Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount()))),
+          Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount(), AuthUtils.isOrgAccount()))),
         value => {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))

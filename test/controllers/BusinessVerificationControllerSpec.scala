@@ -200,15 +200,15 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         result =>
           status(result) must be(BAD_REQUEST)
       }
+    }
 
      "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
        continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
          result =>
            status(result) must be(SEE_OTHER)
            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
-        }
-      }
-    }
+       }
+     }
 
     "add additional form fields to the screen for entry" in {
       businessLookupWithAuthorisedUser("LTD") {

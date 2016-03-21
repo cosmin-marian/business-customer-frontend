@@ -1,4 +1,4 @@
-@(businessTypeForm: Form[forms.BusinessType], isAgent: Boolean, service: String, isSaAccount : Option[Boolean])(implicit request: Request[_])
+@(businessTypeForm: Form[forms.BusinessType], isAgent: Boolean, service: String, isSaAccount : Boolean, isOrgAccount: Boolean)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -23,6 +23,7 @@
     @form(action = controllers.routes.BusinessVerificationController.continue(service)) {
         <div class="form-group" id="businessType">
             <input type="hidden" name="isSaAccount" value="@{isSaAccount}">
+            <input type="hidden" name="isOrgAccount" value="@{isOrgAccount}">
             @inputRadioGroup(
             businessTypeForm("businessType"),
             BCUtils.businessTypeMap(service),
