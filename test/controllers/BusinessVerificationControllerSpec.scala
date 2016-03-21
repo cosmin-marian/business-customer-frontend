@@ -137,10 +137,15 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       "redirect to next screen to allow additional form fields to be entered" in {
         continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true"}"""))) {
           result =>
-            val document = Jsoup.parse(contentAsString(result))
-
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "fail with a bad request when SOP is selected for an Org user" in {
+        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"false"}"""))) {
+          result =>
+            status(result) must be(BAD_REQUEST)
         }
       }
     }
@@ -179,6 +184,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+      }
+    }
+
+    "fail with a bad request when LTD is selected for an Sa user" in {
+      continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true"}"""))) {
+        result =>
+          status(result) must be(BAD_REQUEST)
       }
     }
 
