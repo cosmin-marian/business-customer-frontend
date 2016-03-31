@@ -27,4 +27,12 @@ trait AuthUtils {
   def isAgent()(implicit user: AuthContext) = {
     user.principal.accounts.agent.isDefined
   }
+
+  def isSaAccount()(implicit user: AuthContext) = {
+    user.principal.accounts.sa.isDefined
+  }
+
+  def isOrgAccount()(implicit user: AuthContext) = {
+    user.principal.accounts.ct.isDefined || user.principal.accounts.org.isDefined
+  }
 }

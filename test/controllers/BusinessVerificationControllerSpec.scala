@@ -15,6 +15,7 @@ import services.BusinessMatchingService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
+import utils.AuthUtils
 
 import scala.concurrent.Future
 import builders.AuthBuilder
@@ -134,7 +135,22 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting Sole Trader option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP"}"""))) {
+        continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true", "isOrgAccount":"false"}"""))) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "fail with a bad request when SOP is selected for an Org user" in {
+        continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"false", "isOrgAccount":"true"}"""))) {
+          result =>
+            status(result) must be(BAD_REQUEST)
+        }
+      }
+
+      "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects SOP" in {
+        continueWithAuthorisedSaOrgUserJson("SOP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "SOP", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-verification/ATED/businessForm")
@@ -178,6 +194,21 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
       }
     }
+
+    "fail with a bad request when LTD is selected for an Sa user" in {
+      continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"false"}"""))) {
+        result =>
+          status(result) must be(BAD_REQUEST)
+      }
+    }
+
+     "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
+       continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
+         result =>
+           status(result) must be(SEE_OTHER)
+           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+       }
+     }
 
     "add additional form fields to the screen for entry" in {
       businessLookupWithAuthorisedUser("LTD") {
@@ -701,9 +732,9 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           "if valid text has been entered - continue to next action - SOP" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            val inputJsonForUIB = Json.parse( """{ "businessType": "SOP", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
+            val inputJsonForUIB = Json.parse( """{ "businessType": "SOP", "isSaAccount": "true", "isOrgAccount":"false", "uibCompany": {"businessName": "ACME", "cotaxUTR": "1111111111"} }""")
 
-            continueWithAuthorisedUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
+            continueWithAuthorisedSaUserJson("SOP", FakeRequest().withJsonBody(inputJsonForUIB)) {
               result =>
                 status(result) must be(SEE_OTHER)
                 redirectLocation(result).get must include(s"/business-customer/business-verification/$service/businessForm/SOP")
@@ -845,6 +876,34 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def continueWithAuthorisedSaUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    AuthBuilder.mockAuthorisedSaUser(userId, mockAuthConnector)
+
+    val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def continueWithAuthorisedSaOrgUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    AuthBuilder.mockAuthorisedSaOrgUser(userId, mockAuthConnector)
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
