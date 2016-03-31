@@ -11,7 +11,7 @@ import play.api.mvc._
 import services.BusinessMatchingService
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.{BCUtils, AuthUtils}
+import utils.AuthUtils
 import utils.BusinessCustomerConstants._
 
 import scala.concurrent.Future
@@ -36,7 +36,8 @@ trait BusinessVerificationController extends BaseController {
     implicit user => implicit request =>
       BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
         formWithErrors =>
-          Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service, AuthUtils.isSaAccount(), AuthUtils.isOrgAccount()))),
+          Future.successful(BadRequest(views.html.business_verification(formWithErrors, AuthUtils.isAgent, service,
+            AuthUtils.isSaAccount(), AuthUtils.isOrgAccount()))),
         value => {
           value.businessType match {
             case Some("NUK") => Future.successful(Redirect(controllers.routes.BusinessRegController.register(service, "NUK")))

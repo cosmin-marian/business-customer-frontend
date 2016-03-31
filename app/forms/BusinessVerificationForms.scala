@@ -3,7 +3,6 @@ package forms
 
 import play.api.data.Forms._
 import play.api.data._
-import play.api.data.validation.{Invalid, Valid, Constraint}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.BCUtils._
@@ -66,9 +65,11 @@ object BusinessVerificationForms {
     val isOrgAccount = businessTypeData.data.get("isOrgAccount").fold(false)(x => x.toBoolean)
     val businessType = businessTypeData.data.get("businessType") map {_.trim} filterNot {_.isEmpty}
     (businessType.nonEmpty, businessType.getOrElse(""), isSaAccount, isOrgAccount)  match {
-      case (true, "SOP", false, true) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_organisation_invalid")
+      case (true, "SOP", false, true) => businessTypeData.withError(key = "businessType",
+        message = "bc.business-verification-error.type_of_business_organisation_invalid")
       case (true, "SOP", true, false) => businessTypeData
-      case (true, _, true, false) => businessTypeData.withError(key = "businessType", message = "bc.business-verification-error.type_of_business_individual_invalid")
+      case (true, _, true, false) => businessTypeData.withError(key = "businessType",
+        message = "bc.business-verification-error.type_of_business_individual_invalid")
       case _ => businessTypeData
     }
   }
