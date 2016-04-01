@@ -16,7 +16,6 @@
 <p class="heading-sub" id="bc.business-registration.text">@Messages("bc.business-registration.text.client",
     service.toUpperCase)</p>
 <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
-<p class="lede" id="banner2">@Messages("business-review.subscribe-banner2", service.toUpperCase)</p>
 
 }
 
@@ -84,15 +83,14 @@
             }else {
             @Messages("business-review.invalid-address.text",service.toUpperCase)
             }
-            <p>@Messages("business-review.registered-with-companies-house.text")
-                <a href="@Messages("business-review.registered-with-companies-house.link")" target="_blank" rel="external">
-                @Messages("business-review.registered-with-companies-house.link-text")</a>
-            </p>
-            <p>@Messages("business-review.sole-trader.text")
-                <a href="@Messages("business-review.sole-trader.link")" target="_blank" rel="external">
-                @Messages("business-review.sole-trader.link-text")</a>
-                @Messages("business-review.sole-trader.separately")
-            </p>
+            <ul class="list list-bullet">
+            <li>
+                @Html(Messages("business-review.registered-with-companies-house.text"))
+            </li>
+            <li>
+                @Html(Messages("business-review.sole-trader.text"))
+            </li>
+            </ul>
         </div>
     </details>
     }
