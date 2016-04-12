@@ -150,3 +150,29 @@ select {
   top: 50%;
   margin-top: -6px;
 }
+
+input[type="radio"], input[type="checkbox"] {
+    height: 29px;
+    width: 29px;
+    top: 28px;
+}
+
+.block-label {
+    padding-left: 54px;
+}
+
+.form-field--error {
+    background-color: #fff;
+    border-left: 3px solid #df3034;
+    padding: 0.75em 1em;
+    box-sizing: border-box;
+    /*padding: 0.63158em 0.84211em 0.63158em 0.84211em;*/
+}
+
+.form-control {
+    border: 2px solid #6f777b;
+}
+.form-control.error {
+    border: 5px solid #b10e1e;
+    margin-left:2px;
+}
