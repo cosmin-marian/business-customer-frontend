@@ -15,7 +15,7 @@ private object AppDependencies {
 
   private val playHealthVersion = "1.1.0"
 
-  private val frontendBootstrapVersion = "5.1.1"
+  private val frontendBootstrapVersion = "6.3.0"
   private val govukTemplateVersion = "4.0.0"
   private val playUiVersion = "4.9.0"
   private val httpCachingClientVersion = "5.3.0"
