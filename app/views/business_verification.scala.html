@@ -20,6 +20,18 @@
 
 }
 
+@if(service == "ATED") {
+    <details>
+        <summary><span id="not-listed" class="summary">
+            @Messages("bc.business-verification.agent.reveal")
+        </span></summary>
+
+        <div class="panel-indent">
+            <p id="not-listed-text">@Messages("bc.business-verification.agent.reveal-text")</p>
+        </div>
+    </details>
+}
+
     @form(action = controllers.routes.BusinessVerificationController.continue(service)) {
         <div class="form-group" id="businessType">
             <input type="hidden" name="isSaAccount" value="@{isSaAccount}">
