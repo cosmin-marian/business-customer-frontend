@@ -72,6 +72,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               document.title() must be("Business Verification")
               document.getElementById("business-verification-text").text() must be("ATED registration")
               document.getElementById("business-verification-header").text() must be("Select your business type")
+              document.getElementById("not-listed").text() must be("My business type isn’t listed")
+              document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
               document.select(".block-label").text() must include("Unincorporated association")
               document.select(".block-label").text() must include("Limited company")
               document.select(".block-label").text() must include("Sole trader / Self-employed")
@@ -91,8 +93,9 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
               document.title() must be("Business Verification")
               document.getElementById("business-verification-text").text() must be("ATED agency set up")
-
               document.getElementById("business-verification-header").text() must be("Select a business type for your agency")
+              document.getElementById("not-listed").text() must be("My business type isn’t listed")
+              document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
               document.select(".block-label").text() must include("Unincorporated association")
               document.select(".block-label").text() must include("Limited company")
               document.select(".block-label").text() must include("Sole trader / Self-employed")
