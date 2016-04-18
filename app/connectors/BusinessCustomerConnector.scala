@@ -2,16 +2,15 @@ package connectors
 
 import audit.Auditable
 import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
-import models.{KnownFactsForService, BusinessRegistrationResponse, BusinessRegistrationRequest}
+import models.{BusinessCustomerContext, KnownFactsForService, BusinessRegistrationResponse, BusinessRegistrationRequest}
 import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http._
-import utils.{GovernmentGatewayConstants, AuthUtils}
+import utils.GovernmentGatewayConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -27,8 +26,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   val http: HttpGet with HttpPost = WSHttp
 
 
-  def addKnownFacts(knownFacts: KnownFactsForService)(implicit user: AuthContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {
-    val authLink = AuthUtils.getAuthLink()
+  def addKnownFacts(knownFacts: KnownFactsForService)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {
+    val authLink = businessCustomerContext.user.authLink
     val postUrl = s"""$serviceURL$authLink/$baseURI/${GovernmentGatewayConstants.KNOWN_FACTS_AGENT_SERVICE_NAME}/$knownFactsURI"""
     Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
@@ -40,8 +39,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   }
 
 
-  def register(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
-    val authLink = AuthUtils.getAuthLink()
+  def register(registerData: BusinessRegistrationRequest)(implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
+    val authLink = businessCustomerContext.user.authLink
     val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
     Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)

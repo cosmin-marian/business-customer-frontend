@@ -15,11 +15,9 @@ import services.BusinessMatchingService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
-import utils.AuthUtils
 
 import scala.concurrent.Future
 import builders.AuthBuilder
-
 
 class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 

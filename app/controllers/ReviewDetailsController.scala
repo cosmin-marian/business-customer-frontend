@@ -2,12 +2,10 @@ package controllers
 
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
-import controllers.auth.BusinessCustomerRegime
 import play.api.i18n.Messages
 import play.api.{Logger, Play}
 import services.AgentRegistrationService
 import uk.gov.hmrc.play.config.RunMode
-import utils.AuthUtils
 
 import scala.concurrent.Future
 
@@ -27,10 +25,10 @@ trait ReviewDetailsController extends BaseController with RunMode {
   def agentRegistrationService: AgentRegistrationService
 
 
-  def businessDetails(serviceName: String) = AuthorisedForGG(BusinessCustomerRegime(serviceName)).async {
-    implicit user => implicit request =>
+  def businessDetails(serviceName: String) = AuthAction(serviceName).async {
+    implicit businessCustomerContext =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
-        case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, AuthUtils.isAgent, businessDetails)))
+        case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, businessCustomerContext.user.isAgent, businessDetails)))
         case _ => {
           Logger.warn(s"[ReviewDetailsController][businessDetails] - No Service details found in DataCache for")
           throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -38,22 +36,22 @@ trait ReviewDetailsController extends BaseController with RunMode {
       }
   }
 
-  def continue(service: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
-    implicit user => implicit request =>
-      AuthUtils.isAgent match {
+  def continue(serviceName: String) = AuthAction(serviceName).async {
+    implicit businessCustomerContext =>
+      businessCustomerContext.user.isAgent match {
         case false => {
-          val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
+          val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")
           serviceRedirectUrl match {
             case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
             case _ => {
-              Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = ${service}")
-              throw new RuntimeException(Messages("bc.business-review.error.no-service", service, service.toLowerCase))
+              Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = ${serviceName}")
+              throw new RuntimeException(Messages("bc.business-review.error.no-service", serviceName, serviceName.toLowerCase))
             }
           }
         }
         case true => {
-          agentRegistrationService.enrolAgent(service).map { response =>
-            Redirect(controllers.routes.AgentController.register(service))
+          agentRegistrationService.enrolAgent(serviceName).map { response =>
+            Redirect(controllers.routes.AgentController.register(serviceName))
           }
         }
       }

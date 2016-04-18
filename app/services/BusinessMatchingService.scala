@@ -5,7 +5,6 @@ import models._
 import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.SessionUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,7 +16,7 @@ trait BusinessMatchingService {
   val dataCacheConnector: DataCacheConnector
 
   def matchBusinessWithUTR(isAnAgent: Boolean, service: String)
-                          (implicit user: AuthContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
+                          (implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtrAndType map {
       userUtrAndType =>
         val (userUTR, userType) = userUtrAndType
@@ -31,7 +30,7 @@ trait BusinessMatchingService {
   }
 
   def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String, service: String)
-                                     (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
+                                     (implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
@@ -42,7 +41,7 @@ trait BusinessMatchingService {
   }
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String, service: String)
-                                       (implicit user: AuthContext, hc: HeaderCarrier): Future[JsValue] = {
+                                       (implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
     val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
@@ -52,8 +51,8 @@ trait BusinessMatchingService {
     }
   }
 
-  private def getUserUtrAndType(implicit user: AuthContext): Option[(String, String)] = {
-    (user.principal.accounts.sa, user.principal.accounts.ct) match {
+  private def getUserUtrAndType(implicit businessCustomerContext: BusinessCustomerContext): Option[(String, String)] = {
+    (businessCustomerContext.user.authContext.principal.accounts.sa, businessCustomerContext.user.authContext.principal.accounts.ct) match {
       case (Some(sa), None) => Some((sa.utr.utr.toString, "sa"))
       case (None, Some(ct)) => Some((ct.utr.utr.toString, "org"))
       case _ => None
