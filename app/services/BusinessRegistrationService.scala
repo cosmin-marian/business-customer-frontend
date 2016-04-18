@@ -1,12 +1,10 @@
 package services
 
-
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
-import utils.{AuthUtils, SessionUtils}
+import utils.SessionUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -24,7 +22,7 @@ trait BusinessRegistrationService {
   val nonUKbusinessType: String
 
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit user: AuthContext, hc: HeaderCarrier): Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
@@ -41,7 +39,7 @@ trait BusinessRegistrationService {
 
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
-                                               (implicit user: AuthContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
+                                               (implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
     val businessIdentification = {
@@ -65,7 +63,7 @@ trait BusinessRegistrationService {
       acknowledgmentReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
-      isAnAgent = AuthUtils.isAgent,
+      isAnAgent = businessCustomerContext.user.isAgent,
       isAGroup = isGroup,
       identification = businessIdentification,
       contactDetails = EtmpContactDetails()

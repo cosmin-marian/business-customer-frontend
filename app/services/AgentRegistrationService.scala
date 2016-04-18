@@ -11,7 +11,6 @@ import uk.gov.hmrc.play.audit.model.EventTypes
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.GovernmentGatewayConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,7 +22,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   val dataCacheConnector: DataCacheConnector
   val businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+  def enrolAgent(serviceName: String)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ => {
@@ -34,7 +33,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   }
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
-                        (implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+                        (implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     for {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
@@ -44,7 +43,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
-  private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit user: AuthContext): EnrolRequest = {
+  private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit businessCustomerContext: BusinessCustomerContext): EnrolRequest = {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
@@ -62,7 +61,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   }
 
-  private def createKnownFacts(businessDetails: ReviewDetails)(implicit user: AuthContext) = {
+  private def createKnownFacts(businessDetails: ReviewDetails)(implicit businessCustomerContext: BusinessCustomerContext) = {
     val agentRefNo = businessDetails.agentReferenceNumber.getOrElse {
       Logger.warn(s"[AgentRegistrationService][createKnownFacts] - No Agent Reference Number Found")
       throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))

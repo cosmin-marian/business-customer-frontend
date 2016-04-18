@@ -13,7 +13,6 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.InternalServerException
 import uk.gov.hmrc.play.http.logging.SessionId
 
@@ -32,7 +31,7 @@ class BusinessRegistrationServiceSpec  extends PlaySpec with OneServerPerSuite w
   }
 
   object TestConnector extends BusinessCustomerConnector {
-    override def register(registerData: BusinessRegistrationRequest)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[BusinessRegistrationResponse] = {
+    override def register(registerData: BusinessRegistrationRequest)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[BusinessRegistrationResponse] = {
       val nonUKResponse =  BusinessRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",

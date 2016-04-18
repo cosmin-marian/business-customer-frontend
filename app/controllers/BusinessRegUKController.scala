@@ -1,7 +1,6 @@
 package controllers
 
 import config.FrontendAuthConnector
-import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
@@ -21,14 +20,14 @@ trait BusinessRegUKController extends BaseController {
 
   val businessRegistrationService: BusinessRegistrationService
 
-  def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
-    implicit user => implicit request =>
+  def register(service: String, businessType: String) = AuthAction(service) {
+    implicit businessCustomerContext =>
       val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
       Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 
-  def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
-    implicit user => implicit request =>
+  def send(service: String, businessType: String) = AuthAction(service).async {
+    implicit businessCustomerContext =>
       BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
           Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))

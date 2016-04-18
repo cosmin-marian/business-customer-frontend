@@ -1,7 +1,9 @@
 package builders
 
+import models.{BusinessCustomerUser, BusinessCustomerContext}
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -10,44 +12,49 @@ import scala.concurrent.Future
 
 object AuthBuilder {
 
-  def createUserAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createUserAuthority(userId),  nameFromSession = Some(userName))
+  def createUserAuthContext(userId: String, userName: String): BusinessCustomerContext = {
+    val ac = AuthContext(authority = createUserAuthority(userId),  nameFromSession = Some(userName))
+    BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
   }
 
-  def createSaAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createSaAuthority(userId), nameFromSession = Some(userName))
+  def createSaAuthContext(userId: String, userName: String): BusinessCustomerContext = {
+    val ac = AuthContext(authority = createSaAuthority(userId), nameFromSession = Some(userName))
+    BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
   }
 
-  def createAgentAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createAgentAuthority(userId, AgentAdmin), nameFromSession = Some(userName))
+  def createAgentAuthContext(userId: String, userName: String): BusinessCustomerContext = {
+    val ac = AuthContext(authority = createAgentAuthority(userId, AgentAdmin), nameFromSession = Some(userName))
+    BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
   }
 
-  def createAgentAssistantAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createAgentAuthority(userId, AgentAssistant), nameFromSession = Some(userName))
+  def createAgentAssistantAuthContext(userId: String, userName: String): BusinessCustomerContext = {
+    val ac = AuthContext(authority = createAgentAuthority(userId, AgentAssistant), nameFromSession = Some(userName))
+    BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
   }
-  def createInvalidAuthContext(userId: String, userName: String) :AuthContext = {
-    AuthContext(authority = createInvalidAuthority(userId),  nameFromSession = Some(userName))
+  def createInvalidAuthContext(userId: String, userName: String): BusinessCustomerContext = {
+    val ac = AuthContext(authority = createInvalidAuthority(userId),  nameFromSession = Some(userName))
+    BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
   }
 
-  def mockAuthorisedUser(userId:String, mockAuthConnector: AuthConnector)  {
+  def mockAuthorisedUser(userId:String, mockAuthConnector: AuthConnector) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createUserAuthority(userId)))
     }
   }
 
-  def mockAuthorisedSaUser(userId:String, mockAuthConnector: AuthConnector)  {
+  def mockAuthorisedSaUser(userId:String, mockAuthConnector: AuthConnector) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createSaAuthority(userId)))
     }
   }
 
-  def mockAuthorisedSaOrgUser(userId:String, mockAuthConnector: AuthConnector)  {
+  def mockAuthorisedSaOrgUser(userId:String, mockAuthConnector: AuthConnector) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createSaOrgAuthority(userId)))
     }
   }
 
-  def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector)  {
+  def mockAuthorisedAgent(userId:String, mockAuthConnector: AuthConnector) {
     when(mockAuthConnector.currentAuthority(Matchers.any())) thenReturn {
       Future.successful(Some(createAgentAuthority(userId, AgentAdmin)))
     }
@@ -59,24 +66,24 @@ object AuthBuilder {
     }
   }
 
-  private def createInvalidAuthority(userId: String) :Authority = {
+  private def createInvalidAuthority(userId: String): Authority = {
     Authority(userId, Accounts(paye = Some(PayeAccount("paye/AA026813", Nino("AA026813B")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
-  private def createUserAuthority(userId: String) :Authority = {
+  private def createUserAuthority(userId: String): Authority = {
     Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
-  private def createSaAuthority(userId: String) :Authority = {
+  private def createSaAuthority(userId: String): Authority = {
     Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
-  private def createSaOrgAuthority(userId: String) :Authority = {
+  private def createSaOrgAuthority(userId: String): Authority = {
     Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778"))),
       org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
-  private def createAgentAuthority(userId: String, agentRole : AgentRole) :Authority = {
+  private def createAgentAuthority(userId: String, agentRole : AgentRole): Authority = {
     val agentAccount = AgentAccount(link = "agent/1234",
       agentCode = AgentCode(""),
       agentUserId = AgentUserId(userId),

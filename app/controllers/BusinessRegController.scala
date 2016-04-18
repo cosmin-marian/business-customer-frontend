@@ -1,14 +1,12 @@
 package controllers
 
 import config.FrontendAuthConnector
-import controllers.auth.BusinessCustomerRegime
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import utils.{AuthUtils, BCUtils}
+import utils.BCUtils
 
 import scala.concurrent.Future
 
@@ -22,13 +20,13 @@ trait BusinessRegController extends BaseController {
   val businessRegistrationService: BusinessRegistrationService
 
 
-  def register(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)) {
-    implicit user => implicit request =>
+  def register(service: String, businessType: String) = AuthAction(service) {
+    implicit businessCustomerContext =>
       Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
-  def send(service: String, businessType: String) = AuthorisedForGG(BusinessCustomerRegime(service)).async {
-    implicit user => implicit request =>
+  def send(service: String, businessType: String) = AuthAction(service).async {
+    implicit businessCustomerContext =>
       BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
@@ -41,8 +39,8 @@ trait BusinessRegController extends BaseController {
       )
   }
 
-  private def displayDetails(businessType: String, service: String)(implicit user: AuthContext) = {
-    if (AuthUtils.isAgent) {
+  private def displayDetails(businessType: String, service: String)(implicit businessCustomerContext: BusinessCustomerContext) = {
+    if (businessCustomerContext.user.isAgent) {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
         Messages("bc.business-registration.text.agent", service),

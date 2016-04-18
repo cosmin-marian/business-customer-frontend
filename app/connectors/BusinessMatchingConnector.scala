@@ -1,18 +1,15 @@
 package connectors
 
-
 import audit.Auditable
 import com.fasterxml.jackson.core.JsonParseException
 import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
-import models.MatchBusinessData
+import models.{BusinessCustomerContext, MatchBusinessData}
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HeaderCarrier, _}
-import utils.AuthUtils
+import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -25,8 +22,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
 
   val http: HttpGet with HttpPost = WSHttp
 
-  def lookup(lookupData: MatchBusinessData, userType: String, service: String)(implicit user: AuthContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
-    val authLink = AuthUtils.getAuthLink()
+  def lookup(lookupData: MatchBusinessData, userType: String, service: String)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
+    val authLink = businessCustomerContext.user.authLink
     val postUrl = s"""$serviceURL$authLink/$baseURI/$lookupURI/${lookupData.utr}/$userType"""
     Logger.debug(s"[BusinessMatchingConnector][lookup] Call $postUrl")
     http.POST( postUrl, Json.toJson(lookupData)) map {
