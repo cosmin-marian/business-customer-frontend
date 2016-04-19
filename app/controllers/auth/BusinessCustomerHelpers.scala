@@ -8,27 +8,21 @@ import scala.concurrent.Future
 
 trait BusinessCustomerHelpers extends Actions {
 
-  def AuthAction(service: String) = new AuthActionClass(service)
+  def AuthAction(service: String) = new AuthAction(service)
 
-  class AuthActionClass(service: String) {
+  class AuthAction(service: String) {
 
     def apply(f: BusinessCustomerContext => Result): Action[AnyContent] = {
       AuthorisedFor(taxRegime = BusinessCustomerRegime(service), pageVisibility = GGConfidence) {
         implicit authContext => implicit request =>
-
-          val bcu = BusinessCustomerUser(authContext)
-          val bcc = BusinessCustomerContext(request, bcu)
-          f(bcc)
+          f(BusinessCustomerContext(request, BusinessCustomerUser(authContext)))
       }
     }
 
     def async(f: BusinessCustomerContext => Future[Result]): Action[AnyContent] = {
       AuthorisedFor(taxRegime = BusinessCustomerRegime(service), pageVisibility = GGConfidence).async {
         implicit authContext => implicit request =>
-
-          val bcu = BusinessCustomerUser(authContext)
-          val bcc = BusinessCustomerContext(request, bcu)
-          f(bcc)
+          f(BusinessCustomerContext(request, BusinessCustomerUser(authContext)))
       }
     }
 
