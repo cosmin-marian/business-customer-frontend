@@ -4,15 +4,15 @@
 @import views.html.helper._
 @import views.helpers._
 
-@elements = @{new FieldElements(field.id, field, null, args.toMap, lang) }
+@elements = @{FieldElements(field.id, field, Html(""), args.toMap, lang)}
 @parentField = @{args.toMap.get('parentField).asInstanceOf[Option[Field]]}
 @errors = @{ FormHelpers.getErrors(field, parentField) }
 @fieldsetClass = {@elements.args.get('_groupClass)@if(errors.nonEmpty){ form-field--error}}
-@labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
+@labelAfter = @{ elements.args.getOrElse('_labelAfter, false).asInstanceOf[Boolean] }
+
 <fieldset class="@fieldsetClass"
           @if(elements.args.get('_fieldsetAttributes).isDefined) {@elements.args.get('_fieldsetAttributes)}>
 @if(elements.args.get('_legend).isDefined) {
-
 
 <legend @if(elements.args.get('_legendClass).isDefined) {class="@elements.args.get('_legendClass)"} @if(elements.args.get('_fieldsetAttributesLegend).isDefined) {id="@elements.args.get('_fieldsetAttributesLegend)"} id="@elements.field.name.replaceAll("""[\.\[\]]""", "-")_legend">
 @elements.args.get('_legend)
