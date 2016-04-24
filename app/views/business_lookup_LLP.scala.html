@@ -8,43 +8,51 @@
 
 @bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
 
-@bcErrorSummary(limitedLiabilityPartnershipForm, "bc.business-verification-error.general.llp")
+  @bcErrorSummary(limitedLiabilityPartnershipForm, "bc.business-verification-error.general.llp")
 
-@if(isAgent) {
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
-<h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
-}else{
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
-<h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
-}
-<p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
-<div class="form-group">
-@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
+  @if(isAgent) {
+    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
+    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
+  } else {
+    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
+    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
+  }
 
-<div id="business-type-llp-form" class="form-field">
+  <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
 
-    @bcInput(limitedLiabilityPartnershipForm("businessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_hintText -> Messages("bc.business-verification.registered-name.hint"),
-    '_id -> "businessName",
-    '_showConstraints -> false)
 
-    @bcInputNew(limitedLiabilityPartnershipForm("psaUTR"),
-    '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
-    '_hintText -> Messages("bc.business-verification.utr.hint"),
-    '_id -> "psaUTR",
-    '_type -> "number",
-    '_fieldsetAttributesHelpQuestion -> "utr-help-question",
-    '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
-    '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
-    '_showConstraints -> false)
+  @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
-</div>
-<button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
-}
-</div>
-<div>
-    <p> <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">@Messages("bc.business-verification.back")</a> </p>
-</div>
+    <div class="form-group">
+
+      <div id="business-type-llp-form" class="form-field">
+
+        @bcInput(limitedLiabilityPartnershipForm("businessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_hintText -> Messages("bc.business-verification.registered-name.hint"),
+        '_id -> "businessName",
+        '_showConstraints -> false)
+
+        @bcInputNew(limitedLiabilityPartnershipForm("psaUTR"),
+        '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+        '_hintText -> Messages("bc.business-verification.utr.hint"),
+        '_id -> "psaUTR",
+        '_type -> "number",
+        '_fieldsetAttributesHelpQuestion -> "utr-help-question",
+        '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+        '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
+        '_showConstraints -> false)
+
+      </div>
+
+      <button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
+
+    </div>
+
+  }
+
+  <div>
+    <p><a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a></p>
+  </div>
 
 }

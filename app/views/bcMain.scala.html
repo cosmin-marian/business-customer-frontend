@@ -1,34 +1,35 @@
 @(title: String,
-    userLoggedIn: Boolean = true,
-    supportLinkEnabled: Boolean = true,
-    service: Option[String] = None,
-    pageScripts: Option[Html] = None,
-    sidebarLinks: Option[Html] = None,
-    sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
+  userLoggedIn: Boolean = true,
+  supportLinkEnabled: Boolean = true,
+  service: Option[String] = None,
+  pageScripts: Option[Html] = None,
+  sidebarLinks: Option[Html] = None,
+  sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
 
 @import uk.gov.hmrc.play.views.html.layouts
 @import utils.BCUtils
 
 @scriptElement = {
-<script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
-@pageScripts
+  <script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
+  @pageScripts
 }
 
 @linkElement = {
-<link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/business-customer.css")'/>
-<link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.min.css")'/>
-<link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/business-customer.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.min.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
 }
 
-@main(applicationConfig = config.ApplicationConfig,
-    supportLinkEnabled = supportLinkEnabled,
-    title = title,
-    navTitle = BCUtils.getNavTitle(service),
-    service = service,
-    sidebarLinks = sidebarLinks,
-    sidebarClass = sidebarClass,
-    userLoggedIn = userLoggedIn,
-    scriptElement = Some(scriptElement),
-    linkElement = Some(linkElement)) {
-            @mainContent
-}
+@main(
+  applicationConfig = config.ApplicationConfig,
+  supportLinkEnabled = supportLinkEnabled,
+  title = title,
+  navTitle = BCUtils.getNavTitle(service),
+  service = service,
+  sidebarLinks = sidebarLinks,
+  sidebarClass = sidebarClass,
+  userLoggedIn = userLoggedIn,
+  scriptElement = Some(scriptElement),
+  linkElement = Some(linkElement)) {
+    @mainContent
+  }

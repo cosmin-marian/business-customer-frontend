@@ -10,40 +10,48 @@
 
 @bcErrorSummary(unincorporatedBodyForm, "bc.business-verification-error.general.ua")
 
-@if(isAgent) {
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
-<h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
-}else{
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
-<h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
-}
-<p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
-<div class="form-group">
-@form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
-<div id="business-type-uib-form" class="form-field">
+  @if(isAgent) {
+    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
+    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
+  } else {
+    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
+    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
+  }
 
-    @bcInput(unincorporatedBodyForm("businessName"),
-    '_label -> Html(Messages("bc.business-verification.businessNamefield")),
-    '_id -> "businessName",
-    '_hintText -> Messages("bc.business-verification.registered-name.hint"),
-    '_showConstraints -> false)
+  <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
 
-    @bcInputNew(unincorporatedBodyForm("cotaxUTR"),
-    '_label -> Html(Messages("bc.business-verification.coUTRField")),
-    '_hintText -> Messages("bc.business-verification.utr.hint"),
-    '_id -> "cotaxUTR",
-    '_type -> "number",
-    '_fieldsetAttributesHelpQuestion -> "utr-help-question",
-    '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
-    '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
-    '_showConstraints -> false)
+  @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
-</div>
-<button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
-}
-</div>
-<div>
-    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">@Messages("bc.business-verification.back")</a>
-</div>
+    <div class="form-group">
+
+      <div id="business-type-uib-form" class="form-field">
+
+        @bcInput(unincorporatedBodyForm("businessName"),
+        '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+        '_id -> "businessName",
+        '_hintText -> Messages("bc.business-verification.registered-name.hint"),
+        '_showConstraints -> false)
+
+        @bcInputNew(unincorporatedBodyForm("cotaxUTR"),
+        '_label -> Html(Messages("bc.business-verification.coUTRField")),
+        '_hintText -> Messages("bc.business-verification.utr.hint"),
+        '_id -> "cotaxUTR",
+        '_type -> "number",
+        '_fieldsetAttributesHelpQuestion -> "utr-help-question",
+        '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+        '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
+        '_showConstraints -> false)
+
+      </div>
+
+      <button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
+
+    </div>
+
+  }
+
+  <div>
+    <p><a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a></p>
+  </div>
 
 }

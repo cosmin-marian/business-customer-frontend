@@ -8,16 +8,17 @@
 
 @bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
 
-<p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
+  <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.text", service.toUpperCase)</p>
 
-@bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
+  @bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
 
-<h1 class="heading-xlarge" id="business-registration.header"  aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
+  <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
 
-@form(action = controllers.routes.BusinessRegUKController.send(service, displayDetails.businessType)) {
-<div class="form-group">
+  @form(action = controllers.routes.BusinessRegUKController.send(service, displayDetails.businessType)) {
 
-    <div id="business-registration-form">
+    <div class="form-group">
+
+      <div id="business-registration-form">
 
         @bcInputNew(businessRegistrationForm("businessName"),
         '_label ->  Html(Messages("bc.business-registration.group.businessName")),
@@ -57,35 +58,34 @@
         '_maxLength -> 10,
         '_showConstraints -> false)
 
+      </div>
 
-    </div>
+      <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
-
-    <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
-
-    <div>
+      <div>
         <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">@Messages("bc.business-verification.back")</a>
+      </div>
+
+      @bcInputNew(businessRegistrationForm("businessAddress.country"),
+              '_id -> "businessAddress.country",
+              '_label -> Html(Messages("bc.business-registration.country")),
+              '_labelClass -> "visuallyhidden",
+              '_type -> "hidden")
+
+      @bcInputNew(businessRegistrationForm("hasBusinessUniqueId"),
+              '_id -> "hasBusinessUniqueIdry",
+              '_label -> Html(Messages("bc.business-registration.hasBusinessUniqueId")),
+              '_labelClass -> "visuallyhidden",
+              '_type -> "hidden")
+
+      @bcInputNew(businessRegistrationForm("businessType"),
+              '_id -> "businessType",
+              '_label -> Html(Messages("bc.business-verification.user.header")),
+              '_labelClass -> "visuallyhidden",
+              '_type -> "hidden")
+
     </div>
 
-    @bcInputNew(businessRegistrationForm("businessAddress.country"),
-            '_id -> "businessAddress.country",
-            '_label -> Html(Messages("bc.business-registration.country")),
-            '_labelClass -> "visuallyhidden",
-            '_type -> "hidden")
-    @bcInputNew(businessRegistrationForm("hasBusinessUniqueId"),
-            '_id -> "hasBusinessUniqueIdry",
-            '_label -> Html(Messages("bc.business-registration.hasBusinessUniqueId")),
-            '_labelClass -> "visuallyhidden",
-            '_type -> "hidden")
-    @bcInputNew(businessRegistrationForm("businessType"),
-            '_id -> "businessType",
-            '_label -> Html(Messages("bc.business-verification.user.header")),
-            '_labelClass -> "visuallyhidden",
-            '_type -> "hidden")
-</div>
-
+  }
 
 }
-
-}
-
