@@ -7,52 +7,51 @@
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 
 @contentHeader = {
-<h1>@heading</h1>
+  <h1>@heading</h1>
 }
 
 @mainContent = {
-<p>@message</p>
+  <p>@message</p>
 }
 
 @head = {
-@uiLayouts.head(
-assetsPrefix = applicationConfig.assetsPrefix,
-linkElem = None,
-headScripts = None)
-<meta name="format-detection" content="telephone=no" />
+  @uiLayouts.head(
+  assetsPrefix = applicationConfig.assetsPrefix,
+  linkElem = None,
+  headScripts = None)
+  <meta name="format-detection" content="telephone=no" />
 }
 
 @betaBanner = {
-@uiLayouts.betaBanner(
-userLoggedIn = false,
-applicationConfig.betaFeedbackUrl,
-applicationConfig.betaFeedbackUnauthenticatedUrl,
-showFeedbackLinkInBetaBanner = true)
+  @uiLayouts.betaBanner(
+  userLoggedIn = false,
+  applicationConfig.betaFeedbackUrl,
+  applicationConfig.betaFeedbackUnauthenticatedUrl,
+  showFeedbackLinkInBetaBanner = true)
 }
 
 @serviceInfo = {
-@uiLayouts.serviceInfo(
-betaBanner = betaBanner,
-includeGridWrapper = false,
-serviceInfoContent = None)
+  @uiLayouts.serviceInfo(
+  betaBanner = betaBanner,
+  includeGridWrapper = false,
+  serviceInfoContent = None)
 }
 
-
 @content = {
-@uiLayouts.main_content(
-article = uiLayouts.article(mainContent),
-serviceInfo = serviceInfo,
-mainContentHeader = contentHeader)
+  @uiLayouts.main_content(
+  article = uiLayouts.article(mainContent),
+  serviceInfo = serviceInfo,
+  mainContentHeader = contentHeader)
 }
 
 @bodyEnd = {
-@uiLayouts.footer(
-analyticsToken = applicationConfig.analyticsToken,
-analyticsHost = applicationConfig.analyticsHost,
-assetsPrefix = applicationConfig.assetsPrefix,
-ssoUrl = None,
-scriptElem = None,
-gaCalls = None)
+  @uiLayouts.footer(
+  analyticsToken = applicationConfig.analyticsToken,
+  analyticsHost = applicationConfig.analyticsHost,
+  assetsPrefix = applicationConfig.assetsPrefix,
+  ssoUrl = None,
+  scriptElem = None,
+  gaCalls = None)
 }
 
 @footerTop = {}
@@ -60,6 +59,5 @@ gaCalls = None)
 
 @insideHeader = {}
 @afterHeader = {}
-
 
 @hmrcGovUkTemplate(Some(pageTitle), None)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

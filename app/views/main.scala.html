@@ -16,20 +16,22 @@
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
 @head = {
-    @uiLayouts.head(
-        assetsPrefix = applicationConfig.assetsPrefix,
-        linkElem = linkElement,
-        headScripts = None)
-    <meta name="format-detection" content="telephone=no" />
-    @views.html.helpers.ga(applicationConfig.analyticsToken.getOrElse("UA-123456"))
+  @uiLayouts.head(
+  assetsPrefix = applicationConfig.assetsPrefix,
+  linkElem = linkElement,
+  headScripts = None)
+
+  <meta name="format-detection" content="telephone=no" />
+
+  @views.html.helpers.ga(applicationConfig.analyticsToken.getOrElse("UA-123456"))
 }
 
 @headerNavLinks = {
-    <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
+  <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
 }
 
 @article = {
-    @uiLayouts.article(content = mainContent, includeGridWrapper = false, articleClasses = None)
+  @uiLayouts.article(content = mainContent, includeGridWrapper = false, articleClasses = None)
 }
 
 @sidebar = {
@@ -37,62 +39,62 @@
 }
 
 @insideHeader = {
-    @uiLayouts.header_nav(
-        navTitle = navTitle,
-        navTitleLink = None,
-        showBetaLink = false,
-        navLinks = Some(headerNavLinks))
+  @uiLayouts.header_nav(
+  navTitle = navTitle,
+  navTitleLink = None,
+  showBetaLink = false,
+  navLinks = Some(headerNavLinks))
 }
 
 @afterHeader = {}
 
 @bodyEnd = {
-    @uiLayouts.footer(
-        analyticsToken = applicationConfig.analyticsToken,
-        analyticsHost = applicationConfig.analyticsHost,
-        assetsPrefix = applicationConfig.assetsPrefix,
-        ssoUrl = None,
-        scriptElem = scriptElement,
-        gaCalls = None)
+  @uiLayouts.footer(
+  analyticsToken = applicationConfig.analyticsToken,
+  analyticsHost = applicationConfig.analyticsHost,
+  assetsPrefix = applicationConfig.assetsPrefix,
+  ssoUrl = None,
+  scriptElem = scriptElement,
+  gaCalls = None)
 }
 
 @footerTop = {}
 @footerLinks = {}
 
 @betaBanner = {
-    @uiLayouts.betaBanner(
-        userLoggedIn = userLoggedIn,
-        betaFeedbackUrl = applicationConfig.betaFeedbackUrl,
-        betaFeedbackUnauthenticatedUrl = applicationConfig.betaFeedbackUnauthenticatedUrl,
-        showFeedbackLinkInBetaBanner = true)
+  @uiLayouts.betaBanner(
+  userLoggedIn = userLoggedIn,
+  betaFeedbackUrl = applicationConfig.betaFeedbackUrl,
+  betaFeedbackUnauthenticatedUrl = applicationConfig.betaFeedbackUnauthenticatedUrl,
+  showFeedbackLinkInBetaBanner = true)
 }
 
 @serviceInfo = {
-    @uiLayouts.serviceInfo(
-        betaBanner = betaBanner,
-        includeGridWrapper = false,
-        serviceInfoContent = None)
+  @uiLayouts.serviceInfo(
+  betaBanner = betaBanner,
+  includeGridWrapper = false,
+  serviceInfoContent = None)
 }
 
 @getHelpForm = {
-    @if(supportLinkEnabled) {
-        @{uiHelpers.reportAProblemLink(config.ApplicationConfig.reportAProblemPartialUrl, config.ApplicationConfig.reportAProblemNonJSUrl)}
-    }
+  @if(supportLinkEnabled) {
+    @{uiHelpers.reportAProblemLink(config.ApplicationConfig.reportAProblemPartialUrl, config.ApplicationConfig.reportAProblemNonJSUrl)}
+  }
 }
 
 @mainContentHeader = {
-    @if(contentHeader.isDefined) {
-        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
-    }
+  @if(contentHeader.isDefined) {
+    @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+  }
 }
 
 @content = {
-    @uiLayouts.main_content(
-        article = article,
-        sidebar = sidebar,
-        mainContentHeader = mainContentHeader,
-        serviceInfo = serviceInfo,
-        getHelpForm = getHelpForm)
+  @uiLayouts.main_content(
+  article = article,
+  sidebar = sidebar,
+  mainContentHeader = mainContentHeader,
+  serviceInfo = serviceInfo,
+  getHelpForm = getHelpForm)
 }
 
 @hmrcGovUkTemplate(title = Some(title), bodyClasses = None)(head = head,
