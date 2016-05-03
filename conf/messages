@@ -111,6 +111,7 @@ bc.unauthorised.heading=You are not authorised to use this service
 business-registration.title = Business Registration
 bc.business-registration.user.non-uk.header = Enter your non-UK business details
 bc.business-registration.agent.non-uk.header = Enter your non-UK agent details
+bc.business-registration.lede.text = This is the registered address of your Non-UK business, you can enter a different address for correspondence on the next page.
 bc.business-registration.user.new-business.header = New business details
 business-registration.group.title = Create AWRS group
 bc.business-registration.user.group.header = Create AWRS group
