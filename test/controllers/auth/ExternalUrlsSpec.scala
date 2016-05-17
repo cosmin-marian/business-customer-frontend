@@ -19,11 +19,11 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "have signIn " in {
-      ExternalUrls.signIn must be(s"""http://localhost:9025/account/sign-in?continue=http://localhost:9923/business-customer""")
+      ExternalUrls.signIn("ATED") must be(s"""http://localhost:9025/gg/sign-in?continue=http://localhost:9923/business-customer/ATED""")
     }
 
     "have signOut " in {
-      ExternalUrls.signOut must be(s"""http://localhost:9025/account/sign-out""")
+      ExternalUrls.signOut must be(s"""http://localhost:9025/gg/sign-out""")
     }
 
     "have serviceWelcomePath" in {

@@ -65,20 +65,6 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
         }
       }
 
-      "Unauthenticated users" must {
-        "respond with a redirect" in {
-          getWithUnAuthenticated { result =>
-            status(result) must be(SEE_OTHER)
-          }
-        }
-
-        "be redirected to the login page" in {
-          getWithUnAuthenticated { result =>
-            redirectLocation(result).get must include("/account/sign-in")
-          }
-        }
-      }
-
       "Authorised users must" must {
         "if have valid utr" must {
           "if match is found, be redirected to Review Details page" in {

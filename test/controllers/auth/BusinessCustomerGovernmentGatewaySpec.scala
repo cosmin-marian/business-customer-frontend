@@ -9,7 +9,7 @@ class BusinessCustomerGovernmentGatewaySpec extends PlaySpec with OneServerPerSu
   "BusinessCustomerGovernmentGateway" must {
     
     "have login value overridden" in {
-      BusinessCustomerGovernmentGateway(serviceName).login must be(ExternalUrls.signIn + s"/$serviceName")
+      BusinessCustomerGovernmentGateway(serviceName).login must be(ExternalUrls.signIn(serviceName))
     }
     
   }
