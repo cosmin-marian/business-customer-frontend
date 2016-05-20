@@ -1,0 +1,33 @@
+@(nrlQuestionForm: Form[forms.NRLQuestion], service: String)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import utils.BCUtils
+
+@implicitFormInstance = @{ Some(nrlQuestionForm) }
+
+@bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
+
+@bcErrorSummary(nrlQuestionForm, "bc.business-verification-error.general")
+
+
+@form(action = controllers.routes.BusinessVerificationController.continue(service)) {
+
+<div class="form-group" id="businessType">
+
+    @inputRadioGroup(
+    nrlQuestionForm("businessType"),
+    Seq("true" -> Messages("ated.registered-business-address.correspondence-address.yes"),
+    "false" -> Messages("ated.registered-business-address.correspondence-address.no")),
+    '_labelClass -> "block-label",
+    '_legendClass -> "heading-medium",
+    '_labelAfter -> true
+    )
+
+</div>
+
+<button class="button" id="submit" type="submit">@Messages("bc.continue")</button>
+
+}
+
+}
