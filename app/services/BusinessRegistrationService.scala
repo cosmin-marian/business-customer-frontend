@@ -22,7 +22,8 @@ trait BusinessRegistrationService {
   val nonUKbusinessType: String
 
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)(implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)
+                      (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
@@ -39,7 +40,7 @@ trait BusinessRegistrationService {
 
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
-                                               (implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
+                                               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
     val businessIdentification = {
@@ -63,7 +64,7 @@ trait BusinessRegistrationService {
       acknowledgmentReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
-      isAnAgent = businessCustomerContext.user.isAgent,
+      isAnAgent = bcContext.user.isAgent,
       isAGroup = isGroup,
       identification = businessIdentification,
       contactDetails = EtmpContactDetails()

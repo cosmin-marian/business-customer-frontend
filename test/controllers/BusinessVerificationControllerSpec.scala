@@ -397,7 +397,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register/$service/NUK")
+          redirectLocation(result).get must include(s"/business-customer/nrl/$service")
       }
     }
 
@@ -793,7 +793,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           continueWithAuthorisedUser("NUK", FakeRequest().withFormUrlEncodedBody("businessType" -> "NUK")) {
             result =>
               status(result) must be(SEE_OTHER)
-              redirectLocation(result).get must include(s"/business-customer/register/$service")
+              redirectLocation(result).get must include(s"/business-customer/nrl/$service")
           }
         }
 

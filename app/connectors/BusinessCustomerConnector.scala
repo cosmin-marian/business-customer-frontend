@@ -2,19 +2,18 @@ package connectors
 
 import audit.Auditable
 import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
-import models.{BusinessCustomerContext, KnownFactsForService, BusinessRegistrationResponse, BusinessRegistrationRequest}
+import models.{BusinessCustomerContext, BusinessRegistrationRequest, BusinessRegistrationResponse, KnownFactsForService}
 import play.api.Logger
+import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.{EventTypes, Audit}
+import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 import utils.GovernmentGatewayConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.http.Status._
 
 trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads with Auditable {
 
@@ -26,12 +25,12 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   val http: HttpGet with HttpPost = WSHttp
 
 
-  def addKnownFacts(knownFacts: KnownFactsForService)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier) :Future[HttpResponse]= {
-    val authLink = businessCustomerContext.user.authLink
+  def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceURL$authLink/$baseURI/${GovernmentGatewayConstants.KNOWN_FACTS_AGENT_SERVICE_NAME}/$knownFactsURI"""
     Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
-    http.POST[JsValue, HttpResponse](postUrl, jsonData)  map {
+    http.POST[JsValue, HttpResponse](postUrl, jsonData) map {
       response =>
         auditAddKnownFactsCall(knownFacts, response)
         response
@@ -39,8 +38,9 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   }
 
 
-  def register(registerData: BusinessRegistrationRequest)(implicit businessCustomerContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
-    val authLink = businessCustomerContext.user.authLink
+  def register(registerData: BusinessRegistrationRequest)
+              (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
+    val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
     Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)

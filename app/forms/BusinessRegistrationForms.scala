@@ -183,12 +183,12 @@ object BusinessRegistrationForms {
 
   val nrlQuestionForm = Form(
     mapping(
-      "paysSA" -> optional(boolean)
+      "paysSA" -> optional(boolean).verifying(Messages("bc.nrl.paysSA.not-selected.error"), a => a.isDefined)
     )(NRLQuestion.apply)(NRLQuestion.unapply)
   )
 
-
 }
+
 case class NRLQuestion(paysSA: Option[Boolean] = None)
 
 object NRLQuestion {

@@ -22,7 +22,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   val dataCacheConnector: DataCacheConnector
   val businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ => {
@@ -43,7 +43,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
-  private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit businessCustomerContext: BusinessCustomerContext): EnrolRequest = {
+  private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit bcContext: BusinessCustomerContext): EnrolRequest = {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
       case Some(enrolServiceName) => {
@@ -61,7 +61,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   }
 
-  private def createKnownFacts(businessDetails: ReviewDetails)(implicit businessCustomerContext: BusinessCustomerContext) = {
+  private def createKnownFacts(businessDetails: ReviewDetails)(implicit bcContext: BusinessCustomerContext) = {
     val agentRefNo = businessDetails.agentReferenceNumber.getOrElse {
       Logger.warn(s"[AgentRegistrationService][createKnownFacts] - No Agent Reference Number Found")
       throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))
