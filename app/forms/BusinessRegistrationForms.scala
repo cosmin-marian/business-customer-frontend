@@ -4,6 +4,7 @@ import models.{Address, BusinessRegistration}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 
 object BusinessRegistrationForms {
 
@@ -15,7 +16,8 @@ object BusinessRegistrationForms {
   val length60 = 60
   val length105 = 105
   // scalastyle:off line.size.limit
-  val postcodeRegex = """(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$"""
+  val postcodeRegex =
+    """(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2}))$"""
 
   val countryUK = "GB"
 
@@ -58,16 +60,16 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+  def validateNonUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
     validateNonUkIdentifiers(validateCountryNonUK(registrationData))
   }
 
-  def validateUK(registrationData: Form[BusinessRegistration]) :Form[BusinessRegistration] = {
+  def validateUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
     validateUkIdentifiers(validatePostCode(registrationData))
   }
 
   def validateUkIdentifiers(registrationData: Form[BusinessRegistration]) = {
-      registrationData
+    registrationData
   }
 
   def validateNonUkIdentifiers(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
@@ -75,10 +77,20 @@ object BusinessRegistrationForms {
   }
 
   def validateNonUkIdentifiersInstitution(registrationData: Form[BusinessRegistration]) = {
-    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {_.trim} filterNot {_.isEmpty} map{_.toBoolean}
-    val issuingInstitution = registrationData.data.get("issuingInstitution") map {_.trim} filterNot {_.isEmpty}
+    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    } map {
+      _.toBoolean
+    }
+    val issuingInstitution = registrationData.data.get("issuingInstitution") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
     hasBusinessUniqueId match {
-      case Some(true) if(issuingInstitution.isEmpty) => {
+      case Some(true) if (issuingInstitution.isEmpty) => {
         registrationData
           .withError(key = "issuingInstitution", message = Messages("bc.business-registration-error.issuingInstitution.select"))
       }
@@ -87,14 +99,24 @@ object BusinessRegistrationForms {
   }
 
   def validateNonUkIdentifiersCountry(registrationData: Form[BusinessRegistration]) = {
-    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {_.trim} filterNot {_.isEmpty} map{_.toBoolean}
-    val issuingCountry = registrationData.data.get("issuingCountry") map {_.trim} filterNot {_.isEmpty}
+    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    } map {
+      _.toBoolean
+    }
+    val issuingCountry = registrationData.data.get("issuingCountry") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
     hasBusinessUniqueId match {
-      case Some(true) if(issuingCountry.isEmpty) => {
+      case Some(true) if (issuingCountry.isEmpty) => {
         registrationData
           .withError(key = "issuingCountry", message = Messages("bc.business-registration-error.issuingCountry.select"))
       }
-      case Some(true) if(issuingCountry.isDefined && issuingCountry.fold("")(x=>x).matches(countryUK)) => {
+      case Some(true) if (issuingCountry.isDefined && issuingCountry.fold("")(x => x).matches(countryUK)) => {
         registrationData
           .withError(key = "issuingCountry", message = Messages("bc.business-registration-error.non-uk"))
       }
@@ -103,10 +125,20 @@ object BusinessRegistrationForms {
   }
 
   def validateNonUkIdentifiersId(registrationData: Form[BusinessRegistration]) = {
-    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {_.trim} filterNot {_.isEmpty} map{_.toBoolean}
-    val businessUniqueId = registrationData.data.get("businessUniqueId") map {_.trim} filterNot {_.isEmpty}
+    val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    } map {
+      _.toBoolean
+    }
+    val businessUniqueId = registrationData.data.get("businessUniqueId") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
     hasBusinessUniqueId match {
-      case Some(true) if(businessUniqueId.isEmpty) => {
+      case Some(true) if (businessUniqueId.isEmpty) => {
         registrationData
           .withError(key = "businessUniqueId", message = Messages("bc.business-registration-error.businessUniqueId.select"))
       }
@@ -115,12 +147,16 @@ object BusinessRegistrationForms {
   }
 
   private def validatePostCode(registrationData: Form[BusinessRegistration]) = {
-    val postCode = registrationData.data.get("businessAddress.postcode") map {_.trim} filterNot {_.isEmpty}
+    val postCode = registrationData.data.get("businessAddress.postcode") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
     if (!postCode.isDefined) {
       registrationData.withError(key = "businessAddress.postcode",
         message = Messages("bc.business-registration-error.postcode"))
     } else {
-      if(!postCode.fold("")(x => x).matches(postcodeRegex)) {
+      if (!postCode.fold("")(x => x).matches(postcodeRegex)) {
         registrationData.withError(key = "businessAddress.postcode",
           message = Messages("bc.business-registration-error.postcode.invalid"))
       } else {
@@ -131,15 +167,30 @@ object BusinessRegistrationForms {
 
 
   private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
-    val country = registrationData.data.get("businessAddress.country") map {_.trim} filterNot {_.isEmpty}
-      if(country.fold("")(x => x).matches(countryUK)) {
-        registrationData.withError(key = "businessAddress.country",
-          message = Messages("bc.business-registration-error.non-uk"))
-      } else {
-        registrationData
-      }
+    val country = registrationData.data.get("businessAddress.country") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
+    if (country.fold("")(x => x).matches(countryUK)) {
+      registrationData.withError(key = "businessAddress.country",
+        message = Messages("bc.business-registration-error.non-uk"))
+    } else {
+      registrationData
+    }
 
   }
 
+  val nrlQuestionForm = Form(
+    mapping(
+      "paysSA" -> optional(boolean).verifying(Messages("bc.nrl.paysSA.not-selected.error"), a => a.isDefined)
+    )(NRLQuestion.apply)(NRLQuestion.unapply)
+  )
 
+}
+
+case class NRLQuestion(paysSA: Option[Boolean] = None)
+
+object NRLQuestion {
+  implicit val formats = Json.format[NRLQuestion]
 }

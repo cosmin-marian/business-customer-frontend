@@ -12,8 +12,8 @@ trait HomeController extends BaseController {
   val businessMatchService: BusinessMatchingService
 
   def homePage(service: String) = AuthAction(service).async {
-    implicit businessCustomerUser =>
-      businessMatchService.matchBusinessWithUTR(isAnAgent = businessCustomerUser.user.isAgent, service) match {
+    implicit bcContext =>
+      businessMatchService.matchBusinessWithUTR(isAnAgent = bcContext.user.isAgent, service) match {
         case Some(futureJsValue) =>
           futureJsValue map {
             jsValue => jsValue.validate[ReviewDetails] match {

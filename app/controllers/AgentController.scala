@@ -17,7 +17,7 @@ trait AgentController extends BaseController {
   val authConnector: AuthConnector
 
   def register(service: String) = AuthAction(service).async {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map {
         reviewDetails =>
           reviewDetails.flatMap(_.agentReferenceNumber) match {

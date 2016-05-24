@@ -21,12 +21,12 @@ trait BusinessRegController extends BaseController {
 
 
   def register(service: String, businessType: String) = AuthAction(service) {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
   def send(service: String, businessType: String) = AuthAction(service).async {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
           Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))

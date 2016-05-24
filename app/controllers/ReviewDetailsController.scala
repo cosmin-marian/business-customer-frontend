@@ -26,9 +26,9 @@ trait ReviewDetailsController extends BaseController with RunMode {
 
 
   def businessDetails(serviceName: String) = AuthAction(serviceName).async {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
-        case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, businessCustomerContext.user.isAgent, businessDetails)))
+        case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
         case _ => {
           Logger.warn(s"[ReviewDetailsController][businessDetails] - No Service details found in DataCache for")
           throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -37,8 +37,8 @@ trait ReviewDetailsController extends BaseController with RunMode {
   }
 
   def continue(serviceName: String) = AuthAction(serviceName).async {
-    implicit businessCustomerContext =>
-      businessCustomerContext.user.isAgent match {
+    implicit bcContext =>
+      bcContext.user.isAgent match {
         case false => {
           val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")
           serviceRedirectUrl match {

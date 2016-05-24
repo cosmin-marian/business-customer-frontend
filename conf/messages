@@ -2,6 +2,7 @@ bc.title = Business Customer
 bc.business-verification.title = Business Customer
 bc.radio.yes.label = Yes
 bc.radio.no.label = No
+bc.continue = Continue
 
 bc.ated.serviceName = Annual Tax on Enveloped Dwellings (ATED)
 bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
@@ -274,3 +275,9 @@ label.explore_gov_uk=Explore GOV.UK
 title.satisfied=Satisfied
 title.dissatisfied=Dissatisfied
 feedback.redirect-startpage= Please return to start page
+
+## non-resident landlord
+bc.nrl.header = Are you a non resident landlord who pays tax through self assessment?
+bc.nrl.title = Are you a non resident landlord who pays tax through self assessment?
+bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
+bc.nrl.paysSA.not-selected.error = You must select an option.

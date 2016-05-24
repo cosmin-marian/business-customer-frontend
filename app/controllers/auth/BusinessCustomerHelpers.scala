@@ -6,6 +6,7 @@ import uk.gov.hmrc.play.frontend.auth.Actions
 
 import scala.concurrent.Future
 
+//scalastyle:off
 trait BusinessCustomerHelpers extends Actions {
 
   def AuthAction(service: String) = new AuthAction(service)

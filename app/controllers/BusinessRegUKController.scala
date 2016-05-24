@@ -21,13 +21,13 @@ trait BusinessRegUKController extends BaseController {
   val businessRegistrationService: BusinessRegistrationService
 
   def register(service: String, businessType: String) = AuthAction(service) {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
       Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 
   def send(service: String, businessType: String) = AuthAction(service).async {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
         formWithErrors => {
           Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
