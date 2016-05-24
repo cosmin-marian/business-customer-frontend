@@ -33,7 +33,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
   }
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
-                        (implicit businessCustomerContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+                        (implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
     for {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))

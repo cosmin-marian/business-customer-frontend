@@ -10,13 +10,13 @@ object NRLQuestionController extends NRLQuestionController {
 trait NRLQuestionController extends BaseController {
 
   def view(service: String) = AuthAction(service) {
-    implicit businessCustomerContext =>
-      if (businessCustomerContext.user.isAgent) Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
+    implicit bcContext =>
+      if (bcContext.user.isAgent) Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
       else Ok(views.html.nrl_question(nrlQuestionForm, service))
   }
 
   def continue(service: String) = AuthAction(service) {
-    implicit businessCustomerContext =>
+    implicit bcContext =>
       nrlQuestionForm.bindFromRequest.fold(
         fornWithErrors => BadRequest(views.html.nrl_question(fornWithErrors, service)),
         formData => {
