@@ -7,8 +7,10 @@ import uk.gov.hmrc.play.config.RunMode
 object ExternalUrls extends RunMode {
   val companyAuthHost = s"${Play.configuration.getString(s"govuk-tax.$env.services.auth.company-auth.host").getOrElse("")}"
   val loginCallback = Play.configuration.getString(s"govuk-tax.$env.services.auth.login-callback.url").getOrElse("/business-customer")
+  def continueURL(serviceName: String) = s"$loginCallback/$serviceName"
   val loginPath = s"${Play.configuration.getString(s"govuk-tax.$env.services.auth.login-path").getOrElse("sign-in")}"
-  def signIn(serviceName: String) = s"$companyAuthHost/gg/$loginPath?continue=$loginCallback/$serviceName"
+  val loginURL = s"$companyAuthHost/gg/$loginPath"
+  def signIn(serviceName: String) = s"$companyAuthHost/gg/$loginPath?continue=${continueURL(serviceName)}"
   val signOut = s"$companyAuthHost/gg/sign-out"
 
   def agentConfirmationPath(service:String) :String = {
