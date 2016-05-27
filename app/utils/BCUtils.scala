@@ -91,7 +91,7 @@ object BCUtils {
     )
 
     service.toLowerCase match {
-      case "ated" => Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes
+      case "ated" => Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes.filterNot(p => p._1 == "UIB")
       case "awrs" => Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
       case "amls" => Seq("LTD" -> Messages("bc.business-verification.LTD"),
                          "SOP" -> Messages("bc.business-verification.amls.SOP"),
