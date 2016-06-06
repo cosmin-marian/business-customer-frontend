@@ -79,7 +79,7 @@ object BCUtils {
 
 
 
-  def businessTypeMap(service:String) : Seq[(String, String)]= {
+  def businessTypeMap(service:String, isAgent: Boolean) : Seq[(String, String)]= {
 
     val fixedBusinessTypes = Seq(
 
@@ -92,7 +92,7 @@ object BCUtils {
     )
 
     service.toLowerCase match {
-      case "ated" => fixedBusinessTypes.filterNot(p => p._1 == "UIB") ++ Seq("NUK" -> Messages("bc.business-verification.NUK"))
+      case "ated" => if(isAgent) fixedBusinessTypes.filterNot(p => p._1 == "UIB") ++ Seq("NUK" -> Messages("bc.business-verification.NUK")) else Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes.filterNot(p => p._1 == "UIB")
       case "awrs" => Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
       case "amls" => Seq("LTD" -> Messages("bc.business-verification.LTD"),
                          "SOP" -> Messages("bc.business-verification.amls.SOP"),
