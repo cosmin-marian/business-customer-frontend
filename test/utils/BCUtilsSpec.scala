@@ -72,9 +72,9 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
       "return the correct map for ated" in {
         val typeMap = BCUtils.businessTypeMap("ated", false)
-        typeMap.size must be(6)
+        typeMap.size must be(5)
         typeMap(0)._1 must be("NUK")
-        typeMap(1)._1 must be("SOP")
+        typeMap(1)._1 must be("LTD")
       }
 
       "return the correct map for awrs" in {
