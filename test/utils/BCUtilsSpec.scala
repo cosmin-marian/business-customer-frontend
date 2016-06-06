@@ -71,21 +71,21 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
     "businessTypeMap" must {
 
       "return the correct map for ated" in {
-        val typeMap = BCUtils.businessTypeMap("ated")
+        val typeMap = BCUtils.businessTypeMap("ated", false)
         typeMap.size must be(6)
         typeMap(0)._1 must be("NUK")
-        typeMap(1)._1 must be("LTD")
+        typeMap(1)._1 must be("SOP")
       }
 
       "return the correct map for awrs" in {
-        val typeMap = BCUtils.businessTypeMap("awrs")
+        val typeMap = BCUtils.businessTypeMap("awrs", false)
         typeMap.size must be(7)
         typeMap(0)._1 must be("GROUP")
-        typeMap(1)._1 must be("LTD")
+        typeMap(1)._1 must be("SOP")
       }
 
       "return the correct map for amls" in {
-        val typeMap = BCUtils.businessTypeMap("amls")
+        val typeMap = BCUtils.businessTypeMap("amls", false)
         typeMap.size must be(5)
         typeMap mustBe Seq(
             "LTD" -> Messages("bc.business-verification.LTD"),
@@ -95,13 +95,12 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
             "UIB" -> Messages("bc.business-verification.amls.UIB")
           )
       }
-
       "return default map when passed nothing" in {
-        val typeMap = BCUtils.businessTypeMap("")
+        val typeMap = BCUtils.businessTypeMap("", false)
         typeMap.size must be(6)
         typeMap mustBe Seq(
-          "LTD" -> Messages("bc.business-verification.LTD"),
           "SOP" -> Messages("bc.business-verification.SOP"),
+          "LTD" -> Messages("bc.business-verification.LTD"),
           "OBP" -> Messages("bc.business-verification.PRT"),
           "LP" -> Messages("bc.business-verification.LP"),
           "LLP" -> Messages("bc.business-verification.LLP"),
