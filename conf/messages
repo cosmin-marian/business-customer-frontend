@@ -277,7 +277,7 @@ title.dissatisfied=Dissatisfied
 feedback.redirect-startpage= Please return to start page
 
 ## non-resident landlord
-bc.nrl.header = Are you a non-resident landlord who pays tax through self assessment?
-bc.nrl.title = Are you a non-resident landlord who pays tax through self assessment?
+bc.nrl.header = Are you a non-resident landlord operating through an offshore company who pays tax through Self-Assessment?
+bc.nrl.title = Are you a non-resident landlord operating through an offshore company who pays tax through Self-Assessment?
 bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
 bc.nrl.paysSA.not-selected.error = You must select an option.
