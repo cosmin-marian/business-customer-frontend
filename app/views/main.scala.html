@@ -27,7 +27,9 @@
 }
 
 @headerNavLinks = {
-  <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
+  @if(userLoggedIn) {
+    <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
+  }
 }
 
 @article = {
