@@ -34,12 +34,13 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   def testReviewDetailsController(directMatch: Boolean) = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = BusinessCustomerSessionCache
+      override val sourceId: String = "Test"
 
       var reads: Int = 0
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        if(directMatch) {
+        if (directMatch) {
           Future.successful(Some(directMatchReviewDetails))
         }
         else {
@@ -57,7 +58,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   def testReviewDetailsControllerNotFound = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = BusinessCustomerSessionCache
+      override val sessionCache = BusinessCustomerSessionCache
+      override val sourceId: String = "Test"
 
       var reads: Int = 0
 
@@ -107,12 +109,12 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user" in {
-      businessDetailsWithAuthorisedUser(directMatch = false){ result =>
+      businessDetailsWithAuthorisedUser(directMatch = false) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
         document.getElementById("bc.business-registration.text").text() must be("ATED registration")
-//        document.getElementById("business-name-label").text must be("Name")
-//        document.getElementById("business-address-label").text must be("Registered address")
+        //        document.getElementById("business-name-label").text must be("Name")
+        //        document.getElementById("business-address-label").text must be("Registered address")
 
         document.select(".button").text must be("Confirm")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
@@ -178,7 +180,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       "return service start page correctly for AWRS Users" in {
 
         continueWithAuthorisedUser("AWRS") {
-          result => 
+          result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }

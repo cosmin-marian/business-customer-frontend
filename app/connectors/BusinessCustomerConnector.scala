@@ -15,57 +15,64 @@ import utils.GovernmentGatewayConstants
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+object BusinessCustomerConnector extends BusinessCustomerConnector {
+  val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  val appName: String = AppName.appName
+  val serviceUrl = baseUrl("business-customer")
+  val baseUri = "business-customer"
+  val registerUri = "register"
+  val knownFactsUri = "known-facts"
+  val http: HttpGet with HttpPost = WSHttp
+}
+
 trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads with Auditable {
 
-  lazy val serviceURL = baseUrl("business-customer")
-  val baseURI = "business-customer"
-  val registerURI = "register"
-  val knownFactsURI = "known-facts"
+  def serviceUrl: String
 
-  val http: HttpGet with HttpPost = WSHttp
+  def baseUri: String
+
+  def registerUri: String
+
+  def knownFactsUri: String
+
+  def http: HttpGet with HttpPost
 
 
-  def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+  def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
-    val postUrl = s"""$serviceURL$authLink/$baseURI/${GovernmentGatewayConstants.KNOWN_FACTS_AGENT_SERVICE_NAME}/$knownFactsURI"""
+    val postUrl = s"""$serviceUrl$authLink/$baseUri/${GovernmentGatewayConstants.KnownFactsAgentServiceName}/$knownFactsUri"""
     Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
-    http.POST[JsValue, HttpResponse](postUrl, jsonData) map {
-      response =>
-        auditAddKnownFactsCall(knownFacts, response)
-        response
+    http.POST[JsValue, HttpResponse](postUrl, jsonData) map { response =>
+      auditAddKnownFactsCall(knownFacts, response)
+      response
     }
   }
 
 
-  def register(registerData: BusinessRegistrationRequest)
+  def register(registerData: BusinessRegistrationRequest, service: String)
               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
     val authLink = bcContext.user.authLink
-    val postUrl = s"""$serviceURL$authLink/$baseURI/$registerURI"""
+    val postUrl = s"""$serviceUrl$authLink/$baseUri/$registerUri"""
     Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)
-    http.POST(postUrl, jsonData) map {
-      response =>
-        auditRegisterCall(registerData, response)
-        response.status match {
-          case OK => response.json.as[BusinessRegistrationResponse]
-          case NOT_FOUND => {
-            Logger.warn(s"[BusinessCustomerConnector][register] - Not Found Exception ${registerData.organisation.organisationName}")
-            throw new InternalServerException(s"${Messages("bc.connector.error.not-found")}  Exception ${response.body}")
-          }
-          case SERVICE_UNAVAILABLE => {
-            Logger.warn(s"[BusinessCustomerConnector][register] - Service Unavailable Exception ${registerData.organisation.organisationName}")
-            throw new ServiceUnavailableException(s"${Messages("bc.connector.error.service-unavailable")}  Exception ${response.body}")
-          }
-          case BAD_REQUEST | INTERNAL_SERVER_ERROR => {
-            Logger.warn(s"[BusinessCustomerConnector][register] - Bad Request Exception ${registerData.organisation.organisationName}")
-            throw new InternalServerException(s"${Messages("bc.connector.error.bad-request")}  Exception ${response.body}")
-          }
-          case status => {
-            Logger.warn(s"[BusinessCustomerConnector][register] - $status Exception ${registerData.organisation.organisationName}")
-            throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)}  Exception ${response.body}")
-          }
-        }
+    http.POST(postUrl, jsonData) map { response =>
+      auditRegisterCall(registerData, response, service)
+      response.status match {
+        case OK => response.json.as[BusinessRegistrationResponse]
+        case NOT_FOUND =>
+          Logger.warn(s"[BusinessCustomerConnector][register] - Not Found Exception ${registerData.organisation.organisationName}")
+          throw new InternalServerException(s"${Messages("bc.connector.error.not-found")}  Exception ${response.body}")
+        case SERVICE_UNAVAILABLE =>
+          Logger.warn(s"[BusinessCustomerConnector][register] - Service Unavailable Exception ${registerData.organisation.organisationName}")
+          throw new ServiceUnavailableException(s"${Messages("bc.connector.error.service-unavailable")}  Exception ${response.body}")
+        case BAD_REQUEST | INTERNAL_SERVER_ERROR =>
+          Logger.warn(s"[BusinessCustomerConnector][register] - Bad Request Exception ${registerData.organisation.organisationName}")
+          throw new InternalServerException(s"${Messages("bc.connector.error.bad-request")}  Exception ${response.body}")
+        case status =>
+          Logger.warn(s"[BusinessCustomerConnector][register] - $status Exception ${registerData.organisation.organisationName}")
+          throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)}  Exception ${response.body}")
+      }
     }
   }
 
@@ -82,7 +89,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       eventType = eventType)
   }
 
-  private def auditRegisterCall(input: BusinessRegistrationRequest, response: HttpResponse)(implicit hc: HeaderCarrier) = {
+  private def auditRegisterCall(input: BusinessRegistrationRequest, response: HttpResponse, service: String)(implicit hc: HeaderCarrier) = {
     val eventType = response.status match {
       case OK => EventTypes.Succeeded
       case _ => EventTypes.Failed
@@ -94,6 +101,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
 
     sendDataEvent(transactionName = transactionName,
       detail = Map("txName" -> transactionName,
+        "service" -> s"$service",
         "address" -> s"${input.address}",
         "contactDetails" -> s"${input.contactDetails}",
         "identification" -> s"${input.identification}",
@@ -105,9 +113,4 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       eventType = eventType)
   }
 
-}
-
-object BusinessCustomerConnector extends BusinessCustomerConnector {
-  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
-  override val appName: String = AppName.appName
 }

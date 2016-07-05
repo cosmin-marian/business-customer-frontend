@@ -18,7 +18,8 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
   val mockSessionCache = mock[SessionCache]
 
   object TestDataCacheConnector extends DataCacheConnector {
-    val sessionCache: SessionCache = mockSessionCache
+    override val sessionCache: SessionCache = mockSessionCache
+    override val sourceId: String = ""
   }
 
   "DataCacheConnector" must {
@@ -43,7 +44,7 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
       "save the fetched business details" in {
         implicit val hc: HeaderCarrier = HeaderCarrier()
         val reviewDetails: ReviewDetails = ReviewDetails("ACME", Some("UIB"), Address("line1", "line2", None, None, None, "country"), "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
-        val returnedCacheMap: CacheMap = CacheMap("data", Map("BC_Business_Details" -> Json.toJson(reviewDetails)))
+        val returnedCacheMap: CacheMap = CacheMap("data", Map(TestDataCacheConnector.sourceId -> Json.toJson(reviewDetails)))
         when(mockSessionCache.cache[ReviewDetails](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
         val result = TestDataCacheConnector.saveReviewDetails(reviewDetails)
         await(result).get must be(reviewDetails)

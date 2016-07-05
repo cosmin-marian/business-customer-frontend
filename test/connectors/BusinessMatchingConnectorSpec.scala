@@ -33,6 +33,9 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     override val http: HttpGet with HttpPost = mockWSHttp
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
+    override val lookupUri = ""
+    override val baseUri = ""
+    override val serviceUrl = ""
   }
 
   val userType = "sa"

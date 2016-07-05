@@ -17,18 +17,20 @@ object BusinessRegistrationService extends BusinessRegistrationService {
 }
 
 trait BusinessRegistrationService {
-  val businessCustomerConnector: BusinessCustomerConnector
-  val dataCacheConnector: DataCacheConnector
-  val nonUKbusinessType: String
 
+  def businessCustomerConnector: BusinessCustomerConnector
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean)
+  def dataCacheConnector: DataCacheConnector
+
+  def nonUKbusinessType: String
+
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean, service: String)
                       (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
 
     for {
-      registerResponse <- businessCustomerConnector.register(businessRegisterDetails)
+      registerResponse <- businessCustomerConnector.register(businessRegisterDetails, service)
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse, isGroup, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)

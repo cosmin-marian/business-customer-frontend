@@ -10,22 +10,26 @@ import utils.SessionUtils
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+object BusinessMatchingService extends BusinessMatchingService {
+  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
+  val dataCacheConnector: DataCacheConnector = DataCacheConnector
+}
+
 trait BusinessMatchingService {
 
-  val businessMatchingConnector: BusinessMatchingConnector
-  val dataCacheConnector: DataCacheConnector
+  def businessMatchingConnector: BusinessMatchingConnector
+
+  def dataCacheConnector: DataCacheConnector
 
   def matchBusinessWithUTR(isAnAgent: Boolean, service: String)
                           (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
-    getUserUtrAndType map {
-      userUtrAndType =>
-        val (userUTR, userType) = userUtrAndType
-        val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
-          utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
-        businessMatchingConnector.lookup(searchData, userType, service) flatMap {
-          dataReturned =>
-            validateAndCache(dataReturned = dataReturned, directMatch = true)
-        }
+    getUserUtrAndType map { userUtrAndType =>
+      val (userUTR, userType) = userUtrAndType
+      val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
+        utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
+      businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
+        validateAndCache(dataReturned = dataReturned, directMatch = true)
+      }
     }
   }
 
@@ -34,9 +38,8 @@ trait BusinessMatchingService {
     val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
-    businessMatchingConnector.lookup(searchData, userType, service) flatMap {
-      dataReturned =>
-        validateAndCache(dataReturned = dataReturned, directMatch = false)
+    businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
+      validateAndCache(dataReturned = dataReturned, directMatch = false)
     }
   }
 
@@ -45,9 +48,8 @@ trait BusinessMatchingService {
     val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
-    businessMatchingConnector.lookup(searchData, userType, service) flatMap {
-      dataReturned =>
-        validateAndCache(dataReturned = dataReturned, directMatch = false)
+    businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
+      validateAndCache(dataReturned = dataReturned, directMatch = false)
     }
   }
 
@@ -61,20 +63,12 @@ trait BusinessMatchingService {
 
   private def validateAndCache(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
-    Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = ${dataReturned}, isFailureResponse = ${isFailureResponse}")
-    isFailureResponse match {
-      case true => Future.successful(dataReturned)
-      case false => {
-        val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
-        isAnIndividual match {
-          case true => {
-            cacheIndividual(dataReturned, directMatch)
-          }
-          case false => {
-            cacheOrg(dataReturned, directMatch)
-          }
-        }
-      }
+    Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = $dataReturned, isFailureResponse = $isFailureResponse")
+    if (isFailureResponse) Future.successful(dataReturned)
+    else {
+      val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
+      if (isAnIndividual) cacheIndividual(dataReturned, directMatch)
+      else cacheOrg(dataReturned, directMatch)
     }
   }
 
@@ -95,14 +89,13 @@ trait BusinessMatchingService {
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned),
       //default value from model due to AWRS
-//      isAGroup = false,
+      //      isAGroup = false,
       directMatch = directMatch,
       firstName = Some(individual.firstName),
       lastName = Some(individual.lastName)
     )
-    dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
-      reviewDetailsReturned =>
-        Future.successful(Json.toJson(reviewDetails))
+    dataCacheConnector.saveReviewDetails(reviewDetails) flatMap { reviewDetailsReturned =>
+      Future.successful(Json.toJson(reviewDetails))
     }
   }
 
@@ -123,9 +116,8 @@ trait BusinessMatchingService {
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
       agentReferenceNumber = getAgentRefNum(dataReturned))
-      dataCacheConnector.saveReviewDetails(reviewDetails) flatMap {
-      reviewDetailsReturned =>
-        Future.successful(Json.toJson(reviewDetails))
+    dataCacheConnector.saveReviewDetails(reviewDetails) flatMap { reviewDetailsReturned =>
+      Future.successful(Json.toJson(reviewDetails))
     }
   }
 
@@ -146,9 +138,5 @@ trait BusinessMatchingService {
   private def getAgentRefNum(dataReturned: JsValue): Option[String] = {
     (dataReturned \ "agentReferenceNumber").as[Option[String]]
   }
-}
 
-object BusinessMatchingService extends BusinessMatchingService {
-  val businessMatchingConnector: BusinessMatchingConnector = BusinessMatchingConnector
-  val dataCacheConnector: DataCacheConnector = DataCacheConnector
 }
