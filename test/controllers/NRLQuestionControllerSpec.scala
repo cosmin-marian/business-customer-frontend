@@ -3,11 +3,11 @@ package controllers
 import java.util.UUID
 
 import builders.SessionBuilder
-import config.{FrontendAuthConnector}
+import config.FrontendAuthConnector
 import org.jsoup.Jsoup
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
@@ -89,17 +89,16 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
 
   def viewWithAuthorisedAgent(serviceName: String)(test: Future[Result] => Any) = {
-      val sessionId = s"session-${UUID.randomUUID}"
-      val userId = s"user-${UUID.randomUUID}"
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
 
-      builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-      val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
-        SessionKeys.sessionId -> sessionId,
-        SessionKeys.token -> "RANDOMTOKEN",
-        SessionKeys.userId -> userId))
-      test(result)
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+    test(result)
   }
-
 
 
   def viewWithAuthorisedClient(serviceName: String)(test: Future[Result] => Any) = {
