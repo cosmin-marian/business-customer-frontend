@@ -53,8 +53,10 @@
           }else {
             @Messages("business-review.invalid-address.text-agent", service)
           }
-          <p>@Html(Messages("business-review.registered-with-companies-house.text"))</p>
-          <p>@Html(Messages("business-review.sole-trader.text"))</p>
+          <ul class="list-bullet">
+            <li>@Html(Messages("business-review.registered-with-companies-house.text"))</li>
+            <li>@Html(Messages("business-review.sole-trader.text"))</li>
+            </ul>
         </div>
       </details>
 
@@ -82,7 +84,7 @@
             @Messages("business-review.invalid-address.text",service.toUpperCase)
           }
 
-          <ul class="list list-bullet">
+          <ul class="list-bullet">
             <li>@Html(Messages("business-review.registered-with-companies-house.text"))</li>
             <li>@Html(Messages("business-review.sole-trader.text"))</li>
           </ul>
