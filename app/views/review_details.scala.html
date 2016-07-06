@@ -6,7 +6,7 @@
 @bcMain(title = Messages("bc.business-review.title", service), service = Some(service)) {
 
   @if(isAgent){
-    <p class="heading-sub" id="bc.business-registration.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
+    <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
     <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
   } else {
     <p class="heading-sub" id="bc.business-registration.text">@Messages("bc.business-registration.text.client", service.toUpperCase)</p>
@@ -36,7 +36,7 @@
 
       <details>
         <summary>
-          <span id="wrong-account-title" class="summary">
+          <span id="wrong-account-title-agent" class="summary">
             @if(businessDetails.directMatch){
               @Messages("business-review.invalid-business.header")
             } else {
@@ -46,7 +46,7 @@
         </summary>
 
         <div class="panel-indent">
-          <p id="wrong-account-text">
+          <p id="wrong-account-text-agent">
           @if(businessDetails.directMatch){
             @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>

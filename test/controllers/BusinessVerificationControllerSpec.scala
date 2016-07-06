@@ -42,12 +42,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
     "respond to businessVerification" in {
       val result = route(FakeRequest(GET, "/business-customer/business-verification/ATED")).get
-      status(result) must not be (NOT_FOUND)
+      status(result) must not be NOT_FOUND
     }
 
     "respond to hello" in {
       val result = route(FakeRequest(GET, "/business-customer/hello")).get
-      status(result) must not be (NOT_FOUND)
+      status(result) must not be NOT_FOUND
     }
 
     "businessVerification" must {
@@ -88,8 +88,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
               val document = Jsoup.parse(contentAsString(result))
 
               document.title() must be("Business Verification")
-              document.getElementById("business-verification-text").text() must be("ATED agency set up")
-              document.getElementById("business-verification-header").text() must be("Select a business type for your agency")
+              document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+              document.getElementById("business-verification-agent-header").text() must be("Select a business type for your agency")
               document.getElementById("not-listed").text() must be("My business type isn't listed")
               document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
               document.select(".block-label").text() must include("Limited company")
@@ -171,13 +171,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-    "display correct heading for agent selecting Sole Trader" in {
+    "display correct heading for AGENT selecting Sole Trader" in {
       businessLookupWithAuthorisedAgent("SOP") {
         result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-type-header").text() must be("Enter your agency details")
+          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
@@ -224,14 +225,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-    "display correct heading for agent selecting Limited Company" in {
+    "display correct heading for AGENT selecting Limited Company" in {
       businessLookupWithAuthorisedAgent("LTD") {
         result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-header").text() must be("Enter your agency details")
+          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
@@ -261,13 +262,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-    "display correct heading for agent selecting Unincorporated Association option" in {
+    "display correct heading for AGENT selecting Unincorporated Association option" in {
       businessLookupWithAuthorisedAgent("UIB") {
         result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-type-header").text() must be("Enter your agency details")
+          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
@@ -297,13 +299,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "display correct heading for agent selecting Ordinary Business Partnership option" in {
+      "display correct heading for AGENT selecting Ordinary Business Partnership option" in {
         businessLookupWithAuthorisedAgent("OBP") {
           result =>
             status(result) must be(OK)
 
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-header").text() must be("Enter your agency details")
+            document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
             document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
@@ -334,13 +337,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "display correct heading for agent selecting Limited Liability Partnership option" in {
+      "display correct heading for AGENT selecting Limited Liability Partnership option" in {
         businessLookupWithAuthorisedAgent("LLP") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-text").text() must be("ATED agency set up")
-            document.getElementById("business-type-header").text() must be("Enter your agency details")
+            document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
             document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
@@ -370,12 +373,12 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "display correct heading for agent selecting Limited Partnership option" in {
+      "display correct heading for AGENT selecting Limited Partnership option" in {
         businessLookupWithAuthorisedAgent("LLP") {
           result =>
             status(result) must be(OK)
             val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-header").text() must be("Enter your agency details")
+            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
         }
       }
     }

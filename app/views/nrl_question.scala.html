@@ -12,28 +12,30 @@
 
   @form(action = controllers.routes.NRLQuestionController.continue(service)) {
 
-    <h1 class="heading-xlarge" id="nrl-question-header">@Messages("bc.nrl.header")</h1>
+    <h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header") </h1>
 
     <div class="form-group" id="paysSA">
 
       @bcInputRadioGroup(
-      nrlQuestionForm("paysSA"),
-      Seq("true" -> Messages("bc.radio.yes.label"),
-      "false" -> Messages("bc.radio.no.label")),
-      '_labelClass -> "block-label",
-      '_legend -> "",
-      '_labelAfter -> true,
-      '_groupClass -> "inline"
+        nrlQuestionForm("paysSA"),
+        Seq("true" -> Messages("bc.radio.yes.label"),
+        "false" -> Messages("bc.radio.no.label")),
+        '_labelClass -> "block-label",
+        '_legend -> "",
+        '_labelAfter -> true,
+        '_groupClass -> "inline"
       )
 
     </div>
 
-    <button class="button" id="submit" type="submit">@Messages("bc.continue")</button>
+    <button class="button" id="submit" type="submit"> @Messages("bc.continue") </button>
 
   }
 
   <div>
-    <p><a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a></p>
+    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+      @Messages("bc.business-verification.back")
+    </a>
   </div>
 
 }

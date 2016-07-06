@@ -11,14 +11,14 @@
 @bcErrorSummary(soleTraderForm, "bc.business-verification-error.general")
 
   @if(isAgent) {
-    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
-    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
+    <p class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </p>
+    <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header") </h1>
   } else {
-    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
-    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
+    <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </p>
+    <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
 
-  <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
+  <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
@@ -27,24 +27,24 @@
       <div id="business-type-sop-form" class="form-field">
 
         @bcInput(soleTraderForm("firstName"),
-        '_label -> Html(Messages("bc.business-verification.firstNameField")),
-        '_id -> "firstName",
-        '_showConstraints -> false)
+          '_label -> Html(Messages("bc.business-verification.firstNameField")),
+          '_id -> "firstName",
+          '_showConstraints -> false)
 
         @bcInput(soleTraderForm("lastName"),
-        '_label -> Html(Messages("bc.business-verification.lastNameField")),
-        '_id -> "lastName",
-        '_showConstraints -> false)
+          '_label -> Html(Messages("bc.business-verification.lastNameField")),
+          '_id -> "lastName",
+          '_showConstraints -> false)
 
-        @bcInputNew(soleTraderForm("saUTR"),
-        '_label -> Html(Messages("bc.business-verification.saUTRField")),
-        '_hintText -> Messages("bc.business-verification.utr.hint"),
-        '_id -> "saUTR",
-        '_type -> "number",
-        '_fieldsetAttributesHelpQuestion -> "utr-help-question",
-        '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
-        '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
-        '_showConstraints -> false)
+        @bcInput(soleTraderForm("saUTR"),
+          '_label -> Html(Messages("bc.business-verification.saUTRField")),
+          '_hintText -> Messages("bc.business-verification.utr.hint"),
+          '_id -> "saUTR",
+          '_type -> "number",
+          '_fieldsetAttributesHelpQuestion -> "utr-help-question",
+          '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+          '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
+          '_showConstraints -> false)
 
       </div>
 
@@ -55,7 +55,9 @@
   }
 
   <div>
-    <p><a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a></p>
+    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+      @Messages("bc.business-verification.back")
+    </a>
   </div>
 
 }

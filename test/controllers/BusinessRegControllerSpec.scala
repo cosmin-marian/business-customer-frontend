@@ -70,7 +70,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("business-registration.lede-text").text() must be("This is the registered address of your Non-UK business, you can enter a different address for correspondence on the next page.")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
-
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")

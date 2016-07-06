@@ -38,7 +38,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     "respond to /register" in {
       val result = route(FakeRequest(GET, s"/business-customer/register-gb/$serviceName/GROUP")).get
-      status(result) must not be (NOT_FOUND)
+      status(result) must not be NOT_FOUND
     }
 
     "unauthorised users" must {
