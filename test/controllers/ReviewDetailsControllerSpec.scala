@@ -120,7 +120,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("business-name").text must be("ACME")
         document.getElementById("business-address").text must be("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom")
 
-        document.select(".button").text must be("Confirm")
+        document.select(".button").text must be("Confirm and continue")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
         document.getElementById("wrong-account-text").text must startWith("You can still register but you will need to update your information outside of this service.")
       }
