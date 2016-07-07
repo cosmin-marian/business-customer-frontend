@@ -114,7 +114,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 //        document.getElementById("business-name-label").text must be("Name")
 //        document.getElementById("business-address-label").text must be("Registered address")
 
-        document.select(".button").text must be("Confirm")
+        document.select(".button").text must be("Confirm and continue")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
         document.getElementById("wrong-account-text").text must startWith("You can still register but you will need to update your information outside of this service.")
       }
