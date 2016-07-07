@@ -27,7 +27,7 @@ business-review.invalid-address.text = You can still register but you will need 
 business-review.invalid-business.address-header = Not the right address
 business-review.invalid-business.header = Not the right details?
 business-review.invalid-business.text = If this is not the right business, you should sign out and change to another account
-business-review.registration-button = Confirm
+business-review.registration-button = Confirm and continue
 business-review.registered-with-companies-house.text = If you registered with Companies House you need to inform <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank" rel="external">Companies House</a>
 business-review.sole-trader.text =  If you are not registered with Companies House you need to inform <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank" rel="external">HMRC</a>.
 
