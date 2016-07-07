@@ -35,12 +35,13 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     override val registerUri = "register"
     override val knownFactsUri = "known-facts"
   }
+
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
   val service = "ATED"
 
   "BusinessCustomerConnector" must {
     val businessOrgData = EtmpOrganisation(organisationName = "testName")
-    val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution="HRMC", issuingCountryCode = "UK")
+    val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution = "HRMC", issuingCountryCode = "UK")
     val businessAddress = EtmpAddress("line1", "line2", None, None, None, "GB")
     val nonUkBusinessAddress = EtmpAddress("line1", "line2", None, None, None, "FR")
 

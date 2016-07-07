@@ -50,11 +50,11 @@
           @if(businessDetails.directMatch){
             @Messages("business-review.invalid-business.text")
             <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
-          }else {
+          } else {
             @Messages("business-review.invalid-address.text-agent", service)
           }
-          <p>@Html(Messages("business-review.registered-with-companies-house.text"))</p>
-          <p>@Html(Messages("business-review.sole-trader.text"))</p>
+          <p> @Html(Messages("business-review.registered-with-companies-house.text"))</p>
+          <p> @Html(Messages("business-review.sole-trader.text"))</p>
         </div>
       </details>
 
@@ -64,10 +64,10 @@
 
         <summary>
           <span id="wrong-account-title" class="summary">
-            @if(businessDetails.directMatch){
-            @Messages("business-review.invalid-business.header")
-            }else {
-            @Messages("business-review.invalid-address.header")
+            @if(businessDetails.directMatch) {
+              @Messages("business-review.invalid-business.header")
+            } else {
+              @Messages("business-review.invalid-address.header")
             }
           </span>
         </summary>
@@ -96,7 +96,9 @@
 
   <div class="form-group">
     @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
-      <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>@Messages("business-review.registration-button", service.toUpperCase)</button>
+      <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>
+        @Messages("business-review.registration-button", service.toUpperCase)
+      </button>
     }
   </div>
 

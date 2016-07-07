@@ -47,68 +47,71 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
 
   "BusinessMatchingConnector" must {
 
-    val matchSuccessResponse = Json.parse( """{"businessName":"ACME","businessType":"Unincorporated body","businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123","businessTelephone":"201234567890","businessEmail":"contact@acme.com"}""")
-    val matchSuccessResponseInvalidJson = """{
-                                            |		"sapNumber" : "111111111111",
-                                            |		"safeId" : "XV111111111111",
-                                            |		"isEditable" : false,
-                                            |		"isAnAgent" : false,
-                                            |		"isAnIndividual" : false,
-                                            |
-                                            |		"organisation":
-                                            |			{
-                                            |		"organisationName" : "XYZ BREWERY CO LTD",
-                                            |		"isAGroup" : false
-                                            |			},
-                                            |
-                                            |			"address":
-                                            |			{
-                                            |		"addressLine1" : "XYZ  ESTATE",
-                                            |		"addressLine2" : "XYZ DRIVE",
-                                            |		"addressLine3" : "XYZ",
-                                            |		"addressLine4" : "XYZ",
-                                            |		"postalCode" : "HU24 1ST",
-                                            |		"countryCode" : "GB"
-                                            |			},
-                                            |
-                                            |			"contactDetails":
-                                            |			{
-                                            |
-                                            |			,"mobileNumber" : "0121 812222"
-                                            |			}
-                                            |
-                                            |	}""".stripMargin
+    val matchSuccessResponse = Json.parse(
+      """
+        |{
+        |  "businessName":"ACME",
+        |  "businessType":"Unincorporated body",
+        |  "businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123",
+        |  "businessTelephone":"201234567890",
+        |  "businessEmail":"contact@acme.com"
+        |}
+      """.stripMargin)
 
-    val matchSuccessResponseStripContactDetailsJson = """{
-                                            |		"sapNumber" : "111111111111",
-                                            |		"safeId" : "XV111111111111",
-                                            |		"isEditable" : false,
-                                            |		"isAnAgent" : false,
-                                            |		"isAnIndividual" : false,
-                                            |
-                                            |		"organisation":
-                                            |			{
-                                            |		"organisationName" : "XYZ BREWERY CO LTD",
-                                            |		"isAGroup" : false
-                                            |			},
-                                            |
-                                            |			"address":
-                                            |			{
-                                            |		"addressLine1" : "XYZ  ESTATE",
-                                            |		"addressLine2" : "XYZ DRIVE",
-                                            |		"addressLine3" : "XYZ",
-                                            |		"addressLine4" : "XYZ",
-                                            |		"postalCode" : "HU24 1ST",
-                                            |		"countryCode" : "GB"
-                                            |			}
-                                            |	}""".stripMargin.replaceAll("[\r\n\t]", "")
+    val matchSuccessResponseInvalidJson =
+      """{
+        |  "sapNumber" : "111111111111",
+        |  "safeId" : "XV111111111111",
+        |  "isEditable" : false,
+        |  "isAnAgent" : false,
+        |  "isAnIndividual" : false,
+        |  "organisation": {
+        |    "organisationName" : "XYZ BREWERY CO LTD",
+        |    "isAGroup" : false
+        |  },
+        |  "address": {
+        |    "addressLine1" : "XYZ  ESTATE",
+        |    "addressLine2" : "XYZ DRIVE",
+        |    "addressLine3" : "XYZ",
+        |    "addressLine4" : "XYZ",
+        |    "postalCode" : "HU24 1ST",
+        |    "countryCode" : "GB"
+        |  },
+        |  "contactDetails": {
+        |    ,"mobileNumber" : "0121 812222"
+        |  }
+        |}
+      """.stripMargin
+
+    val matchSuccessResponseStripContactDetailsJson =
+      """{
+        |  "sapNumber" : "111111111111",
+        |  "safeId" : "XV111111111111",
+        |  "isEditable" : false,
+        |  "isAnAgent" : false,
+        |  "isAnIndividual" : false,
+        |  "organisation": {
+        |    "organisationName" : "XYZ BREWERY CO LTD",
+        |    "isAGroup" : false
+        |  },
+        |  "address": {
+        |    "addressLine1" : "XYZ  ESTATE",
+        |    "addressLine2" : "XYZ DRIVE",
+        |    "addressLine3" : "XYZ",
+        |    "addressLine4" : "XYZ",
+        |    "postalCode" : "HU24 1ST",
+        |    "countryCode" : "GB"
+        |  }
+        |}
+      """.stripMargin.replaceAll("[\r\n\t]", "")
 
     val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 
     "for a successful match, return business details" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       await(result) must be(matchSuccessResponse)
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -118,7 +121,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       val responseJson = HttpResponse(OK, responseString = Some(matchSuccessResponseInvalidJson))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(responseJson))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(responseJson))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       await(result) must be(Json.parse(matchSuccessResponseStripContactDetailsJson))
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -127,7 +131,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "for unsuccessful match, return error message" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       await(result) must be(matchFailureResponse)
       verify(mockWSHttp, times(1)).POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -136,7 +141,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "throw service unavailable exception, if service is unavailable" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE, None)))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE, None)))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       val thrown = the[ServiceUnavailableException] thrownBy await(result)
       thrown.getMessage must include("Service unavailable")
@@ -146,7 +152,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "throw bad request exception, if bad request is passed" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       val thrown = the[BadRequestException] thrownBy await(result)
       thrown.getMessage must include("Bad Request")
@@ -156,7 +163,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "throw internal server error, if Internal server error status is returned" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, None)))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, None)))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       val thrown = the[InternalServerException] thrownBy await(result)
       thrown.getMessage must include("Internal server error")
@@ -166,7 +174,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "throw runtime exception, unknown status is returned" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, None)))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, None)))
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, service)
       val thrown = the[RuntimeException] thrownBy await(result)
       thrown.getMessage must include("Unknown response")
