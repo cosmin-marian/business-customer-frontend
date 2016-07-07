@@ -7,7 +7,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -25,12 +25,132 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val mockAuthConnector = mock[AuthConnector]
   val service = "ATED"
 
-  val matchSuccessResponseUIB = Json.parse( """{ "businessName":"ACME", "businessType":"Unincorporated body", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLTD = Json.parse( """{ "businessName":"ACME", "businessType":"Limited company", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": true, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseSOP = Json.parse( """{ "businessName":"ACME", "businessType":"Sole trader", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseOBP = Json.parse( """{ "businessName":"ACME", "businessType":"Ordinary business partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited liability partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": false, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
-  val matchSuccessResponseLP = Json.parse( """{ "businessName":"ACME", "businessType":"Limited partnership", "businessAddress": {"line_1": "23 High Street", "line_2": "Park View", "line_3": "Gloucester", "line_4": "Gloucestershire", "postcode": "NE98 1ZZ", "country": "UK"}, "sapNumber": "sap123", "safeId": "safe123", "isAGroup": true, "directMatch" : false, "agentReferenceNumber": "agent123" }""")
+  val matchSuccessResponseUIB = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Unincorporated body",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": false,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
+  val matchSuccessResponseLTD = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Limited company",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": true,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
+  val matchSuccessResponseSOP = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Sole trader",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": false,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
+  val matchSuccessResponseOBP = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Ordinary business partnership",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": false,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
+  val matchSuccessResponseLLP = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Limited liability partnership",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": false,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
+  val matchSuccessResponseLP = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Limited partnership",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": true,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123"
+      |}
+    """.stripMargin)
+
   val matchFailureResponse = Json.parse( """{"reason":"Sorry. Business details not found. Try with correct UTR and/or name."}""")
 
   def submitWithUnAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
@@ -48,6 +168,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   }
 
   "BusinessVerificationController" must {
+
+    type InputRequest = FakeRequest[AnyContentAsFormUrlEncoded]
+    type MustTestMessage = String
+    type InTestMessage = String
+    type ErrorMessage = String
+    type BusinessType = String
+
+    val formValidationInputDataSet: Seq[(MustTestMessage, Seq[(InTestMessage, BusinessType, InputRequest, ErrorMessage)])] = ???
 
     "if the selection is Unincorporated body :" must {
       "Business Name must not be empty" in {
@@ -74,7 +202,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
       "Registered Name must not be more than 105 characters" in {
-        val businessName = "a"*106
+        val businessName = "a" * 106
         submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
@@ -131,7 +259,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
 
       "Register Name must not be more than 105 characters" in {
-        val businessName = "a"*106
+        val businessName = "a" * 106
         submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
@@ -192,8 +320,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "First Name and Last Name must not be more than 40 characters" in {
-        val fName = "a"*41
-        val lName = "a"*41
+        val fName = "a" * 41
+        val lName = "a" * 41
         submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> s"$fName", "lastName" -> s"$lName")) {
           result =>
             status(result) must be(BAD_REQUEST)
@@ -236,7 +364,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "Registered name must not be more than 105 characters" in {
-        val businessName = "a"*106
+        val businessName = "a" * 106
         submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
@@ -285,7 +413,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
 
       "Registered Name must not be more than 105 characters" in {
-        val businessName = "a"*106
+        val businessName = "a" * 106
         submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
           result =>
             status(result) must be(BAD_REQUEST)
@@ -467,7 +595,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
-      test(result)
+    test(result)
   }
 
   def submitWithAuthorisedUserSuccessIndividual(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
