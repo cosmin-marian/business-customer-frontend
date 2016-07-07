@@ -55,60 +55,56 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
         "respond with OK" in {
 
-          businessVerificationWithAuthorisedUser {
-            result =>
-              status(result) must be(OK)
+          businessVerificationWithAuthorisedUser { result =>
+            status(result) must be(OK)
           }
         }
 
         "return Business Verification view for a user" in {
 
-          businessVerificationWithAuthorisedUser {
-            result =>
-              val document = Jsoup.parse(contentAsString(result))
+          businessVerificationWithAuthorisedUser { result =>
+            val document = Jsoup.parse(contentAsString(result))
 
-              document.title() must be("Business Verification")
-              document.getElementById("business-verification-text").text() must be("ATED registration")
-              document.getElementById("business-verification-header").text() must be("Select your business type")
-              document.getElementById("not-listed").text() must be("My business type isn't listed")
-              document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
-              document.select(".block-label").text() must include("Limited company")
-              document.select(".block-label").text() must include("Limited liability partnership")
-              document.select(".block-label").text() must include("partnership")
-              document.select(".block-label").text() must include("Non-UK company")
-              document.select(".block-label").text() must include("Limited partnership")
-              document.select("button").text() must be("Continue")
+            document.title() must be("Business Verification")
+            document.getElementById("business-verification-text").text() must be("ATED registration")
+            document.getElementById("business-verification-header").text() must be("Select your business type")
+            document.getElementById("not-listed").text() must be("My business type isn't listed")
+            document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
+            document.select(".block-label").text() must include("Limited company")
+            document.select(".block-label").text() must include("Limited liability partnership")
+            document.select(".block-label").text() must include("partnership")
+            document.select(".block-label").text() must include("Non-UK company")
+            document.select(".block-label").text() must include("Limited partnership")
+            document.select("button").text() must be("Continue")
           }
         }
 
         "return Business Verification view for an agent" in {
 
-          businessVerificationWithAuthorisedAgent {
-            result =>
-              val document = Jsoup.parse(contentAsString(result))
+          businessVerificationWithAuthorisedAgent { result =>
+            val document = Jsoup.parse(contentAsString(result))
 
-              document.title() must be("Business Verification")
-              document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-              document.getElementById("business-verification-agent-header").text() must be("Select a business type for your agency")
-              document.getElementById("not-listed").text() must be("My business type isn't listed")
-              document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
-              document.select(".block-label").text() must include("Limited company")
-              document.select(".block-label").text() must include("Self-employed")
-              document.select(".block-label").text() must include("Limited liability partnership")
-              document.select(".block-label").text() must include("partnership")
-              document.select(".block-label").text() must include("Non-UK company")
-              document.select(".block-label").text() must include("Limited partnership")
-              document.select("button").text() must be("Continue")
+            document.title() must be("Business Verification")
+            document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+            document.getElementById("business-verification-agent-header").text() must be("Select a business type for your agency")
+            document.getElementById("not-listed").text() must be("My business type isn't listed")
+            document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
+            document.select(".block-label").text() must include("Limited company")
+            document.select(".block-label").text() must include("Self-employed")
+            document.select(".block-label").text() must include("Limited liability partnership")
+            document.select(".block-label").text() must include("partnership")
+            document.select(".block-label").text() must include("Non-UK company")
+            document.select(".block-label").text() must include("Limited partnership")
+            document.select("button").text() must be("Continue")
           }
         }
       }
 
       "selecting continue with no business type selected" must {
         "display error message" in {
-          continueWithAuthorisedUserJson("", FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}"""))) {
-            result =>
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("Please select a type of business")
+          continueWithAuthorisedUserJson("", FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}"""))) { result =>
+            status(result) must be(BAD_REQUEST)
+            contentAsString(result) must include("Please select a type of business")
           }
         }
 
@@ -116,17 +112,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
 
       "unauthorised users" must {
-        "respond with a redirect" in {
+        "respond with a redirect & be redirected to the unauthorised page" in {
           businessVerificationWithUnAuthorisedUser { result =>
             status(result) must be(SEE_OTHER)
-          }
-        }
-
-        "be redirected to the unauthorised page" in {
-          businessVerificationWithUnAuthorisedUser { result =>
             redirectLocation(result).get must include("/business-customer/unauthorised")
           }
         }
+
       }
     }
 
@@ -157,29 +149,27 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     }
 
     "add additional form fields to the screen for entry" in {
-      businessLookupWithAuthorisedUser("SOP") {
-        result =>
-          status(result) must be(OK)
+      businessLookupWithAuthorisedUser("SOP") { result =>
+        status(result) must be(OK)
 
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("firstName_field").text() must be("First name")
-          document.getElementById("lastName_field").text() must be("Last name")
-          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
-          document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
-          document.getElementById("saUTR").attr("type") must be("number")
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-text").text() must be("ATED registration")
+        document.getElementById("firstName_field").text() must be("First name")
+        document.getElementById("lastName_field").text() must be("Last name")
+        document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
+        document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+        document.getElementById("saUTR").attr("type") must be("number")
       }
     }
 
     "display correct heading for AGENT selecting Sole Trader" in {
-      businessLookupWithAuthorisedAgent("SOP") {
-        result =>
-          status(result) must be(OK)
+      businessLookupWithAuthorisedAgent("SOP") { result =>
+        status(result) must be(OK)
 
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
-          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+        document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+        document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
       }
     }
   }
@@ -187,10 +177,9 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
   "when selecting Limited Company option" must {
 
     "redirect to next screen to allow additional form fields to be entered" in {
-      continueWithAuthorisedUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) {
-        result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+      continueWithAuthorisedUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include("/business-verification/ATED/businessForm")
       }
     }
 
@@ -201,47 +190,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
-     "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
-       continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
-         result =>
-           status(result) must be(SEE_OTHER)
-           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
-       }
-     }
-
-    "add additional form fields to the screen for entry" in {
-      businessLookupWithAuthorisedUser("LTD") {
-        result =>
-          status(result) must be(OK)
-
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("businessName_field").text() must include("Registered company name")
-          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
-          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
-          document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
-          document.getElementById("cotaxUTR").attr("type") must be("number")
-
-      }
-    }
-
-    "display correct heading for AGENT selecting Limited Company" in {
-      businessLookupWithAuthorisedAgent("LTD") {
-        result =>
-          status(result) must be(OK)
-
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
-          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
-      }
-    }
-  }
-
-  "when selecting Unincorporated Body option" must {
-
-    "redirect to next screen to allow additional form fields to be entered" in {
-      continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}"""))) {
+    "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
+      continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD", "isSaAccount":"true", "isOrgAccount":"true"}"""))) {
         result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
@@ -249,136 +199,161 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     }
 
     "add additional form fields to the screen for entry" in {
-      businessLookupWithAuthorisedUser("UIB") {
-        result =>
-          status(result) must be(OK)
+      businessLookupWithAuthorisedUser("LTD") { result =>
+        status(result) must be(OK)
 
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("businessName_field").text() must include("Registered company name")
-          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
-          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
-          document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-text").text() must be("ATED registration")
+        document.getElementById("businessName_field").text() must include("Registered company name")
+        document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
+        document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+        document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+        document.getElementById("cotaxUTR").attr("type") must be("number")
+
+      }
+    }
+
+    "display correct heading for AGENT selecting Limited Company" in {
+      businessLookupWithAuthorisedAgent("LTD") { result =>
+        status(result) must be(OK)
+
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+        document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+        document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+      }
+    }
+  }
+
+  "when selecting Unincorporated Body option" must {
+
+    "redirect to next screen to allow additional form fields to be entered" in {
+      continueWithAuthorisedUserJson("UIB", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UIB"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+      }
+    }
+
+    "add additional form fields to the screen for entry" in {
+      businessLookupWithAuthorisedUser("UIB") { result =>
+        status(result) must be(OK)
+
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-text").text() must be("ATED registration")
+        document.getElementById("businessName_field").text() must include("Registered company name")
+        document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
+        document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
+        document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
       }
     }
 
     "display correct heading for AGENT selecting Unincorporated Association option" in {
-      businessLookupWithAuthorisedAgent("UIB") {
-        result =>
+      businessLookupWithAuthorisedAgent("UIB") { result =>
+        status(result) must be(OK)
+
+        val document = Jsoup.parse(contentAsString(result))
+        document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+        document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+        document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+      }
+    }
+
+    "when selecting Ordinary business partnership" must {
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("OBP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}"""))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+
+      "add additional form fields to the screen for entry" in {
+        businessLookupWithAuthorisedUser("OBP") { result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("businessName_field").text() must include("Partnership name")
+          document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
+          document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+          document.getElementById("psaUTR").attr("type") must be("number")
+        }
+      }
+
+      "display correct heading for AGENT selecting Ordinary Business Partnership option" in {
+        businessLookupWithAuthorisedAgent("OBP") { result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
           document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
-      }
-    }
-
-    "when selecting Ordinary business partnership" must {
-      "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("OBP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "OBP"}"""))) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
-        }
-      }
-
-
-      "add additional form fields to the screen for entry" in {
-        businessLookupWithAuthorisedUser("OBP") {
-          result =>
-            status(result) must be(OK)
-
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("businessName_field").text() must include("Partnership name")
-            document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
-            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
-            document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
-            document.getElementById("psaUTR").attr("type") must be("number")
-        }
-      }
-
-      "display correct heading for AGENT selecting Ordinary Business Partnership option" in {
-        businessLookupWithAuthorisedAgent("OBP") {
-          result =>
-            status(result) must be(OK)
-
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
-            document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
     }
 
     "when selecting Limited Liability Partnership option" must {
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("LLP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        continueWithAuthorisedUserJson("LLP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
 
 
       "add additional form fields to the screen for entry" in {
-        businessLookupWithAuthorisedUser("LLP") {
-          result =>
-            status(result) must be(OK)
+        businessLookupWithAuthorisedUser("LLP") { result =>
+          status(result) must be(OK)
 
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("businessName_field").text() must include("Registered company name")
-            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
-            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
-            document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
-            document.getElementById("psaUTR").attr("type") must be("number")
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("businessName_field").text() must include("Registered company name")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
+          document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+          document.getElementById("psaUTR").attr("type") must be("number")
         }
       }
 
       "display correct heading for AGENT selecting Limited Liability Partnership option" in {
-        businessLookupWithAuthorisedAgent("LLP") {
-          result =>
-            status(result) must be(OK)
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
-            document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+        businessLookupWithAuthorisedAgent("LLP") { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
         }
       }
     }
 
     "when selecting Limited Partnership option" must {
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        continueWithAuthorisedUserJson("LP", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LLP"}"""))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
 
 
       "add additional form fields to the screen for entry" in {
-        businessLookupWithAuthorisedUser("LP") {
-          result =>
-            status(result) must be(OK)
+        businessLookupWithAuthorisedUser("LP") { result =>
+          status(result) must be(OK)
 
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("businessName_field").text() must include("Registered company name")
-            document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
-            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
-            document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("businessName_field").text() must include("Registered company name")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
+          document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
         }
       }
 
       "display correct heading for AGENT selecting Limited Partnership option" in {
-        businessLookupWithAuthorisedAgent("LLP") {
-          result =>
-            status(result) must be(OK)
-            val document = Jsoup.parse(contentAsString(result))
-            document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+        businessLookupWithAuthorisedAgent("LLP") { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
         }
       }
     }
@@ -386,41 +361,36 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "if empty" must {
 
       "return BadRequest" in {
-        continueWithAuthorisedUserJson("", FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}"""))) {
-          result =>
-            status(result) must be(BAD_REQUEST)
+        continueWithAuthorisedUserJson("", FakeRequest().withJsonBody(Json.parse( """{"businessType" : ""}"""))) { result =>
+          status(result) must be(BAD_REQUEST)
         }
       }
     }
 
     "if non-uk, continue to registration page" in {
-      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) {
-        result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/nrl/$service")
+      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include(s"/business-customer/nrl/$service")
       }
     }
 
     "if new, continue to registration page" in {
-      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NEW"}"""))) {
-        result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register-gb/$service/NEW")
+      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NEW"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include(s"/business-customer/register-gb/$service/NEW")
       }
     }
 
     "if group, continue to registration page" in {
-      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) {
-        result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result).get must include(s"/business-customer/register-gb/$service/GROUP")
+      continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result).get must include(s"/business-customer/register-gb/$service/GROUP")
       }
     }
     "for any other option, redirect to home page again" in {
-      continueWithAuthorisedUserJson("XYZ", FakeRequest().withJsonBody(Json.parse("""{"businessType" : "XYZ"}"""))) {
-        result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some("/business-customer/agent/ATED"))
+      continueWithAuthorisedUserJson("XYZ", FakeRequest().withJsonBody(Json.parse("""{"businessType" : "XYZ"}"""))) { result =>
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/business-customer/agent/ATED"))
       }
     }
 
@@ -462,7 +432,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, First name must be less than 40 characters" in {
-            val firstName = "a"*41
+            val firstName = "a" * 41
             submitWithAuthorisedUser("SOP", FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "firstName" -> s"$firstName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -471,7 +441,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Last name must be less than 40 characters" in {
-            val lastName = "a"*41
+            val lastName = "a" * 41
             submitWithAuthorisedUser("SOP", FakeRequest().withFormUrlEncodedBody("businessType" -> "SOP", "lastName" -> s"$lastName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -513,7 +483,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Registered Name must be less than 105 characters" in {
-            val businessName = "a"*106
+            val businessName = "a" * 106
             submitWithAuthorisedUser("LTD", FakeRequest().withFormUrlEncodedBody("businessType" -> "LTD", "businessName" -> s"$businessName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -554,7 +524,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Register Name must be less than 105 characters" in {
-            val businessName = "a"*106
+            val businessName = "a" * 106
             submitWithAuthorisedUser("UIB", FakeRequest().withFormUrlEncodedBody("businessType" -> "UIB", "businessName" -> s"$businessName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -596,7 +566,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Registered Name must be less than 105 characters" in {
-            val businessName = "a"*106
+            val businessName = "a" * 106
             submitWithAuthorisedUser("OBP", FakeRequest().withFormUrlEncodedBody("businessType" -> "OBP", "businessName" -> s"$businessName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -637,7 +607,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Registered name must be less than 105 characters" in {
-            val businessName = "a"*106
+            val businessName = "a" * 106
             submitWithAuthorisedUser("LLP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LLP", "businessName" -> s"$businessName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
@@ -679,7 +649,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           }
 
           "if entered, Business Name must be less than 105 characters" in {
-            val businessName = "a"*106
+            val businessName = "a" * 106
             submitWithAuthorisedUser("LP", FakeRequest().withFormUrlEncodedBody("businessType" -> "LP", "businessName" -> s"$businessName")) {
               result =>
                 status(result) must be(BAD_REQUEST)
