@@ -9,6 +9,7 @@ import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.BCUtils
 import utils.BusinessCustomerConstants._
 
 import scala.concurrent.Future
@@ -24,16 +25,20 @@ trait BusinessVerificationController extends BaseController {
 
   def businessVerification(service: String) = AuthAction(service) {
     implicit bcContext =>
-      Ok(views.html.business_verification(businessTypeForm, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg))
+      val returnUrl = BCUtils.serviceReturnUrl(service)
+      val referer = bcContext.request.headers.get(REFERER) getOrElse "/business-customer/home"
+      Ok(views.html.business_verification(businessTypeForm, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg, returnUrl))
   }
 
   // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthAction(service) {
     implicit bcContext =>
       BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
-        formWithErrors =>
+        formWithErrors => {
+          val returnUrl = BCUtils.serviceReturnUrl(service)
           BadRequest(views.html.business_verification(formWithErrors, bcContext.user.isAgent, service,
-            bcContext.user.isSa, bcContext.user.isOrg)),
+            bcContext.user.isSa, bcContext.user.isOrg, returnUrl))
+        },
         value => {
           value.businessType match {
             case Some("NUK") => Redirect(controllers.routes.NRLQuestionController.view(service))

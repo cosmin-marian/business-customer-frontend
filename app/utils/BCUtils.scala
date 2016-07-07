@@ -4,10 +4,11 @@ import java.util.Properties
 
 import play.api.Play
 import play.api.i18n.Messages
+import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.io.Source
 
-object BCUtils {
+object BCUtils extends ServicesConfig {
 
   val p = new Properties
   p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
@@ -123,6 +124,16 @@ object BCUtils {
     }
 
     getCountry(isoCode.toUpperCase).fold(isoCode){x=>x}
+  }
+
+  def serviceReturnUrl(service: String) = {
+    service.toLowerCase match {
+      case "awrs" => "http://www.gov.uk"
+      case "amls" => "http://www.gov.uk"
+      case "ated" => getConfString("ated.serviceReturnUrl", "")
+
+    }
+
   }
 
 
