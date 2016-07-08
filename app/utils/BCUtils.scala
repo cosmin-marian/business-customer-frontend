@@ -126,17 +126,6 @@ object BCUtils extends ServicesConfig {
     getCountry(isoCode.toUpperCase).fold(isoCode){x=>x}
   }
 
-  def serviceReturnUrl(service: String) = {
-    service.toLowerCase match {
-      case "awrs" => "http://www.gov.uk"
-      case "amls" => "http://www.gov.uk"
-      case "ated" => getConfString("ated.serviceReturnUrl", "")
-
-    }
-
-  }
-
-
 }
 
 

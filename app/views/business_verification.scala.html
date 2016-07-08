@@ -53,8 +53,9 @@
       <button class="button" id="submit" type="submit">@Messages("bc.business-verification.submit")</button>
     </div>
 
-    <a href="@returnUri" id="back" class="link-back">@Messages("bc.business-verification.back")</a>
-
+    @if(service == "ATED") {
+      <a href="@returnUri" id="back" class="link-back">@Messages("bc.business-verification.back")</a>
+    }
 
   }
 

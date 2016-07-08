@@ -8,8 +8,8 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
+import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.BCUtils
 import utils.BusinessCustomerConstants._
 
 import scala.concurrent.Future
@@ -19,13 +19,13 @@ object BusinessVerificationController extends BusinessVerificationController {
   override val authConnector = FrontendAuthConnector
 }
 
-trait BusinessVerificationController extends BaseController {
+trait BusinessVerificationController extends BaseController with ServicesConfig {
 
   val businessMatchingService: BusinessMatchingService
 
   def businessVerification(service: String) = AuthAction(service) {
     implicit bcContext =>
-      val returnUrl = BCUtils.serviceReturnUrl(service)
+      val returnUrl = getConfString("ated.serviceReturnUrl", "")
       val referer = bcContext.request.headers.get(REFERER) getOrElse "/business-customer/home"
       Ok(views.html.business_verification(businessTypeForm, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg, returnUrl))
   }
@@ -35,7 +35,7 @@ trait BusinessVerificationController extends BaseController {
     implicit bcContext =>
       BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
         formWithErrors => {
-          val returnUrl = BCUtils.serviceReturnUrl(service)
+          val returnUrl = getConfString("ated.serviceReturnUrl", "")
           BadRequest(views.html.business_verification(formWithErrors, bcContext.user.isAgent, service,
             bcContext.user.isSa, bcContext.user.isOrg, returnUrl))
         },
