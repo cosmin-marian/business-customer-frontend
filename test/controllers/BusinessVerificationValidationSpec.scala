@@ -7,11 +7,12 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BusinessMatchingService
+import uk.gov.hmrc.domain.SaUtrGenerator
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
@@ -24,6 +25,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val mockBusinessMatchingService = mock[BusinessMatchingService]
   val mockAuthConnector = mock[AuthConnector]
   val service = "ATED"
+  val matchUtr = new SaUtrGenerator().nextSaUtr
+  val noMatchUtr = new SaUtrGenerator().nextSaUtr
 
   val matchSuccessResponseUIB = Json.parse(
     """
@@ -175,287 +178,113 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     type ErrorMessage = String
     type BusinessType = String
 
-    val formValidationInputDataSet: Seq[(MustTestMessage, Seq[(InTestMessage, BusinessType, InputRequest, ErrorMessage)])] = ???
+    def ctUtrRequest(ct: String = matchUtr.utr, businessName: String = "ACME") = request.withFormUrlEncodedBody("cotaxUTR" -> s"$ct", "businessName" -> s"$businessName")
+    def psaUtrRequest(psa: String = matchUtr.utr, businessName: String = "ACME") = request.withFormUrlEncodedBody("psaUTR" -> s"$psa", "businessName" -> s"$businessName")
+    def saUtrRequest(sa: String = matchUtr.utr, firstName: String = "A", lastName: String = "B") = request.withFormUrlEncodedBody("saUTR" -> s"$sa", "firstName" -> s"$firstName", "lastName" -> s"$lastName")
 
-    "if the selection is Unincorporated body :" must {
-      "Business Name must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
+    val formValidationInputDataSetOrg: Seq[(MustTestMessage, Seq[(InTestMessage, BusinessType, InputRequest, ErrorMessage)])] =
+      Seq(
+        ("if the selection is Unincorporated body :",
+          Seq(
+            ("Business Name must not be empty", "UIB", ctUtrRequest(businessName = ""), "Registered company name must be entered"),
+            ("CO Tax UTR must not be empty", "UIB", ctUtrRequest(ct = ""), "Corporation Tax Unique Tax Reference must be entered"),
+            ("Registered Name must not be more than 105 characters", "UIB", ctUtrRequest(businessName = "a" * 106), "Registered company name must not be more than 105 characters"),
+            ("CO Tax UTR must be 10 digits", "UIB", ctUtrRequest(ct = "1" * 11), "Corporation Tax Unique Tax Reference must be 10 digits"),
+            ("CO Tax UTR must contain only digits", "UIB", ctUtrRequest(ct = "12345678aa"), "Corporation Tax Unique Tax Reference must be 10 digits"),
+            ("CO Tax UTR must be valid", "UIB", ctUtrRequest(ct = "1234567890"), "Corporation Tax Unique Tax Reference is not valid")
+          )
+          ),
+        ("if the selection is Limited Company :",
+          Seq(
+            ("Business Name must not be empty", "LTD", ctUtrRequest(businessName = ""), "Registered company name must be entered"),
+            ("CO Tax UTR must not be empty", "LTD", ctUtrRequest(ct = ""), "Corporation Tax Unique Tax Reference must be entered"),
+            ("Registered Name must not be more than 105 characters", "LTD", ctUtrRequest(businessName = "a" * 106), "Registered company name must not be more than 105 characters"),
+            ("CO Tax UTR must be 10 digits", "LTD", ctUtrRequest(ct = "1" * 11), "Corporation Tax Unique Tax Reference must be 10 digits"),
+            ("CO Tax UTR must contain only digits", "LTD", ctUtrRequest(ct = "12345678aa"), "Corporation Tax Unique Tax Reference must be 10 digits"),
+            ("CO Tax UTR must be valid", "LTD", ctUtrRequest(ct = "1234567890"), "Corporation Tax Unique Tax Reference is not valid")
+          )
+          ),
+        ("if the selection is Limited Liability Partnership : ",
+          Seq(
+            ("Business Name must not be empty", "LLP", psaUtrRequest(businessName = ""), "Registered company name must be entered"),
+            ("Partnership Self Assessment UTR  must not be empty", "LLP", psaUtrRequest(psa = ""), "Partnership Self Assessment Unique Tax Reference must be entered"),
+            ("Registered Name must not be more than 105 characters", "LLP", psaUtrRequest(businessName = "a" * 106), "Registered company name must not be more than 105 characters"),
+            ("Partnership Self Assessment UTR  must be 10 digits", "LLP", psaUtrRequest(psa = "1" * 11), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must contain only digits", "LLP", psaUtrRequest(psa = "12345678aa"), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must be valid", "LLP", psaUtrRequest(psa = "1234567890"), "Partnership Self Assessment Unique Tax Reference is not valid")
+          )
+          ),
+        ("if the selection is Limited Partnership : ",
+          Seq(
+            ("Business Name must not be empty", "LP", psaUtrRequest(businessName = ""), "Registered company name must be entered"),
+            ("Partnership Self Assessment UTR  must not be empty", "LP", psaUtrRequest(psa = ""), "Partnership Self Assessment Unique Tax Reference must be entered"),
+            ("Registered Name must not be more than 105 characters", "LP", psaUtrRequest(businessName = "a" * 106), "Registered company name must not be more than 105 characters"),
+            ("Partnership Self Assessment UTR  must be 10 digits", "LP", psaUtrRequest(psa = "1" * 11), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must contain only digits", "LP", psaUtrRequest(psa = "12345678aa"), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must be valid", "LP", psaUtrRequest(psa = "1234567890"), "Partnership Self Assessment Unique Tax Reference is not valid")
+          )
+          ),
+        ("if the selection is Ordinary Business Partnership : ",
+          Seq(
+            ("Business Name must not be empty", "OBP", psaUtrRequest(businessName = ""), "Registered company name must be entered"),
+            ("Partnership Self Assessment UTR  must not be empty", "OBP", psaUtrRequest(psa = ""), "Partnership Self Assessment Unique Tax Reference must be entered"),
+            ("Registered Name must not be more than 105 characters", "OBP", psaUtrRequest(businessName = "a" * 106), "Registered company name must not be more than 105 characters"),
+            ("Partnership Self Assessment UTR  must be 10 digits", "OBP", psaUtrRequest(psa = "1" * 11), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must contain only digits", "OBP", psaUtrRequest(psa = "12345678aa"), "Partnership Self Assessment Unique Tax Reference must be 10 digits"),
+            ("Partnership Self Assessment UTR  must be valid", "OBP", psaUtrRequest(psa = "1234567890"), "Partnership Self Assessment Unique Tax Reference is not valid")
+          )
+          )
+      )
 
-            val document = Jsoup.parse(contentAsString(result))
-
-            contentAsString(result) must include("Registered company name must be entered")
-
-            document.getElementById("businessName_field").text() must include("Registered company name")
-            document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
-        }
-      }
-
-      "CO Tax UTR must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
-        }
-      }
-
-
-      "Registered Name must not be more than 105 characters" in {
-        val businessName = "a" * 106
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered company name must not be more than 105 characters")
-        }
-      }
-
-      "CO Tax UTR must be 10 digits" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
-        }
-      }
-
-      "CO Tax UTR must contain only letters" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "111111111a")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
-        }
-      }
-
-
-      "CO Tax UTR must be valid" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
-        }
-      }
-    }
-
-
-    "if the selection is Limited Company :" must {
-      "Business Name must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            val document = Jsoup.parse(contentAsString(result))
-            contentAsString(result) must include("Registered company name must be entered")
-            document.getElementById("businessName_field").text() must include("Registered company name")
-            document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Tax Reference (UTR)")
-        }
-      }
-
-      "CO Tax UTR must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be entered")
-        }
-      }
-
-
-      "Register Name must not be more than 105 characters" in {
-        val businessName = "a" * 106
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "cotaxUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered company name must not be more than 105 characters")
-        }
-      }
-
-      "CO Tax UTR must be 10 digits" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "11111111111")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
-        }
-      }
-
-      "CO Tax UTR must be valid" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "1234567892")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference is not valid")
-        }
-      }
-
-      "CO Tax UTR must contain only letters" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "cotaxUTR" -> "111111111a")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Corporation Tax Unique Tax Reference must be 10 digits")
+    formValidationInputDataSetOrg foreach { dataSet =>
+      s"${dataSet._1}" must {
+        dataSet._2 foreach { inputData =>
+          s"${inputData._1}" in {
+            submitWithAuthorisedUserSuccessOrg(inputData._2, inputData._3) { result =>
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include(s"${inputData._4}")
+            }
+          }
         }
       }
     }
 
+    val formValidationInputDataSetInd: Seq[(InTestMessage, BusinessType, InputRequest, ErrorMessage)] =
+      Seq(
+        ("First name must not be empty", "SOP", saUtrRequest(matchUtr.utr, "", "b"), "First name must be entered"),
+        ("Last name must not be empty", "SOP", saUtrRequest(lastName = ""), "Last name must be entered"),
+        ("SA UTR must not be empty", "SOP", saUtrRequest(sa = ""), "Self Assessment Unique Tax Reference must be entered"),
+        ("First Name must not be more than 40 characters", "SOP", saUtrRequest(firstName = "a" * 41), "First name must not be more than 40 characters"),
+        ("Last Name must not be more than 40 characters", "SOP", saUtrRequest(lastName = "a" * 41), "Last name must not be more than 40 characters"),
+        ("SA UTR must be 10 digits", "SOP", saUtrRequest(sa = "12345678901"), "Self Assessment Unique Tax Reference must be 10 digits"),
+        ("SA UTR must contain only digits", "SOP", saUtrRequest(sa = "12345678aa"), "Self Assessment Unique Tax Reference must be 10 digits"),
+        ("SA UTR must be valid", "SOP", saUtrRequest(sa = "1234567890"), "Self Assessment Unique Tax Reference is not valid")
+      )
 
     "if the selection is Sole Trader:" must {
-      "First name, last name and SA UTR  must be entered" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "", "lastName" -> "", "saUTR" -> "")) {
-          result =>
+
+      formValidationInputDataSetInd foreach { dataSet =>
+        s"${dataSet._1}" in {
+          submitWithAuthorisedUserSuccessIndividual(dataSet._2, dataSet._3) { result =>
             status(result) must be(BAD_REQUEST)
-            val document = Jsoup.parse(contentAsString(result))
-
-            contentAsString(result) must include("First name must be entered")
-            contentAsString(result) must include("Last name must be entered")
-            contentAsString(result) must include("Self Assessment Unique Tax Reference must be entered")
-
-
-            document.getElementById("firstName_field").text() must include("First name")
-            document.getElementById("lastName_field").text() must include("Last name")
-            document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference")
-        }
-      }
-
-      "SA UTR must be valid" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "saUTR" -> "1234567892")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Self Assessment Unique Tax Reference is not valid")
-        }
-      }
-
-      "First Name and Last Name must not be more than 40 characters" in {
-        val fName = "a" * 41
-        val lName = "a" * 41
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> s"$fName", "lastName" -> s"$lName")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("First name must not be more than 40 characters")
-            contentAsString(result) must include("Last name must not be more than 40 characters")
-        }
-      }
-
-      "SA UTR must be 10 digits" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "11111111111")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Self Assessment Unique Tax Reference must be 10 digits")
-        }
-      }
-
-
-      "SA UTR must contain only letters" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "Smith & Co", "lastName" -> "Mohombi", "saUTR" -> "111111111a")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Self Assessment Unique Tax Reference must be 10 digits")
+            contentAsString(result) must include(s"${dataSet._4}")
+          }
         }
       }
 
     }
 
-    "if the selection is Limited Liability Partnership:" must {
-      "Business Name and CO Tax UTR must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            val document = Jsoup.parse(contentAsString(result))
-
-            contentAsString(result) must include("Registered company name must be entered")
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
-            document.getElementById("businessName_field").text() must include("Registered company name")
-            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
-        }
-      }
-
-      "Registered name must not be more than 105 characters" in {
-        val businessName = "a" * 106
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered company name must not be more than 105 characters")
-        }
-      }
-
-      "Partnership Self Assessment UTR must be 10 digits" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
-        }
-      }
-
-      "Partnership Self Assessment UTR must be valid" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
-        }
-      }
-
-      "Partnership Self Assessment UTR must contain only letters" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
-        }
-      }
-
-    }
-
-    "if the selection is Ordinary Business Partnership :" must {
-      "Business Name and CO Tax UTR must not be empty" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("psaUTR" -> "", "businessName" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            val document = Jsoup.parse(contentAsString(result))
-
-            contentAsString(result) must include("Registered company name must be entered")
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be entered")
-            document.getElementById("businessName_field").text() must include("Partnership name")
-            document.getElementById("psaUTR_field").text() must include("Partnership Self Assessment Unique Tax Reference")
-        }
-      }
-
-      "Registered Name must not be more than 105 characters" in {
-        val businessName = "a" * 106
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> s"$businessName", "psaUTR" -> "")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Registered company name must not be more than 105 characters")
-        }
-      }
-
-      "Partnership Self Assessment UTR must be 10 digits" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "11111111111")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
-        }
-      }
-
-      "Partnership Self Assessment UTR must be valid" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1234567892")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference is not valid")
-        }
-      }
-
-      "Partnership Self Assessment must contain only letters" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "111111111a")) {
-          result =>
-            status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Partnership Self Assessment Unique Tax Reference must be 10 digits")
-        }
-      }
-    }
 
     "if the Ordinary Business Partnership form is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+        submitWithAuthorisedUserSuccessOrg("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$matchUtr")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailure("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+        submitWithAuthorisedUserFailure("OBP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$noMatchUtr")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
@@ -466,14 +295,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "if the Limited Liability Partnership form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+        submitWithAuthorisedUserSuccessOrg("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$matchUtr")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailure("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+        submitWithAuthorisedUserFailure("LLP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$noMatchUtr")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
@@ -484,14 +313,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "if the Limited Partnership form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessOrg("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111111")) {
+        submitWithAuthorisedUserSuccessOrg("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$matchUtr")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailure("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> "1111111112")) {
+        submitWithAuthorisedUserFailure("LP", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "psaUTR" -> s"$noMatchUtr")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
@@ -502,14 +331,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "if the Sole Trader form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111111")) {
+        submitWithAuthorisedUserSuccessIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> s"$matchUtr")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailureIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> "1111111112")) {
+        submitWithAuthorisedUserFailureIndividual("SOP", request.withFormUrlEncodedBody("firstName" -> "John", "lastName" -> "Smith", "saUTR" -> s"$noMatchUtr")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
@@ -520,14 +349,14 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "if the Unincorporated body form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
+        submitWithAuthorisedUserSuccessOrg("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> s"$matchUtr", "businessName" -> "Smith & Co")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailure("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111112", "businessName" -> "Smith & Co")) {
+        submitWithAuthorisedUserFailure("UIB", request.withFormUrlEncodedBody("cotaxUTR" -> s"$noMatchUtr", "businessName" -> "Smith & Co")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
@@ -538,34 +367,18 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     "if the Limited Company form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
-        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111111", "businessName" -> "Smith & Co")) {
+        submitWithAuthorisedUserSuccessOrg("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> s"$matchUtr", "businessName" -> "Smith & Co")) {
           result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
         }
       }
       "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
-        submitWithAuthorisedUserFailure("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> "1111111112", "businessName" -> "Smith & Co")) {
+        submitWithAuthorisedUserFailure("LTD", request.withFormUrlEncodedBody("cotaxUTR" -> s"$noMatchUtr", "businessName" -> "Smith & Co")) {
           result =>
             status(result) must be(BAD_REQUEST)
             val document = Jsoup.parse(contentAsString(result))
             document.getElementById("business-type-ltd-form-error").text() must be("Your business details have not been found. Please check that your details are correct and try again")
-        }
-      }
-    }
-
-    "submit" must {
-      "unauthorised users" must {
-        "respond with a redirect" in {
-          submitWithUnAuthorisedUser("") { result =>
-            status(result) must be(SEE_OTHER)
-          }
-        }
-
-        "be redirected to the unauthorised page" in {
-          submitWithUnAuthorisedUser("") { result =>
-            redirectLocation(result).get must include("/business-customer/unauthorised")
-          }
         }
       }
     }
@@ -587,8 +400,6 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     }
     when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
     (Matchers.any(), Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
-    //val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "U.K.")
-    //val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", false, Some("agent123"))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
