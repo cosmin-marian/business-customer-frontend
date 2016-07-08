@@ -6,6 +6,7 @@ import play.api.i18n.Messages
 class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
   "BCUtils" must {
+
     "validateUTR" must {
       "given valid UTR return true" in {
         BCUtils.validateUTR(Some("1111111111")) must be(true)
@@ -43,9 +44,9 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
     "getIsoCodeMap" must {
       "return map of country iso-code to country name" in {
-        BCUtils.getIsoCodeTupleList must contain(("US" , "USA :United States of America"))
-        BCUtils.getIsoCodeTupleList must contain(("GB" , "United Kingdom :UK, GB, Great Britain"))
-        BCUtils.getIsoCodeTupleList must contain(("UG" , "Uganda"))
+        BCUtils.getIsoCodeTupleList must contain(("US", "USA :United States of America"))
+        BCUtils.getIsoCodeTupleList must contain(("GB", "United Kingdom :UK, GB, Great Britain"))
+        BCUtils.getIsoCodeTupleList must contain(("UG", "Uganda"))
       }
     }
 
@@ -73,14 +74,14 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       "return the correct map for ated" in {
         val typeMap = BCUtils.businessTypeMap("ated", false)
         typeMap.size must be(5)
-        typeMap(0)._1 must be("NUK")
+        typeMap.head._1 must be("NUK")
         typeMap(1)._1 must be("LTD")
       }
 
       "return the correct map for awrs" in {
         val typeMap = BCUtils.businessTypeMap("awrs", false)
         typeMap.size must be(7)
-        typeMap(0)._1 must be("GROUP")
+        typeMap.head._1 must be("GROUP")
         typeMap(1)._1 must be("SOP")
       }
 
@@ -88,12 +89,12 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
         val typeMap = BCUtils.businessTypeMap("amls", false)
         typeMap.size must be(5)
         typeMap mustBe Seq(
-            "LTD" -> Messages("bc.business-verification.LTD"),
-            "SOP" -> Messages("bc.business-verification.amls.SOP"),
-            "OBP" -> Messages("bc.business-verification.amls.PRT"),
-            "LLP"  -> Messages("bc.business-verification.amls.LP.LLP"),
-            "UIB" -> Messages("bc.business-verification.amls.UIB")
-          )
+          "LTD" -> Messages("bc.business-verification.LTD"),
+          "SOP" -> Messages("bc.business-verification.amls.SOP"),
+          "OBP" -> Messages("bc.business-verification.amls.PRT"),
+          "LLP" -> Messages("bc.business-verification.amls.LP.LLP"),
+          "UIB" -> Messages("bc.business-verification.amls.UIB")
+        )
       }
       "return default map when passed nothing" in {
         val typeMap = BCUtils.businessTypeMap("", false)
@@ -108,6 +109,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
         )
       }
     }
+
   }
 
 }

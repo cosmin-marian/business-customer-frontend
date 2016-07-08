@@ -30,12 +30,18 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     override val http: HttpGet with HttpPost = mockWSHttp
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
+    override val serviceUrl = ""
+    override val baseUri = "business-customer"
+    override val registerUri = "register"
+    override val knownFactsUri = "known-facts"
   }
+
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
+  val service = "ATED"
 
   "BusinessCustomerConnector" must {
     val businessOrgData = EtmpOrganisation(organisationName = "testName")
-    val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution="HRMC", issuingCountryCode = "UK")
+    val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution = "HRMC", issuingCountryCode = "UK")
     val businessAddress = EtmpAddress("line1", "line2", None, None, None, "GB")
     val nonUkBusinessAddress = EtmpAddress("line1", "line2", None, None, None, "FR")
 
@@ -98,7 +104,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestData)
+        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         await(result) must be(businessResponseData)
       }
 
@@ -111,7 +117,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestDataNonUK)
+        val result = TestBusinessCustomerConnector.register(businessRequestDataNonUK, service)
         await(result) must be(businessResponseData)
       }
 
@@ -122,7 +128,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE, Some(matchFailureResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestData)
+        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         val thrown = the[ServiceUnavailableException] thrownBy await(result)
         thrown.getMessage must include("Service unavailable")
       }
@@ -134,7 +140,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestData)
+        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         val thrown = the[InternalServerException] thrownBy await(result)
         thrown.getMessage must include("Not Found")
       }
@@ -147,7 +153,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(matchFailureResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestData)
+        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         val thrown = the[InternalServerException] thrownBy await(result)
         thrown.getMessage must include("Bad Request or Internal server error")
       }
@@ -159,7 +165,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(999, Some(matchFailureResponse))))
 
-        val result = TestBusinessCustomerConnector.register(businessRequestData)
+        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         val thrown = the[InternalServerException] thrownBy await(result)
         thrown.getMessage must include("Unknown response status: 999")
       }

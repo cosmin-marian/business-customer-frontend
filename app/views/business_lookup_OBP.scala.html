@@ -11,14 +11,14 @@
   @bcErrorSummary(ordinaryBusinessPartnershipForm, "bc.business-verification-error.general.obp")
 
   @if(isAgent) {
-    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.agent.text", service.toUpperCase)</p>
-    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-agent-header")</h1>
+    <p class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </p>
+    <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header") </h1>
   } else {
-    <p class="heading-sub" id="business-verification-text">@Messages("bc.business-verification.client.text", service.toUpperCase)</p>
-    <h1 class="heading-xlarge" id="business-type-header">@Messages("bc.business-verification-selected-user-header")</h1>
+    <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </p>
+    <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
 
-  <p class="lede" id="business-type-paragraph">@Messages("bc.business-verification-lede")</p>
+  <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
@@ -27,20 +27,20 @@
       <div id="business-type-obp-form" class="form-field">
 
         @bcInput(ordinaryBusinessPartnershipForm("businessName"),
-        '_label -> Html(Messages("bc.business-verification.partnerNameField")),
-        '_hintText -> Messages("bc.business-verification.partnerNameHint"),
-        '_id -> "businessName",
-        '_showConstraints -> false)
+          '_label -> Html(Messages("bc.business-verification.partnerNameField")),
+          '_hintText -> Messages("bc.business-verification.partnerNameHint"),
+          '_id -> "businessName",
+          '_showConstraints -> false)
 
-        @bcInputNew(ordinaryBusinessPartnershipForm("psaUTR"),
-        '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
-        '_hintText -> Messages("bc.business-verification.utr.hint"),
-        '_id -> "psaUTR",
-        '_type -> "number",
-        '_fieldsetAttributesHelpQuestion -> "utr-help-question",
-        '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
-        '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
-        '_showConstraints -> false)
+        @bcInput(ordinaryBusinessPartnershipForm("psaUTR"),
+          '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+          '_hintText -> Messages("bc.business-verification.utr.hint"),
+          '_id -> "psaUTR",
+          '_type -> "number",
+          '_fieldsetAttributesHelpQuestion -> "utr-help-question",
+          '_fieldsetQuestion -> Messages("bc.business-verification.utr.help.question"),
+          '_HelpQuestionAnswer -> Html(Messages("bc.business-verification.utr.help.answer")),
+          '_showConstraints -> false)
 
       </div>
 
@@ -51,7 +51,9 @@
   }
 
   <div>
-    <p><a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a></p>
+    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+      @Messages("bc.business-verification.back")
+    </a>
   </div>
 
 }

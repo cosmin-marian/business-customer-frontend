@@ -1,7 +1,8 @@
 # microservice specific routes
 
-GET         /assets/*file                                                       controllers.Assets.at(path="/public", file)
 ->          /template                                                           template.Routes
+
+GET         /assets/*file                                                       controllers.Assets.at(path="/public", file)
 
 GET         /business-verification/:service                                     controllers.BusinessVerificationController.businessVerification(service: String)
 
@@ -37,6 +38,3 @@ GET         /:service                                                           
 GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
-
-
-

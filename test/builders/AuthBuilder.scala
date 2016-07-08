@@ -12,6 +12,9 @@ import scala.concurrent.Future
 
 object AuthBuilder {
 
+  val saUtr = new SaUtrGenerator().nextSaUtr
+  val nino = new Generator().nextNino
+
   def createUserAuthContext(userId: String, userName: String): BusinessCustomerContext = {
     val ac = AuthContext(authority = createUserAuthority(userId),  nameFromSession = Some(userName))
     BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(ac))
@@ -67,7 +70,7 @@ object AuthBuilder {
   }
 
   private def createInvalidAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(paye = Some(PayeAccount("paye/AA026813", Nino("AA026813B")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(paye = Some(PayeAccount(s"paye/$nino", nino))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
   private def createUserAuthority(userId: String): Authority = {
@@ -75,11 +78,11 @@ object AuthBuilder {
   }
 
   private def createSaAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(sa = Some(SaAccount(s"sa/individual/$saUtr", saUtr))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 
   private def createSaOrgAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", SaUtr("8040200778"))),
+    Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", saUtr)),
       org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
   }
 

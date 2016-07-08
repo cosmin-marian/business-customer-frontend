@@ -35,10 +35,10 @@
 
   @bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")
 
-  <p class="heading-sub" id="business-verification-text">@Html(displayDetails.businessRegSubHeader)</p>
-  <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading">@Html(displayDetails.businessRegHeader)</h1>
+  <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
+  <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
-  <p class="lede" id="business-registration.lede-text">@Messages("bc.business-registration.lede.text")</p>
+  <p class="lede" id="business-registration.lede-text"> @Messages("bc.business-registration.lede.text") </p>
 
   @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 
@@ -46,54 +46,53 @@
 
       <div id="business-registration-form">
 
-        @bcInputNew(businessRegistrationForm("businessName"),
-        '_label ->  Html(Messages("bc.business-registration.businessName")),
-        '_labelClass -> "form-label",
-        '_id -> "businessName",
-        '_showConstraints -> false)
+        @bcInput(businessRegistrationForm("businessName"),
+          '_label ->  Html(Messages("bc.business-registration.businessName")),
+          '_labelClass -> "form-label",
+          '_id -> "businessName",
+          '_showConstraints -> false)
 
-        @bcInputNew(businessRegistrationForm("businessAddress.line_1"),
-        '_label ->  Html(Messages("bc.business-registration.address")),
-        '_id -> "businessAddress.line_1",
-        '_showConstraints -> false)
+        @bcInput(businessRegistrationForm("businessAddress.line_1"),
+          '_label ->  Html(Messages("bc.business-registration.address")),
+          '_id -> "businessAddress.line_1",
+          '_showConstraints -> false)
 
-        @bcInputNew(businessRegistrationForm("businessAddress.line_2"),
-        '_label ->  Html(Messages("bc.business-registration.line_2")),
-        '_labelClass -> "visuallyhidden",
-        '_id -> "businessAddress.line_2",
-        '_showConstraints -> false)
+        @bcInput(businessRegistrationForm("businessAddress.line_2"),
+          '_label ->  Html(Messages("bc.business-registration.line_2")),
+          '_labelClass -> "visuallyhidden",
+          '_id -> "businessAddress.line_2",
+          '_showConstraints -> false)
 
-        @bcInputNew(businessRegistrationForm("businessAddress.line_3"),
-        '_label ->  Html(Messages("bc.business-registration.line_3")),
-        '_labelClass -> "visuallyhidden",
-        '_id -> "businessAddress.line_3",
-        '_showConstraints -> false)
+        @bcInput(businessRegistrationForm("businessAddress.line_3"),
+          '_label ->  Html(Messages("bc.business-registration.line_3")),
+          '_labelClass -> "visuallyhidden",
+          '_id -> "businessAddress.line_3",
+          '_showConstraints -> false)
 
-        @bcInputNew(businessRegistrationForm("businessAddress.line_4"),
-        '_label ->  Html(Messages("bc.business-registration.line_4")),
-        '_labelClass -> "visuallyhidden",
-        '_id -> "businessAddress.line_4",
-        '_showConstraints -> false)
+        @bcInput(businessRegistrationForm("businessAddress.line_4"),
+          '_label ->  Html(Messages("bc.business-registration.line_4")),
+          '_labelClass -> "visuallyhidden",
+          '_id -> "businessAddress.line_4",
+          '_showConstraints -> false)
 
         @bcDropdown(businessRegistrationForm("businessAddress.country"),
-        elementOptions = displayDetails.listOfIsoCode,
-        displayEmptyValue = true,
-        '_id -> "businessAddress.country",
-        '_emptyValueText -> Messages("bc.business-registration.country.select"),
-        '_label -> Html(Messages("bc.business-registration.country")))
+          elementOptions = displayDetails.listOfIsoCode,
+          displayEmptyValue = true,
+          '_id -> "businessAddress.country",
+          '_emptyValueText -> Messages("bc.business-registration.country.select"),
+          '_label -> Html(Messages("bc.business-registration.country")))
 
         <div class="form-group" id="hasBusinessUniqueId">
 
           @bcInputRadioGroup(businessRegistrationForm("hasBusinessUniqueId"),
-          Seq("true" -> Messages("bc.radio.yes.label"),
-          "false" -> Messages("bc.radio.no.label")),
-          '_legend -> Messages("bc.business-registration.hasBusinessUniqueId"),
-          '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
-          '_fieldsetQuestion -> Messages("bc.business-registration.hasBusinessUniqueId.help.question"),
-          '_HelpQuestionAnswer -> Html(Messages("bc.business-registration.hasBusinessUniqueId.help.answer")),
-          '_groupClass -> "inline",
-          '_labelClass -> "block-label",
-          '_labelAfter -> true)
+            Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),
+            '_legend -> Messages("bc.business-registration.hasBusinessUniqueId"),
+            '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
+            '_fieldsetQuestion -> Messages("bc.business-registration.hasBusinessUniqueId.help.question"),
+            '_HelpQuestionAnswer -> Html(Messages("bc.business-registration.hasBusinessUniqueId.help.answer")),
+            '_groupClass -> "inline",
+            '_labelClass -> "block-label",
+            '_labelAfter -> true)
 
         </div>
 
@@ -101,23 +100,23 @@
 
           <div id="hidden-identifiers" class="panel-indent">
 
-            @bcInputNew(businessRegistrationForm("businessUniqueId"),
-            '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
-            '_id -> "businessUniqueId",
-            '_hintText -> Messages("bc.business-registration.businessUniqueId.hint"),
-            '_showConstraints -> false)
+            @bcInput(businessRegistrationForm("businessUniqueId"),
+              '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
+              '_id -> "businessUniqueId",
+              '_hintText -> Messages("bc.business-registration.businessUniqueId.hint"),
+              '_showConstraints -> false)
 
             @bcDropdown(businessRegistrationForm("issuingCountry"),
-            elementOptions = displayDetails.listOfIsoCode,
-            displayEmptyValue = true,
-            '_id -> "issuingCountry",
-            '_emptyValueText -> Messages("bc.business-registration.country.select"),
-            '_label -> Html(Messages("bc.business-registration.issuingCountry")))
+              elementOptions = displayDetails.listOfIsoCode,
+              displayEmptyValue = true,
+              '_id -> "issuingCountry",
+              '_emptyValueText -> Messages("bc.business-registration.country.select"),
+              '_label -> Html(Messages("bc.business-registration.issuingCountry")))
 
-            @bcInputNew(businessRegistrationForm("issuingInstitution"),
-            '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
-            '_id -> "issuingInstitution",
-            '_showConstraints -> false)
+            @bcInput(businessRegistrationForm("issuingInstitution"),
+              '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
+              '_id -> "issuingInstitution",
+              '_showConstraints -> false)
 
           </div>
 
@@ -130,7 +129,9 @@
     </div>
 
     <div>
-      <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">@Messages("bc.business-verification.back")</a>
+      <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+        @Messages("bc.business-verification.back")
+      </a>
     </div>
 
   }

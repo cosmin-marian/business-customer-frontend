@@ -2,11 +2,10 @@ package builders
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.audit.model.{AuditAsMagnet, Audit}
 import config.BusinessCustomerFrontendAuditConnector
 import uk.gov.hmrc.play.audit.model.Audit._
+import uk.gov.hmrc.play.audit.model.{Audit, AuditAsMagnet, DataEvent}
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 class TestAudit() extends Audit("test", BusinessCustomerFrontendAuditConnector) {
   var capturedTxName: String = ""
@@ -28,4 +27,3 @@ class TestAudit() extends Audit("test", BusinessCustomerFrontendAuditConnector) 
 
   override def sendDataEvent: (DataEvent) => Unit = captureDataEvent
 }
-
