@@ -17,30 +17,27 @@ object BusinessRegController extends BusinessRegController {
 
 trait BusinessRegController extends BaseController {
 
-  val businessRegistrationService: BusinessRegistrationService
+  def businessRegistrationService: BusinessRegistrationService
 
-
-  def register(service: String, businessType: String) = AuthAction(service) {
-    implicit bcContext =>
-      Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+  def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
+    Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
-  def send(service: String, businessType: String) = AuthAction(service).async {
-    implicit bcContext =>
-      BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
-        formWithErrors => {
-          Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
-        },
-        registrationData => {
-          businessRegistrationService.registerBusiness(registrationData, isGroup = false).map {
-            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-          }
+  def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
+    BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+      formWithErrors => {
+        Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
+      },
+      registrationData => {
+        businessRegistrationService.registerBusiness(registrationData, isGroup = false, service).map {
+          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
-      )
+      }
+    )
   }
 
-  private def displayDetails(businessType: String, service: String)(implicit businessCustomerContext: BusinessCustomerContext) = {
-    if (businessCustomerContext.user.isAgent) {
+  private def displayDetails(businessType: String, service: String)(implicit bcContext: BusinessCustomerContext) = {
+    if (bcContext.user.isAgent) {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
         Messages("bc.business-registration.text.agent", service),

@@ -25,21 +25,27 @@ import scala.concurrent.Future
 class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val service = "ATED"
+
   val mockAuthConnector = mock[AuthConnector]
+
   val mockAgentRegistrationService = mock[AgentRegistrationService]
+
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "GB")
+
   val directMatchReviewDetails = ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", isAGroup = false, directMatch = true, Some("agent123"))
+
   val nonDirectMatchReviewDetails = ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
   def testReviewDetailsController(directMatch: Boolean) = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = BusinessCustomerSessionCache
+      override val sourceId: String = "Test"
 
       var reads: Int = 0
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        if(directMatch) {
+        if (directMatch) {
           Future.successful(Some(directMatchReviewDetails))
         }
         else {
@@ -49,7 +55,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
-
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
     }
@@ -57,7 +62,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   def testReviewDetailsControllerNotFound = {
     val mockDataCacheConnector = new DataCacheConnector {
-      val sessionCache = BusinessCustomerSessionCache
+      override val sessionCache = BusinessCustomerSessionCache
+      override val sourceId: String = "Test"
 
       var reads: Int = 0
 
@@ -107,12 +113,12 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user" in {
-      businessDetailsWithAuthorisedUser(directMatch = false){ result =>
+      businessDetailsWithAuthorisedUser(directMatch = false) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
         document.getElementById("bc.business-registration.text").text() must be("ATED registration")
-//        document.getElementById("business-name-label").text must be("Name")
-//        document.getElementById("business-address-label").text must be("Registered address")
+        document.getElementById("business-name").text must be("ACME")
+        document.getElementById("business-address").text must be("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom")
 
         document.select(".button").text must be("Confirm and continue")
         document.getElementById("wrong-account-title").text must be("Not the right address?")
@@ -133,6 +139,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       businessDetailsWithAuthorisedAgent { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your agency details")
+        document.getElementById("bc.business-registration-agent.text").text() must be("ATED agency set up")
       }
     }
 
@@ -178,7 +185,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       "return service start page correctly for AWRS Users" in {
 
         continueWithAuthorisedUser("AWRS") {
-          result => 
+          result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/alcohol-wholesale-scheme")
         }

@@ -6,45 +6,42 @@ import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.BCUtils
 
 import scala.concurrent.Future
 
 object BusinessRegUKController extends BusinessRegUKController {
-  override val authConnector = FrontendAuthConnector
-  override val businessRegistrationService = BusinessRegistrationService
+  val authConnector = FrontendAuthConnector
+  val businessRegistrationService = BusinessRegistrationService
 }
 
 trait BusinessRegUKController extends BaseController {
 
-  val businessRegistrationService: BusinessRegistrationService
+  def businessRegistrationService: BusinessRegistrationService
 
-  def register(service: String, businessType: String) = AuthAction(service) {
-    implicit bcContext =>
-      val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
-      Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
+  def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
+    val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
+    Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 
-  def send(service: String, businessType: String) = AuthAction(service).async {
-    implicit bcContext =>
-      BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
-        formWithErrors => {
-          Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
-        },
-        registrationData => {
-          businessRegistrationService.registerBusiness(registrationData, isGroup(businessType)).map {
-            registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-          }
+  def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
+    BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
+      formWithErrors => {
+        Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
+      },
+      registrationData => {
+        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), service).map {
+          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
-      )
+      }
+    )
   }
 
   private def isGroup(businessType: String) = {
     businessType.equals("GROUP")
   }
 
-  private def displayDetails(businessType: String)(implicit user: AuthContext) = {
+  private def displayDetails(businessType: String) = {
     if (isGroup(businessType)) {
       new BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.group.header"),

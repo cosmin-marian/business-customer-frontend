@@ -3,11 +3,11 @@ package controllers
 import java.util.UUID
 
 import builders.SessionBuilder
-import config.{FrontendAuthConnector}
+import config.FrontendAuthConnector
 import org.jsoup.Jsoup
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsJson, Result}
@@ -40,19 +40,17 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     "view" must {
       "redirect present user to NRL question page, if user is not an agent" in {
-        viewWithAuthorisedClient(service) {
-          result =>
-            status(result) must be(OK)
-            val document = Jsoup.parse(contentAsString(result))
-            document.title must be("Are you a non-resident landlord operating through an offshore company who pays tax through Self-Assessment?")
+        viewWithAuthorisedClient(service) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+          document.title must be("Are you a non-resident landlord operating through an offshore company who pays tax through Self-Assessment?")
         }
       }
 
       "redirect to register non-uk page, if user is an agent" in {
-        viewWithAuthorisedAgent(service) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
+        viewWithAuthorisedAgent(service) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
         }
       }
     }
@@ -60,26 +58,23 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     "continue" must {
       "if user doesn't select any radio button, show form error with bad_request" in {
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": ""}"""))
-        continueWithAuthorisedClient(fakeRequest, service) {
-          result =>
-            status(result) must be(BAD_REQUEST)
+        continueWithAuthorisedClient(fakeRequest, service) { result =>
+          status(result) must be(BAD_REQUEST)
         }
       }
       "if user select 'yes', redirect it to business verification page" in {
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": "true"}"""))
-        continueWithAuthorisedClient(fakeRequest, service) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some(s"/business-customer/business-verification/$service/businessForm/SOP"))
+        continueWithAuthorisedClient(fakeRequest, service) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(s"/business-customer/business-verification/$service/businessForm/SOP"))
 
         }
       }
       "if user select 'no', redirect it to business registration page" in {
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": "false"}"""))
-        continueWithAuthorisedClient(fakeRequest, service) {
-          result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
+        continueWithAuthorisedClient(fakeRequest, service) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
 
         }
       }
@@ -89,17 +84,16 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
 
   def viewWithAuthorisedAgent(serviceName: String)(test: Future[Result] => Any) = {
-      val sessionId = s"session-${UUID.randomUUID}"
-      val userId = s"user-${UUID.randomUUID}"
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
 
-      builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-      val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
-        SessionKeys.sessionId -> sessionId,
-        SessionKeys.token -> "RANDOMTOKEN",
-        SessionKeys.userId -> userId))
-      test(result)
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+    test(result)
   }
-
 
 
   def viewWithAuthorisedClient(serviceName: String)(test: Future[Result] => Any) = {

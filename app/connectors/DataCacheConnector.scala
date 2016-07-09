@@ -10,17 +10,16 @@ import scala.concurrent.Future
 
 object DataCacheConnector extends DataCacheConnector {
   val sessionCache: SessionCache = BusinessCustomerSessionCache
+  val sourceId: String = "BC_Business_Details"
 }
 
 trait DataCacheConnector {
 
-  val sessionCache: SessionCache
+  def sessionCache: SessionCache
 
-  val sourceId: String = "BC_Business_Details"
+  def sourceId: String
 
-  def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
-    sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
-  }
+  def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = sessionCache.fetchAndGetEntry[ReviewDetails](sourceId)
 
   def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
     val result = sessionCache.cache[ReviewDetails](sourceId, reviewDetails)
