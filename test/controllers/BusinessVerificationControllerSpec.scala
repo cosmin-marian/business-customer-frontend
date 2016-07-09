@@ -73,6 +73,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.select(".block-label").text() must include("Non-UK company")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
+            document.select(".link-back").text() must be("Back")
+            document.select(".link-back").attr("href") must be("http://localhost:9933/ated-subscription/appoint-agent")
           }
         }
 
@@ -93,6 +95,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.select(".block-label").text() must include("Non-UK company")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
+            document.select(".link-back").text() must be("Back")
+            document.select(".link-back").attr("href") must be("http://localhost:9933/ated-subscription/start-agent-subscription")
           }
         }
       }

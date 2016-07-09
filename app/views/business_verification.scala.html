@@ -3,6 +3,7 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 @import utils.BCUtils
+@import config.ApplicationConfig
 
 @implicitFormInstance = @{ Some(businessTypeForm) }
 
@@ -49,7 +50,16 @@
 
     </div>
 
-    <button class="button" id="submit" type="submit"> @Messages("bc.business-verification.submit") </button>
+    <div class="form-group">
+      <button class="button" id="submit" type="submit"> @Messages("bc.business-verification.submit") </button>
+    </div>
+
+    @if(service.toUpperCase == "ATED" && isAgent) {
+      <a href="@ApplicationConfig.verificationPageAgentBackLink" id="back" class="link-back"> @Messages("bc.business-verification.back") </a>
+    }
+    @if(service.toUpperCase == "ATED" && (!isAgent)) {
+      <a href="@ApplicationConfig.verificationPageBackLink" id="back" class="link-back"> @Messages("bc.business-verification.back") </a>
+    }
 
   }
 

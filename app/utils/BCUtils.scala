@@ -119,7 +119,6 @@ object BCUtils {
     getCountry(isoCode.toUpperCase).fold(isoCode) { x => x }
   }
 
-
 }
 
 
