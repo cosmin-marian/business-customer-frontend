@@ -4,13 +4,13 @@ package connectors
 import java.util.UUID
 
 import builders.{AuthBuilder, TestAudit}
-import models.MatchBusinessData
+import models.{BusinessCustomerContext, MatchBusinessData}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.http.hooks.HttpHook
@@ -27,23 +27,28 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
   }
 
   val mockWSHttp = mock[MockHttp]
-  implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
+  implicit val user = mock[BusinessCustomerContext](RETURNS_DEEP_STUBS)
+  val mockAdapter = mock[RegisterWithIdServiceAdaptor]
+
 
   object TestBusinessMatchingConnector extends BusinessMatchingConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
-    override val lookupUri = ""
-    override val baseUri = ""
-    override val serviceUrl = ""
+    override val lookupUri = "lookupUri"
+    override val baseUri = "baseUri"
+    override val serviceUrl = "serviceUrl"
+    override def cdsAdaptor: RegisterWithIdServiceAdaptor = mockAdapter
   }
 
   val userType = "sa"
   val service = "ATED"
 
   override def beforeEach = {
-    reset(mockWSHttp)
+    reset(mockWSHttp, mockAdapter, user)
+    when(user.user.authLink).thenReturn("/authLink")
   }
+  val expectedCdsPostUrl = "serviceUrl/authLink/baseUri/lookupUri"
 
   "BusinessMatchingConnector" must {
 
@@ -106,6 +111,62 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
       """.stripMargin.replaceAll("[\r\n\t]", "")
 
     val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
+
+    val convertedResponse = Json.parse("""{"adapted": "json"}""")
+
+    "call correct url and send correct json when service is CDS" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      val convertedReq = mock[JsValue]
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockAdapter.createRequestFrom(matchBusinessData)).thenReturn(convertedReq)
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
+      when(mockAdapter.convertToMatchSuccess(matchSuccessResponse)).thenReturn(convertedResponse)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, "org", "CDS")
+      await(result) must be(convertedResponse)
+      verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.eq(expectedCdsPostUrl), Matchers.eq(convertedReq), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    }
+
+
+    "return business details for a successful match when service is CDS and userType is org" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
+      when(mockAdapter.convertToMatchSuccess(matchSuccessResponse)).thenReturn(convertedResponse)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, "org", "CDS")
+      await(result) must be(convertedResponse)
+      verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    }
+
+    "return error message for unsuccessful match when service is CDS" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
+      when(mockAdapter.convertToMatchFailure(matchFailureResponse)).thenReturn(convertedResponse)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, "org", "CDS")
+      await(result) must be(convertedResponse)
+      verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    }
+
+    "return business details for a successful match when service is cds(lowercase) and userType is org" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
+      when(mockAdapter.convertToMatchSuccess(matchSuccessResponse)).thenReturn(convertedResponse)
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, "org", "cds")
+      await(result) must be(convertedResponse)
+      verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    }
+
+
+    "not call cds endpoint when service is CDS but userType is not org" in {
+      val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(matchSuccessResponse))))
+      val result = TestBusinessMatchingConnector.lookup(matchBusinessData, userType, "CDS")
+      await(result) must be(matchSuccessResponse)
+      verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.eq("serviceUrl/authLink/baseUri/lookupUri/1111111111/sa"), Matchers.eq(Json.toJson(matchBusinessData)), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+      verifyNoMoreInteractions(mockAdapter)
+    }
 
     "for a successful match, return business details" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)

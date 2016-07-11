@@ -37,3 +37,16 @@ case class MatchFailureResponse(Reason: String)
 object MatchFailureResponse {
   implicit val formats = Json.format[MatchFailureResponse]
 }
+
+case class MatchSuccessResponse(isAnIndividual: Boolean,
+                                agentReferenceNumber: Option[String],
+                                sapNumber: Option[String],
+                                safeId: String,
+                                address: EtmpAddress,
+                                organisation: Option[OrganisationResponse] = None,
+                                individual: Option[Individual] = None)
+
+object MatchSuccessResponse {
+  implicit val format = Json.format[MatchSuccessResponse]
+}
+
