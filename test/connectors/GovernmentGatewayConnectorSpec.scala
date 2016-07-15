@@ -2,30 +2,26 @@ package connectors
 
 import java.util.UUID
 
-import builders.{TestAudit, AuthBuilder}
-import config.BusinessCustomerFrontendAuditConnector
+import builders.{AuthBuilder, TestAudit}
 import metrics.Metrics
-import models.{EnrolResponse, EnrolRequest, Identifier}
+import models.{EnrolRequest, EnrolResponse, Identifier}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.Play
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.Audit
-import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
+import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 
 import scala.concurrent.Future
 
 
-class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
+class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   class MockHttp extends WSGet with WSPost {
     override val hooks: Seq[HttpHook] = NoneRequired
@@ -35,9 +31,16 @@ class GovernmentGatewayConnectorSpec  extends PlaySpec with OneServerPerSuite wi
 
   object TestGovernmentGatewayConnector extends GovernmentGatewayConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
+
     override val audit: Audit = new TestAudit
+
     override val appName: String = "Test"
-    override def metrics = Metrics
+
+    override val enrolUri: String = ""
+
+    override def serviceUrl: String = ""
+
+    override val metrics = Metrics
   }
 
   override def beforeEach = {

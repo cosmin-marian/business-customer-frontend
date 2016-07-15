@@ -12,6 +12,8 @@ trait ApplicationConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+  val verificationPageBackLink: String
+  val verificationPageAgentBackLink: String
 }
 
 object ApplicationConfig extends ApplicationConfig with ServicesConfig {
@@ -30,5 +32,7 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
   override lazy val analyticsHost: String = configuration.getString(s"govuk-tax.$env.google-analytics.host").getOrElse("auto")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val verificationPageBackLink = getConfString("ated.serviceReturnUrl", "/ated-subscription/appoint-agent")
+  override lazy val verificationPageAgentBackLink = getConfString("ated.serviceAgentReturnUrl", "/ated-subscription/start-agent-subscription")
 
 }

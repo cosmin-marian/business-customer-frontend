@@ -26,20 +26,19 @@ object BCUtils {
 
   def validateUTR(utr: Option[String]): Boolean = {
     utr match {
-      case Some(utr) => {
-        utr.trim.length == TEN && utr.trim.forall(_.isDigit) && {
-          val actualUtr = utr.trim.toList
+      case Some(x) =>
+        x.trim.length == TEN && x.trim.forall(_.isDigit) && {
+          val actualUtr = x.trim.toList
           val checkDigit = actualUtr.head.asDigit
           val restOfUtr = actualUtr.tail
           val weights = List(SIX, SEVEN, EIGHT, NINE, TEN, FIVE, FOUR, THREE, TWO)
           val weightedUtr = for ((w1, u1) <- weights zip restOfUtr) yield {
-            w1 * (u1.asDigit)
+            w1 * u1.asDigit
           }
           val total = weightedUtr.sum
           val remainder = total % 11
           isValidUtr(remainder, checkDigit)
         }
-      }
       case None => false
     }
   }
@@ -47,7 +46,7 @@ object BCUtils {
   private def isValidUtr(remainder: Int, checkDigit: Int): Boolean = {
     val mapOfRemainders = Map(ZERO -> TWO, ONE -> ONE, TWO -> NINE, THREE -> EIGHT, FOUR -> SEVEN, FIVE -> SIX,
       SIX -> FIVE, SEVEN -> FOUR, EIGHT -> THREE, NINE -> TWO, TEN -> ONE)
-    Some(checkDigit) == mapOfRemainders.get(remainder)
+    mapOfRemainders.get(remainder).contains(checkDigit)
   }
 
   def getIsoCodeTupleList: List[(String, String)] = {
@@ -55,31 +54,27 @@ object BCUtils {
     val listOfCountryCodes: scala.collection.mutable.MutableList[(String, String)] = scala.collection.mutable.MutableList()
     while (keys.hasMoreElements) {
       val key = keys.nextElement().toString
-      listOfCountryCodes.+=:((key , p.getProperty(key)))
+      listOfCountryCodes.+=:((key, p.getProperty(key)))
     }
     listOfCountryCodes.toList.sortBy(_._2)
   }
 
 
-
-  def getNavTitle(service:Option[String]): Option[String] = {
+  def getNavTitle(service: Option[String]): Option[String] = {
     service match {
-      case Some(serviceName) => {
+      case Some(serviceName) =>
         serviceName.toLowerCase match {
           case "ated" => Some(Messages("bc.ated.serviceName"))
           case "awrs" => Some(Messages("bc.awrs.serviceName"))
           case "amls" => Some(Messages("bc.amls.serviceName"))
           case _ => None
         }
-      }
       case None => None
     }
   }
 
 
-
-
-  def businessTypeMap(service:String, isAgent: Boolean) : Seq[(String, String)]= {
+  def businessTypeMap(service: String, isAgent: Boolean): Seq[(String, String)] = {
 
     val fixedBusinessTypes = Seq(
 
@@ -96,16 +91,17 @@ object BCUtils {
       case "ated" => Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes.filterNot(p => p._1 == "UIB").filterNot(p => p._1 == "SOP")
       case "awrs" => Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
       case "amls" => Seq("LTD" -> Messages("bc.business-verification.LTD"),
-                         "SOP" -> Messages("bc.business-verification.amls.SOP"),
-                         "OBP" -> Messages("bc.business-verification.amls.PRT"),
-                         "LLP" -> Messages("bc.business-verification.amls.LP.LLP"),
-                         "UIB" -> Messages("bc.business-verification.amls.UIB")
-                        )
+        "SOP" -> Messages("bc.business-verification.amls.SOP"),
+        "OBP" -> Messages("bc.business-verification.amls.PRT"),
+        "LLP" -> Messages("bc.business-verification.amls.LP.LLP"),
+        "UIB" -> Messages("bc.business-verification.amls.UIB")
+      )
       case _ => fixedBusinessTypes
     }
   }
 
   def getSelectedCountry(isoCode: String): String = {
+
     def trimCountry(selectedCountry: String) = {
       val position = selectedCountry.indexOf(":")
       if (position > 0) {
@@ -117,14 +113,11 @@ object BCUtils {
 
     def getCountry(isoCode: String): Option[String] = {
       val country = Option(p.getProperty(isoCode.toUpperCase))
-      country.map{ selectedCountry =>
-        trimCountry(selectedCountry)
-      }
+      country.map(selectedCountry => trimCountry(selectedCountry))
     }
 
-    getCountry(isoCode.toUpperCase).fold(isoCode){x=>x}
+    getCountry(isoCode.toUpperCase).fold(isoCode) { x => x }
   }
-
 
 }
 

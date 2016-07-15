@@ -7,10 +7,9 @@ import models._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.{Logger, Play}
-import uk.gov.hmrc.play.audit.model.EventTypes
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.model.Audit
+import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.GovernmentGatewayConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,22 +17,23 @@ import scala.concurrent.Future
 
 trait AgentRegistrationService extends RunMode with Auditable {
 
-  val governmentGatewayConnector: GovernmentGatewayConnector
-  val dataCacheConnector: DataCacheConnector
-  val businessCustomerConnector: BusinessCustomerConnector
+  def governmentGatewayConnector: GovernmentGatewayConnector
 
-  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+  def dataCacheConnector: DataCacheConnector
+
+  def businessCustomerConnector: BusinessCustomerConnector
+
+  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
-      case _ => {
+      case _ =>
         Logger.warn(s"[AgentRegistrationService][enrolAgent] - No Service details found in DataCache for")
         throw new RuntimeException(Messages("bc.business-review.error.not-found"))
-      }
     }
   }
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
-                        (implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[EnrolResponse] = {
+                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[EnrolResponse] = {
     for {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
@@ -46,17 +46,15 @@ trait AgentRegistrationService extends RunMode with Auditable {
   private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit bcContext: BusinessCustomerContext): EnrolRequest = {
     val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
     agentEnrolmentService match {
-      case Some(enrolServiceName) => {
+      case Some(enrolServiceName) =>
         val knownFactsList = List(businessDetails.agentReferenceNumber, Some(""), Some(""), Some(businessDetails.safeId)).flatten
-        EnrolRequest(portalId = GovernmentGatewayConstants.PORTAL_IDENTIFIER,
+        EnrolRequest(portalId = GovernmentGatewayConstants.PortalIdentifier,
           serviceName = enrolServiceName,
-          friendlyName = GovernmentGatewayConstants.FRIENDLY_NAME,
+          friendlyName = GovernmentGatewayConstants.FriendlyName,
           knownFacts = knownFactsList)
-      }
-      case _ => {
-        Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = ${serviceName}")
+      case _ =>
+        Logger.warn(s"[AgentRegistrationService][createEnrolRequest] - No Agent Enrolment name found in config found = $serviceName")
         throw new RuntimeException(Messages("bc.agent-service.error.no-agent-enrolment-service-name", serviceName, serviceName.toLowerCase))
-      }
     }
 
   }
@@ -67,8 +65,8 @@ trait AgentRegistrationService extends RunMode with Auditable {
       throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))
     }
     val knownFacts = List(
-      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_AGENT_REF_NO, agentRefNo),
-      KnownFact(GovernmentGatewayConstants.KNOWN_FACTS_SAFEID, businessDetails.safeId)
+      KnownFact(GovernmentGatewayConstants.KnownFactsAgentRefNo, agentRefNo),
+      KnownFact(GovernmentGatewayConstants.KnownFactsSafeId, businessDetails.safeId)
     )
     KnownFactsForService(knownFacts)
   }
@@ -85,10 +83,9 @@ trait AgentRegistrationService extends RunMode with Auditable {
 }
 
 object AgentRegistrationService extends AgentRegistrationService {
-  override val governmentGatewayConnector = GovernmentGatewayConnector
-  override val dataCacheConnector = DataCacheConnector
-  override val businessCustomerConnector = BusinessCustomerConnector
-  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
-  override val appName: String = AppName.appName
+  val governmentGatewayConnector = GovernmentGatewayConnector
+  val dataCacheConnector = DataCacheConnector
+  val businessCustomerConnector = BusinessCustomerConnector
+  val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  val appName: String = AppName.appName
 }
-

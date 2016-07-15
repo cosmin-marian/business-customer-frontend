@@ -24,11 +24,13 @@ private object AppDependencies {
   private val playJsonLoggerVersion = "2.1.1"
   private val playConfigVersion = "2.0.1"
   private val urlBuilderVersion = "1.0.0"
+  private val domainVersion = "3.7.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
+    "uk.gov.hmrc" %% "domain" % domainVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
     "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,

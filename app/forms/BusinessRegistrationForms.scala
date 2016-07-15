@@ -90,10 +90,8 @@ object BusinessRegistrationForms {
       _.isEmpty
     }
     hasBusinessUniqueId match {
-      case Some(true) if (issuingInstitution.isEmpty) => {
-        registrationData
-          .withError(key = "issuingInstitution", message = Messages("bc.business-registration-error.issuingInstitution.select"))
-      }
+      case Some(true) if issuingInstitution.isEmpty =>
+        registrationData.withError(key = "issuingInstitution", message = Messages("bc.business-registration-error.issuingInstitution.select"))
       case _ => registrationData
     }
   }
@@ -112,14 +110,10 @@ object BusinessRegistrationForms {
       _.isEmpty
     }
     hasBusinessUniqueId match {
-      case Some(true) if (issuingCountry.isEmpty) => {
-        registrationData
-          .withError(key = "issuingCountry", message = Messages("bc.business-registration-error.issuingCountry.select"))
-      }
-      case Some(true) if (issuingCountry.isDefined && issuingCountry.fold("")(x => x).matches(countryUK)) => {
-        registrationData
-          .withError(key = "issuingCountry", message = Messages("bc.business-registration-error.non-uk"))
-      }
+      case Some(true) if issuingCountry.isEmpty =>
+        registrationData.withError(key = "issuingCountry", message = Messages("bc.business-registration-error.issuingCountry.select"))
+      case Some(true) if issuingCountry.isDefined && issuingCountry.fold("")(x => x).matches(countryUK) =>
+        registrationData.withError(key = "issuingCountry", message = Messages("bc.business-registration-error.non-uk"))
       case _ => registrationData
     }
   }
@@ -138,10 +132,8 @@ object BusinessRegistrationForms {
       _.isEmpty
     }
     hasBusinessUniqueId match {
-      case Some(true) if (businessUniqueId.isEmpty) => {
-        registrationData
-          .withError(key = "businessUniqueId", message = Messages("bc.business-registration-error.businessUniqueId.select"))
-      }
+      case Some(true) if businessUniqueId.isEmpty =>
+        registrationData.withError(key = "businessUniqueId", message = Messages("bc.business-registration-error.businessUniqueId.select"))
       case _ => registrationData
     }
   }
@@ -152,7 +144,7 @@ object BusinessRegistrationForms {
     } filterNot {
       _.isEmpty
     }
-    if (!postCode.isDefined) {
+    if (postCode.isEmpty) {
       registrationData.withError(key = "businessAddress.postcode",
         message = Messages("bc.business-registration-error.postcode"))
     } else {
@@ -173,8 +165,7 @@ object BusinessRegistrationForms {
       _.isEmpty
     }
     if (country.fold("")(x => x).matches(countryUK)) {
-      registrationData.withError(key = "businessAddress.country",
-        message = Messages("bc.business-registration-error.non-uk"))
+      registrationData.withError(key = "businessAddress.country", message = Messages("bc.business-registration-error.non-uk"))
     } else {
       registrationData
     }

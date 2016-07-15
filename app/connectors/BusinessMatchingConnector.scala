@@ -14,60 +14,82 @@ import uk.gov.hmrc.play.http._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+object BusinessMatchingConnector extends BusinessMatchingConnector {
+  val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
+  val appName: String = AppName.appName
+  val baseUri = "business-matching"
+  val lookupUri = "business-lookup"
+  val serviceUrl = baseUrl("business-matching")
+  val http: HttpGet with HttpPost = WSHttp
+  val cdsAdaptor = RegisterWithIdServiceAdaptor
+}
+
 trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads with Auditable {
 
-  lazy val serviceURL = baseUrl("business-matching")
-  val baseURI = "business-matching"
-  val lookupURI = "business-lookup"
+  def serviceUrl: String
 
-  val http: HttpGet with HttpPost = WSHttp
+  def baseUri: String
+
+  def lookupUri: String
+
+  def http: HttpGet with HttpPost
+
+  def cdsAdaptor: RegisterWithIdServiceAdaptor
 
   def lookup(lookupData: MatchBusinessData, userType: String, service: String)
-            (implicit bcContext: BusinessCustomerContext, headerCarrier: HeaderCarrier): Future[JsValue] = {
-    val authLink = bcContext.user.authLink
-    val postUrl = s"""$serviceURL$authLink/$baseURI/$lookupURI/${lookupData.utr}/$userType"""
-    Logger.debug(s"[BusinessMatchingConnector][lookup] Call $postUrl")
-    http.POST( postUrl, Json.toJson(lookupData)) map {
-      response =>
-        auditMatchCall(lookupData, userType, response, service)
-        response.status match {
-          case OK | NOT_FOUND => {
-            Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = ${postUrl} && " +
-              s"response.status = ${response.status} &&  response.body = ${response.body}")
-            //try catch added to handle JsonParseException in case ETMP/DES response with contact Details with ',' in it
-            try {
-              Json.parse(response.body)
-            } catch {
-              case jse: JsonParseException => {
-                truncateContactDetails(response.body)
-              }
-            }
-            ///////////////////// try catch end
+            (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
+
+    val cdsServiceOrgUserType = service.equalsIgnoreCase("cds") && userType == "org"
+    val url = postUrl(lookupData.utr, cdsServiceOrgUserType, userType, service)
+    Logger.debug(s"[BusinessMatchingConnector][lookup] Call $url")
+    http.POST(url, postData(lookupData, cdsServiceOrgUserType)) map { response =>
+      auditMatchCall(lookupData, userType, response, service)
+      response.status match {
+        case OK | NOT_FOUND =>
+          Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = $url && " +
+            s"response.status = ${response.status} &&  response.body = ${response.body}")
+          //try catch added to handle JsonParseException in case ETMP/DES response with contact Details with ',' in it
+          try {
+            val responseJson = Json.parse(response.body)
+            if(cdsServiceOrgUserType) {
+              if(response.status == OK) cdsAdaptor.convertToMatchSuccess(responseJson)
+              else cdsAdaptor.convertToMatchFailure(responseJson)
+            } else responseJson
+          } catch {
+            case jse: JsonParseException => truncateContactDetails(response.body)
           }
-          case SERVICE_UNAVAILABLE => {
-            Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
-            throw new ServiceUnavailableException("Service unavailable")
-          }
-          case BAD_REQUEST => {
-            Logger.warn(s"[BusinessMatchingConnector][lookup] - Bad Request Exception ${lookupData.utr}")
-            throw new BadRequestException("Bad Request")
-          }
-          case INTERNAL_SERVER_ERROR => {
-            Logger.warn(s"[BusinessMatchingConnector][lookup] - Service Internal server error ${lookupData.utr}")
-            throw new InternalServerException("Internal server error")
-          }
-          case status => {
-            Logger.warn(s"[BusinessMatchingConnector][lookup] - $status Exception ${lookupData.utr}")
-            throw new RuntimeException("Unknown response")
-          }
-        }
+        ///////////////////// try catch end
+        case SERVICE_UNAVAILABLE =>
+          Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
+          throw new ServiceUnavailableException("Service unavailable")
+        case BAD_REQUEST =>
+          Logger.warn(s"[BusinessMatchingConnector][lookup] - Bad Request Exception ${lookupData.utr}")
+          throw new BadRequestException("Bad Request")
+        case INTERNAL_SERVER_ERROR =>
+          Logger.warn(s"[BusinessMatchingConnector][lookup] - Service Internal server error ${lookupData.utr}")
+          throw new InternalServerException("Internal server error")
+        case status =>
+          Logger.warn(s"[BusinessMatchingConnector][lookup] - $status Exception ${lookupData.utr}")
+          throw new RuntimeException("Unknown response")
+      }
     }
   }
 
-  private def truncateContactDetails(responseJson: String) : JsValue = {
+  private def postUrl(utr: String, cdsServiceOrgUserType: Boolean, userType: String, service: String)(implicit bcContext: BusinessCustomerContext) = {
+    val authLink = bcContext.user.authLink
+
+    if(cdsServiceOrgUserType)  s"""$serviceUrl$authLink/$baseUri/$lookupUri"""
+    else s"""$serviceUrl$authLink/$baseUri/$lookupUri/$utr/$userType"""
+  }
+
+  private def postData(lookupData: MatchBusinessData, cdsServiceOrgUserType: Boolean) = {
+    if(cdsServiceOrgUserType) cdsAdaptor.createRequestFrom(lookupData) else Json.toJson(lookupData)
+  }
+
+  private def truncateContactDetails(responseJson: String): JsValue = {
     val replacedX1 = responseJson.replaceAll("[\r\n\t]", "")
     val removedContactDetails = replacedX1.substring(0, replacedX1.indexOf("contactDetails"))
-    val correctedJsonString = removedContactDetails.substring(0,removedContactDetails.lastIndexOf(","))
+    val correctedJsonString = removedContactDetails.substring(0, removedContactDetails.lastIndexOf(","))
     val validJson = correctedJsonString + "}"
     Json.parse(validJson)
   }
@@ -79,22 +101,17 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
       case _ => EventTypes.Failed
     }
     sendDataEvent(transactionName = "etmpMatchCall",
-        detail = Map("txName" -> "etmpMatchCall",
-          "userType" -> s"${userType}",
-          "service" -> s"${service}",
-          "utr" -> input.utr,
-          "requiresNameMatch" -> s"${input.requiresNameMatch}",
-          "isAnAgent" -> s"${input.isAnAgent}",
-          "individual" -> s"${input.individual}",
-          "organisation" -> s"${input.organisation}",
-          "responseStatus" -> s"${response.status}",
-          "responseBody" -> s"${response.body}"),
-        eventType = eventType)
+      detail = Map("txName" -> "etmpMatchCall",
+        "userType" -> s"$userType",
+        "service" -> s"$service",
+        "utr" -> input.utr,
+        "requiresNameMatch" -> s"${input.requiresNameMatch}",
+        "isAnAgent" -> s"${input.isAnAgent}",
+        "individual" -> s"${input.individual}",
+        "organisation" -> s"${input.organisation}",
+        "responseStatus" -> s"${response.status}",
+        "responseBody" -> s"${response.body}"),
+      eventType = eventType)
   }
 
-}
-
-object BusinessMatchingConnector extends BusinessMatchingConnector {
-  override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
-  override val appName: String = AppName.appName
 }
