@@ -73,7 +73,7 @@ bc.business-verification.businessNamefield=Registered company name
 bc.business-verification.partnerNameField=Partnership name
 bc.business-verification.partnerNameHint=This is the name that you registered with HMRC
 bc.business-verification.partnerUTRField=Partnership Self Assessment Unique Tax Reference (UTR)
-bc.business-verification.registered-name.hint=This is the registered name on your incorporation certificate
+bc.business-verification.registered-name.hint=Enter the registered name as it appears on your incorporation certificate
 bc.business-verification.utr.hint=Your UTR number is made up of 10 or 13 digits. Example, 1234567890.
 bc.business-verification.utr.help.question = Where to find your UTR
 bc.business-verification.utr.help.answer =  <p>It is issued by HMRC when you register your business or for Self-Assessment. If your UTR is 13 digits only enter the last 10.</p><p>It can usually be found in the header of any letter issued by HMRC next to headings such as ''Tax Reference'', ''UTR'' or ''Official Use''</p>
@@ -199,26 +199,26 @@ bc.business-verification-error.general.businessAddress.postcode  = There is a pr
 bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
 bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution of issue
 bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
-bc.business-verification-error.general.business-type-sop-form = Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.business-type-sop-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 
 
-bc.business-verification-error.general.ltd.business-type-ltd-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.ltd.business-type-ltd-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 bc.business-verification-error.general.ltd.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.ltd.cotaxUTR = There is a problem with the Corporation Tax Unique Tax Reference number
 
-bc.business-verification-error.general.obp.business-type-obp-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.obp.business-type-obp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 bc.business-verification-error.general.obp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.obp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.lp.business-type-lp-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.lp.business-type-lp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 bc.business-verification-error.general.lp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.lp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.llp.business-type-llp-form = Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.llp.business-type-llp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 bc.business-verification-error.general.llp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.llp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.ua.business-type-uib-form =Your business details have not been found. Please check that your details are correct and try again
+bc.business-verification-error.general.ua.business-type-uib-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
 bc.business-verification-error.general.ua.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.ua.cotaxUTR = There is a problem with the Corporation Tax Unique Tax Reference number
 
