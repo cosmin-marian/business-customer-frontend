@@ -29,16 +29,15 @@ trait RegisterWithIdServiceAdaptor {
   def clock: Clock
 
   def createRequestFrom(requestData: MatchBusinessData): JsValue = {
-    Json.toJson(RegisterWithIdRequest(MDGHeader = MDGHeader(correlationId = uuidGenerator.generateUUIDAsString, requestTimeStamp = clock.instant().toString),
-      registrationDetails =
-        RegistrationDetails(IDNumber = requestData.utr,
-          isAnAgent = requestData.isAnAgent,
-          requiresNameMatch = requestData.requiresNameMatch,
-          organisation = requestData.organisation)))
+    Json.toJson(RegisterWithIdRequest(
+      MDGHeader("MDTP", clock.instant().toString, uuidGenerator.generateUUIDAsString),
+      MessageTypes("RegisterWithID"),
+      List(Param("REGIME", "CDS")),
+      RegistrationDetails("UTR", requestData.utr, requestData.requiresNameMatch, requestData.isAnAgent, None, requestData.organisation)))
   }
 
   def convertToMatchFailure(json: JsValue): JsValue = {
-    val reason: String = json.as[FailureServiceRsp].MDGHeader.returnParameters.find(_.paramName == "ERRORTEXT").map(_.paramValue).fold(""){p => p}
+    val reason: String = json.as[FailureServiceRsp].MDGErrorDetail.errorMessage
     Json.toJson(MatchFailureResponse(reason))
   }
 

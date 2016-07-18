@@ -140,7 +140,8 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
     "return error message for unsuccessful match when service is CDS" in {
       val matchBusinessData = MatchBusinessData(SessionKeys.sessionId, "1111111111", false, false, None, None)
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(matchFailureResponse))))
+      //RegisterWithId service returns 400 for unsuccessful match
+      when(mockWSHttp.POST[MatchBusinessData, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(matchFailureResponse))))
       when(mockAdapter.convertToMatchFailure(matchFailureResponse)).thenReturn(convertedResponse)
       val result = TestBusinessMatchingConnector.lookup(matchBusinessData, "org", "CDS")
       await(result) must be(convertedResponse)
