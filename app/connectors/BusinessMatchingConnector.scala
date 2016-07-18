@@ -51,10 +51,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
           //try catch added to handle JsonParseException in case ETMP/DES response with contact Details with ',' in it
           try {
             val responseJson = Json.parse(response.body)
-            if(cdsServiceOrgUserType) {
-              if(response.status == OK) cdsAdaptor.convertToMatchSuccess(responseJson)
-              else cdsAdaptor.convertToMatchFailure(responseJson)
-            } else responseJson
+            if (cdsServiceOrgUserType && response.status == OK) cdsAdaptor.convertToMatchSuccess(responseJson)
+            else responseJson
           } catch {
             case jse: JsonParseException => truncateContactDetails(response.body)
           }
@@ -63,8 +61,11 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
           Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
           throw new ServiceUnavailableException("Service unavailable")
         case BAD_REQUEST =>
-          Logger.warn(s"[BusinessMatchingConnector][lookup] - Bad Request Exception ${lookupData.utr}")
-          throw new BadRequestException("Bad Request")
+          if (cdsServiceOrgUserType) cdsAdaptor.convertToMatchFailure(Json.parse(response.body))
+          else {
+            Logger.warn(s"[BusinessMatchingConnector][lookup] - Bad Request Exception ${lookupData.utr}")
+            throw new BadRequestException("Bad Request")
+          }
         case INTERNAL_SERVER_ERROR =>
           Logger.warn(s"[BusinessMatchingConnector][lookup] - Service Internal server error ${lookupData.utr}")
           throw new InternalServerException("Internal server error")
@@ -78,12 +79,14 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
   private def postUrl(utr: String, cdsServiceOrgUserType: Boolean, userType: String, service: String)(implicit bcContext: BusinessCustomerContext) = {
     val authLink = bcContext.user.authLink
 
-    if(cdsServiceOrgUserType)  s"""$serviceUrl$authLink/$baseUri/$lookupUri"""
-    else s"""$serviceUrl$authLink/$baseUri/$lookupUri/$utr/$userType"""
+    if (cdsServiceOrgUserType)
+      s"""$serviceUrl$authLink/$baseUri/$lookupUri"""
+    else
+      s"""$serviceUrl$authLink/$baseUri/$lookupUri/$utr/$userType"""
   }
 
   private def postData(lookupData: MatchBusinessData, cdsServiceOrgUserType: Boolean) = {
-    if(cdsServiceOrgUserType) cdsAdaptor.createRequestFrom(lookupData) else Json.toJson(lookupData)
+    if (cdsServiceOrgUserType) cdsAdaptor.createRequestFrom(lookupData) else Json.toJson(lookupData)
   }
 
   private def truncateContactDetails(responseJson: String): JsValue = {

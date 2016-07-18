@@ -25,7 +25,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.mockito.MockitoMatchers
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with MockitoMatchers with BeforeAndAfter {
   val mockUUIDGenerator = mock[RandomUUIDGenerator]
@@ -39,90 +39,141 @@ class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with M
     override val clock = mockClock
   }
 
-  val in: Instant = Instant.now(Clock.systemUTC())
+  val currentInstant: Instant = Instant.now(Clock.systemUTC())
 
   before {
     when(mockUUIDGenerator.generateUUIDAsString).thenReturn(randomGeneratedUUID)
-    when(mockClock.instant()).thenReturn(in)
+    when(mockClock.instant()).thenReturn(currentInstant)
   }
 
-  val ExpectedMDGHeader = MDGHeader("MDTP", in.toString, randomGeneratedUUID)
+  val ExpectedMDGHeader = MDGHeader("MDTP", currentInstant.toString, randomGeneratedUUID)
   val ExpectedMessageTypes = MessageTypes("RegisterWithID")
+
+  def createExpectedReqJson(isAnAgent: Boolean) = {
+    Json.parse(
+      s"""
+         |{
+         |   "MDGHeader":{
+         |      "originatingSystem":"MDTP",
+         |      "requestTimeStamp": "$currentInstant",
+         |      "correlationId":"$randomGeneratedUUID"
+         |   },
+         |   "messageTypes":{
+         |      "messageType":"RegisterWithID"
+         |   },
+         |   "requestParameters":[
+         |      {
+         |         "paramName":"REGIME",
+         |         "paramValue":"CDS"
+         |      }
+         |   ],
+         |   "registrationDetails":{
+         |      "idType":"UTR",
+         |      "idNumber":"123456789",
+         |      "requiresNameMatch":false,
+         |      "isAnAgent":$isAnAgent
+         |   }
+         |}
+        """.stripMargin)
+  }
 
   "request adaptor " must {
 
     "create correct RegisterWithId request when match is by UTR only" in {
       val matchWithUTROnly = MatchBusinessData("", "123456789", requiresNameMatch = false, isAnAgent = false, None, None)
-
-      serviceUnderTest.createRequestFrom(matchWithUTROnly) must be(
-        Json.toJson(RegisterWithIdRequest(ExpectedMDGHeader,
-          ExpectedMessageTypes,
-          RegistrationDetails(IDNumber = "123456789", requiresNameMatch = false, isAnAgent = false)))
-      )
+      serviceUnderTest.createRequestFrom(matchWithUTROnly) must be(createExpectedReqJson(false))
     }
 
     "create correct RegisterWithId request when match is for an Agent" in {
       val matchWithUTROnlyAndIsAgent = MatchBusinessData("", "123456789", requiresNameMatch = false, isAnAgent = true, None, None)
-
-      serviceUnderTest.createRequestFrom(matchWithUTROnlyAndIsAgent) must be(
-        Json.toJson(RegisterWithIdRequest(ExpectedMDGHeader,
-          ExpectedMessageTypes,
-          RegistrationDetails(IDNumber = "123456789", requiresNameMatch = false, isAnAgent = true)))
-      )
+      val requestJs: JsValue = serviceUnderTest.createRequestFrom(matchWithUTROnlyAndIsAgent)
+      requestJs must be(createExpectedReqJson(true))
+      // time in UTC format 2016-07-08T08:35:13.147Z
+      (requestJs \ "MDGHeader" \ "requestTimeStamp").as[String] must fullyMatch.regex("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z")
     }
 
     "create correct RegisterWithId request when match is by UTR and Name" in {
       val matchWithUTRAndName = MatchBusinessData("", "123456789", true, false, None, Some(Organisation("businessName", "type")))
 
-      serviceUnderTest.createRequestFrom(matchWithUTRAndName) must be(
-        Json.toJson(RegisterWithIdRequest(ExpectedMDGHeader,
-          ExpectedMessageTypes,
-          RegistrationDetails(IDNumber = "123456789", requiresNameMatch = true, isAnAgent = false, organisation = Some(Organisation("businessName", "type")))))
-      )
+      val expectedJson = Json.parse(
+        s"""
+           |{
+           |   "MDGHeader":{
+           |      "originatingSystem":"MDTP",
+           |      "requestTimeStamp": "$currentInstant",
+           |      "correlationId":"$randomGeneratedUUID"
+           |   },
+           |   "messageTypes":{
+           |      "messageType":"RegisterWithID"
+           |   },
+           |   "requestParameters":[
+           |      {
+           |         "paramName":"REGIME",
+           |         "paramValue":"CDS"
+           |      }
+           |   ],
+           |   "registrationDetails":{
+           |      "idType":"UTR",
+           |      "idNumber":"123456789",
+           |      "requiresNameMatch":true,
+           |      "isAnAgent":false,
+           |      "organisation":{
+           |        "organisationName":"businessName",
+           |        "organisationType":"type"
+           |       }
+           |   }
+           |}
+        """.stripMargin)
+
+      serviceUnderTest.createRequestFrom(matchWithUTRAndName) must be(expectedJson)
     }
   }
 
   "response adaptor " must {
 
-    "create matchSuccess response when RegisterWithId Response contains mandatory values" in {
+    "create matchSuccess response when RegisterWithId Response contains mandatory values with organisation option" in {
       val responseFromRegisterWithIdService = Json.parse(
         """
           |{
           |"MDGHeader": {
+          |   "status": "OK",
+          |   "processingDate":"2001-12-17T09:30:47.123456Z",
           |   "returnParameters": []
           |},
           | "SAFEID":"XE0000123456789",
           | "isEditable":true,
           | "isAnAgent":false,
-          | "isAnIndividual":true,
+          | "isAnIndividual":false,
+          | "organisation":{
+          |   "organisationName":"orgName",
+          |   "isAGroup":false,
+          |   "code":"0001"
+          | },
           | "address":{
           |  "addressType":"0001",
           |  "addressLine1":"21 Emmbrook Lane",
           |  "addressLine2":"Wokingham",
           |  "countryCode":"GB"
           | },
-          | "contactDetails":{
-          | }
-          |
+          | "contactDetails":{}
           |}
         """.stripMargin)
 
       val dataReturned = Json.toJson(serviceUnderTest.convertToMatchSuccess(responseFromRegisterWithIdService))
 
       val addressReturned = (dataReturned \ "address").as[Option[EtmpAddress]].get
-
-      addressReturned.addressLine1 must be("21 Emmbrook Lane")
-      addressReturned.addressLine2 must be("Wokingham")
-      addressReturned.addressLine3 must be(None)
-      addressReturned.addressLine4 must be(None)
-      addressReturned.postalCode must be(None)
-      addressReturned.countryCode must be("GB")
+      addressReturned must be(EtmpAddress("21 Emmbrook Lane", "Wokingham", None, None, None, "GB"))
 
       (dataReturned \ "safeId").as[String] must be("XE0000123456789")
-      (dataReturned \ "isAnIndividual").as[Boolean] mustBe true
+
+      (dataReturned \ "isAnIndividual").as[Boolean] mustBe false
+
+      val orgReturned = (dataReturned \ "organisation").as[Option[OrganisationResponse]].get
+      orgReturned must be(OrganisationResponse("orgName", Some(false), None))
+
     }
 
-    "create matchSuccess response when RegisterWithId Response contains optional values as well" in {
+    "create matchSuccess response when RegisterWithId Response contains optional values as well with organisation option" in {
       val responseFromRegisterWithIdService = Json.parse(
         """
           {
@@ -165,73 +216,41 @@ class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with M
 
       val dataReturned = Json.toJson(serviceUnderTest.convertToMatchSuccess(responseFromRegisterWithIdService))
 
-      val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
-      organisation.organisationName must be("orgName")
-      organisation.isAGroup must be(Some(true))
-      organisation.organisationType must be(Some("LLP"))
+      val orgReturned = (dataReturned \ "organisation").as[OrganisationResponse]
+      orgReturned must be(OrganisationResponse("orgName", Some(true), Some("LLP")))
 
       val addressReturned = (dataReturned \ "address").as[Option[EtmpAddress]].get
-
-      addressReturned.addressLine1 must be("21 Emmbrook Lane")
-      addressReturned.addressLine2 must be("Wokingham")
-      addressReturned.addressLine3 must be(Some("adLine3"))
-      addressReturned.addressLine4 must be(Some("adLine4"))
-      addressReturned.postalCode must be(Some("RG41 4RR"))
-      addressReturned.countryCode must be("GB")
+      addressReturned must be(EtmpAddress("21 Emmbrook Lane", "Wokingham", Some("adLine3"), Some("adLine4"), Some("RG41 4RR"), "GB"))
 
       (dataReturned \ "agentReferenceNumber").as[String] must be("agentReferenceNumber123")
+
       (dataReturned \ "safeId").as[String] must be("XE0000123456789")
+
       (dataReturned \ "sapNumber").as[String] must be("0123456789")
+
       (dataReturned \ "isAnIndividual").as[Boolean] must be(false)
-
     }
 
-    "create matchFailure response when RegisterWithId Failure response is received" in {
+    "create matchFailure response when RegisterWithId Fails to match" in {
       val responseFromRegisterWithIdService = Json.parse(
         """
-          |{
-          | "MDGHeader": {
-          |   "status": "NOT_OK",
-          |   "processingDate":"2001-12-17T09:30:47.123456Z",
-          |   "returnParameters": [
-          |     {
-          |       "paramName": "ERRORCODE",
-          |       "paramValue": "002"
-          |     },
-          |     {
-          |       "paramName": "ERRORTEXT",
-          |       "paramValue": "No match found"
-          |     }
-          |   ]
-          | }
+          {
+          |"MDGErrorDetail": {
+          |    "timestamp" : "2016-07-18 10:26:46.147+0100",
+          |    "correlationId": "",
+          |    "errorCode": "NOT_OK",
+          |    "errorMessage": "Duplicate Submission",
+          |    "messageId": "",
+          |    "source": "CT-Adapter"
+          |   }
           |}""".stripMargin)
 
       val matchFailureResponse = serviceUnderTest.convertToMatchFailure(responseFromRegisterWithIdService)
 
       matchFailureResponse must be(Json.parse(
         """
-          |{ "Reason": "No match found" }
-        """.stripMargin))
-    }
-
-    "create matchFailure response when RegisterWithId Failure response is received with no error details" in {
-      val responseFromRegisterWithIdService = Json.parse(
-        """
-          |{
-          | "MDGHeader": {
-          |   "status": "NOT_OK",
-          |   "processingDate":"2001-12-17T09:30:47.123456Z",
-          |   "returnParameters": []
-          | }
-          |}""".stripMargin)
-
-      val matchFailureResponse = serviceUnderTest.convertToMatchFailure(responseFromRegisterWithIdService)
-
-      matchFailureResponse must be(Json.parse(
-        """
-          |{ "Reason": "" }
+          |{ "Reason": "Duplicate Submission" }
         """.stripMargin))
     }
   }
-
 }

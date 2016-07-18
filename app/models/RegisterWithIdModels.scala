@@ -18,20 +18,20 @@ package models
 
 import play.api.libs.json.Json
 
-case class MDGHeader(originatingSystem: String = "MDTP", requestTimeStamp: String, correlationId: String)
+case class MDGHeader(originatingSystem: String, requestTimeStamp: String, correlationId: String)
 
 object MDGHeader {
   implicit val formats = Json.format[MDGHeader]
 }
 
-case class MessageTypes(messageType: String = "RegisterWithID")
+case class MessageTypes(messageType: String)
 
 object MessageTypes {
   implicit val formats = Json.format[MessageTypes]
 }
 
-case class RegistrationDetails(IDType: String = "UTR",
-                               IDNumber: String,
+case class RegistrationDetails(idType: String,
+                               idNumber: String,
                                requiresNameMatch: Boolean,
                                isAnAgent: Boolean,
                                individual: Option[Individual] = None,
@@ -41,19 +41,19 @@ object RegistrationDetails {
   implicit val formats = Json.format[RegistrationDetails]
 }
 
-case class RegisterWithIdRequest(MDGHeader: MDGHeader,
-                                 messageTypes: MessageTypes = MessageTypes(),
-                                 registrationDetails: RegistrationDetails)
-
-object RegisterWithIdRequest {
-  implicit val formats = Json.format[RegisterWithIdRequest]
-}
-
-
 case class Param(paramName: String, paramValue: String)
 
 object Param {
   implicit val formats = Json.format[Param]
+}
+
+case class RegisterWithIdRequest(MDGHeader: MDGHeader,
+                                 messageTypes: MessageTypes,
+                                 requestParameters: List[Param],
+                                 registrationDetails: RegistrationDetails)
+
+object RegisterWithIdRequest {
+  implicit val formats = Json.format[RegisterWithIdRequest]
 }
 
 case class MDGHeaderRsp(returnParameters: List[Param])
@@ -75,7 +75,13 @@ object ServiceResponse {
   implicit val formats = Json.format[ServiceResponse]
 }
 
-case class FailureServiceRsp(MDGHeader: MDGHeaderRsp)
+case class MDGErrorDetail(errorMessage: String)
+
+object MDGErrorDetail {
+  implicit val formats = Json.format[MDGErrorDetail]
+}
+
+case class FailureServiceRsp(MDGErrorDetail: MDGErrorDetail)
 
 object FailureServiceRsp {
   implicit val formats = Json.format[FailureServiceRsp]
