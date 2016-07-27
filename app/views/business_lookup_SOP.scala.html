@@ -13,12 +13,18 @@
   @if(isAgent) {
     <p class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </p>
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header")</h1>
-    <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
   } else {
     <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </p>
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
-    <p class="lede" id="business-type-paragraph-nrl"> @Messages("bc.business-verification-lede.nrl") </p>
   }
+
+  @if(!isAgent && service.toUpperCase == "ATED"){
+    <p class="lede" id="business-type-paragraph-nrl"> @Messages("bc.business-verification-lede.nrl") </p>
+  } else {
+    <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
+  }
+
+
 
 
 

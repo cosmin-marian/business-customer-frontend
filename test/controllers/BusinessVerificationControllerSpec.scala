@@ -195,8 +195,8 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "add additional form fields to the screen for entry" in {
-        businessLookupWithAuthorisedUser("SOP") { result =>
+      "add additional form fields to the screen for entry for ATED" in {
+        businessLookupWithAuthorisedUser("SOP","ATED") { result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
@@ -209,6 +209,21 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("saUTR").attr("type") must be("number")
         }
       }
+      "add additional form fields to the screen for entry" in {
+        businessLookupWithAuthorisedUser("SOP","AWRS") { result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("AWRS registration")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+          document.getElementById("firstName_field").text() must be("First name")
+          document.getElementById("lastName_field").text() must be("Last name")
+          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Tax Reference (UTR)")
+          document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. Example, 1234567890.")
+          document.getElementById("saUTR").attr("type") must be("number")
+        }
+      }
+
 
       "display correct heading for AGENT selecting Sole Trader" in {
         businessLookupWithAuthorisedAgent("SOP") { result =>
@@ -452,13 +467,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def businessLookupWithAuthorisedUser(businessType: String)(test: Future[Result] => Any) {
+  def businessLookupWithAuthorisedUser(businessType: String, serviceName: String = service)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
+    val result = TestBusinessVerificationController.businessForm(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
