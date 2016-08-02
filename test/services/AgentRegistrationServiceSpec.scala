@@ -82,7 +82,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
       when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = TestAgentRegistrationService.enrolAgent("ATED")
       val thrown = the[RuntimeException] thrownBy await(result)
-      thrown.getMessage must include("No Details were found")
+      thrown.getMessage must include("We could not find your details. Check and try again.")
     }
 
     "enrolAgent throw an exception if we have no service config" in {

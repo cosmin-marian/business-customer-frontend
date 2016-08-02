@@ -107,7 +107,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     "throw an exception if we have no review details" in {
       businessDetailsWithAuthorisedUserNotFound { result =>
         val thrown = the[RuntimeException] thrownBy contentAsString(result)
-        thrown.getMessage must include("No Details were found")
+        thrown.getMessage must include("We could not find your details. Check and try again.")
 
       }
     }
