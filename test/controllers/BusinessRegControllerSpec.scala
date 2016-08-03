@@ -147,28 +147,28 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("Business name must be entered")
-            contentAsString(result) must include("Address line 1 must be entered")
-            contentAsString(result) must include("Address line 2 must be entered")
+            contentAsString(result) must include("You must enter a business name")
+            contentAsString(result) must include("You must enter an address into Address line 1.")
+            contentAsString(result) must include("You must enter and address into Address line 2.")
             contentAsString(result) mustNot include("Postcode must be entered")
-            contentAsString(result) must include("Country must be entered")
-            contentAsString(result) must include("You need to enter Country that issued this business unique identifier")
-            contentAsString(result) must include("You need to enter the institution that issued business unique identifier")
-            contentAsString(result) must include("You need to enter Business Unique Identifier")
+            contentAsString(result) must include("You must enter a country")
+            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
+            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
+            contentAsString(result) must include("You must enter a Business Unique Identifier.")
           }
         }
 
         // inputJson , test message, error message
         val formValidationInputDataSet: Seq[(InputJson, TestMessage, ErrorMessage)] = Seq(
-          (createJson(businessName = "a" * 106), "If entered, Business name must be maximum of 105 characters", "Business name must not be more than 105 characters"),
-          (createJson(line1 = "a" * 36), "If entered, Address line 1 must be maximum of 35 characters", "Address line 1 must not be more than 35 characters"),
-          (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 must not be more than 35 characters"),
-          (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 must not be more than 35 characters"),
-          (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 must not be more than 35 characters"),
+          (createJson(businessName = "a" * 106), "If entered, Business name must be maximum of 105 characters", "The business name cannot be more than 105 characters."),
+          (createJson(line1 = "a" * 36), "If entered, Address line 1 must be maximum of 35 characters", "Address line 1 cannot be more than 35 characters."),
+          (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
+          (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
+          (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
           (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "Postcode must not be more than 10 characters"),
           (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering a non-UK address"),
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Id must not be more than 60 characters"),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "Institution that issued the Business Unique Identifier must not be more than 40 characters"),
+          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
+          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
           (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering a non-UK address")
         )
 

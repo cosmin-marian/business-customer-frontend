@@ -31,7 +31,7 @@ business-review.registration-button = Confirm
 business-review.registered-with-companies-house.text = If you registered with Companies House you need to inform <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" target="_blank" rel="external">Companies House</a>
 business-review.sole-trader.text =  If you are not registered with Companies House you need to inform <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" target="_blank" rel="external">HMRC</a>.
 
-bc.business-review.error.not-found = No Details were found
+bc.business-review.error.not-found = We could not find your details. Check and try again.
 bc.business-verification.cancel = Cancel
 
 bc.business-verification.text ={0} account registration
@@ -81,28 +81,28 @@ bc.business-verification.utr.help.answer =  <p>It is issued by HMRC when you reg
 bc.business-verification.back=Back
 bc.business-verification.submit=Continue
 
-bc.business-verification-error.firstname=First name must be entered
-bc.business-verification-error.firstname.length=First name must not be more than 40 characters
-bc.business-verification-error.surname=Last name must be entered
-bc.business-verification-error.surname.length=Last name must not be more than 40 characters
-bc.business-verification-error.sautr=Self Assessment Unique Tax Reference must be entered
+bc.business-verification-error.firstname=You must enter a first name.
+bc.business-verification-error.firstname.length=A first name cannot be more than 40 characters.
+bc.business-verification-error.surname=You must enter a last name.
+bc.business-verification-error.surname.length=A last name cannot be more than 40 characters.
+bc.business-verification-error.sautr=You must enter a Self Assessment Unique Tax Reference.
 bc.business-verification-error.sautr.length=Self Assessment Unique Tax Reference must be 10 digits
 bc.business-verification-error.utr=Unique Tax Reference must be 10 digits
-bc.business-verification-error.businessName=Registered company name must be entered
-bc.business-verification-error.businessName.length=Business name must not be more than 105 characters
-bc.business-verification-error.cotaxutr=Corporation Tax Unique Tax Reference must be entered
+bc.business-verification-error.businessName=You must enter a registered company name.
+bc.business-verification-error.businessName.length=A business name cannot be more than 105 characters.
+bc.business-verification-error.cotaxutr=You must enter a Corporation Tax Unique Tax Reference.
 bc.business-verification-error.cotaxutr.length=Corporation Tax Unique Tax Reference must be 10 digits
-bc.business-verification-error.psautr=Partnership Self Assessment Unique Tax Reference must be entered
+bc.business-verification-error.psautr=You must enter a Partnership Self Assessment Unique Tax Reference.
 bc.business-verification-error.psautr.length=Partnership Self Assessment Unique Tax Reference must be 10 digits
-bc.business-verification-error.invalidSAUTR=Self Assessment Unique Tax Reference is not valid
-bc.business-verification-error.invalidCOUTR=Corporation Tax Unique Tax Reference is not valid
-bc.business-verification-error.invalidPSAUTR=Partnership Self Assessment Unique Tax Reference is not valid
-bc.business-verification-error.not-found=Your business details have not been found. Please check that your details are correct and try again
-bc.business-registration-error.businessUniqueId.select=You need to enter Business Unique Identifier
-bc.business-registration-error.issuingCountry.select=You need to enter Country that issued this business unique identifier
-bc.business-registration-error.issuingInstitution.select=You need to enter the institution that issued business unique identifier
+bc.business-verification-error.invalidSAUTR=The Self Assessment Unique Tax Reference is not valid.
+bc.business-verification-error.invalidCOUTR=The Corporation Tax Unique Tax Reference is not valid.
+bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Unique Tax Reference is not valid.
+bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
+bc.business-registration-error.businessUniqueId.select=You must enter a Business Unique Identifier.
+bc.business-registration-error.issuingCountry.select=You must enter a country that issued the business unique identifier.
+bc.business-registration-error.issuingInstitution.select=You must enter an institution that issued the business unique identifier.
 
-bc.business-verification-error.registeredName.length=Registered company name must not be more than 105 characters
+bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters.
 
 
 
@@ -151,19 +151,19 @@ bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
 bc.business-registration.search= Match
 
-bc.business-registration-error.businessName = Business name must be entered
-bc.business-registration-error.line_1 = Address line 1 must be entered
-bc.business-registration-error.line_2 = Address line 2 must be entered
-bc.business-registration-error.country = Country must be entered
-bc.business-registration-error.businessName.length = Business name must not be more than {0} characters
-bc.business-registration-error.line_1.length = Address line 1 must not be more than {0} characters
-bc.business-registration-error.line_2.length = Address line 2 must not be more than {0} characters
-bc.business-registration-error.line_3.length = Address line 3 must not be more than {0} characters
-bc.business-registration-error.line_4.length = Address line 4 must not be more than {0} characters
-bc.business-registration-error.postcode.length = Postcode must not be more than {0} characters
-bc.business-registration-error.businessUniqueId.length = Business Unique Id must not be more than {0} characters
-bc.business-registration-error.utr.length = UTR must not be more than {0} characters
-bc.business-registration-error.issuingInstitution.length = Institution that issued the Business Unique Identifier must not be more than {0} characters
+bc.business-registration-error.businessName = You must enter a business name
+bc.business-registration-error.line_1 = You must enter an address into Address line 1.
+bc.business-registration-error.line_2 = You must enter and address into Address line 2.
+bc.business-registration-error.country = You must enter a country
+bc.business-registration-error.businessName.length = The business name cannot be more than {0} characters.
+bc.business-registration-error.line_1.length = Address line 1 cannot be more than {0} characters.
+bc.business-registration-error.line_2.length = Address line 2 cannot be more than {0} characters.
+bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
+bc.business-registration-error.line_4.length = Address line 4 cannot be more than {0} characters.
+bc.business-registration-error.postcode.length = The postcode cannot be more than {0} characters.
+bc.business-registration-error.businessUniqueId.length = Business Unique Identifier cannot be more than {0} characters.
+bc.business-registration-error.utr.length = The Unique Tax Reference cannot be more than {0} characters.
+bc.business-registration-error.issuingInstitution.length = The institution that issued the Business Unique Identifier cannot be more than {0} characters.
 bc.business-registration-error.summaryHeader = There is a problem with the form
 bc.business-registration-error.non-uk = You cannot select United Kingdom when entering a non-UK address
 
