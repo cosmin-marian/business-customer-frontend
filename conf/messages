@@ -100,7 +100,8 @@ bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Uni
 bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
 bc.business-registration-error.businessUniqueId.select=You must enter a Business Unique Identifier.
 bc.business-registration-error.issuingCountry.select=You must enter a country that issued the business unique identifier.
-bc.business-registration-error.issuingInstitution.select=You must enter an institution that issued the business unique identifier.
+bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the business unique identifier.
+
 
 bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters.
 
@@ -169,9 +170,9 @@ bc.business-registration-error.non-uk = You cannot select United Kingdom when en
 
 
 
-bc.business-registration-error.postcode = Postcode must be entered
-bc.business-registration-error.postcode.invalid = Postcode is invalid
-bc.business-registration-error.businessUniqueId = Business Unique Identifier must be entered
+bc.business-registration-error.postcode = You must enter a postcode.
+bc.business-registration-error.postcode.invalid = The postcode is invalid
+bc.business-registration-error.businessUniqueId = You must enter a Business Unique Identifier.
 
 
 ## Errors
@@ -186,40 +187,40 @@ bc.agent-service.error.no-agent-enrolment-service-name=Agent Enrolment Service N
 bc.agent-service.error.no-agent-reference={0} - No Agent Reference Number Found
 
 bc.business-registration-error.general.businessName = There is a problem with the business name
-bc.business-registration-error.general.businessAddress.line_1  = There is a problem with Address line 1
-bc.business-registration-error.general.businessAddress.line_2  = There is a problem with Address line 2
+bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1.
+bc.business-registration-error.general.businessAddress.line_2  = There is a problem with address line 2.
 bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field
-bc.business-registration-error.general.businessAddress.postcode = Postcode must not be more than 10 characters
+bc.business-registration-error.general.businessAddress.postcode = A postcode cannot be more than 10 characters.
 
 
-bc.business-verification-error.general.businessAddress.line_1  = There is a problem with Address line 1
-bc.business-verification-error.general.businessAddress.line_2  = There is a problem with Address line 2
-bc.business-registration-error.general.businessAddress.line_3 = There is a problem with Address line 3
-bc.business-registration-error.general.businessAddress.line_4 = There is a problem with Address line 4
+bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1.
+bc.business-verification-error.general.businessAddress.line_2  = There is a problem with address line 2.
+bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3..
+bc.business-registration-error.general.businessAddress.line_4 = There is a problem with address line 4.
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
 bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
-bc.business-registration-error.general.issuingInstitution = There is a problem with the Institution of issue
+bc.business-registration-error.general.issuingInstitution = There is a problem with the institution of issue.
 bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
-bc.business-verification-error.general.business-type-sop-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.business-type-sop-form =Your business details have not been found. Check that your details are correct and try again.
 
 
-bc.business-verification-error.general.ltd.business-type-ltd-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.ltd.business-type-ltd-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.ltd.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.ltd.cotaxUTR = There is a problem with the Corporation Tax Unique Tax Reference number
 
-bc.business-verification-error.general.obp.business-type-obp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.obp.business-type-obp-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.obp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.obp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.lp.business-type-lp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.lp.business-type-lp-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.lp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.lp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.llp.business-type-llp-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.llp.business-type-llp-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.llp.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.llp.psaUTR = There is a problem with the Partnership Self-Assessment Unique Tax Reference number
 
-bc.business-verification-error.general.ua.business-type-uib-form =Your business details have not been found. Check that the details you have entered match the details held by Companies House and try again
+bc.business-verification-error.general.ua.business-type-uib-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.ua.businessName = There is a problem with the registered company name
 bc.business-verification-error.general.ua.cotaxUTR = There is a problem with the Corporation Tax Unique Tax Reference number
 
