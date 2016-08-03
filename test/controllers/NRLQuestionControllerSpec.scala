@@ -43,7 +43,8 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         viewWithAuthorisedClient(service) { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
-          document.title must be("Are you a non-resident landlord operating through an offshore company who pays tax through Self Assessment?")
+          document.title must be("Are you a non-resident landlord?")
+          document.getElementById("non-resident-text").text() must be("This is a non-resident landlord operating through an offshore company who pays tax through Self Assessment")
         }
       }
 
