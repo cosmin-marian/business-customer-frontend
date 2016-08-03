@@ -150,7 +150,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
               contentAsString(result) must include("You must enter a business name")
               contentAsString(result) must include("You must enter an address into Address line 1.")
               contentAsString(result) must include("You must enter and address into Address line 2.")
-              contentAsString(result) must include("Postcode must be entered")
+              contentAsString(result) must include("You must enter a postcode.")
           }
         }
 
@@ -162,7 +162,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
           (createJson(postcode = "a" * 11), "If entered, Postcode must be maximum of 10 characters", "The postcode cannot be more than 10 characters."),
-          (createJson(postcode = "1234567890"), "If entered, Postcode must be a valid postcode", "Postcode is invalid")
+          (createJson(postcode = "1234567890"), "If entered, Postcode must be a valid postcode", "The postcode is invalid")
         )
 
         formValidationInputDataSet.foreach { data =>
