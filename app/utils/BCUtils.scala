@@ -86,7 +86,7 @@ object BCUtils {
       "UIB" -> Messages("bc.business-verification.UIB")
     )
 
-    val isAgentBusinessTypes = Seq(
+    val isAtedAgentBusinessTypes = Seq(
       "LTD" -> Messages("bc.business-verification.LTD"),
       "LP" -> Messages("bc.business-verification.LP"),
       "LLP" -> Messages("bc.business-verification.LLP"),
@@ -97,7 +97,7 @@ object BCUtils {
     )
 
     service.toLowerCase match {
-      case "ated" if isAgent => isAgentBusinessTypes.filterNot(p => p._1 == "UIB")
+      case "ated" if isAgent => isAtedAgentBusinessTypes.filterNot(p => p._1 == "UIB")
       case "ated" => Seq("NUK" -> Messages("bc.business-verification.NUK")) ++ fixedBusinessTypes.filterNot(p => p._1 == "UIB").filterNot(p => p._1 == "SOP")
       case "awrs" => Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
       case "amls" => Seq("LTD" -> Messages("bc.business-verification.LTD"),
