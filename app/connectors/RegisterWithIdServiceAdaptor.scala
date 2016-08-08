@@ -21,6 +21,7 @@ import java.util.UUID
 
 import models._
 import play.api.libs.json._
+import utils.BusinessCustomerConstants.{CorporateBody, Llp, Partnership, UnincorporatedBody}
 
 trait RegisterWithIdServiceAdaptor {
 
@@ -28,12 +29,25 @@ trait RegisterWithIdServiceAdaptor {
 
   def clock: Clock
 
+  private val OrgTypes = Map(
+    Partnership -> "0001",
+    Llp -> "0002",
+    CorporateBody -> "0003",
+    UnincorporatedBody -> "0004")
+
   def createRequestFrom(requestData: MatchBusinessData): JsValue = {
     Json.toJson(RegisterWithIdRequest(
       MDGHeader("MDTP", clock.instant().toString, uuidGenerator.generateUUIDAsString),
       MessageTypes("RegisterWithID"),
       List(Param("REGIME", "CDS")),
-      RegistrationDetails("UTR", requestData.utr, requestData.requiresNameMatch, requestData.isAnAgent, None, requestData.organisation)))
+
+      RegistrationDetails(
+        "UTR",
+        requestData.utr,
+        requestData.requiresNameMatch,
+        requestData.isAnAgent,
+        None,
+        requestData.organisation.map(org => Organisation(org.organisationName, OrgTypes(org.organisationType))))))
   }
 
   def convertToMatchFailure(json: JsValue): JsValue = {

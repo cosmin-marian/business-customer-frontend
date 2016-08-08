@@ -26,6 +26,8 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.mockito.MockitoMatchers
 import play.api.libs.json.{JsValue, Json}
+import utils.BusinessCustomerConstants
+import utils.BusinessCustomerConstants.{CorporateBody, Llp, Partnership, UnincorporatedBody}
 
 class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with MockitoMatchers with BeforeAndAfter {
   val mockUUIDGenerator = mock[RandomUUIDGenerator]
@@ -92,8 +94,8 @@ class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with M
       (requestJs \ "MDGHeader" \ "requestTimeStamp").as[String] must fullyMatch.regex("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z")
     }
 
-    "create correct RegisterWithId request when match is by UTR and Name" in {
-      val matchWithUTRAndName = MatchBusinessData("", "123456789", true, false, None, Some(Organisation("businessName", "type")))
+    "create correct RegisterWithId request when match is by UTR and Name for organisation" in {
+      val matchWithUTRAndName = MatchBusinessData("", "123456789", true, false, None, Some(Organisation("businessName", CorporateBody)))
 
       val expectedJson = Json.parse(
         s"""
@@ -119,13 +121,27 @@ class RegisterWithIdServiceAdaptorSpec extends PlaySpec with MockitoSugar with M
            |      "isAnAgent":false,
            |      "organisation":{
            |        "organisationName":"businessName",
-           |        "organisationType":"type"
+           |        "organisationType":"0003"
            |       }
            |   }
            |}
         """.stripMargin)
 
       serviceUnderTest.createRequestFrom(matchWithUTRAndName) must be(expectedJson)
+    }
+
+    "create correct organisationType for requests when match is by UTR and Name for organisation" in {
+      def fetchOrgType(jsValue: JsValue): String = {
+        (jsValue \ "registrationDetails" \ "organisation" \ "organisationType").as[String]
+      }
+
+      def createLookupDataWithOrgType(mdtpOrgType: String) = {
+        MatchBusinessData("", "123456789", true, false, None, Some(Organisation("businessName", mdtpOrgType)))
+      }
+      fetchOrgType(serviceUnderTest.createRequestFrom(createLookupDataWithOrgType(Partnership))) must be("0001")
+      fetchOrgType(serviceUnderTest.createRequestFrom(createLookupDataWithOrgType(Llp))) must be("0002")
+      fetchOrgType(serviceUnderTest.createRequestFrom(createLookupDataWithOrgType(CorporateBody))) must be("0003")
+      fetchOrgType(serviceUnderTest.createRequestFrom(createLookupDataWithOrgType(UnincorporatedBody))) must be("0004")
     }
   }
 
