@@ -1,6 +1,6 @@
 package forms
 
-import models.{Address, BusinessRegistration}
+import models.{AreYouAnAgent, Address, BusinessRegistration}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -52,6 +52,14 @@ object BusinessRegistrationForms {
       "issuingCountry" -> optional(text)
     )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
+
+  val areYouAnAgentForm = Form(mapping(
+    "isAgent" -> optional(boolean)
+      .verifying(Messages("ated.claim-relief.error.agent-claiming"), result => result.isDefined)
+      .verifying(Messages("ated.claim-relief.error.agent-claiming-true"), result => result.isDefined && !result.get)
+  )(AreYouAnAgent.apply)(AreYouAnAgent.unapply)
+  )
+
 
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
     optionValue match {
