@@ -10,7 +10,7 @@ import forms.BusinessRegistrationForms._
 trait NonUkClientRegistration extends BaseController {
 
   def uniqueTaxReferenceView= AuthAction("ATED") { implicit bcContext =>
-    Ok (views.html.nonuk_client_registration(areYouAnAgentForm))
+    Ok (views.html.nonuk_client_registration(notUkUtrForm))
 
   }
 

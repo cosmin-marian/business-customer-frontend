@@ -50,10 +50,10 @@ object MatchSuccessResponse {
   implicit val format = Json.format[MatchSuccessResponse]
 }
 
-case class AreYouAnAgent(isAgent: Option[Boolean] = None)
+case class NotUkUtr(nUkUtr: Option[Boolean] = None)
 
-object AreYouAnAgent {
-  implicit val formats = Json.format[AreYouAnAgent]
+object NotUkUtr {
+  implicit val formats = Json.format[NotUkUtr]
 }
 
 
