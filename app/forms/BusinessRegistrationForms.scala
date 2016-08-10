@@ -54,9 +54,8 @@ object BusinessRegistrationForms {
   )
 
   val notUkUtrForm = Form(mapping(
-    "isAgent" -> optional(boolean)
-      .verifying(Messages("ated.claim-relief.error.agent-claiming"), result => result.isDefined)
-      .verifying(Messages("ated.claim-relief.error.agent-claiming-true"), result => result.isDefined && !result.get)
+    "nUkUtr" -> optional(boolean)
+      .verifying(Messages("bc.nonuk.client.reg.unique-tax-reference.not-selected"), result => result.isDefined)
   )(NotUkUtr.apply)(NotUkUtr.unapply)
   )
 

@@ -18,7 +18,7 @@
 
     <h1 class="heading-xlarge" id="nonuk-client-reg-header">@Messages("bc.nonuk.client.reg.header")</h1>
 
-
+  @form(action = controllers.routes.NonUkClientRegistrationController.uniqueTaxReferenceSubmit) {
 
 <div class="form-group" id="nuk-utr">
     @bcInputRadioGroup(notUkUtrForm("nUkUtr"),
@@ -69,14 +69,14 @@
 
 
     <div class="form-group" id="submit">
-        <button class="button" type="submit">@Messages("bc.nonuk.client.reg.view-clients")</button>
+        <button class="button" id="submit-btn" type="submit">@Messages("bc.nonuk.client.reg.view-clients")</button>
     </div>
 
 <div class="form-group" id="continue">
-    <button class="button" type="submit">@Messages("bc.continue")</button>
+    <button class="button" id="continue-btn" type="submit">@Messages("bc.continue")</button>
 </div>
 
-
+}
 
 
 }
