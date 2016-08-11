@@ -41,3 +41,6 @@ GET         /logoutAndRedirectToHome/:service                                   
 
 GET         /registration/NUK                                                   controllers.NonUkClientRegistrationController.uniqueTaxReferenceView
 POST        /registration/NUK                                                   controllers.NonUkClientRegistrationController.uniqueTaxReferenceSubmit
+
+GET         /nrl-agent/:service                                                 controllers.NRLQuestionControllerAgent.view(service: String)
+POST        /nrl-agent/:service                                                 controllers.NRLQuestionControllerAgent.continue(service: String)

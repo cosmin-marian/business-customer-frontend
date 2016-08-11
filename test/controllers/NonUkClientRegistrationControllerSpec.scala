@@ -72,7 +72,7 @@ class NonUkClientRegistrationControllerSpec extends PlaySpec with OneServerPerSu
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"nUkUtr": "false"}"""))
         continueWithAuthorisedClient(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some("http://localhost:9923/business-customer/next-page"))
+          redirectLocation(result) must be(Some("/business-customer/nrl-agent/ATED"))
 
         }
       }

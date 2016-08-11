@@ -1,0 +1,61 @@
+@(nrlQuestionForm: Form[forms.NRLQuestion], service: String)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import utils.BCUtils
+
+@implicitFormInstance = @{ Some(nrlQuestionForm) }
+
+@pageScripts = {
+<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-nrl.js")'></script>
+}
+
+@bcMain(title = Messages("bc.nrl.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+
+@bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
+
+@form(action = controllers.routes.NRLQuestionController.continue(service)) {
+
+<p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</p>
+
+<h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
+
+<p class ="lede" id="non-resident-text"> @Messages("bc.nrl.text")</p>
+
+<div class="form-group" id="paysSA">
+
+    @bcInputRadioGroup(
+    nrlQuestionForm("paysSA"),
+    Seq("true" -> Messages("bc.radio.yes.label"),
+    "false" -> Messages("bc.radio.no.label")),
+    '_labelClass -> "block-label",
+    '_legend -> "",
+    '_labelAfter -> true,
+    '_groupClass -> "inline"
+    )
+
+</div>
+
+
+
+
+
+<div class="form-group" id="submit">
+    <button class="button" id="submit-btn" type="submit">@Messages("bc.nonuk.client.reg.view-clients")</button>
+</div>
+
+
+
+<div class="form-group" id="continue">
+    <button class="button" id="continue-btn" type="submit">@Messages("bc.continue")</button>
+</div>
+
+}
+
+<div>
+    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+        @Messages("bc.business-verification.back")
+    </a>
+</div>
+
+}
