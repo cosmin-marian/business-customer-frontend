@@ -286,6 +286,17 @@ bc.nrl.text = This is a non-resident landlord operating through an offshore comp
 bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
 bc.nrl.paysSA.not-selected.error = You must select an option.
 
+## client permission page
+bc.permission.title = Do you have permission to register on behalf of your client?
+bc.permission.subheader = Add a client
+bc.permission.header = Do you have permission to register on behalf of your client?
+bc.permission-false.notice = You must have permission from your client to register on their behalf before you can continue.
+bc.permission-error.general.permission = There is a problem with the do you have permission question
+bc.permission.not-selected.error = You must select an option.
+
+
+
+
 ## non-uk client reg
 bc.nonuk.client.reg.title = Does your client have a UK Unique Tax Reference for their business?
 bc.nonuk.client.reg.header = Does your client have a UK Unique Tax Reference for their business?

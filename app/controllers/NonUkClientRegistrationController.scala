@@ -15,7 +15,7 @@ trait NonUkClientRegistrationController extends BaseController {
     BusinessRegistrationForms.notUkUtrForm.bindFromRequest.fold(
       formWithError => BadRequest(views.html.nonuk_client_registration(formWithError)),
       data =>
-        if (data.nUkUtr.exists(_==true)) {
+        if (data.nUkUtr.contains(true)) {
           Redirect("http://localhost:9916/ated/home")
         } else {
           Redirect(controllers.routes.NRLQuestionControllerAgent.view("ATED"))

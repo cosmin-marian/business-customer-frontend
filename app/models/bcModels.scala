@@ -56,4 +56,15 @@ object NotUkUtr {
   implicit val formats = Json.format[NotUkUtr]
 }
 
+case class NRLQuestion(paysSA: Option[Boolean] = None)
+
+object NRLQuestion {
+  implicit val formats = Json.format[NRLQuestion]
+}
+
+case class ClientPermission(permission: Option[Boolean] = None)
+
+object ClientPermission {
+  implicit val formats = Json.format[ClientPermission]
+}
 

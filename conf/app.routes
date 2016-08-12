@@ -44,3 +44,6 @@ POST        /registration/NUK                                                   
 
 GET         /nrl-agent/:service                                                 controllers.NRLQuestionControllerAgent.view(service: String)
 POST        /nrl-agent/:service                                                 controllers.NRLQuestionControllerAgent.continue(service: String)
+
+GET         /client-permission/:service                                         controllers.ClientPermissionController.view(service: String)
+POST        /client-permission/:service                                         controllers.ClientPermissionController.continue(service: String)

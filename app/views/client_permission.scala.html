@@ -1,31 +1,30 @@
-@(nrlQuestionForm: Form[forms.NRLQuestion], service: String)(implicit request: Request[_])
+@(clientPermissionForm: Form[models.ClientPermission], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 @import utils.BCUtils
 
-@implicitFormInstance = @{ Some(nrlQuestionForm) }
+@implicitFormInstance = @{ Some(clientPermissionForm) }
 
 @pageScripts = {
-<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-nrl.js")'></script>
+<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-client-permission.js")'></script>
 }
 
-@bcMain(title = Messages("bc.nrl.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = Messages("bc.permission.title"), service = Some(service), pageScripts = Some(pageScripts)) {
 
-@bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
+@bcErrorSummary(clientPermissionForm, "bc.permission-error.general")
 
-@form(action = controllers.routes.NRLQuestionController.continue(service)) {
+@form(action = controllers.routes.ClientPermissionController.continue(service)) {
 
-<p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</p>
+<p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.permission.subheader")</p>
 
-<h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
+<h1 class="heading-xlarge" id="client-permission-header"> @Messages("bc.permission.header")</h1>
 
-<p class ="lede" id="non-resident-text"> @Messages("bc.nrl.text")</p>
 
-<div class="form-group" id="paysSA">
+<div class="form-group" id="permission">
 
     @bcInputRadioGroup(
-    nrlQuestionForm("paysSA"),
+    clientPermissionForm("permission"),
     Seq("true" -> Messages("bc.radio.yes.label"),
     "false" -> Messages("bc.radio.no.label")),
     '_labelClass -> "block-label",
@@ -34,7 +33,17 @@
     '_groupClass -> "inline"
     )
 
+
+
+<div id="client-permission-false-hidden" class="panel-indent">
+    <div class="confirmation-notice">
+        <div class="icon-important"></div>
+        <strong>@Messages("bc.permission-false.notice")</strong>
+    </div>
 </div>
+
+</div>
+
 
 
 
@@ -53,7 +62,7 @@
 }
 
 <div>
-    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+    <a href="@controllers.routes.NRLQuestionControllerAgent.view(service)" id="back" class="link-back">
         @Messages("bc.business-verification.back")
     </a>
 </div>

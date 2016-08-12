@@ -19,11 +19,13 @@ trait NRLQuestionControllerAgent extends BaseController {
     nrlQuestionForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.nrl_question_agent(formWithErrors, service)),
       formData => {
-        val paysSa = formData.paysSA.getOrElse(false)
-        if (paysSa) Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP"))
-        else Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
+        if (formData.paysSA.contains(true)) {
+          Redirect("http://localhost:9916/ated/home")
+        }
+        else Redirect(controllers.routes.ClientPermissionController.view("ATED"))
       }
     )
   }
 
 }
+

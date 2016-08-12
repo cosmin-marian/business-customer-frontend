@@ -1,4 +1,4 @@
-@(nrlQuestionForm: Form[forms.NRLQuestion], service: String)(implicit request: Request[_])
+@(nrlQuestionForm: Form[models.NRLQuestion], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -14,7 +14,7 @@
 
 @bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
 
-  @form(action = controllers.routes.NRLQuestionController.continue(service)) {
+  @form(action = controllers.routes.NRLQuestionControllerAgent.continue(service)) {
 
     <p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</p>
 
@@ -86,7 +86,7 @@
   }
 
   <div>
-    <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)" id="back" class="link-back">
+    <a href="@controllers.routes.NonUkClientRegistrationController.uniqueTaxReferenceView()" id="back" class="link-back">
       @Messages("bc.business-verification.back")
     </a>
   </div>
