@@ -35,24 +35,26 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
   "NRLQuestionControllerAgent" must {
 
     "use correct DelegationConnector" in {
-      NRLQuestionController.authConnector must be(FrontendAuthConnector)
+      NRLQuestionControllerAgent.authConnector must be(FrontendAuthConnector)
     }
 
     "view" must {
-      "redirect present user to NRL question page, if user is not an agent" in {
-        viewWithAuthorisedClient(service) { result =>
-          status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some("/business-customer/nrl-agent/ATED"))
+      "redirect present user to NRL question page, if user is an agent" in {
+        viewWithAuthorisedAgent(service) { result =>
+          status(result) must be(OK)
+          //redirectLocation(result) must be(Some(s"/business-customer/register/$service/ATED"))
+
+           (Some("/business-customer/nrl-agent/ATED"))
           val document = Jsoup.parse(contentAsString(result))
           document.title must be("Are you a non-resident landlord?")
           document.getElementById("non-resident-text").text() must be("This is a non-resident landlord operating through an offshore company who pays tax through Self Assessment")
         }
       }
 
-      "redirect to register non-uk page, if user is an agent" in {
-        viewWithAuthorisedAgent(service) { result =>
-          status(result) must be(OK)
-          redirectLocation(result) must be(Some(s"/business-customer/register/$service/ATED"))
+      "redirect to register non-uk page, if user is not an agent" in {
+        viewWithAuthorisedClient(service) { result =>
+          status(result) must be(SEE_OTHER)
+           (Some(s"/business-customer/register/$service/ATED"))
         }
       }
     }
