@@ -299,7 +299,7 @@ bc.ated1.title = Has your client completed an ATED 1?
 bc.ated1.header = Has your client completed an ATED 1?
 bc.ated1.subheader = Add a client
 bc.ated1.info.text = An ATED 1 authorises HMRC to exchange and disclose information to you about your client. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT.
-bc.ated1-false.notice = Your client must have completed an ATED 1. This allows you to deal with HMRC on matters relating to the ATED and ATED related Capital Gains Tax (CGT). An ATED 1 can be completed online before you submit the ATED return.
+bc.ated1-false.notice = Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. This allows you to deal with HMRC on matters relating to the ATED and ATED related Capital Gains Tax (CGT). An ATED 1 can be completed online before you submit the ATED return.
 bc.ated1-error.general.ated1 = There is a problem with the ATED 1 question
 bc.ated1.not-selected.error = You must select an option.
 
