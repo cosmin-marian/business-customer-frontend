@@ -45,6 +45,12 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           val document = Jsoup.parse(contentAsString(result))
           document.title must be("Are you a non-resident landlord?")
           document.getElementById("non-resident-text").text() must be("This is a non-resident landlord operating through an offshore company who pays tax through Self Assessment")
+          document.select(".block-label").text() must include("Yes")
+          document.select(".block-label").text() must include("No")
+          document.getElementById("submit").text() must be("Continue")
+          document.select(".link-back").text() must be("Back")
+          document.select(".link-back").attr("href") must be("/business-customer/business-verification/serviceName")
+
         }
       }
 
