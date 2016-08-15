@@ -19,12 +19,12 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 
-class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
+class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuthConnector = mock[AuthConnector]
   val service = "serviceName"
 
-  object TestClientPermissionController extends ClientPermissionController {
+  object TestAted1QuestionController extends Ated1QuestionController {
     override val authConnector = mockAuthConnector
   }
 
@@ -32,22 +32,22 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
     reset(mockAuthConnector)
   }
 
-  "ClientPermissionController" must {
+  "Ated1QuestionController" must {
 
     "use correct DelegationConnector" in {
-      ClientPermissionController.authConnector must be(FrontendAuthConnector)
+      Ated1QuestionController.authConnector must be(FrontendAuthConnector)
     }
 
     "view" must {
-      "redirect present user to client permission question page, if user is an agent" in {
+      "redirect present user to ated1 question page, if user is an agent" in {
         viewWithAuthorisedAgent(service) { result =>
           status(result) must be(OK)
           //redirectLocation(result) must be(Some(s"/business-customer/register/$service/ATED"))
 
-           (Some("/business-customer/client-permission/ATED"))
+           (Some("/business-customer/ated1-question/ATED"))
           val document = Jsoup.parse(contentAsString(result))
-          document.title must be("Do you have permission to register on behalf of your client?")
-          document.getElementById("client-permission-header").text() must be("Do you have permission to register on behalf of your client?")
+          document.title must be("Has your client completed an ATED 1?")
+          document.getElementById("ated1-question-header").text() must be("Has your client completed an ATED 1?")
         }
       }
 
@@ -61,21 +61,21 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
 
     "continue" must {
       "if user doesn't select any radio button, show form error with bad_request" in {
-        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": ""}"""))
+        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"ated1": ""}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(BAD_REQUEST)
         }
       }
       "if user select 'yes', redirect it to business registration page" in {
-        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": "true"}"""))
+        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"ated1": "true"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"/business-customer/ated1-question/$service"))
+          redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
 
         }
       }
       "if user select 'no', redirect it to view home page" in {
-        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": "false"}"""))
+        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"ated1": "false"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(s"http://localhost:9916/ated/home"))
@@ -92,7 +92,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    val result = TestClientPermissionController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestAted1QuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -105,7 +105,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val result = TestClientPermissionController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestAted1QuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -118,7 +118,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestClientPermissionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
+    val result = TestAted1QuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }
 
@@ -127,7 +127,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val result = TestClientPermissionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
+    val result = TestAted1QuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }
 

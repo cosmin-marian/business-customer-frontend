@@ -68,3 +68,9 @@ object ClientPermission {
   implicit val formats = Json.format[ClientPermission]
 }
 
+case class Ated1Question(ated1: Option[Boolean] = None)
+
+object Ated1Question {
+  implicit val formats = Json.format[Ated1Question]
+}
+

@@ -1,6 +1,6 @@
 package forms
 
-import models.{Address, BusinessRegistration, NotUkUtr, NRLQuestion, ClientPermission}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -190,6 +190,12 @@ object BusinessRegistrationForms {
     mapping(
       "permission" -> optional(boolean).verifying(Messages("bc.permission.not-selected.error"), a => a.isDefined)
     )(ClientPermission.apply)(ClientPermission.unapply)
+  )
+
+  val ated1QuestionForm = Form(
+    mapping(
+      "ated1" -> optional(boolean).verifying(Messages("bc.ated1.not-selected.error"), a => a.isDefined)
+    )(Ated1Question.apply)(Ated1Question.unapply)
   )
 
 

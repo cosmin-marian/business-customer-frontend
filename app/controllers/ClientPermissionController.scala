@@ -18,8 +18,9 @@ trait ClientPermissionController extends BaseController {
     clientPermissionForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.client_permission(formWithErrors, service)),
       formData => {
-        val permission = formData.permission.getOrElse(false)
-        if (permission) Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP"))
+        if (formData.permission.contains(true)) {
+          Redirect(controllers.routes.Ated1QuestionController.view(service))
+        }
         else Redirect("http://localhost:9916/ated/home")
       }
     )
