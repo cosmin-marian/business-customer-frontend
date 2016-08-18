@@ -1,30 +1,32 @@
-@(clientPermissionForm: Form[models.ClientPermission], service: String)(implicit request: Request[_])
+@(atedOneQuestionForm: Form[models.AtedOneQuestion], service: String)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
 @import utils.BCUtils
 
-@implicitFormInstance = @{ Some(clientPermissionForm) }
+@implicitFormInstance = @{ Some(atedOneQuestionForm) }
 
 @pageScripts = {
-<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-client-permission.js")'></script>
+<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-ated1.js")'></script>
 }
 
-@bcMain(title = Messages("bc.permission.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = Messages("bc.ated1.title"), service = Some(service), pageScripts = Some(pageScripts)) {
 
-    @bcErrorSummary(clientPermissionForm, "bc.permission-error.general")
+    @bcErrorSummary(atedOneQuestionForm, "bc.ated1-error.general")
 
-    @form(action = controllers.nonUkReg.routes.ClientPermissionController.continue(service)) {
+    @form(action = controllers.nonUkReg.routes.AtedOneQuestionController.continue(service)) {
 
-        <p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.permission.subheader")</p>
+        <p class="heading-sub" id="ated1-question-subheader"> @Messages("bc.ated1.subheader")</p>
 
-        <h1 class="heading-xlarge" id="client-permission-header"> @Messages("bc.permission.header")</h1>
+        <h1 class="heading-xlarge" id="ated1-question-header"> @Messages("bc.ated1.header")</h1>
+
+        <p class="lede" id ="ated1-info-text"> @Messages("bc.ated1.info.text")</p>
 
 
         <div class="form-group" id="permission">
 
             @bcInputRadioGroup(
-            clientPermissionForm("permission"),
+            atedOneQuestionForm("ated1"),
             Seq("true" -> Messages("bc.radio.yes.label"),
             "false" -> Messages("bc.radio.no.label")),
             '_labelClass -> "block-label",
@@ -35,10 +37,10 @@
 
 
 
-        <div id="client-permission-false-hidden" class="panel-indent">
+        <div id="ated1-false-hidden" class="panel-indent">
             <div class="confirmation-notice">
                 <div class="icon-important"></div>
-            <strong>@Messages("bc.permission-false.notice")</strong>
+                <strong>@Html(Messages("bc.ated1-false.notice"))</strong>
             </div>
         </div>
 
@@ -62,7 +64,7 @@
     }
 
     <div>
-        <a href="@controllers.nonUkReg.routes.NRLQuestionControllerAgent.view(service)" id="back" class="link-back">
+        <a href="@controllers.nonUkReg.routes.ClientPermissionController.view(service)" id="back" class="link-back">
             @Messages("bc.business-verification.back")
         </a>
     </div>

@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
+import controllers.nonUkReg.ClientPermissionController
 import org.jsoup.Jsoup
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -70,7 +71,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": "true"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"/business-customer/ated1-question/$service"))
+          redirectLocation(result) must be(Some(s"/business-customer/atedone-question/$service"))
 
         }
       }
@@ -78,7 +79,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": "false"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"http://localhost:9916/ated/home"))
+          redirectLocation(result) must be(Some("#"))
 
         }
       }

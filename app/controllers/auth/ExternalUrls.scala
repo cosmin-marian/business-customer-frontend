@@ -28,4 +28,10 @@ object ExternalUrls extends RunMode {
   def serviceWelcomePath(service: String): String = {
     Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceStartUrl").getOrElse("#")
   }
+
+  def serviceAccountPath(service: String): String = {
+    Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.accountSummaryUrl").getOrElse("#")
+  }
+
 }
+

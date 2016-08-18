@@ -1,11 +1,9 @@
-package controllers
+package controllers.nonUkReg
 
 import config.FrontendAuthConnector
-import forms.BusinessRegistrationForms.nrlQuestionForm
-
-object NRLQuestionControllerAgent extends NRLQuestionControllerAgent {
-  val authConnector = FrontendAuthConnector
-}
+import controllers.BaseController
+import controllers.auth.ExternalUrls
+import forms.BusinessRegistrationForms._
 
 trait NRLQuestionControllerAgent extends BaseController {
 
@@ -20,12 +18,15 @@ trait NRLQuestionControllerAgent extends BaseController {
       formWithErrors => BadRequest(views.html.nrl_question_agent(formWithErrors, service)),
       formData => {
         if (formData.paysSA.contains(true)) {
-          Redirect("http://localhost:9916/ated/home")
+          Redirect(ExternalUrls.serviceAccountPath("ATED"))
         }
-        else Redirect(controllers.routes.ClientPermissionController.view("ATED"))
+        else Redirect(controllers.nonUkReg.routes.ClientPermissionController.view("ATED"))
       }
     )
   }
 
 }
 
+object NRLQuestionControllerAgent extends NRLQuestionControllerAgent {
+  val authConnector = FrontendAuthConnector
+}

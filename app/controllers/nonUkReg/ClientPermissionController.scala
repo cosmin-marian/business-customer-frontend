@@ -1,11 +1,11 @@
-package controllers
+package controllers.nonUkReg
 
 import config.FrontendAuthConnector
+import controllers.BaseController
+import controllers.auth.ExternalUrls
 import forms.BusinessRegistrationForms._
 
-object ClientPermissionController extends ClientPermissionController {
-  val authConnector = FrontendAuthConnector
-}
+
 
 trait ClientPermissionController extends BaseController {
 
@@ -19,11 +19,15 @@ trait ClientPermissionController extends BaseController {
       formWithErrors => BadRequest(views.html.client_permission(formWithErrors, service)),
       formData => {
         if (formData.permission.contains(true)) {
-          Redirect(controllers.routes.Ated1QuestionController.view(service))
+          Redirect(controllers.nonUkReg.routes.AtedOneQuestionController.view(service))
         }
-        else Redirect("http://localhost:9916/ated/home")
+        else Redirect(ExternalUrls.serviceAccountPath("ATED"))
       }
     )
   }
 
+}
+
+object ClientPermissionController extends ClientPermissionController {
+  val authConnector = FrontendAuthConnector
 }

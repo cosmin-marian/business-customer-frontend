@@ -192,10 +192,10 @@ object BusinessRegistrationForms {
     )(ClientPermission.apply)(ClientPermission.unapply)
   )
 
-  val ated1QuestionForm = Form(
+  val atedOneQuestionForm = Form(
     mapping(
       "ated1" -> optional(boolean).verifying(Messages("bc.ated1.not-selected.error"), a => a.isDefined)
-    )(Ated1Question.apply)(Ated1Question.unapply)
+    )(AtedOneQuestion.apply)(AtedOneQuestion.unapply)
   )
 
 

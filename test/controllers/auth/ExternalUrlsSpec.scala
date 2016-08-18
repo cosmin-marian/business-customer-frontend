@@ -41,6 +41,12 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
       ExternalUrls.serviceWelcomePath("X") must be("#")
     }
 
+    "have serviceAccountPath" in {
+      ExternalUrls.serviceAccountPath("ATED") must be("#")
+
+    }
+
+
   }
   
 }

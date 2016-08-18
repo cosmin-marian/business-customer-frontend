@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
+import controllers.nonUkReg.AtedOneQuestionController
 import org.jsoup.Jsoup
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -19,12 +20,12 @@ import uk.gov.hmrc.play.http.SessionKeys
 import scala.concurrent.Future
 
 
-class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
+class AtedOneQuestionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuthConnector = mock[AuthConnector]
   val service = "serviceName"
 
-  object TestAted1QuestionController extends Ated1QuestionController {
+  object TestAtedOneQuestionController extends AtedOneQuestionController {
     override val authConnector = mockAuthConnector
   }
 
@@ -32,10 +33,10 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     reset(mockAuthConnector)
   }
 
-  "Ated1QuestionController" must {
+  "AtedOneQuestionController" must {
 
     "use correct DelegationConnector" in {
-      Ated1QuestionController.authConnector must be(FrontendAuthConnector)
+      AtedOneQuestionController.authConnector must be(FrontendAuthConnector)
     }
 
     "view" must {
@@ -78,7 +79,7 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"ated1": "false"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"http://localhost:9916/ated/home"))
+          redirectLocation(result) must be(Some(s"#"))
 
         }
       }
@@ -92,7 +93,7 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    val result = TestAted1QuestionController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestAtedOneQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -105,7 +106,7 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val result = TestAted1QuestionController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestAtedOneQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       SessionKeys.token -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -118,7 +119,7 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestAted1QuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
+    val result = TestAtedOneQuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }
 
@@ -127,7 +128,7 @@ class Ated1QuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val result = TestAted1QuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
+    val result = TestAtedOneQuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }
 

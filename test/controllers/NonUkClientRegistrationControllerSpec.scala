@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.SessionBuilder._
 import config.FrontendAuthConnector
+import controllers.nonUkReg.NonUkClientRegistrationController
 import org.jsoup.Jsoup
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -80,7 +81,7 @@ class NonUkClientRegistrationControllerSpec extends PlaySpec with OneServerPerSu
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"nUkUtr": "true"}"""))
         continueWithAuthorisedClient(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some("http://localhost:9916/ated/home"))
+          redirectLocation(result) must be(Some("#"))
 
         }
       }
