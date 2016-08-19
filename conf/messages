@@ -1,5 +1,4 @@
 bc.title = Business Customer
-bc.business-verification.title = Business Customer
 bc.radio.yes.label = Yes
 bc.radio.no.label = No
 bc.continue = Continue
@@ -37,7 +36,7 @@ bc.business-verification.cancel = Cancel
 bc.business-verification.text ={0} account registration
 bc.business-verification.client.text={0} registration
 bc.business-verification.agent.text={0} agency set up
-bc.business-verification.title=Business Verification
+bc.business-verification.title=Select a business type for your agency
 bc.business-verification.user.header = Select your business type
 bc.business-verification.agent.header = Select a business type for your agency
 bc.business-verification.agent.reveal=My business type isn''t listed

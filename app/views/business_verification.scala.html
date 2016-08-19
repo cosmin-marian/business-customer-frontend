@@ -7,7 +7,7 @@
 
 @implicitFormInstance = @{ Some(businessTypeForm) }
 
-@bcMain(title = Messages("bc.business-verification.title"), service = Some(service)) {
+@bcMain(title = if(isAgent) {Messages("bc.business-verification.agent.header")} else {Messages("bc.business-verification.user.header")}, service = Some(service)) {
 
   @bcErrorSummary(businessTypeForm, "bc.business-verification-error.general")
 
@@ -43,8 +43,8 @@
         businessTypeForm("businessType"),
         BCUtils.businessTypeMap(service, isAgent),
         '_labelClass -> "block-label",
-        '_legend -> "",
-        '_legendClass -> "heading-medium",
+        '_legend -> Messages("bc.business-verification.user.header"),
+        '_legendClass -> "screen-reader-text",
         '_labelAfter -> true
       )
 
