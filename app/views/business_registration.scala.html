@@ -31,7 +31,7 @@
   </script>
 }
 
-@bcMain(title = Messages("business-registration.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
 
   @bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")
 

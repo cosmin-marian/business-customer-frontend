@@ -6,7 +6,7 @@
 
 @implicitFormInstance = @{ Some(limitedPartnershipForm) }
 
-@bcMain(title = Messages("bc.business-verification.lookup"), service = Some(service)) {
+@bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service)) {
 
   @bcErrorSummary(limitedPartnershipForm, "bc.business-verification-error.general.lp")
 

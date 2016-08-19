@@ -176,3 +176,11 @@ input[type="radio"], input[type="checkbox"] {
     border: 5px solid #b10e1e;
     margin-left:2px;
 }
+
+.screen-reader-text {
+   clip: rect(1px, 1px, 1px, 1px);
+   height: 1px;
+   width: 1px;
+   overflow: hidden;
+   position: absolute !important;
+}
