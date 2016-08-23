@@ -71,7 +71,7 @@ class ClientPermissionControllerSpec extends PlaySpec with OneServerPerSuite wit
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"permission": "true"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"/business-customer/atedone-question/$service"))
+          redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
 
         }
       }

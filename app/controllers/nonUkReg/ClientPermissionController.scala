@@ -19,7 +19,7 @@ trait ClientPermissionController extends BaseController {
       formWithErrors => BadRequest(views.html.client_permission(formWithErrors, service)),
       formData => {
         if (formData.permission.contains(true)) {
-          Redirect(controllers.nonUkReg.routes.AtedOneQuestionController.view(service))
+          Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
         }
         else Redirect(ExternalUrls.serviceAccountPath("ATED"))
       }

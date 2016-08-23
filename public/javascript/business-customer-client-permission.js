@@ -5,13 +5,15 @@ function showHideClientPermissionFunc() {
 //    var hiddenShadeBox = $('#shade-box');
     var submitButton = $('#submit');
     var continueButton = $('#continue');
-    var permission = $("#client-permission-false-hidden");
+    var permissionFalse = $("#client-permission-false-hidden");
+    var permissionTrue = $("#client-permission-true-hidden");
 
 //    hiddenUtr.hide();
 //    hiddenShadeBox.hide();
     submitButton.hide();
     continueButton.show();
-    permission.hide();
+    permissionFalse.hide();
+    permissionTrue.hide();
 
 
     $('input[type=radio][name=permission]').change(function(){
@@ -21,14 +23,16 @@ function showHideClientPermissionFunc() {
 //            hiddenShadeBox.show();
             submitButton.hide();
             continueButton.show();
-            permission.hide();
+            permissionFalse.hide();
+            permissionTrue.show();
         } else {
         //alert("Inside false radio");
 //            hiddenUtr.hide();
 //            hiddenShadeBox.hide();
             submitButton.show();
             continueButton.hide();
-            permission.show();
+            permissionFalse.show();
+            permissionTrue.hide();
 
         }
     });

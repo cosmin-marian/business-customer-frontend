@@ -290,7 +290,8 @@ bc.nrl.paysSA.not-selected.error = You must select an option.
 bc.permission.title = Do you have permission to register on behalf of your client?
 bc.permission.subheader = Add a client
 bc.permission.header = Do you have permission to register on behalf of your client?
-bc.permission-false.notice = You must have permission from your client to register on their behalf before you can continue.
+bc.permission-false.notice =  	You must have permission from your client to register on their behalf before you can continue. Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT. An ATED 1 can be completed online before you submit the ATED return.
+bc.permission-true.notice = Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT. An ATED 1 can be completed online before you submit the ATED return.
 bc.permission-error.general.permission = There is a problem with the do you have permission question
 bc.permission.not-selected.error = You must select an option.
 
