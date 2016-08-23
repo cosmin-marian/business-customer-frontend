@@ -47,6 +47,3 @@ POST        /nrl-agent/:service                                                 
 
 GET         /client-permission/:service                                         controllers.nonUkReg.ClientPermissionController.view(service: String)
 POST        /client-permission/:service                                         controllers.nonUkReg.ClientPermissionController.continue(service: String)
-
-GET         /atedone-question/:service                                          controllers.nonUkReg.AtedOneQuestionController.view(service: String)
-POST        /atedone-question/:service                                          controllers.nonUkReg.AtedOneQuestionController.continue(service: String)
