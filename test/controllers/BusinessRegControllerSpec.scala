@@ -64,10 +64,10 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your non-UK business details")
+          document.title() must be("Enter your overseas business details")
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-registration.header").text() must be("Enter your non-UK business details")
-          document.getElementById("business-registration.lede-text").text() must be("This is the registered address of your Non-UK business, you can enter a different address for correspondence on the next page.")
+          document.getElementById("business-registration.header").text() must be("Enter your overseas business details")
+          document.getElementById("business-registration.lede-text").text() must be("This is the registered address of your overseas business, you can enter a different address for correspondence on the next page.")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
@@ -87,9 +87,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your non-UK agent details")
+          document.title() must be("Enter your overseas agent details")
           document.getElementById("business-verification-text").text() must be("ATED agency set up")
-          document.getElementById("business-registration.header").text() must be("Enter your non-UK agent details")
+          document.getElementById("business-registration.header").text() must be("Enter your overseas agent details")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
@@ -166,10 +166,10 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
           (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "A postcode cannot be more than 10 characters."),
-          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering a non-UK address"),
+          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address"),
           (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
           (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
-          (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering a non-UK address")
+          (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 
         formValidationInputDataSet.foreach { data =>
