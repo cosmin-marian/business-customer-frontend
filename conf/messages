@@ -46,7 +46,7 @@ bc.business-verification-selected-user-header=Enter your Self Assessment details
 bc.business-verification-selected-agent-header=Enter your agency details
 bc.business-verification-lede= We will attempt to match your details against information we currently hold.
 bc.business-verification-lede.nrl= As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.
-bc.business-verification.NUK=Non-UK company
+bc.business-verification.NUK=I have an overseas company without a UK Unique Tax Reference
 bc.business-verification.PRT=Ordinary business partnership
 bc.business-verification.LLP=Limited liability partnership
 bc.business-verification.LP=Limited partnership
@@ -111,9 +111,9 @@ bc.unauthorised.title=Unauthorised
 bc.unauthorised.heading=You are not authorised to use this service
 
 business-registration.title = Business Registration
-bc.business-registration.user.non-uk.header = Enter your non-UK business details
-bc.business-registration.agent.non-uk.header = Enter your non-UK agent details
-bc.business-registration.lede.text = This is the registered address of your Non-UK business, you can enter a different address for correspondence on the next page.
+bc.business-registration.user.non-uk.header = Enter your overseas business details
+bc.business-registration.agent.non-uk.header = Enter your overseas agent details
+bc.business-registration.lede.text = This is the registered address of your overseas business, you can enter a different address for correspondence on the next page.
 bc.business-registration.user.new-business.header = New business details
 business-registration.group.title = Create AWRS group
 bc.business-registration.user.group.header = Create AWRS group
@@ -141,7 +141,7 @@ bc.business-registration-error.general.hasBusinessUniqueId = There is a problem 
 bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
 bc.business-registration.hasBusinessUniqueId = Do you have a Business Unique identifier
 bc.business-registration.hasBusinessUniqueId.help.question = What is a Business Unique identifier?
-bc.business-registration.hasBusinessUniqueId.help.answer = Enter any UK Unique Taxpayer Reference number. <br>If you don't have a UTR you can use a: <br> <ul class="list-bullet"><li>VAT registration number</li><li>Employer PAYE reference </li><li>Company registration number - allocated by the Registrar of Companies where the company is incorporated</li><li>Non-resident landlord reference</li><li>Unique transaction reference number for Stamp Duty Land Tax</li></ul> or enter any non-UK identifier (for example Company Registration Number).
+bc.business-registration.hasBusinessUniqueId.help.answer = Enter any UK Unique Taxpayer Reference number. <br>If you don't have a UTR you can use a: <br> <ul class="list-bullet"><li>VAT registration number</li><li>Employer PAYE reference </li><li>Company registration number - allocated by the Registrar of Companies where the company is incorporated</li><li>Non-resident landlord reference</li><li>Unique transaction reference number for Stamp Duty Land Tax</li></ul> or enter any overseas identifier (for example Company Registration Number).
 bc.business-registration.businessUniqueId = Business Unique identifier
 bc.business-registration.businessUniqueId.hint = Example, the number on the document
 bc.business-registration.issuingInstitution = Institution of issue
@@ -159,13 +159,14 @@ bc.business-registration-error.businessName.length = The business name cannot be
 bc.business-registration-error.line_1.length = Address line 1 cannot be more than {0} characters.
 bc.business-registration-error.line_2.length = Address line 2 cannot be more than {0} characters.
 bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
+bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
 bc.business-registration-error.line_4.length = Address line 4 cannot be more than {0} characters.
 bc.business-registration-error.postcode.length = The postcode cannot be more than {0} characters.
 bc.business-registration-error.businessUniqueId.length = Business Unique Identifier cannot be more than {0} characters.
 bc.business-registration-error.utr.length = The Unique Tax Reference cannot be more than {0} characters.
 bc.business-registration-error.issuingInstitution.length = The institution that issued the Business Unique Identifier cannot be more than {0} characters.
 bc.business-registration-error.summaryHeader = There is a problem with the form
-bc.business-registration-error.non-uk = You cannot select United Kingdom when entering a non-UK address
+bc.business-registration-error.non-uk = You cannot select United Kingdom when entering an overseas address
 
 
 
