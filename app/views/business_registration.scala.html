@@ -36,7 +36,7 @@
   @bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")
 
   <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
-  <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+  <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
 
   @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
@@ -81,7 +81,7 @@
           '_emptyValueText -> Messages("bc.business-registration.country.select"),
           '_label -> Html(Messages("bc.business-registration.country")))
 
-        <div class="form-group" id="hasBusinessUniqueId">
+        <div class="form-group" id="hasOverseasTaxReference">
 
           @bcInputRadioGroup(businessRegistrationForm("hasBusinessUniqueId"),
             Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),

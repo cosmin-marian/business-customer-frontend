@@ -25,6 +25,12 @@ trait NRLQuestionControllerAgent extends BaseController {
     )
   }
 
+
+  def back(service: String) = AuthAction(service) { implicit bcContext =>
+    Redirect(ExternalUrls.addClientEmailPath)
+
+  }
+
 }
 
 object NRLQuestionControllerAgent extends NRLQuestionControllerAgent {

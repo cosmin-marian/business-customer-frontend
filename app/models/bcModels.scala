@@ -50,11 +50,6 @@ object MatchSuccessResponse {
   implicit val format = Json.format[MatchSuccessResponse]
 }
 
-case class NotUkUtr(nUkUtr: Option[Boolean] = None)
-
-object NotUkUtr {
-  implicit val formats = Json.format[NotUkUtr]
-}
 
 case class NRLQuestion(paysSA: Option[Boolean] = None)
 

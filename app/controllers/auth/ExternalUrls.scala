@@ -33,5 +33,7 @@ object ExternalUrls extends RunMode {
     Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.accountSummaryUrl").getOrElse("#")
   }
 
+  val addClientEmailPath = Play.configuration.getString(s"govuk-tax.$env.services.agent-client-mandate-frontend.agentEnterEmailUrl").getOrElse("#")
+
 }
 

@@ -84,6 +84,20 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
         }
       }
 
+
+
+    }
+
+
+    "back" must{
+      "if user select 'back', redirect it to overseas page page" in {
+        val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": "false"}"""))
+        backWithAuthorisedAgent(fakeRequest, service) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(s"http://localhost:9959/agent-client-mandate/collect-agent-email/ATED"))
+
+        }
+      }
     }
   }
 
@@ -120,6 +134,15 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
     implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestNRLQuestionControllerAgent.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
+    test(result)
+  }
+
+  def backWithAuthorisedAgent(fakeRequest: FakeRequest[AnyContentAsJson], serviceName: String)(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestNRLQuestionControllerAgent.back(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }
 

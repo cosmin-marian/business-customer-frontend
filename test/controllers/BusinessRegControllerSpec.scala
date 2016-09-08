@@ -74,8 +74,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("businessUniqueId_field").text() must include("Business Unique identifier")
-          document.getElementById("issuingInstitution_field").text() must be("Institution of issue")
+          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas Tax Reference?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -96,8 +95,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("businessUniqueId_field").text() must include("Business Unique identifier")
-          document.getElementById("issuingInstitution_field").text() must be("Institution of issue")
+          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas Tax Reference?")
           document.getElementById("submit").text() must be("Continue")
         }
       }

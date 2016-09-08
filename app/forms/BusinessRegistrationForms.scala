@@ -54,11 +54,6 @@ object BusinessRegistrationForms {
     )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
-  val notUkUtrForm = Form(mapping(
-    "nUkUtr" -> optional(boolean)
-      .verifying(Messages("bc.nonuk.client.reg.unique-tax-reference.not-selected"), result => result.isDefined)
-  )(NotUkUtr.apply)(NotUkUtr.unapply)
-  )
 
 
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
