@@ -66,8 +66,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
           document.title() must be("Enter your overseas business details")
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-registration.header").text() must be("Enter your overseas business details")
-          document.getElementById("business-registration.lede-text").text() must be("This is the registered address of your overseas business, you can enter a different address for correspondence on the next page.")
+          document.getElementById("business-registration-header").text() must be("Enter your overseas business details")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
@@ -87,8 +86,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           val document = Jsoup.parse(contentAsString(result))
 
           document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-verification-text").text() must be("ATED agency set up")
-          document.getElementById("business-registration.header").text() must be("Enter your overseas agent details")
+          document.getElementById("business-verification-text").text() must be("Agent Online Services set up")
+          document.getElementById("business-registration-header").text() must be("Enter your overseas agent details")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")

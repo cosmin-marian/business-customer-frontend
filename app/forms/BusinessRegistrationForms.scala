@@ -54,8 +54,6 @@ object BusinessRegistrationForms {
     )(BusinessRegistration.apply)(BusinessRegistration.unapply)
   )
 
-
-
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
     optionValue match {
       case Some(value) => value.isEmpty || (value.nonEmpty && value.length <= fieldLength)
@@ -160,7 +158,6 @@ object BusinessRegistrationForms {
     }
   }
 
-
   private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
@@ -187,8 +184,4 @@ object BusinessRegistrationForms {
     )(ClientPermission.apply)(ClientPermission.unapply)
   )
 
-
-
 }
-
-

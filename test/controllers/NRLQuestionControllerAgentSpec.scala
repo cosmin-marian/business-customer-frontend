@@ -43,9 +43,7 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
       "redirect present user to NRL question page, if user is an agent" in {
         viewWithAuthorisedAgent(service) { result =>
           status(result) must be(OK)
-          //redirectLocation(result) must be(Some(s"/business-customer/register/$service/ATED"))
 
-           (Some("/business-customer/nrl-agent/ATED"))
           val document = Jsoup.parse(contentAsString(result))
           document.title must be("Are you a non-resident landlord?")
           document.getElementById("non-resident-text").text() must be("This is a non-resident landlord operating through an offshore company who pays tax through Self Assessment")
@@ -53,9 +51,9 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
       }
 
       "redirect to register non-uk page, if user is not an agent" in {
-        viewWithAuthorisedClient(service) { result =>
+        viewWithAuthorisedClient("ATED") { result =>
           status(result) must be(SEE_OTHER)
-           (Some(s"/business-customer/register/$service/ATED"))
+          redirectLocation(result) must be(Some(s"/business-customer/register/ATED/NUK"))
         }
       }
     }
@@ -79,12 +77,10 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": "false"}"""))
         continueWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"/business-customer/client-permission/ATED"))
+          redirectLocation(result) must be(Some(s"/business-customer/registration/non-uk/permission/ATED"))
 
         }
       }
-
-
 
     }
 

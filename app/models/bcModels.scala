@@ -27,7 +27,6 @@ object OrganisationResponse {
   implicit val formats = Json.format[OrganisationResponse]
 }
 
-
 object MatchBusinessData {
   implicit val formats = Json.format[MatchBusinessData]
 }
@@ -50,20 +49,6 @@ object MatchSuccessResponse {
   implicit val format = Json.format[MatchSuccessResponse]
 }
 
-
 case class NRLQuestion(paysSA: Option[Boolean] = None)
 
-object NRLQuestion {
-  implicit val formats = Json.format[NRLQuestion]
-}
-
 case class ClientPermission(permission: Option[Boolean] = None)
-
-object ClientPermission {
-  implicit val formats = Json.format[ClientPermission]
-}
-
-
-
-
-
