@@ -46,7 +46,7 @@ bc.business-verification-selected-user-header=Enter your Self Assessment details
 bc.business-verification-selected-agent-header=Enter your agency details
 bc.business-verification-lede= We will attempt to match your details against information we currently hold.
 bc.business-verification-lede.nrl= As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.
-bc.business-verification.NUK=I have an overseas company without a UK Unique Tax Reference
+bc.business-verification.NUK=I do not have a UK Unique Tax Reference
 bc.business-verification.PRT=Ordinary business partnership
 bc.business-verification.LLP=Limited liability partnership
 bc.business-verification.LP=Limited partnership
@@ -122,7 +122,7 @@ bc.business-registration.group.businessName.hintText = This is your registered c
 bc.business-registration.business.subheader = You need to tell us the details of your business.
 bc.business-registration.group.subheader = You need to tell us the details of your group representative.
 bc.business-registration.text={0} account registration
-bc.business-registration.text.agent={0} agency set up
+bc.business-registration.text.agent=Agent Online Services set up
 bc.business-registration.text.client={0} registration
 bc.business-registration.businessName = Business name
 bc.business-registration.address = Address
@@ -139,12 +139,13 @@ bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.country.select = please select one country
 bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
 bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
-bc.business-registration.hasBusinessUniqueId = Do you have a Business Unique identifier
-bc.business-registration.hasBusinessUniqueId.help.question = What is a Business Unique identifier?
-bc.business-registration.hasBusinessUniqueId.help.answer = Enter any UK Unique Taxpayer Reference number. <br>If you don't have a UTR you can use a: <br> <ul class="list-bullet"><li>VAT registration number</li><li>Employer PAYE reference </li><li>Company registration number - allocated by the Registrar of Companies where the company is incorporated</li><li>Non-resident landlord reference</li><li>Unique transaction reference number for Stamp Duty Land Tax</li></ul> or enter any overseas identifier (for example Company Registration Number).
-bc.business-registration.businessUniqueId = Business Unique identifier
+bc.business-registration.hasBusinessUniqueId = Do you have an overseas Tax Reference?
+bc.business-registration.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
+bc.business-registration.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
+bc.business-registration.businessUniqueId = Tax Reference
 bc.business-registration.businessUniqueId.hint = Example, the number on the document
 bc.business-registration.issuingInstitution = Institution of issue
+bc.business-registration.issuingInstitution.hint = For example, an overseas tax department
 bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
@@ -285,3 +286,40 @@ bc.nrl.title = Are you a non-resident landlord?
 bc.nrl.text = This is a non-resident landlord operating through an offshore company who pays tax through Self Assessment
 bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
 bc.nrl.paysSA.not-selected.error = You must select an option.
+
+## client permission page
+bc.permission.title = Do you have permission to register on behalf of your client?
+bc.permission.subheader = Add a client
+bc.permission.header = Do you have permission to register on behalf of your client?
+bc.permission-false.notice =  	You must have permission from your client to register on their behalf before you can continue. Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT. An ATED 1 can be completed online before you submit the ATED return.
+bc.permission-true.notice = Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT. An ATED 1 can be completed online before you submit the ATED return.
+bc.permission-error.general.permission = There is a problem with the do you have permission question
+bc.permission.not-selected.error = You must select an option.
+
+## ated1 question page
+bc.ated1.title = Has your client completed an ATED 1?
+bc.ated1.header = Has your client completed an ATED 1?
+bc.ated1.subheader = Add a client
+bc.ated1.info.text = An ATED 1 authorises HMRC to exchange and disclose information to you about your client. Submission of form 64-8 ‘Authorising your agent’ to HMRC for other tax matters does not cover ATED or ATED related CGT.
+bc.ated1-false.notice = Your client must have completed an <a href="https://www.gov.uk/government/publications/annual-tax-on-enveloped-dwellings-ated-1">ATED 1</a>. This allows you to deal with HMRC on matters relating to the ATED and ATED related Capital Gains Tax (CGT). An ATED 1 can be completed online before you submit the ATED return.
+bc.ated1-error.general.ated1 = There is a problem with the ATED 1 question
+bc.ated1.not-selected.error = You must select an option.
+
+
+## non-uk client reg
+bc.nonuk.client.reg.title = Does your client have a UK Unique Tax Reference for their business?
+bc.nonuk.client.reg.header = Does your client have a UK Unique Tax Reference for their business?
+bc.nonuk.client.reg.subheader = Add a client
+bc.nonuk.client.reg.yes.label = Yes
+bc.nonuk.client.reg.no.label = No
+bc.nonuk.client.reg.question.true.info-title = Your agent reference is GG123456
+bc.nonuk.client.reg.question.true-text1 = <p>You need to give this agent reference to your client so they can authorise you.</p><p>Your client will then need to:</p>
+bc.nonuk.client.reg.question.true-info1 = Register their company to use the new <a href="" target="_blank">ATED service</a>, they may need to create a new organisational Government Gateway account.
+bc.nonuk.client.reg.question.true-info2 = Enter the agent reference you gave them.
+bc.nonuk.client.reg.question.true-info3 = Let you know once they have completed this process.
+bc.nonuk.client.reg.question.true-text2 = <p>You have 28 days to sign in and accept the agent request, you won’t receive an email notification.</p><p>The ATED1 and 64-8 do not cover you for this service.</p>
+bc.nonuk.client.reg.question.true.box.text = If you have a number of agents working on ATED within your organisation you may want to filter your pending clients. To do this you need to add administrators to your account in Government Gateway. To complete the process give your clients your Agent ID as well as your agent reference.
+bc.nonuk.client.reg.question.true.reveal = What is an Agent ID?
+bc.nonuk.client.reg.question.true.reveal-text = An Agent ID is generated when you <a href="http://www.gateway.gov.uk/Default.aspx" target="_blank">create an agent adminstrator Government Gateway account.</a>
+bc.nonuk.client.reg.view-clients = View all my clients
+bc.nonuk.client.reg.unique-tax-reference.not-selected = You must select an option

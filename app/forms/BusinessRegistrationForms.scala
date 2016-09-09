@@ -1,10 +1,11 @@
 package forms
 
-import models.{Address, BusinessRegistration}
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+
 
 object BusinessRegistrationForms {
 
@@ -157,7 +158,6 @@ object BusinessRegistrationForms {
     }
   }
 
-
   private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
@@ -178,10 +178,10 @@ object BusinessRegistrationForms {
     )(NRLQuestion.apply)(NRLQuestion.unapply)
   )
 
-}
+  val clientPermissionForm = Form(
+    mapping(
+      "permission" -> optional(boolean).verifying(Messages("bc.permission.not-selected.error"), a => a.isDefined)
+    )(ClientPermission.apply)(ClientPermission.unapply)
+  )
 
-case class NRLQuestion(paysSA: Option[Boolean] = None)
-
-object NRLQuestion {
-  implicit val formats = Json.format[NRLQuestion]
 }

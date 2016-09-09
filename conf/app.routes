@@ -38,3 +38,10 @@ GET         /:service                                                           
 GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
+
+GET         /registration/non-uk/nrl/:service                                   controllers.nonUkReg.NRLQuestionControllerAgent.view(service: String)
+POST        /registration/non-uk/nrl/:service                                   controllers.nonUkReg.NRLQuestionControllerAgent.continue(service: String)
+GET         /registration/non-uk/nrl/:service/back                              controllers.nonUkReg.NRLQuestionControllerAgent.back(service: String)
+
+GET         /registration/non-uk/permission/:service                            controllers.nonUkReg.ClientPermissionController.view(service: String)
+POST        /registration/non-uk/permission/:service                            controllers.nonUkReg.ClientPermissionController.continue(service: String)

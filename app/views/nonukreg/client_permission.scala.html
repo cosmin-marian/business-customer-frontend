@@ -1,0 +1,67 @@
+@(clientPermissionForm: Form[models.ClientPermission], service: String)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import views.html.helpers._
+@import utils.BCUtils
+
+@implicitFormInstance = @{ Some(clientPermissionForm) }
+
+@pageScripts = {
+  <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-client-permission.js")'></script>
+}
+
+@bcMain(title = Messages("bc.permission.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+
+  @bcErrorSummary(clientPermissionForm, "bc.permission-error.general")
+
+  @form(action = controllers.nonUkReg.routes.ClientPermissionController.continue(service)) {
+
+    <p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.permission.subheader")</p>
+
+    <h1 class="heading-xlarge" id="client-permission-header"> @Messages("bc.permission.header")</h1>
+
+    <div class="form-group" id="permission">
+
+      @bcInputRadioGroup(
+        clientPermissionForm("permission"),
+        Seq("true" -> Messages("bc.radio.yes.label"),
+        "false" -> Messages("bc.radio.no.label")),
+        '_labelClass -> "block-label",
+        '_legend -> "",
+        '_labelAfter -> true,
+        '_groupClass -> "inline"
+      )
+
+      <div id="client-permission-true-hidden" class="panel-indent">
+        <div class="confirmation-notice">
+          <div class="icon-important"></div>
+          <strong>@Html(Messages("bc.permission-true.notice"))</strong>
+        </div>
+      </div>
+
+      <div id="client-permission-false-hidden" class="panel-indent">
+        <div class="confirmation-notice">
+          <div class="icon-important"></div>
+          <strong>@Html(Messages("bc.permission-false.notice"))</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group" id="submit">
+      <button class="button" id="submit-btn" type="submit">@Messages("bc.nonuk.client.reg.view-clients")</button>
+    </div>
+
+    <div class="form-group" id="continue">
+      <button class="button" id="continue-btn" type="submit">@Messages("bc.continue")</button>
+    </div>
+
+  }
+
+  <div>
+    <a href="@controllers.nonUkReg.routes.NRLQuestionControllerAgent.view(service)" id="back" class="link-back">
+      @Messages("bc.business-verification.back")
+    </a>
+  </div>
+
+}
