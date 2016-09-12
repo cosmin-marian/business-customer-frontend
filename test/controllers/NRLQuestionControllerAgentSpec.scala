@@ -90,7 +90,7 @@ class NRLQuestionControllerAgentSpec extends PlaySpec with OneServerPerSuite wit
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paysSA": "false"}"""))
         backWithAuthorisedAgent(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"http://localhost:9959/agent-client-mandate/collect-agent-email/ATED"))
+          redirectLocation(result) must be(Some("#"))
 
         }
       }
