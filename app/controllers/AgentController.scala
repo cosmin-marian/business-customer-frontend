@@ -21,7 +21,7 @@ trait AgentController extends BaseController {
     implicit bcContext =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map { reviewDetails =>
         reviewDetails.flatMap(_.agentReferenceNumber) match {
-          case Some(agentReferenceNumber) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}")
+          case Some(agentReferenceNumber) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/$agentReferenceNumber")
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }

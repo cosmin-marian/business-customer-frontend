@@ -86,7 +86,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           val document = Jsoup.parse(contentAsString(result))
 
           document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-verification-text").text() must be("Agent Online Services set up")
+          document.getElementById("business-verification-text").text() must be("ATED agency set up")
           document.getElementById("business-registration-header").text() must be("Enter your overseas agent details")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
