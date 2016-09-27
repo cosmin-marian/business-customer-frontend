@@ -154,7 +154,7 @@ bc.business-registration.search= Match
 
 bc.business-registration-error.businessName = You must enter a business name
 bc.business-registration-error.line_1 = You must enter an address into Address line 1.
-bc.business-registration-error.line_2 = You must enter and address into Address line 2.
+bc.business-registration-error.line_2 = You must enter an address into Address line 2.
 bc.business-registration-error.country = You must enter a country
 bc.business-registration-error.businessName.length = The business name cannot be more than {0} characters.
 bc.business-registration-error.line_1.length = Address line 1 cannot be more than {0} characters.
@@ -196,7 +196,7 @@ bc.business-registration-error.general.businessAddress.postcode = A postcode can
 
 bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1.
 bc.business-verification-error.general.businessAddress.line_2  = There is a problem with address line 2.
-bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3..
+bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3.
 bc.business-registration-error.general.businessAddress.line_4 = There is a problem with address line 4.
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
 bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
