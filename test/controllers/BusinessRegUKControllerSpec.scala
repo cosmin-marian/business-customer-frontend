@@ -149,7 +149,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include("You must enter a business name")
               contentAsString(result) must include("You must enter an address into Address line 1.")
-              contentAsString(result) must include("You must enter and address into Address line 2.")
+              contentAsString(result) must include("You must enter an address into Address line 2.")
               contentAsString(result) must include("You must enter a postcode.")
           }
         }
