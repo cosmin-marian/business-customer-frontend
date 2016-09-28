@@ -61,6 +61,9 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       "for amls as service name, return amls" in {
         BCUtils.getNavTitle(Some("amls")) must be(Some("Anti Money Laundering Scheme (AMLS)"))
       }
+      "for investment-tax-relief as service name, return investment-tax-relief" in {
+        BCUtils.getNavTitle(Some("investment-tax-relief")) must be(Some("Get Tax Relief for Your Investors"))
+      }
       "for other as service name, return None" in {
         BCUtils.getNavTitle(Some("abcd")) must be(None)
       }
@@ -96,6 +99,15 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
           "UIB" -> Messages("bc.business-verification.amls.UIB")
         )
       }
+
+      "return the correct map for investment-tax-relief" in {
+        val typeMap = BCUtils.businessTypeMap("investment-tax-relief", false)
+        typeMap.size must be(1)
+        typeMap mustBe Seq(
+          "LTD" -> Messages("bc.business-verification.LTD")
+        )
+      }
+
       "return default map when passed nothing" in {
         val typeMap = BCUtils.businessTypeMap("", false)
         typeMap.size must be(6)
