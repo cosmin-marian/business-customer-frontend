@@ -67,6 +67,7 @@ object BCUtils {
           case "ated" => Some(Messages("bc.ated.serviceName"))
           case "awrs" => Some(Messages("bc.awrs.serviceName"))
           case "amls" => Some(Messages("bc.amls.serviceName"))
+          case "investment-tax-relief" => Some(Messages("bc.investment-tax-relief.serviceName"))
           case _ => None
         }
       case None => None
@@ -106,6 +107,7 @@ object BCUtils {
         "LLP" -> Messages("bc.business-verification.amls.LP.LLP"),
         "UIB" -> Messages("bc.business-verification.amls.UIB")
       )
+      case "investment-tax-relief" => Seq("LTD" -> Messages("bc.business-verification.LTD"))
       case _ => fixedBusinessTypes
     }
   }
