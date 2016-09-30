@@ -43,13 +43,13 @@ trait BusinessRegUKController extends BaseController {
 
   private def displayDetails(businessType: String) = {
     if (isGroup(businessType)) {
-      new BusinessRegistrationDisplayDetails(businessType,
+      BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.group.header"),
         Messages("bc.business-registration.group.subheader"),
         BCUtils.getIsoCodeTupleList)
     }
     else {
-      new BusinessRegistrationDisplayDetails(businessType,
+      BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),
         BCUtils.getIsoCodeTupleList)

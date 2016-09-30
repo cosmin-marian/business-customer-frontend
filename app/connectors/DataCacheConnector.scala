@@ -24,7 +24,8 @@ trait DataCacheConnector {
   def saveReviewDetails(reviewDetails: ReviewDetails)(implicit hc: HeaderCarrier): Future[Option[ReviewDetails]] = {
     val result = sessionCache.cache[ReviewDetails](sourceId, reviewDetails)
     result flatMap {
-      case data => Future.successful(data.getEntry[ReviewDetails](sourceId))
+      data => Future.successful(data.getEntry[ReviewDetails](sourceId))
     }
   }
+
 }
