@@ -22,7 +22,7 @@ object EtmpOrganisation {
 case class EtmpContactDetails(phoneNumber: Option[String] = None,
                               mobileNumber: Option[String] = None,
                               faxNumber: Option[String] = None,
-                              eMailAddress: Option[String] = None)
+                              emailAddress: Option[String] = None)
 
 object EtmpContactDetails {
   implicit val formats = Json.format[EtmpContactDetails]
@@ -34,7 +34,7 @@ object EtmpIdentification {
   implicit val formats = Json.format[EtmpIdentification]
 }
 
-case class BusinessRegistrationRequest(acknowledgmentReference: String,
+case class BusinessRegistrationRequest(acknowledgementReference: String,
                                        isAnAgent: Boolean,
                                        isAGroup: Boolean,
                                        identification: Option[EtmpIdentification],
