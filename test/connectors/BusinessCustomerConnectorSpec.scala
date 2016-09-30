@@ -46,7 +46,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     val nonUkBusinessAddress = EtmpAddress("line1", "line2", None, None, None, "FR")
 
     val businessRequestData = BusinessRegistrationRequest(
-      acknowledgmentReference = "SESS:123123123",
+      acknowledgementReference = "SESS:123123123",
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = false,
@@ -56,7 +56,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     )
 
     val businessRequestDataNonUK = BusinessRegistrationRequest(
-      acknowledgmentReference = "SESS:123123123",
+      acknowledgementReference = "SESS:123123123",
       organisation = businessOrgData,
       address = nonUkBusinessAddress,
       isAnAgent = false,

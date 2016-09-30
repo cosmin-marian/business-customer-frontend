@@ -63,7 +63,7 @@ trait BusinessRegistrationService {
       countryCode = registerData.businessAddress.country)
 
     BusinessRegistrationRequest(
-      acknowledgmentReference = SessionUtils.getUniqueAckNo,
+      acknowledgementReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
       isAnAgent = bcContext.user.isAgent,
