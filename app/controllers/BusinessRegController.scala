@@ -38,12 +38,12 @@ trait BusinessRegController extends BaseController {
 
   private def displayDetails(businessType: String, service: String)(implicit bcContext: BusinessCustomerContext) = {
     if (bcContext.user.isAgent) {
-      new BusinessRegistrationDisplayDetails(businessType,
+      BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
         Messages("bc.business-registration.text.agent", service),
         BCUtils.getIsoCodeTupleList)
     } else {
-      new BusinessRegistrationDisplayDetails(businessType,
+      BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.non-uk.header"),
         Messages("bc.business-registration.text.client", service),
         BCUtils.getIsoCodeTupleList)
