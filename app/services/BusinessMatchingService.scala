@@ -25,7 +25,7 @@ trait BusinessMatchingService {
                           (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtrAndType map { userUtrAndType =>
       val (userUTR, userType) = userUtrAndType
-      val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
+      val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
         utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
       businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
         validateAndCache(dataReturned = dataReturned, directMatch = true)
@@ -35,7 +35,7 @@ trait BusinessMatchingService {
 
   def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String, service: String)
                                      (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
-    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
+    val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
@@ -45,7 +45,7 @@ trait BusinessMatchingService {
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String, service: String)
                                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
-    val searchData = MatchBusinessData(acknowledgmentReference = SessionUtils.getUniqueAckNo,
+    val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>

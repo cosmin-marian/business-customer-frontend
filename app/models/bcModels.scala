@@ -8,7 +8,7 @@ case class Organisation(organisationName: String, organisationType: String)
 
 case class OrganisationResponse(organisationName: String, isAGroup: Option[Boolean], organisationType: Option[String])
 
-case class MatchBusinessData(acknowledgmentReference: String,
+case class MatchBusinessData(acknowledgementReference: String,
                              utr: String,
                              requiresNameMatch: Boolean = false,
                              isAnAgent: Boolean = false,
