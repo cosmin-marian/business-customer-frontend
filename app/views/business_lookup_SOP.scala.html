@@ -6,7 +6,7 @@
 
 @implicitFormInstance = @{ Some(soleTraderForm) }
 
-@bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service)) {
+@bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-SOP-header")}, service = Some(service)) {
 
 @bcErrorSummary(soleTraderForm, "bc.business-verification-error.general")
 
@@ -15,7 +15,7 @@
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header")</h1>
   } else {
     <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </p>
-    <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
+    <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-SOP-header") </h1>
   }
 
   @if(!isAgent && service.toUpperCase == "ATED"){

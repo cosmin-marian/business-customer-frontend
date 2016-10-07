@@ -2,8 +2,8 @@ package controllers
 
 import java.util.UUID
 
+import builders.AuthBuilder
 import config.FrontendAuthConnector
-import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -12,12 +12,10 @@ import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BusinessMatchingService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
-import builders.AuthBuilder
 
 class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
 
@@ -196,7 +194,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "add additional form fields to the screen for entry for ATED" in {
-        businessLookupWithAuthorisedUser("SOP","ATED") { result =>
+        businessLookupWithAuthorisedUser("SOP", "ATED") { result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
@@ -211,14 +209,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("saUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
         }
       }
       "add additional form fields to the screen for entry" in {
-        businessLookupWithAuthorisedUser("SOP","AWRS") { result =>
+        businessLookupWithAuthorisedUser("SOP", "AWRS") { result =>
           status(result) must be(OK)
 
           val document = Jsoup.parse(contentAsString(result))
@@ -233,7 +231,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("saUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/AWRS")
         }
@@ -255,7 +253,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("saUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
@@ -306,7 +304,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
@@ -316,7 +314,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("cotaxUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
@@ -339,7 +337,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("cotaxUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -362,7 +360,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("AWRS registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
@@ -372,7 +370,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("cotaxUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/AWRS")
         }
@@ -394,7 +392,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("cotaxUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -416,7 +414,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Partnership name")
           document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
@@ -426,7 +424,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -448,7 +446,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -470,7 +468,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
@@ -480,7 +478,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -501,7 +499,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -523,7 +521,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate")
@@ -533,7 +531,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -554,7 +552,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("utr-help-questionAnswer").text() must include("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR_hint").text() must be("Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10.")
           document.getElementById("psaUTR").attr("type") must be("number")
-          document.getElementById("submit").text() must include ("Match")
+          document.getElementById("submit").text() must include("Match")
           document.select(".link-back").text() must be("Back")
           document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
@@ -703,4 +701,5 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
     test(result)
   }
+
 }
