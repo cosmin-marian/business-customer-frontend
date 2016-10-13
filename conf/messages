@@ -54,7 +54,7 @@ bc.business-verification.LLP=Limited liability partnership
 bc.business-verification.LP=Limited partnership
 bc.business-verification.UIB=Unincorporated association
 bc.business-verification.LTD=Limited company
-bc.business-verification.SOP=Self-employed
+bc.business-verification.SOP=Sole trader / self-employed
 
 bc.business-verification.amls.SOP = Sole Proprietor
 bc.business-verification.amls.LP.LLP = Limited Partnership or Limited Liability Partnership
