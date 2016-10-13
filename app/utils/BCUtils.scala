@@ -89,12 +89,13 @@ object BCUtils {
 
     val isAtedAgentBusinessTypes = Seq(
       "LTD" -> Messages("bc.business-verification.LTD"),
-      "LP" -> Messages("bc.business-verification.LP"),
       "LLP" -> Messages("bc.business-verification.LLP"),
+      "SOP" -> Messages("bc.business-verification.SOP"),
       "OBP" -> Messages("bc.business-verification.PRT"),
       "UIB" -> Messages("bc.business-verification.UIB"),
-      "NUK" -> Messages("bc.business-verification.NUK"),
-      "SOP" -> Messages("bc.business-verification.SOP")
+      "LP" -> Messages("bc.business-verification.LP"),
+      "NUK" -> Messages("bc.business-verification.NUK")
+
     )
 
     service.toLowerCase match {
