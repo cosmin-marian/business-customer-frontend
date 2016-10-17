@@ -20,8 +20,8 @@ trait AgentController extends BaseController {
   def register(service: String) = AuthAction(service).async {
     implicit bcContext =>
       dataCacheConnector.fetchAndGetBusinessDetailsForSession map { reviewDetails =>
-        reviewDetails.flatMap(_.agentReferenceNumber) match {
-          case Some(agentReferenceNumber) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/$agentReferenceNumber")
+        reviewDetails.map(_.businessName) match {
+          case Some(businessName) => Redirect(s"${ExternalUrls.agentConfirmationPath(service)}/$businessName")
           case _ => throw new RuntimeException("AgentReferenceNumber not found")
         }
       }
