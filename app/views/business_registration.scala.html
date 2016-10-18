@@ -38,6 +38,8 @@
   <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
   <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
+  <p class=lede id="business-registration-lede">@Messages("bc.business-registration.lede.text")</p>
+
 
   @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 
@@ -97,7 +99,7 @@
 
         <div class="form-group">
 
-          <div id="hidden-identifiers" class="panel-indent">
+          <div id="hidden-identifiers" class="indent">
 
             @bcInput(businessRegistrationForm("businessUniqueId"),
               '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
