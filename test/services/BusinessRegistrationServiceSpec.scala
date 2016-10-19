@@ -7,7 +7,7 @@ import connectors.{BusinessCustomerConnector, DataCacheConnector}
 import models._
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfter
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.test.Helpers._
@@ -20,7 +20,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, InternalServerEx
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfter {
+class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
   val mockDataCacheConnector = mock[DataCacheConnector]
@@ -35,7 +35,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
   object TestBusinessRegistrationService extends BusinessRegistrationService {
     val businessCustomerConnector: BusinessCustomerConnector = TestConnector
     val dataCacheConnector = mockDataCacheConnector
-    val nonUKbusinessType = "Non UK-based Company"
+    val nonUKBusinessType = "Non UK-based Company"
   }
 
   object TestConnector extends BusinessCustomerConnector {
@@ -45,7 +45,10 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
     override val registerUri = "register"
     override val knownFactsUri = "known-facts"
 
-    override def register(registerData: BusinessRegistrationRequest, service: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
+    override def register(registerData: BusinessRegistrationRequest,
+                          service: String,
+                          isNonUKClientRegisteredByAgent: Boolean = false)
+                         (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
       val nonUKResponse = BusinessRegistrationResponse(processingDate = "2015-01-01",
         sapNumber = "SAP123123",
         safeId = "SAFE123123",
@@ -56,6 +59,11 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
 
     override val audit: Audit = new TestAudit
     override val appName: String = "Test"
+  }
+
+  override def beforeEach(): Unit = {
+    reset(mockDataCacheConnector)
+    reset(mockWSHttp)
   }
 
   "BusinessRegistrationService" must {
@@ -84,7 +92,31 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+
+      val reviewDetails = await(regResult)
+
+      reviewDetails.businessName must be(busRegData.businessName)
+      reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
+    }
+
+    "save the response from the registration, when an agent registers non-uk based client" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(true),
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = Some("GB")
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
+        sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
 
       val reviewDetails = await(regResult)
 
@@ -107,14 +139,14 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
       val reviewDetails = await(regResult)
 
       reviewDetails.businessName must be(busRegData.businessName)
       reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
     }
 
-    "save the response fails from the registration" in {
+    "throw exception when registration fails" in {
       implicit val hc = new HeaderCarrier(sessionId = None)
 
       val busRegData = BusinessRegistration(businessName = "testName",
@@ -130,7 +162,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, true, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Registration Failed")

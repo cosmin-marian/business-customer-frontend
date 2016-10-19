@@ -325,3 +325,37 @@ bc.nonuk.client.reg.question.true.reveal = What is an Agent ID?
 bc.nonuk.client.reg.question.true.reveal-text = An Agent ID is generated when you <a href="http://www.gateway.gov.uk/Default.aspx" target="_blank">create an agent adminstrator Government Gateway account.</a>
 bc.nonuk.client.reg.view-clients = View all my clients
 bc.nonuk.client.reg.unique-tax-reference.not-selected = You must select an option
+
+## non-uk-registration of client by agent ##
+bc.non-uk-reg.title = Enter your client''s overseas business details
+bc.non-uk-reg.header = Enter your client''s overseas business details
+bc.non-uk-reg.sub-header = Add a client
+bc.non-uk-reg.lede.text = This is the registered address of your client''s overseas business, you can enter a different address for correspondence on the next page.
+bc.non-uk-reg.businessName = Business name
+bc.non-uk-reg.address = Address
+bc.non-uk-reg.line_1 = Address line 1
+bc.non-uk-reg.line_2 = Address line 2
+bc.non-uk-reg.line_3 = Address line 3 (optional)
+bc.non-uk-reg.line_4 = Address line 4 (optional)
+bc.non-uk-reg.country = Country
+bc.non-uk-reg-error.general.businessName = There is a problem with the business name.
+bc.non-uk-reg-error.general.businessAddress.line_1 = There is a problem with the address line 1.
+bc.non-uk-reg-error.general.businessAddress.line_2 = There is a problem with the address line 2.
+bc.non-uk-reg-error.general.businessAddress.line_3 = There is a problem with the address line 3.
+bc.non-uk-reg-error.general.businessAddress.line_4 = There is a problem with the address line 4.
+bc.non-uk-reg-error.general.businessAddress.country = There is a problem with the country field.
+bc.non-uk-reg.issuingCountry = Country of issue
+bc.non-uk-reg.country.select = please select one country
+bc.non-uk-reg-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
+bc.non-uk-reg-error.general.issuingCountry = There is a problem with the country of issue
+bc.non-uk-reg-error.general.issuingInstitution = There is a problem with the institution of issue.
+bc.non-uk-reg-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
+bc.non-uk-reg-error.hasBusinessUniqueId.not-selected = You must select one option
+bc.non-uk-reg.hasBusinessUniqueId = Do you have an overseas Tax Reference?
+bc.non-uk-reg.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
+bc.non-uk-reg.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
+bc.non-uk-reg.businessUniqueId = Tax Reference
+bc.non-uk-reg.businessUniqueId.hint = Example, the number on the document
+bc.non-uk-reg.issuingInstitution = Institution of issue
+bc.non-uk-reg.issuingInstitution.hint = For example, an overseas tax department
+bc.non-uk-reg.issuingCountry = Country of issue

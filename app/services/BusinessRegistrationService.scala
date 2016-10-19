@@ -13,7 +13,7 @@ object BusinessRegistrationService extends BusinessRegistrationService {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
   val dataCacheConnector = DataCacheConnector
-  val nonUKbusinessType = "Non UK-based Company"
+  val nonUKBusinessType = "Non UK-based Company"
 }
 
 trait BusinessRegistrationService {
@@ -22,15 +22,15 @@ trait BusinessRegistrationService {
 
   def dataCacheConnector: DataCacheConnector
 
-  def nonUKbusinessType: String
+  def nonUKBusinessType: String
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean, service: String)
+  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean, isNonUKClientRegisteredByAgent: Boolean = false, service: String)
                       (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
-    val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup)
+    val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
 
     for {
-      registerResponse <- businessCustomerConnector.register(businessRegisterDetails, service)
+      registerResponse <- businessCustomerConnector.register(businessRegisterDetails, service, isNonUKClientRegisteredByAgent)
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse, isGroup, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
@@ -41,7 +41,9 @@ trait BusinessRegistrationService {
   }
 
 
-  private def createBusinessRegistrationRequest(registerData: BusinessRegistration, isGroup: Boolean)
+  private def createBusinessRegistrationRequest(registerData: BusinessRegistration,
+                                                isGroup: Boolean,
+                                                isNonUKClientRegisteredByAgent: Boolean = false)
                                                (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
     val businessOrgData = EtmpOrganisation(organisationName = registerData.businessName)
 
@@ -66,7 +68,7 @@ trait BusinessRegistrationService {
       acknowledgementReference = SessionUtils.getUniqueAckNo,
       organisation = businessOrgData,
       address = businessAddress,
-      isAnAgent = bcContext.user.isAgent,
+      isAnAgent = if (isNonUKClientRegisteredByAgent) false else bcContext.user.isAgent,
       isAGroup = isGroup,
       identification = businessIdentification,
       contactDetails = EtmpContactDetails()
@@ -77,7 +79,7 @@ trait BusinessRegistrationService {
                                   registerData: BusinessRegistration): ReviewDetails = {
 
     ReviewDetails(businessName = registerData.businessName,
-      businessType = Some(nonUKbusinessType),
+      businessType = Some(nonUKBusinessType),
       businessAddress = registerData.businessAddress,
       sapNumber = response.sapNumber,
       safeId = response.safeId,

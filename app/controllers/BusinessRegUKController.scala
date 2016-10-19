@@ -30,7 +30,7 @@ trait BusinessRegUKController extends BaseController {
         Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), service).map {
+        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), isNonUKClientRegisteredByAgent = false, service).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
