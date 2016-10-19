@@ -15,7 +15,7 @@
   @if(elements.hasErrors) {
     <div class="@if(elements.hasErrors || (parentElements.isDefined && parentElements.get.hasErrors)) { form-field--error }">
   }
-  <label for="@if( elements.args.get('_id) ) { @elements.args.get('_id) } else { @elements.field.name.replaceAll("""[\.\[\]]""", "-") }"
+  <label for="@if( elements.args.get('_id) ) {@elements.args.get('_id)} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")}"
          class="@elements.args.get('_divClass) @if( elements.args.get('_labelClass) ) { @elements.args.get('_labelClass) }"
          @if(elements.args.contains('_labelDataAttributes)) { @elements.args.get('_labelDataAttributes) }
          id="@if(elements.args.get('_id) ) {@elements.args.get('_id)_field} else {@elements.field.name.replaceAll("""[\.\[\]]""", "-")_field}">
