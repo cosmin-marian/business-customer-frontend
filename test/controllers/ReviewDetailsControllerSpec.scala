@@ -123,7 +123,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.getElementById("wrong-account-text").text must startWith("You can still register but you will need to update your information outside of this service.")
         document.getElementById("wrong-account-text-item-1").text must startWith("If you registered with Companies House you need to inform")
         document.getElementById("wrong-account-text-item-2").text must startWith("If you are not registered with Companies House you need to inform")
-        document.select(".button").text must be("Confirm and continue")
+        document.select(".button").text must be("Confirm")
       }
     }
 
