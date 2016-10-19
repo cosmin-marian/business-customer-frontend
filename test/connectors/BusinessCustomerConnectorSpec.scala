@@ -6,6 +6,7 @@ import builders.{AuthBuilder, TestAudit}
 import models._
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
@@ -18,13 +19,17 @@ import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
 
 import scala.concurrent.Future
 
-class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   class MockHttp extends WSGet with WSPost {
     override val hooks: Seq[HttpHook] = NoneRequired
   }
 
   val mockWSHttp = mock[MockHttp]
+
+  override def beforeEach(): Unit = {
+    reset(mockWSHttp)
+  }
 
   object TestBusinessCustomerConnector extends BusinessCustomerConnector {
     override val http: HttpGet with HttpPost = mockWSHttp
@@ -118,6 +123,19 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
           .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
 
         val result = TestBusinessCustomerConnector.register(businessRequestDataNonUK, service)
+        await(result) must be(businessResponseData)
+      }
+
+      "for successful registration of NON-UK based client by an agent, return Response as Json" in {
+        val businessResponseData = BusinessRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
+          agentReferenceNumber = Some("AREF123123"))
+        val successResponse = Json.toJson(businessResponseData)
+
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+        when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
+
+        val result = TestBusinessCustomerConnector.register(businessRequestDataNonUK, service, isNonUKClientRegisteredByAgent = true)
         await(result) must be(businessResponseData)
       }
 

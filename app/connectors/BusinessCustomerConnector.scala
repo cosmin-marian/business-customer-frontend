@@ -50,14 +50,14 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   }
 
 
-  def register(registerData: BusinessRegistrationRequest, service: String)
+  def register(registerData: BusinessRegistrationRequest, service: String, isNonUKClientRegisteredByAgent: Boolean = false)
               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/$registerUri"""
     Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map { response =>
-      auditRegisterCall(registerData, response, service)
+      auditRegisterCall(registerData, response, service, isNonUKClientRegisteredByAgent)
       response.status match {
         case OK => response.json.as[BusinessRegistrationResponse]
         case NOT_FOUND =>
@@ -89,14 +89,19 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       eventType = eventType)
   }
 
-  private def auditRegisterCall(input: BusinessRegistrationRequest, response: HttpResponse, service: String)(implicit hc: HeaderCarrier) = {
+  private def auditRegisterCall(
+                                 input: BusinessRegistrationRequest,
+                                 response: HttpResponse,
+                                 service: String,
+                                 isNonUKClientRegisteredByAgent: Boolean = false)
+                               (implicit hc: HeaderCarrier) = {
     val eventType = response.status match {
       case OK => EventTypes.Succeeded
       case _ => EventTypes.Failed
     }
     val transactionName = input.address.countryCode.toUpperCase match {
       case "GB" => "etmpRegisterUKCall"
-      case _ => "etmpRegisterNonUKCall"
+      case _ => if (isNonUKClientRegisteredByAgent) "etmpClientRegisteredByAgent" else "etmpRegisterNonUKCall"
     }
 
     sendDataEvent(transactionName = transactionName,
