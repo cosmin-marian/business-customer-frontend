@@ -34,17 +34,17 @@ trait ReviewDetailsController extends BaseController with RunMode {
   }
 
   def continue(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
-    if (!bcContext.user.isAgent) {
+    if (bcContext.user.isAgent) {
+      agentRegistrationService.enrolAgent(serviceName).map { response =>
+        Redirect(controllers.routes.AgentController.register(serviceName))
+      }
+    } else {
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")
       serviceRedirectUrl match {
         case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
         case _ =>
           Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = $serviceName")
           throw new RuntimeException(Messages("bc.business-review.error.no-service", serviceName, serviceName.toLowerCase))
-      }
-    } else {
-      agentRegistrationService.enrolAgent(serviceName).map { response =>
-        Redirect(controllers.routes.AgentController.register(serviceName))
       }
     }
   }
