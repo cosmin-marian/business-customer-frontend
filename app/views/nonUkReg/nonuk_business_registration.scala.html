@@ -2,6 +2,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
+@import config.ApplicationConfig
 
 @implicitFormInstance = @{ Some(businessRegistrationForm) }
 
@@ -131,7 +132,7 @@
     </div>
 
     <div>
-      <a href="#" id="back" class="link-back">
+      <a href="@ApplicationConfig.nonUKClientRegistrationBackLink(service)" id="back" class="link-back">
         @Messages("bc.business-verification.back")
       </a>
     </div>
