@@ -32,6 +32,8 @@
       <li id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</li>
     </ul>
 
+    @if(businessDetails.businessAddress.country.toUpperCase == "GB") {
+
     @if(isAgent){
 
       <details>
@@ -92,6 +94,7 @@
         </div>
 
       </details>
+    }
     }
 
   </div>
