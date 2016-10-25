@@ -70,20 +70,20 @@ object AuthBuilder {
   }
 
   private def createInvalidAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(paye = Some(PayeAccount(s"paye/$nino", nino))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(paye = Some(PayeAccount(s"paye/$nino", nino))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), "")
   }
 
   private def createUserAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), "")
   }
 
   private def createSaAuthority(userId: String): Authority = {
-    Authority(userId, Accounts(sa = Some(SaAccount(s"sa/individual/$saUtr", saUtr))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(sa = Some(SaAccount(s"sa/individual/$saUtr", saUtr))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), "")
   }
 
   private def createSaOrgAuthority(userId: String): Authority = {
     Authority(userId, Accounts(sa = Some(SaAccount("sa/individual/8040200778", saUtr)),
-      org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+      org = Some(OrgAccount("org/1234", Org("1234")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), "")
   }
 
   private def createAgentAuthority(userId: String, agentRole : AgentRole): Authority = {
@@ -92,7 +92,7 @@ object AuthBuilder {
       agentUserId = AgentUserId(userId),
       agentUserRole = agentRole,
       payeReference = None)
-    Authority(userId, Accounts(agent = Some(agentAccount)), None, None, CredentialStrength.Weak, ConfidenceLevel.L50)
+    Authority(userId, Accounts(agent = Some(agentAccount)), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), "")
   }
 
 }

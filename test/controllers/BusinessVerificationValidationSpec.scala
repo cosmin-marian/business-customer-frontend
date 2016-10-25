@@ -164,7 +164,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -403,7 +403,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -420,7 +420,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -436,7 +436,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -452,7 +452,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)

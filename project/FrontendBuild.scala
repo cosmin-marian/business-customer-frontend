@@ -15,15 +15,15 @@ private object AppDependencies {
 
   private val playHealthVersion = "1.1.0"
 
-  private val frontendBootstrapVersion = "6.5.0"
+  private val frontendBootstrapVersion = "6.7.0"
   private val govukTemplateVersion = "4.0.0"
-  private val playUiVersion = "4.14.0"
-  private val httpCachingClientVersion = "5.3.0"
-  private val playAuthorisedFrontendVersion = "5.0.0"
-  private val playPartialsVersion = "4.2.0"
+  private val playUiVersion = "4.17.0"
+  private val httpCachingClientVersion = "5.6.0"
+  private val playAuthorisedFrontendVersion = "5.8.0"
+  private val playPartialsVersion = "4.6.0"
   private val playJsonLoggerVersion = "2.1.1"
-  private val playConfigVersion = "2.0.1"
-  private val urlBuilderVersion = "1.0.0"
+  private val playConfigVersion = "2.1.0"
+  private val urlBuilderVersion = "1.1.0"
   private val domainVersion = "3.7.0"
 
   val compile = Seq(

@@ -195,7 +195,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -209,7 +209,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -224,7 +224,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -244,7 +244,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)

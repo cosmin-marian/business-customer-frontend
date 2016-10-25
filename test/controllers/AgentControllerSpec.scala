@@ -38,7 +38,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
 
     "respond to /agent/register" in {
       val result = route(FakeRequest(GET, s"/business-customer/agent/register/$serviceName")).get
-      status(result) must not be (NOT_FOUND)
+      status(result) must not be NOT_FOUND
     }
 
     "unauthorised users" must {
@@ -86,7 +86,7 @@ class AgentControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSu
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = TestAgentController.register(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)

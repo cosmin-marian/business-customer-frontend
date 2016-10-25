@@ -232,7 +232,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId)
   }
 
