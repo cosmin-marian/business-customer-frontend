@@ -8,11 +8,13 @@ import uk.gov.hmrc.play.http.SessionKeys
 
 object SessionBuilder {
 
+  val TOKEN = "token" // this is because SessionKeys.token gives warning
+
   def updateRequestWithSession(fakeRequest: FakeRequest[AnyContentAsJson], userId: String) = {
     val sessionId = s"session-${UUID.randomUUID}"
     fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      TOKEN -> "RANDOMTOKEN",
       SessionKeys.userId -> userId)
   }
 
@@ -20,7 +22,7 @@ object SessionBuilder {
     val sessionId = s"session-${UUID.randomUUID}"
     FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      TOKEN -> "RANDOMTOKEN",
       SessionKeys.userId -> userId)
   }
 

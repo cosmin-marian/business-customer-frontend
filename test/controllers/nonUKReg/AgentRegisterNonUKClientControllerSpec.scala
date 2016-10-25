@@ -201,7 +201,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = TestAgentRegisterNonUKClientController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -215,7 +215,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -229,7 +229,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -243,7 +243,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -262,7 +262,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -276,7 +276,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)

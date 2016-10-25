@@ -136,7 +136,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       "for match found with SA user, return Review details as JsValue" in {
 
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successIndividualJson))
@@ -149,7 +149,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match Not found with SA user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(matchFailureResponseJson))
@@ -161,7 +161,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match found with CT user, return Review details as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/organisation/$utr", CtUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successOrgJson))
@@ -174,7 +174,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match Not found with CT user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(ct = Some(CtAccount(s"/ct/organisation/$utr", CtUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(matchFailureResponseJson))
@@ -186,7 +186,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for ORG user, return None as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(org = Some(OrgAccount("", Org("1234")))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         val result = TestBusinessMatchingService.matchBusinessWithUTR(false, service)
         result must be(None)
@@ -196,7 +196,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for user with Both SA & CT, return None as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount("sa/1234", SaUtr("1111111111"))),
-          ct = Some(CtAccount("ct/1234", CtUtr("1111111111")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          ct = Some(CtAccount("ct/1234", CtUtr("1111111111")))), None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         val result = TestBusinessMatchingService.matchBusinessWithUTR(false, service)
         result must be(None)
@@ -210,7 +210,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match found with SA user, return Review details as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successIndividualJson))
@@ -223,7 +223,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match Not found with SA user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(matchFailureResponseJson))
@@ -239,7 +239,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match found with SA user, return Review details as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successIndividualJson))
@@ -252,7 +252,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
 
       "for match Not found with SA user, return Reasons as JsValue" in {
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(matchFailureResponseJson))
@@ -289,7 +289,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
           """.stripMargin)
 
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successNoSapNo))
@@ -321,7 +321,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
           """.stripMargin)
 
         implicit val saUser = AuthContext(Authority(uri = "testuser", accounts = Accounts(sa = Some(SaAccount(s"/sa/individual/$utr", SaUtr(utr)))),
-          None, None, CredentialStrength.Weak, ConfidenceLevel.L50))
+          None, None, CredentialStrength.Weak, ConfidenceLevel.L50, Some(""), Some(""), Some(""), ""))
         implicit val bcc = BusinessCustomerContext(FakeRequest(), BusinessCustomerUser(saUser))
         when(mockBusinessMatchingConnector.lookup(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(successNoSapNo))

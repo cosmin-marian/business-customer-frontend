@@ -97,7 +97,7 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
     test(result)
   }
@@ -110,7 +110,7 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
     test(result)
   }

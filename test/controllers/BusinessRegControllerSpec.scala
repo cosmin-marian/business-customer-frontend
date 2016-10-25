@@ -208,7 +208,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -222,7 +222,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -236,7 +236,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -250,7 +250,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -269,7 +269,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
@@ -283,7 +283,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
-      SessionKeys.token -> "RANDOMTOKEN",
+      "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
 
     test(result)
