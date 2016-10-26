@@ -23,7 +23,7 @@
 
     @helpers.form(action = controllers.routes.ApplicationController.submitFeedback(service)) {
 
-      @inputRadioGroup(
+      @bcInputRadioGroup(
         feedbackForm("easyToUse"),
         Seq(
           "4" -> Messages("label.very_easy"),
@@ -36,7 +36,7 @@
         '_labelAfter -> true,
         '_fieldsetAttributes -> "id=easyToUseFieldset")
 
-      @inputRadioGroup(
+      @bcInputRadioGroup(
         feedbackForm("satisfactionLevel"),
         Seq(
           "4" -> Messages("label.very_satisfied"),

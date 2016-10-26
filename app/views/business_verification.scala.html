@@ -26,7 +26,7 @@
       <input type="hidden" name="isSaAccount" value="@{isSaAccount}">
       <input type="hidden" name="isOrgAccount" value="@{isOrgAccount}">
 
-      @inputRadioGroup(
+      @bcInputRadioGroup(
         businessTypeForm("businessType"),
         BCUtils.businessTypeMap(service, isAgent),
         '_labelClass -> "block-label",
