@@ -23,7 +23,15 @@ import scala.concurrent.Future
 class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire"), Some("NE98 1ZZ"), "UK")
-  val testReviewDetails = ReviewDetails("ACME", Some("Limited"), testAddress, "1234567890", "EX0012345678909", isAGroup = false, directMatch = false, Some("01234567890"))
+  val testReviewDetails = ReviewDetails(businessName = "ACME",
+    businessType = Some("Limited"),
+    businessAddress = testAddress,
+    sapNumber = "1234567890",
+    safeId = "EX0012345678909",
+    isAGroup = false,
+    directMatch = false,
+    agentReferenceNumber = Some("01234567890"),
+    utr = Some(utr))
   val matchFailureResponse = MatchFailureResponse(Reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse(
@@ -54,11 +62,13 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
       | }
     """.stripMargin)
 
+  val utr = "1234567890"
+
   val successOrgReviewDetailsDirect = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909",
-    isAGroup = true, directMatch = true, Some("01234567890"))
+    isAGroup = true, directMatch = true, Some("01234567890"), utr = Some(utr))
 
   val successOrgReviewDetails = ReviewDetails("Real Business Inc", Some("unincorporated body"), testAddress, "1234567890", "EX0012345678909",
-    isAGroup = true, directMatch = false, Some("01234567890"))
+    isAGroup = true, directMatch = false, Some("01234567890"), utr = Some(utr))
 
   val successOrgReviewDetailsJsonDirect = Json.toJson(successOrgReviewDetailsDirect)
 
@@ -92,18 +102,16 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     """.stripMargin)
 
   val successIndReviewDetailsDirect = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909",
-    isAGroup = false, directMatch = true, Some("01234567890"), Some("first name"), Some("last name"))
+    isAGroup = false, directMatch = true, Some("01234567890"), Some("first name"), Some("last name"), Some(utr))
 
   val successIndReviewDetails = ReviewDetails("first name last name", Some("Sole Trader"), testAddress, "1234567890", "EX0012345678909",
-    isAGroup = false, directMatch = false, Some("01234567890"), Some("first name"), Some("last name"))
+    isAGroup = false, directMatch = false, Some("01234567890"), Some("first name"), Some("last name"), Some(utr))
 
   val successIndReviewDetailsJsonDirect = Json.toJson(successIndReviewDetailsDirect)
 
   val successIndReviewDetailsJson = Json.toJson(successIndReviewDetails)
 
   val errorJson = Json.parse( """{"error" : "Some Error"}""")
-
-  val utr = "1234567890"
 
   val noMatchUtr = "9999999999"
 

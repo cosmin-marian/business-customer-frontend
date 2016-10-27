@@ -11,7 +11,8 @@ case class ReviewDetails(businessName: String,
                          directMatch: Boolean = false,
                          agentReferenceNumber: Option[String],
                          firstName: Option[String] = None,
-                         lastName: Option[String] = None)
+                         lastName: Option[String] = None,
+                         utr: Option[String] = None)
 
 object ReviewDetails {
   implicit val formats = Json.format[ReviewDetails]
