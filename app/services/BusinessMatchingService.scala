@@ -28,7 +28,7 @@ trait BusinessMatchingService {
       val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
         utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
       businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-        validateAndCache(dataReturned = dataReturned, directMatch = true)
+        validateAndCache(dataReturned = dataReturned, directMatch = true, utr = Some(userUTR))
       }
     }
   }
@@ -39,7 +39,7 @@ trait BusinessMatchingService {
       utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-      validateAndCache(dataReturned = dataReturned, directMatch = false)
+      validateAndCache(dataReturned = dataReturned, directMatch = false, utr = Some(saUTR))
     }
   }
 
@@ -49,7 +49,7 @@ trait BusinessMatchingService {
       utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-      validateAndCache(dataReturned = dataReturned, directMatch = false)
+      validateAndCache(dataReturned = dataReturned, directMatch = false, Some(utr))
     }
   }
 
@@ -61,19 +61,19 @@ trait BusinessMatchingService {
     }
   }
 
-  private def validateAndCache(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def validateAndCache(dataReturned: JsValue, directMatch: Boolean, utr: Option[String])(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
     Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = $dataReturned, isFailureResponse = $isFailureResponse")
     if (isFailureResponse) Future.successful(dataReturned)
     else {
       val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
-      if (isAnIndividual) cacheIndividual(dataReturned, directMatch)
-      else cacheOrg(dataReturned, directMatch)
+      if (isAnIndividual) cacheIndividual(dataReturned, directMatch, utr)
+      else cacheOrg(dataReturned, directMatch, utr)
     }
   }
 
 
-  private def cacheIndividual(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def cacheIndividual(dataReturned: JsValue, directMatch: Boolean, utr: Option[String])(implicit hc: HeaderCarrier): Future[JsValue] = {
     val businessType = "Sole Trader"
     val individual = (dataReturned \ "individual").as[Individual]
     val addressReturned = getAddress(dataReturned)
@@ -92,14 +92,15 @@ trait BusinessMatchingService {
       //      isAGroup = false,
       directMatch = directMatch,
       firstName = Some(individual.firstName),
-      lastName = Some(individual.lastName)
+      lastName = Some(individual.lastName),
+      utr = utr
     )
     dataCacheConnector.saveReviewDetails(reviewDetails) flatMap { reviewDetailsReturned =>
       Future.successful(Json.toJson(reviewDetails))
     }
   }
 
-  private def cacheOrg(dataReturned: JsValue, directMatch: Boolean)(implicit hc: HeaderCarrier): Future[JsValue] = {
+  private def cacheOrg(dataReturned: JsValue, directMatch: Boolean, utr: Option[String])(implicit hc: HeaderCarrier): Future[JsValue] = {
     val organisation = (dataReturned \ "organisation").as[OrganisationResponse]
     val businessType = organisation.organisationType
     val businessName = organisation.organisationName
@@ -115,7 +116,8 @@ trait BusinessMatchingService {
       businessAddress = address,
       sapNumber = getSapNumber(dataReturned),
       safeId = getSafeId(dataReturned),
-      agentReferenceNumber = getAgentRefNum(dataReturned))
+      agentReferenceNumber = getAgentRefNum(dataReturned),
+      utr = utr)
     dataCacheConnector.saveReviewDetails(reviewDetails) flatMap { reviewDetailsReturned =>
       Future.successful(Json.toJson(reviewDetails))
     }
