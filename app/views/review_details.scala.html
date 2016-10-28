@@ -3,7 +3,7 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
 
-@bcMain(title = Messages("bc.business-review.title", service), service = Some(service)) {
+@bcMain(title = if (isAgent) { Messages("business-review.agent.title", service) } else {Messages("business-review.user.title", service) }, service = Some(service)) {
 
   @if(isAgent){
     <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
@@ -15,7 +15,7 @@
 
   <div class="form-group">
 
-    <p class="heading-medium" id="business-name">@businessDetails.businessName</p>
+    <h2 class="heading-medium" id="business-name">@businessDetails.businessName</h2>
 
     <ul id="business-address">
       <li id="registered-address-line-1">@businessDetails.businessAddress.line_1</li>
@@ -51,7 +51,7 @@
           <p id="wrong-account-text-agent">
           @if(businessDetails.directMatch){
             @Messages("business-review.invalid-business.text")
-            <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
+            <h3 class="heading-small">@Messages("business-review.invalid-business.address-header")</h3>
           } else {
             @Messages("business-review.invalid-address.text-agent", service)
           }
@@ -81,7 +81,7 @@
           <p id="wrong-account-text">
           @if(businessDetails.directMatch){
             @Messages("business-review.invalid-business.text")
-            <h4 class="heading-small">@Messages("business-review.invalid-business.address-header")</h4>
+            <h3 class="heading-small">@Messages("business-review.invalid-business.address-header")</h3>
           } else {
             @Messages("business-review.invalid-address.text",service.toUpperCase)
           }
