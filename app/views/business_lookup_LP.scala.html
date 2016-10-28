@@ -27,7 +27,7 @@
       <div id="business-type-lp-form" class="form-field">
 
         @bcInput(limitedPartnershipForm("businessName"),
-          '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+          '_label -> Html(Messages("bc.business-verification.partnerNameField")),
           '_hintText -> Messages("bc.business-verification.registered-name.hint"),
           '_id -> "businessName",
           '_showConstraints -> false)
@@ -44,7 +44,7 @@
 
       </div>
 
-      <button class="button" id="submit" type="submit">@Messages("bc.business-registration.search")</button>
+      <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
     </div>
   }
