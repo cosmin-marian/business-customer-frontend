@@ -64,12 +64,6 @@
 
     </div>
 
-    <div>
-      <a href="@controllers.routes.BusinessVerificationController.businessVerification(service)"  id="back" class="link-back">
-        @Messages("bc.business-verification.back")
-      </a>
-    </div>
-
     @bcInput(businessRegistrationForm("businessAddress.country"),
       '_id -> "businessAddress.country",
       '_label -> Html(Messages("bc.business-registration.country")),
