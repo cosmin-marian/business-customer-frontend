@@ -71,8 +71,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.select(".block-label").text() must include("I have an overseas company without a UK Unique Tax Reference")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
-            document.select(".link-back").text() must be("Back")
-            document.select(".link-back").attr("href") must be("http://localhost:9933/ated-subscription/appoint-agent")
           }
         }
 
@@ -93,8 +91,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.select(".block-label").text() must include("I have an overseas company without a UK Unique Tax Reference")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
-            document.select(".link-back").text() must be("Back")
-            document.select(".link-back").attr("href") must be("http://localhost:9933/ated-subscription/start-agent-subscription")
           }
         }
       }
@@ -209,8 +205,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
         }
       }
@@ -230,8 +224,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/AWRS")
         }
       }
 
@@ -251,8 +243,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("saUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
         }
       }
@@ -311,8 +301,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
 
         }
       }
@@ -333,8 +321,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
 
@@ -365,8 +351,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/AWRS")
         }
       }
 
@@ -386,8 +370,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("cotaxUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
     }
@@ -417,8 +399,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
 
@@ -438,8 +418,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
     }
@@ -469,8 +447,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
 
@@ -489,8 +465,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
     }
@@ -520,8 +494,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
 
@@ -540,8 +512,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("psaUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'")
           document.getElementById("psaUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/ATED")
         }
       }
     }
