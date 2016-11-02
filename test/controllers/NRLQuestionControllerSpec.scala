@@ -48,9 +48,6 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.select(".block-label").text() must include("Yes")
           document.select(".block-label").text() must include("No")
           document.getElementById("submit").text() must be("Continue")
-          document.select(".link-back").text() must be("Back")
-          document.select(".link-back").attr("href") must be("/business-customer/business-verification/serviceName")
-
         }
       }
 
