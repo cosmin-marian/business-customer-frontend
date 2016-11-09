@@ -107,20 +107,24 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockBusinessCustomerConnector.getDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponseInd))))
       val result = TestBusinessRegistrationService.getDetails()
       val busReg = await(result)
-      busReg.isDefined must be (true)
 
-      busReg.get.businessName must be ("MyBusinessName")
-      busReg.get.businessAddress.line_1 must be ("Melbourne House")
-      busReg.get.businessAddress.line_2 must be ("Eastgate")
-      busReg.get.businessAddress.line_3 must be (Some("Accrington"))
-      busReg.get.businessAddress.line_4 must be (Some("Lancashire"))
-      busReg.get.businessAddress.postcode must be (Some("BB5 6PU"))
-      busReg.get.businessAddress.country must be ("GB")
+      busReg._1.isDefined must be (true)
+      busReg._2.isDefined must be (true)
+      val busRegDetails = busReg._2.get
 
-      busReg.get.businessUniqueId must be (Some("123456"))
-      busReg.get.hasBusinessUniqueId must be (Some(true))
-      busReg.get.issuingCountry must be (Some("FR"))
-      busReg.get.issuingInstitution must be (Some("France Institution"))
+      busReg._1.get must be ("corporate body")
+      busRegDetails.businessName must be ("MyBusinessName")
+      busRegDetails.businessAddress.line_1 must be ("Melbourne House")
+      busRegDetails.businessAddress.line_2 must be ("Eastgate")
+      busRegDetails.businessAddress.line_3 must be (Some("Accrington"))
+      busRegDetails.businessAddress.line_4 must be (Some("Lancashire"))
+      busRegDetails.businessAddress.postcode must be (Some("BB5 6PU"))
+      busRegDetails.businessAddress.country must be ("GB")
+
+      busRegDetails.businessUniqueId must be (Some("123456"))
+      busRegDetails.hasBusinessUniqueId must be (Some(true))
+      busRegDetails.issuingCountry must be (Some("FR"))
+      busRegDetails.issuingInstitution must be (Some("France Institution"))
     }
 
     "for OK response status, return body as Some(BusinessRegistration) from json with NO nonUKIdentification" in {
@@ -154,27 +158,35 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockBusinessCustomerConnector.getDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponseInd))))
       val result = TestBusinessRegistrationService.getDetails()
       val busReg = await(result)
-      busReg.isDefined must be (true)
+      busReg._1.isDefined must be (true)
+      busReg._1.get must be ("corporate body")
 
-      busReg.get.businessName must be ("MyBusinessName")
-      busReg.get.businessAddress.line_1 must be ("Melbourne House")
-      busReg.get.businessAddress.line_2 must be ("Eastgate")
-      busReg.get.businessAddress.line_3 must be (Some("Accrington"))
-      busReg.get.businessAddress.line_4 must be (Some("Lancashire"))
-      busReg.get.businessAddress.postcode must be (Some("BB5 6PU"))
-      busReg.get.businessAddress.country must be ("GB")
+      busReg._2.isDefined must be (true)
+      val busRegDetails = busReg._2.get
 
-      busReg.get.businessUniqueId must be (None)
-      busReg.get.hasBusinessUniqueId must be (None)
-      busReg.get.issuingCountry must be (None)
-      busReg.get.issuingInstitution must be (None)
+      busRegDetails.businessName must be ("MyBusinessName")
+      busRegDetails.businessAddress.line_1 must be ("Melbourne House")
+      busRegDetails.businessAddress.line_2 must be ("Eastgate")
+      busRegDetails.businessAddress.line_3 must be (Some("Accrington"))
+      busRegDetails.businessAddress.line_4 must be (Some("Lancashire"))
+      busRegDetails.businessAddress.postcode must be (Some("BB5 6PU"))
+      busRegDetails.businessAddress.country must be ("GB")
+
+      busRegDetails.businessUniqueId must be (None)
+      busRegDetails.hasBusinessUniqueId must be (None)
+      busRegDetails.issuingCountry must be (None)
+      busRegDetails.issuingInstitution must be (None)
     }
 
     "for NOT_FOUND response status, return body as None" in {
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(reviewDetails)))
       when(mockBusinessCustomerConnector.getDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(failureResponse))))
       val result = TestBusinessRegistrationService.getDetails()
-      await(result) must be(None)
+      val busReg = await(result)
+      busReg._1.isDefined must be (true)
+      busReg._1.get must be ("corporate body")
+
+      busReg._2.isDefined must be (false)
     }
     "for BAD_REQUEST response status, throw bad request exception" in {
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(reviewDetails)))

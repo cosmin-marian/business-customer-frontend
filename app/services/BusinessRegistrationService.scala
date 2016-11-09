@@ -45,7 +45,8 @@ trait BusinessRegistrationService {
   }
 
 
-  def getDetails()(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Option[BusinessRegistration]] = {
+  def getDetails()(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[(Option[String], Option[BusinessRegistration])] = {
+
     def createBusinessRegistration(response: HttpResponse) : BusinessRegistration = {
 
       val businessName = (response.json \ "organisation" \ "organisationName").as[String]
@@ -78,8 +79,8 @@ trait BusinessRegistrationService {
           businessCustomerConnector.getDetails(identifier = reviewDetails.safeId, identifierType = BusinessCustomerConstants.IdentifierSafeId) map {
             response =>
               response.status match {
-                case OK => Some(createBusinessRegistration(response))
-                case NOT_FOUND => None
+                case OK => (reviewDetails.businessType, Some(createBusinessRegistration(response)))
+                case NOT_FOUND => (reviewDetails.businessType, None)
                 case BAD_REQUEST =>
                   Logger.warn(s"[DetailsService][getDetails] status = ${response.status} - body = ${response.body}")
                   throw new BadRequestException(s"[BusinessRegistrationService][getDetails] Bad Data, " +
