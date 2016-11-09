@@ -81,8 +81,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
 
   def getDetails(identifier: String, identifierType: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
-    val postUrl = s"""$serviceUrl$authLink/$baseUri/$detailsUri"""
-    http.GET[HttpResponse](postUrl)
+    http.GET[HttpResponse](s"""$serviceUrl$authLink/$baseUri/$detailsUri/$identifier/$identifierType""")
   }
 
   private def auditAddKnownFactsCall(input: KnownFactsForService, response: HttpResponse)(implicit hc: HeaderCarrier) = {

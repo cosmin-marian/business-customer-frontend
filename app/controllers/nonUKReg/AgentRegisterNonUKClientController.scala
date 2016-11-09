@@ -51,6 +51,7 @@ trait AgentRegisterNonUKClientController extends BaseController with RunMode {
   }
 
   def submit(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
+
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails, redirectUrl)))
