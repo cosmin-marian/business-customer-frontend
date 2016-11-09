@@ -31,7 +31,7 @@ object MatchBusinessData {
   implicit val formats = Json.format[MatchBusinessData]
 }
 
-case class MatchFailureResponse(Reason: String)
+case class MatchFailureResponse(reason: String)
 
 object MatchFailureResponse {
   implicit val formats = Json.format[MatchFailureResponse]

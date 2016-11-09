@@ -32,7 +32,7 @@ class BusinessMatchingServiceSpec extends PlaySpec with OneServerPerSuite with M
     directMatch = false,
     agentReferenceNumber = Some("01234567890"),
     utr = Some(utr))
-  val matchFailureResponse = MatchFailureResponse(Reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
+  val matchFailureResponse = MatchFailureResponse(reason = "Sorry. Business details not found. Try with correct UTR and/or name.")
   val matchFailureResponseJson = Json.toJson(matchFailureResponse)
   val successOrgJson = Json.parse(
     """
