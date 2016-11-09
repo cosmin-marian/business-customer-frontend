@@ -18,7 +18,6 @@ POST        /review-details-continue/:service                                   
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
 
 GET         /register/:service/:businessType                                    controllers.BusinessRegController.register(service: String, businessType: String)
-GET         /register/edit/:service/                                            controllers.BusinessRegController.edit(service: String)
 POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
 
 GET         /register-gb/:service/:businessType                                 controllers.BusinessRegUKController.register(service: String, businessType: String)
@@ -41,6 +40,7 @@ GET         /agent/register/:service                                            
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
 GET         /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.view(service: String)
-POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String)
+GET         /agent/register/non-uk-client/:service/edit                         controllers.nonUKReg.AgentRegisterNonUKClientController.edit(service: String, redirectUrl : Option[String] ?= None)
+POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String, redirectUrl : Option[String] ?= None)
 
 
