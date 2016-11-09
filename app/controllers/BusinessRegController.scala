@@ -23,6 +23,19 @@ trait BusinessRegController extends BaseController {
     Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
+  def edit(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
+
+    businessRegistrationService.getDetails.map{
+      details =>
+        details match {
+          case Some(busRegDetails) => Ok(views.html.business_registration(businessRegistrationForm.fill(busRegDetails),
+            service, displayDetails(businessType, service)))
+          case None => Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+        }
+    }
+
+  }
+
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {

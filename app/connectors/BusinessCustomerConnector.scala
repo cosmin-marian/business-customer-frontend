@@ -2,7 +2,7 @@ package connectors
 
 import audit.Auditable
 import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
-import models.{BusinessCustomerContext, BusinessRegistrationRequest, BusinessRegistrationResponse, KnownFactsForService}
+import models._
 import play.api.Logger
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -21,6 +21,7 @@ object BusinessCustomerConnector extends BusinessCustomerConnector {
   val serviceUrl = baseUrl("business-customer")
   val baseUri = "business-customer"
   val registerUri = "register"
+  val detailsUri = "details"
   val knownFactsUri = "known-facts"
   val http: HttpGet with HttpPost = WSHttp
 }
@@ -34,6 +35,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def registerUri: String
 
   def knownFactsUri: String
+
+  def detailsUri: String
 
   def http: HttpGet with HttpPost
 
@@ -74,6 +77,12 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
           throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)}  Exception ${response.body}")
       }
     }
+  }
+
+  def getDetails(identifier: String, identifierType: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
+    val authLink = bcContext.user.authLink
+    val postUrl = s"""$serviceUrl$authLink/$baseUri/$detailsUri"""
+    http.GET[HttpResponse](postUrl)
   }
 
   private def auditAddKnownFactsCall(input: KnownFactsForService, response: HttpResponse)(implicit hc: HeaderCarrier) = {

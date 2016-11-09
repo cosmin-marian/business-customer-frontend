@@ -16,6 +16,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.{WSGet, WSPost}
+import utils.BusinessCustomerConstants
 
 import scala.concurrent.Future
 
@@ -39,6 +40,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
     override val baseUri = "business-customer"
     override val registerUri = "register"
     override val knownFactsUri = "known-facts"
+    override val detailsUri = "details"
   }
 
   implicit val user = AuthBuilder.createUserAuthContext("userId", "joe bloggs")
@@ -186,6 +188,26 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         val result = TestBusinessCustomerConnector.register(businessRequestData, service)
         val thrown = the[InternalServerException] thrownBy await(result)
         thrown.getMessage must include("Unknown response status: 999")
+      }
+    }
+
+    "getDetails" must {
+      "GET agent details from ETMP for a user" in {
+        implicit val hc = HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+        when(mockWSHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        val result = TestBusinessCustomerConnector.getDetails("AARN1234567", BusinessCustomerConstants.IdentifierArn)
+        await(result).status must be(OK)
+        verify(mockWSHttp, times(1)).GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any())
+      }
+
+      "GET user details from ETMP for an agent" in {
+        implicit val hc = HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+        when(mockWSHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        val result = TestBusinessCustomerConnector.getDetails("XN1200000100001", BusinessCustomerConstants.IdentifierSafeId)
+        await(result).status must be(OK)
+        verify(mockWSHttp, times(1)).GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any())
       }
     }
   }

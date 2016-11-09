@@ -1,14 +1,18 @@
 package services
 
 import connectors.{BusinessCustomerConnector, DataCacheConnector}
+import controllers.auth.ExternalUrls
 import models._
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
-import utils.SessionUtils
+import uk.gov.hmrc.play.http.{HttpResponse, BadRequestException, HeaderCarrier, InternalServerException}
+import utils.{BusinessCustomerConstants, SessionUtils}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
+import play.api.Logger
+import play.mvc.Http.Status._
+import play.api.libs.json._
+import play.api.libs.json.Reads._
 object BusinessRegistrationService extends BusinessRegistrationService {
 
   val businessCustomerConnector: BusinessCustomerConnector = BusinessCustomerConnector
@@ -40,6 +44,56 @@ trait BusinessRegistrationService {
     }
   }
 
+
+  def getDetails()(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Option[BusinessRegistration]] = {
+    def createBusinessRegistration(response: HttpResponse) : BusinessRegistration = {
+
+      val businessName = (response.json \ "organisation" \ "organisationName").as[String]
+
+      val businessAddress = Address(
+        (response.json \ "addressDetails" \ "addressLine1").as[String],
+        (response.json \ "addressDetails" \ "addressLine2").as[String],
+        (response.json \ "addressDetails" \ "addressLine3").asOpt[String],
+        (response.json \ "addressDetails" \ "addressLine4").asOpt[String],
+        (response.json \ "addressDetails" \ "postalCode").asOpt[String],
+        (response.json \ "addressDetails" \ "countryCode").as[String]
+      )
+
+      val businessUniqueId = (response.json \ "nonUKIdentification" \ "idNumber").asOpt[String]
+      val hasBusinessUniqueId = businessUniqueId.map(id => true)
+      val issuingInstitution = (response.json \ "nonUKIdentification" \ "issuingInstitution").asOpt[String]
+      val issuingCountry = (response.json \ "nonUKIdentification" \ "issuingCountryCode").asOpt[String]
+
+      BusinessRegistration(businessName,
+        businessAddress,
+        hasBusinessUniqueId,
+        businessUniqueId,
+        issuingInstitution,
+        issuingCountry)
+    }
+
+    dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap { reviewDetailsOpt =>
+      reviewDetailsOpt match {
+        case Some(reviewDetails) =>
+          businessCustomerConnector.getDetails(identifier = reviewDetails.safeId, identifierType = BusinessCustomerConstants.IdentifierSafeId) map {
+            response =>
+              response.status match {
+                case OK => Some(createBusinessRegistration(response))
+                case NOT_FOUND => None
+                case BAD_REQUEST =>
+                  Logger.warn(s"[DetailsService][getDetails] status = ${response.status} - body = ${response.body}")
+                  throw new BadRequestException(s"[BusinessRegistrationService][getDetails] Bad Data, " +
+                    s"status = ${response.status} - body = ${response.body}")
+                case _ =>
+                  Logger.warn(s"[DetailsService][getDetails] status = ${response.status} - body = ${response.body}")
+                  throw new InternalServerException(s"[BusinessRegistrationService][getDetails] Internal server error, " +
+                    s"status = ${response.status} - body = ${response.body}")
+              }
+          }
+        case _ => throw new RuntimeException("SafeId not found")
+      }
+    }
+  }
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration,
                                                 isGroup: Boolean,

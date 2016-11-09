@@ -18,6 +18,7 @@ POST        /review-details-continue/:service                                   
 GET         /unauthorised                                                       controllers.ApplicationController.unauthorised
 
 GET         /register/:service/:businessType                                    controllers.BusinessRegController.register(service: String, businessType: String)
+GET         /register/edit/:service/:businessType                               controllers.BusinessRegController.edit(service: String, businessType: String)
 POST        /send                                                               controllers.BusinessRegController.send(service: String, businessType: String)
 
 GET         /register-gb/:service/:businessType                                 controllers.BusinessRegUKController.register(service: String, businessType: String)
