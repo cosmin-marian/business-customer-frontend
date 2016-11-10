@@ -112,7 +112,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def updateRegistrationDetails(safeId: String, updateRegistrationDetails: UpdateRegistrationDetailsRequest)
                                (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[UpdateRegistrationResponse] = {
     val authLink = bcContext.user.authLink
-    val postUrl = s"""$serviceUrl$authLink/$baseUri/$updateRegistrationDetailsURI"""
+    val postUrl = s"""$serviceUrl$authLink/$baseUri/$updateRegistrationDetailsURI/$safeId"""
     val jsonData = Json.toJson(updateRegistrationDetails)
     http.POST(postUrl, jsonData) map { response =>
       response.status match {
