@@ -5,7 +5,6 @@ import uk.gov.hmrc.play.config.ServicesConfig
 
 trait ApplicationConfig {
 
-  val assetsPrefix: String
   val betaFeedbackUrl: String
   val betaFeedbackUnauthenticatedUrl: String
   val analyticsToken: Option[String]
@@ -26,7 +25,6 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
 
   val contactFormServiceIdentifier = "BUSINESS-CUSTOMER"
 
-  override lazy val assetsPrefix: String = loadConfig(s"govuk-tax.$env.assets.url") + loadConfig(s"govuk-tax.$env.assets.version")
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
   override lazy val analyticsToken: Option[String] = configuration.getString(s"govuk-tax.$env.google-analytics.token")
