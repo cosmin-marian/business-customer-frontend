@@ -67,7 +67,7 @@ object BusinessRegistrationResponse {
 }
 
 
-case class UpdateRegistrationDetailsRequest(acknowledgementReference: Option[String],
+case class UpdateRegistrationDetailsRequest(acknowledgementReference: String,
                                             isAnIndividual: Boolean,
                                             individual: Option[EtmpIndividual],
                                             organisation: Option[EtmpOrganisation],

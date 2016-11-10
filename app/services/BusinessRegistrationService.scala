@@ -90,7 +90,7 @@ trait BusinessRegistrationService {
                                                (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): UpdateRegistrationDetailsRequest = {
 
     UpdateRegistrationDetailsRequest(
-      acknowledgementReference = Some(SessionUtils.getUniqueAckNo),
+      acknowledgementReference = SessionUtils.getUniqueAckNo,
       isAnIndividual = false,
       individual = None,
       organisation = Some(EtmpOrganisation(organisationName = registerData.businessName)),

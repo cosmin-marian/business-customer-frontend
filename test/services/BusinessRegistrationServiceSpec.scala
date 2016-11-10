@@ -203,4 +203,117 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       thrown.getMessage must include("Registration Failed")
     }
   }
+
+  "updateBusiness" must {
+    val nonUKResponse = UpdateRegistrationResponse(processingDate = "2015-01-01",
+      sapNumber = "SAP123123",
+      safeId = "SAFE123123",
+      agentReferenceNumber = Some("AREF123123"))
+
+    val cachedReviewDetails = ReviewDetails(businessName = "ABC",
+      businessType = Some("corporate body"),
+      businessAddress = Address(line_1 = "line1", line_2 = "line2", line_3 = None, line_4 = None, postcode = None, country = "GB"),
+      sapNumber = "1234567890", safeId = "XW0001234567890",false, agentReferenceNumber = Some("JARN1234567"),
+      identification = Some(models.Identification(idNumber = "123345", issuingInstitution = "IssInst", issuingCountryCode = "FR"))
+    )
+
+    "save the response from the update" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(true),
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = Some("GB")
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
+        sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+
+      val reviewDetails = await(regResult)
+
+      reviewDetails.businessName must be(busRegData.businessName)
+      reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
+    }
+
+    "save the response from the registration, when an agent registers non-uk based client" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(true),
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = Some("GB")
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
+        sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
+
+      val reviewDetails = await(regResult)
+
+      reviewDetails.businessName must be(busRegData.businessName)
+      reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
+    }
+
+    "save the response from the registration when we have no businessUniqueId or issuingInstitution" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        hasBusinessUniqueId = Some(false),
+        businessUniqueId = None,
+        issuingInstitution = None,
+        issuingCountry = None
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
+        sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
+
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val reviewDetails = await(regResult)
+
+      reviewDetails.businessName must be(busRegData.businessName)
+      reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
+    }
+
+    "throw exception when registration fails" in {
+      implicit val hc = new HeaderCarrier(sessionId = None)
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        hasBusinessUniqueId = Some(true),
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = None
+      )
+
+      val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
+        sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
+      when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+
+
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+
+      val thrown = the[InternalServerException] thrownBy await(regResult)
+      thrown.getMessage must include("Registration Failed")
+    }
+  }
 }
