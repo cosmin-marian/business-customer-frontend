@@ -35,3 +35,4 @@ case class BusinessRegistration(businessName: String,
 object BusinessRegistration {
   implicit val formats = Json.format[BusinessRegistration]
 }
+

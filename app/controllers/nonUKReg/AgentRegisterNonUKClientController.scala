@@ -4,7 +4,7 @@ import config.FrontendAuthConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{ReviewDetails, BusinessRegistrationDisplayDetails}
 import play.api.{Logger, Play}
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
@@ -39,25 +39,31 @@ trait AgentRegisterNonUKClientController extends BaseController with RunMode {
       case None => Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
     }
     businessRegistrationService.getDetails.map{
-      detailsTuple =>
-        detailsTuple match {
-          case (Some(businessType), Some(busRegDetails)) => Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm.fill(busRegDetails),
-            service, displayDetails, updateRedirectUrl))
-          case (Some(businessType), None) => Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, updateRedirectUrl))
-          case _ => Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, updateRedirectUrl))
+      businessDetails =>
+        businessDetails match {
+          case Some(detailsTuple) =>
+            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails, updateRedirectUrl, Some("edit")))
+          case _ =>
+            Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
+            throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
         }
     }
 
   }
 
-  def submit(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
+  def submit(service: String, mode : Option[String], redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
 
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails, redirectUrl)))
       },
       registerData => {
-        businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
+        val saveResult = mode match {
+          case Some("edit") => businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service)
+          case _ => businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service)
+        }
+
+        saveResult.map { response =>
           redirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
             case _ =>

@@ -184,10 +184,13 @@ bc.connector.error.bad-request=Bad Request or Internal server error
 bc.connector.error.not-found=Not Found
 bc.connector.error.registration-failed=Registration Failed
 bc.connector.error.unknown-response=Unknown response status: {0}
+bc.connector.error.update-registration-failed=Update Registration Failed
 bc.subscription.error.not-found=No Subscription Details found
 bc.business-review.error.no-service=Service does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.serviceRedirectUrl'
 bc.agent-service.error.no-agent-enrolment-service-name=Agent Enrolment Service Name does not exist for : {0}. This should be in the conf file against 'govuk-tax.$env.services.{1}.agentEnrolmentService'
 bc.agent-service.error.no-agent-reference={0} - No Agent Reference Number Found
+bc.agent-service.error.no-registration-details=No Registration Details found
+
 
 bc.business-registration-error.general.businessName = There is a problem with the business name
 bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1.

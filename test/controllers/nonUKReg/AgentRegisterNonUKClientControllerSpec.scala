@@ -240,7 +240,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestAgentRegisterNonUKClientController.submit(service, redirectUrl).apply(FakeRequest().withSession(
+    val result = TestAgentRegisterNonUKClientController.submit(service, None, redirectUrl).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -259,7 +259,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
-    val result = TestAgentRegisterNonUKClientController.submit(service, redirectUrl).apply(fakeRequest.withSession(
+    val result = TestAgentRegisterNonUKClientController.submit(service, None, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -273,7 +273,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestAgentRegisterNonUKClientController.submit(service, redirectUrl).apply(fakeRequest.withSession(
+    val result = TestAgentRegisterNonUKClientController.submit(service, None, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

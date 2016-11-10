@@ -1,5 +1,6 @@
 package models
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
 case class EtmpAddress(addressLine1: String,
@@ -17,6 +18,15 @@ case class EtmpOrganisation(organisationName: String)
 
 object EtmpOrganisation {
   implicit val formats = Json.format[EtmpOrganisation]
+}
+
+case class EtmpIndividual(firstName: String,
+                      middleName: Option[String] = None,
+                      lastName: String,
+                      dateOfBirth: LocalDate)
+
+object EtmpIndividual {
+  implicit val formats = Json.format[EtmpIndividual]
 }
 
 case class EtmpContactDetails(phoneNumber: Option[String] = None,
@@ -54,4 +64,29 @@ case class BusinessRegistrationResponse(processingDate: String,
 
 object BusinessRegistrationResponse {
   implicit val formats = Json.format[BusinessRegistrationResponse]
+}
+
+
+case class UpdateRegistrationDetailsRequest(acknowledgementReference: Option[String],
+                                            isAnIndividual: Boolean,
+                                            individual: Option[EtmpIndividual],
+                                            organisation: Option[EtmpOrganisation],
+                                            address: EtmpAddress,
+                                            contactDetails: EtmpContactDetails,
+                                            isAnAgent: Boolean,
+                                            isAGroup: Boolean,
+                                            identification: Option[EtmpIdentification] = None) {
+}
+
+object UpdateRegistrationDetailsRequest {
+  implicit val formats = Json.format[UpdateRegistrationDetailsRequest]
+}
+
+case class UpdateRegistrationResponse(processingDate: String,
+                                        sapNumber: String,
+                                        safeId: String,
+                                        agentReferenceNumber: Option[String])
+
+object UpdateRegistrationResponse {
+  implicit val formats = Json.format[UpdateRegistrationResponse]
 }
