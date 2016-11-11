@@ -70,7 +70,7 @@ trait BusinessRegistrationService {
 
           (busType, BusinessRegistration(details.businessName,
             details.businessAddress,
-            details.identification.map(x=> true),
+            details.identification.map(x => true),
             details.identification.map(_.idNumber),
             details.identification.map(_.issuingInstitution),
             details.identification.map(_.issuingCountryCode))
@@ -124,8 +124,8 @@ trait BusinessRegistrationService {
                                   isGroup: Boolean,
                                   registerData: BusinessRegistration): ReviewDetails = {
 
-    val identification = registerData.hasBusinessUniqueId.map( hasBusUniqueId =>
-      Identification(registerData.businessUniqueId.getOrElse(""),
+    val identification = registerData.businessUniqueId.map( busUniqueId =>
+      Identification(busUniqueId,
         registerData.issuingInstitution.getOrElse(""),
         registerData.issuingCountry.getOrElse("")
       )
