@@ -4,7 +4,7 @@ import config.FrontendAuthConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
 import play.api.Logger
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
@@ -30,7 +30,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails, redirectUrl))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service), redirectUrl))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -43,7 +43,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails, redirectUrl)))
+        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service), redirectUrl)))
       },
       registerData => {
         businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
@@ -58,11 +58,22 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
     )
   }
 
-  private def displayDetails = {
-    BusinessRegistrationDisplayDetails("NUK",
-      Messages("bc.non-uk-reg.header"),
-      Messages("bc.non-uk-reg.sub-header"),
-      BCUtils.getIsoCodeTupleList)
+  private def displayDetails(service: String)(implicit bcContext: BusinessCustomerContext) = {
+    if (bcContext.user.isAgent){
+      BusinessRegistrationDisplayDetails("NUK",
+        Messages("bc.non-uk-reg.header"),
+        Messages("bc.non-uk-reg.sub-header"),
+        Messages("bc.non-uk-reg.lede.update-text"),
+        BCUtils.getIsoCodeTupleList)
+    }
+    else {
+      BusinessRegistrationDisplayDetails("NUK",
+        Messages("bc.business-registration.user.non-uk.header"),
+        Messages("bc.business-registration.text.client", service),
+        Messages("bc.business-registration.lede.update-text"),
+        BCUtils.getIsoCodeTupleList)
+
+    }
   }
 
 }

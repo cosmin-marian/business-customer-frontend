@@ -37,9 +37,9 @@
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")
 
 <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
-<h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+<h1 class="heading-xlarge" id="business-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
-<p class=lede id="non-uk-reg-lede">@Messages("bc.non-uk-reg.lede.text")</p>
+<p class=lede id="business-reg-lede">@Html(displayDetails.businessRegLede)</p>
 
 
 @form(action = controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.update(service, redirectUrl)) {

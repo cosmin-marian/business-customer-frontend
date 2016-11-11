@@ -78,9 +78,35 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
+
+          document.getElementById("businessName_field").text() must be("Business name")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+      "return business registration view for a Non-UK based agent creating a client with found data" in {
+        val busRegData = BusinessRegistration(businessName = "testName",
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+          hasBusinessUniqueId = Some(true),
+          issuingInstitution = Some("issuingInstitution"),
+          issuingCountry = None
+        )
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+
+        editWithAuthorisedAgent(serviceName, "NUK") { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
           document.title() must be("Enter your client's overseas business details")
           document.getElementById("business-verification-text").text() must be("Add a client")
-          document.getElementById("non-uk-reg-header").text() must be("Enter your client's overseas business details")
+          document.getElementById("business-reg-header").text() must be("Enter your client's overseas business details")
+          document.getElementById("business-reg-lede").text() must be("This is the registered address of your client's overseas business.")
+
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
