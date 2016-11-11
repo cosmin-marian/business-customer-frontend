@@ -99,6 +99,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       busRegDetails.issuingCountry must be ( Some("FR"))
       busRegDetails.issuingInstitution must be (Some("IssInst"))
     }
+
   }
 
 
@@ -293,6 +294,22 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       reviewDetails.businessAddress.line_1 must be(busRegData.businessAddress.line_1)
     }
 
+    "throw an exception if no data is found" in {
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
+      when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(None))
+      val busRegData = BusinessRegistration(businessName = "testName",
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+        hasBusinessUniqueId = Some(true),
+        issuingInstitution = Some("issuingInstitution"),
+        issuingCountry = None
+      )
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+
+      val thrown = the[InternalServerException] thrownBy await(regResult)
+      thrown.getMessage must include("Update Registration Failed")
+    }
+
     "throw exception when registration fails" in {
       implicit val hc = new HeaderCarrier(sessionId = None)
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
@@ -313,7 +330,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
-      thrown.getMessage must include("Registration Failed")
+      thrown.getMessage must include("Update Registration Failed")
     }
   }
 }

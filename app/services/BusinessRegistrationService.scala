@@ -41,17 +41,17 @@ trait BusinessRegistrationService {
 
 
   def updateRegisterBusiness(registerData: BusinessRegistration, isGroup: Boolean, isNonUKClientRegisteredByAgent: Boolean = false, service: String)
-                      (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
+                            (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val updateRegisterDetails = createUpdateBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
 
     for {
       oldReviewDetials <- dataCacheConnector.fetchAndGetBusinessDetailsForSession
       registerResponse <-
-        oldReviewDetials match {
-          case Some(reviewDetails) => businessCustomerConnector.updateRegistrationDetails(reviewDetails.safeId, updateRegisterDetails)
-          case _ => throw new InternalServerException(Messages("bc.connector.error.update-registration-failed"))
-        }
+      oldReviewDetials match {
+        case Some(reviewDetails) => businessCustomerConnector.updateRegistrationDetails(reviewDetails.safeId, updateRegisterDetails)
+        case _ => throw new InternalServerException(Messages("bc.connector.error.update-registration-failed"))
+      }
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData)
         dataCacheConnector.saveReviewDetails(reviewDetails)
@@ -74,7 +74,7 @@ trait BusinessRegistrationService {
             details.identification.map(_.idNumber),
             details.identification.map(_.issuingInstitution),
             details.identification.map(_.issuingCountryCode))
-          )
+            )
         }
       )
     }
@@ -85,9 +85,9 @@ trait BusinessRegistrationService {
 
 
   private def createUpdateBusinessRegistrationRequest(registerData: BusinessRegistration,
-                                                isGroup: Boolean,
-                                                isNonUKClientRegisteredByAgent: Boolean = false)
-                                               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): UpdateRegistrationDetailsRequest = {
+                                                      isGroup: Boolean,
+                                                      isNonUKClientRegisteredByAgent: Boolean = false)
+                                                     (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): UpdateRegistrationDetailsRequest = {
 
     UpdateRegistrationDetailsRequest(
       acknowledgementReference = SessionUtils.getUniqueAckNo,

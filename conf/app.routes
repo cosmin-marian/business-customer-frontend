@@ -40,7 +40,9 @@ GET         /agent/register/:service                                            
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
 GET         /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.view(service: String)
-GET         /agent/register/non-uk-client/:service/edit                         controllers.nonUKReg.AgentRegisterNonUKClientController.edit(service: String, redirectUrl : Option[String] ?= None)
-POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String, mode: Option[String], redirectUrl : Option[String] ?= None)
+POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String)
+
+GET         /business-registration/non-uk-client/:service/edit                  controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)
+POST        /business-registration/non-uk-client/:service/edit                  controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None)
 
 

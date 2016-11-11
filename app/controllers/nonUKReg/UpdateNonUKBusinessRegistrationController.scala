@@ -5,7 +5,7 @@ import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
-import play.api.{Logger, Play}
+import play.api.Logger
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.config.RunMode
@@ -14,32 +14,40 @@ import utils.BCUtils
 
 import scala.concurrent.Future
 
-object AgentRegisterNonUKClientController extends AgentRegisterNonUKClientController {
+object UpdateNonUKBusinessRegistrationController extends UpdateNonUKBusinessRegistrationController {
   // $COVERAGE-OFF$
   override val authConnector: AuthConnector = FrontendAuthConnector
   override val businessRegistrationService = BusinessRegistrationService
   // $COVERAGE-ON$
 }
 
-trait AgentRegisterNonUKClientController extends BaseController with RunMode {
-
-  import play.api.Play.current
+trait UpdateNonUKBusinessRegistrationController extends BaseController with RunMode {
 
   def businessRegistrationService: BusinessRegistrationService
 
-  def view(service: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails))
+  def edit(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
+    businessRegistrationService.getDetails.map{
+      businessDetails =>
+        businessDetails match {
+          case Some(detailsTuple) =>
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails, redirectUrl))
+          case _ =>
+            Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
+            throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
+        }
+    }
+
   }
 
-  def submit(service: String) = AuthAction(service).async { implicit bcContext =>
+  def update(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
+
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails)))
+        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails, redirectUrl)))
       },
       registerData => {
-        businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
-          val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
-          serviceRedirectUrl match {
+        businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
+          redirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
             case _ =>
               Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = $service")
