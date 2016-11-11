@@ -70,7 +70,7 @@ trait BusinessRegistrationService {
 
           (busType, BusinessRegistration(details.businessName,
             details.businessAddress,
-            details.identification.map(x => true),
+            Some(details.identification.isDefined),
             details.identification.map(_.idNumber),
             details.identification.map(_.issuingInstitution),
             details.identification.map(_.issuingCountryCode))
