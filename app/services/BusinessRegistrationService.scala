@@ -134,7 +134,7 @@ trait BusinessRegistrationService {
                                   agentReferenceNumber: Option[String],
                                   isGroup: Boolean,
                                   registerData: BusinessRegistration,
-                                  isBusinessDetailsEditable: Boolean = false): ReviewDetails = {
+                                  isBusinessDetailsEditable: Boolean): ReviewDetails = {
 
     val identification = registerData.businessUniqueId.map( busUniqueId =>
       Identification(busUniqueId,
