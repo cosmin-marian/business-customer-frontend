@@ -23,7 +23,11 @@ trait BusinessRegistrationService {
 
   def nonUKBusinessType: String
 
-  def registerBusiness(registerData: BusinessRegistration, isGroup: Boolean, isNonUKClientRegisteredByAgent: Boolean = false, service: String)
+  def registerBusiness(registerData: BusinessRegistration,
+                       isGroup: Boolean,
+                       isNonUKClientRegisteredByAgent: Boolean = false,
+                       service: String,
+                       isBusinessDetailsEditable: Boolean = false)
                       (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
@@ -31,7 +35,8 @@ trait BusinessRegistrationService {
     for {
       registerResponse <- businessCustomerConnector.register(businessRegisterDetails, service, isNonUKClientRegisteredByAgent)
       reviewDetailsCache <- {
-        val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData)
+        val reviewDetails = createReviewDetails(registerResponse.sapNumber,
+          registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData, isBusinessDetailsEditable)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
     } yield {
@@ -40,7 +45,11 @@ trait BusinessRegistrationService {
   }
 
 
-  def updateRegisterBusiness(registerData: BusinessRegistration, isGroup: Boolean, isNonUKClientRegisteredByAgent: Boolean = false, service: String)
+  def updateRegisterBusiness(registerData: BusinessRegistration,
+                             isGroup: Boolean,
+                             isNonUKClientRegisteredByAgent: Boolean = false,
+                             service: String,
+                             isBusinessDetailsEditable: Boolean = false)
                             (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
     val updateRegisterDetails = createUpdateBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
@@ -53,7 +62,9 @@ trait BusinessRegistrationService {
         case _ => throw new InternalServerException(Messages("bc.connector.error.update-registration-failed"))
       }
       reviewDetailsCache <- {
-        val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData)
+        val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId,
+          registerResponse.agentReferenceNumber, isGroup, registerData,
+          isBusinessDetailsEditable)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
     } yield {
@@ -122,7 +133,8 @@ trait BusinessRegistrationService {
   private def createReviewDetails(sapNumber: String, safeId: String,
                                   agentReferenceNumber: Option[String],
                                   isGroup: Boolean,
-                                  registerData: BusinessRegistration): ReviewDetails = {
+                                  registerData: BusinessRegistration,
+                                  isBusinessDetailsEditable: Boolean = false): ReviewDetails = {
 
     val identification = registerData.businessUniqueId.map( busUniqueId =>
       Identification(busUniqueId,
@@ -138,7 +150,8 @@ trait BusinessRegistrationService {
       safeId = safeId,
       isAGroup = isGroup,
       agentReferenceNumber = agentReferenceNumber,
-      identification = identification
+      identification = identification,
+      isBusinessDetailsEditable = isBusinessDetailsEditable
     )
   }
 

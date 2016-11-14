@@ -20,7 +20,8 @@ case class ReviewDetails(businessName: String,
                          firstName: Option[String] = None,
                          lastName: Option[String] = None,
                          utr: Option[String] = None,
-                         identification: Option[Identification] = None)
+                         identification: Option[Identification] = None,
+                         isBusinessDetailsEditable: Boolean = false)
 
 object ReviewDetails {
   implicit val formats = Json.format[ReviewDetails]

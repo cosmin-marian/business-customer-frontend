@@ -46,7 +46,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
         Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service), redirectUrl)))
       },
       registerData => {
-        businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
+        businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
           redirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
             case _ =>

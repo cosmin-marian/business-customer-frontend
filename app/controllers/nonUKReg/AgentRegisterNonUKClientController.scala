@@ -37,7 +37,7 @@ trait AgentRegisterNonUKClientController extends BaseController with RunMode {
         Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails)))
       },
       registerData => {
-        businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service).map { response =>
+        businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
           val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
           serviceRedirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
