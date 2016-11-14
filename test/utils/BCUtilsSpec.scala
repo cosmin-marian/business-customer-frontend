@@ -62,7 +62,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
         BCUtils.getNavTitle(Some("amls")) must be(Some("Anti Money Laundering Scheme (AMLS)"))
       }
       "for investment-tax-relief as service name, return investment-tax-relief" in {
-        BCUtils.getNavTitle(Some("investment-tax-relief")) must be(Some("Get Tax Relief for Your Investors"))
+        BCUtils.getNavTitle(Some("investment-tax-relief")) must be(Some("Apply for Enterprise Investment Scheme"))
       }
       "for other as service name, return None" in {
         BCUtils.getNavTitle(Some("abcd")) must be(None)

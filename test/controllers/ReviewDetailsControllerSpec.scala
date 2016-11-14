@@ -143,7 +143,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         document.select("h1").text must be("Confirm your agency details")
         document.getElementById("wrong-account-title-agent").text must be("Not the right address?")
         document.getElementById("bc.business-registration-agent.text").text() must be("ATED agency set up")
-        document.getElementById("wrong-account-text-agent").text() must be("You can still set up your agency for ATED but you need to update your information.")
+        document.getElementById("wrong-account-text-agent").text() must be("You can still register but you will need to update your information outside of this service.")
         document.getElementById("wrong-account-text-agent-item-1").text must startWith("If you registered with Companies House you need to inform")
         document.getElementById("wrong-account-text-agent-item-2").text must startWith("If you are not registered with Companies House you need to inform")
       }
