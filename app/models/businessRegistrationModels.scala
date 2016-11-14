@@ -5,6 +5,7 @@ import play.api.libs.json.Json
 case class BusinessRegistrationDisplayDetails(businessType: String,
                                               businessRegHeader: String,
                                               businessRegSubHeader: String,
+                                              businessRegLede: String,
                                               listOfIsoCode: List[(String, String)])
 
 case class Address(line_1: String,
@@ -35,3 +36,4 @@ case class BusinessRegistration(businessName: String,
 object BusinessRegistration {
   implicit val formats = Json.format[BusinessRegistration]
 }
+

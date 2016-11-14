@@ -45,7 +45,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": false,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 
@@ -66,7 +67,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": true,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 
@@ -87,7 +89,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": false,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 
@@ -108,7 +111,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": false,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 
@@ -129,7 +133,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": false,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 
@@ -150,7 +155,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |  "safeId": "safe123",
       |  "isAGroup": true,
       |  "directMatch" : false,
-      |  "agentReferenceNumber": "agent123"
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
       |}
     """.stripMargin)
 

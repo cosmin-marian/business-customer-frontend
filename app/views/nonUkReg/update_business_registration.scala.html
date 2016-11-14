@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, redirectUrl: Option[String])(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -37,12 +37,12 @@
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")
 
 <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
-<h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+<h1 class="heading-xlarge" id="business-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
-<p class=lede id="non-uk-reg-lede">@Html(displayDetails.businessRegLede)</p>
+<p class=lede id="business-reg-lede">@Html(displayDetails.businessRegLede)</p>
 
 
-@form(action = controllers.nonUKReg.routes.AgentRegisterNonUKClientController.submit(service)) {
+@form(action = controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.update(service, redirectUrl)) {
 
 <div class="form-group">
 

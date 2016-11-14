@@ -30,7 +30,7 @@ trait BusinessRegUKController extends BaseController {
         Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), isNonUKClientRegisteredByAgent = false, service).map {
+        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
@@ -46,12 +46,14 @@ trait BusinessRegUKController extends BaseController {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.group.header"),
         Messages("bc.business-registration.group.subheader"),
+        "",
         BCUtils.getIsoCodeTupleList)
     }
     else {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),
+        "",
         BCUtils.getIsoCodeTupleList)
     }
   }

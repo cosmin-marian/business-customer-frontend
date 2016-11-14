@@ -1,11 +1,12 @@
-package controllers
+package controllers.nonUKReg
 
 import java.util.UUID
 
-import models.{Address, ReviewDetails}
+import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{JsValue, Json}
@@ -19,21 +20,26 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.concurrent.Future
 
 
-class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val request = FakeRequest()
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationService = mock[BusinessRegistrationService]
 
-  object TestBusinessRegController extends BusinessRegController {
+  object TestNonUKController extends UpdateNonUKBusinessRegistrationController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationService = mockBusinessRegistrationService
   }
 
+  override def beforeEach(): Unit = {
+    reset(mockAuthConnector)
+    reset(mockBusinessRegistrationService)
+  }
+
   val serviceName: String = "ATED"
 
-  "BusinessRegController" must {
+  "UpdateNonUKBusinessRegistrationController" must {
 
     "respond to /register" in {
       val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName/NUK")).get
@@ -42,7 +48,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     "unauthorised users" must {
       "respond with a redirect for /register & be redirected to the unauthorised page" in {
-        registerWithUnAuthorisedUser("NUK") { result =>
+        editWithUnAuthorisedUser("NUK") { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some("/business-customer/unauthorised"))
         }
@@ -58,49 +64,72 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     "Authorised Users" must {
 
-      "return business registration view for a user for Non-UK" in {
+      "return business registration view for a Non-UK based client with found data" in {
+        val busRegData = BusinessRegistration(businessName = "testName",
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+          hasBusinessUniqueId = Some(true),
+          issuingInstitution = Some("issuingInstitution"),
+          issuingCountry = None
+        )
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
 
-        registerWithAuthorisedUser(serviceName, "NUK") { result =>
+        editWithAuthorisedUser(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas business details")
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-registration-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
+
           document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("businessAddress.line_1_field").text() must be("Address")
-          document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-          document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-          document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-          document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
 
+      "return business registration view for a Non-UK based agent creating a client with found data" in {
+        val busRegData = BusinessRegistration(businessName = "testName",
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+          hasBusinessUniqueId = Some(true),
+          issuingInstitution = Some("issuingInstitution"),
+          issuingCountry = None
+        )
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
 
-      "return business registration view for an agent" in {
-
-        registerWithAuthorisedAgent(serviceName, "NUK") { result =>
+        editWithAuthorisedAgent(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-verification-text").text() must be("ATED agency set up")
-          document.getElementById("business-registration-header").text() must be("Enter your overseas agent details")
+          document.title() must be("Enter your client's overseas business details")
+          document.getElementById("business-verification-text").text() must be("Add a client")
+          document.getElementById("business-reg-header").text() must be("Enter your client's overseas business details")
+          document.getElementById("business-reg-lede").text() must be("This is the registered address of your client's overseas business.")
+
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
           document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+      "throw an exception if we have no data" in {
+
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
+        editWithAuthorisedUser(serviceName, "NUK") { result =>
+          val thrown = the[RuntimeException] thrownBy await(result)
+          thrown.getMessage must be("No Registration Details found")
         }
       }
     }
 
-    "send" must {
+    "update" must {
 
       "validate form" must {
 
@@ -109,7 +138,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
                        line2: String = "line-2",
                        line3: String = "",
                        line4: String = "",
-                       postcode: String = "12345678",
                        country: String = "FR",
                        hasBusinessUniqueId: Boolean = true,
                        bUId: String = "some-id",
@@ -124,7 +152,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
                |    "line_2": "$line2",
                |    "line_3": "$line3",
                |    "line_4": "$line4",
-               |    "postcode": "$postcode",
                |    "country": "$country"
                |  },
                |  "hasBusinessUniqueId": $hasBusinessUniqueId,
@@ -140,7 +167,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(businessName = "", line1 = "", line2 = "", postcode = "", country = "", bUId = "", issuingInstitution = "", issuingCountry = "")
+          val inputJson = createJson(businessName = "", line1 = "", line2 = "", country = "", bUId = "", issuingInstitution = "", issuingCountry = "")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
@@ -162,7 +189,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
-          (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "A postcode cannot be more than 10 characters."),
           (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address"),
           (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
           (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
@@ -179,21 +205,30 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
-        "If registration details entered are valid, continue button must redirect to review details page" in {
+        "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
           }
         }
 
-        "If registration details entered are valid and business-identifier question is selected as No, continue button must redirect to review details page" in {
+        "valid registration details are entered and BUId question is selected as No, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
+          }
+        }
+
+        "throw exception, if redirect url is not defined" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined", None) { result =>
+            val thrown = the[RuntimeException] thrownBy await(result)
+            thrown.getMessage must be("Service does not exist for : undefined. This should be in the conf file against govuk-tax.$env.services.{1}.serviceRedirectUrl")
           }
         }
 
@@ -201,12 +236,12 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     }
   }
 
-  def registerWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def editWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
+    val result = TestNonUKController.edit(serviceName, None).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -214,13 +249,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def registerWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
+  def editWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
+    val result = TestNonUKController.edit(serviceName, None).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -228,13 +263,21 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def registerWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
+  def editWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
+
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+
+
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
+    val result = TestNonUKController.edit(serviceName, None).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -242,13 +285,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(businessType: String = "NUK", redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
+    val result = TestNonUKController.update(service, redirectUrl).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -256,7 +299,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -265,9 +308,10 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
-    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
+    val result = TestNonUKController.update(service, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -275,13 +319,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
+    val result = TestNonUKController.update(service, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

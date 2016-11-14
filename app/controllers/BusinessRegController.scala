@@ -23,13 +23,14 @@ trait BusinessRegController extends BaseController {
     Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
+
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup = false, isNonUKClientRegisteredByAgent = false, service).map {
+        businessRegistrationService.registerBusiness(registrationData, isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
@@ -41,11 +42,13 @@ trait BusinessRegController extends BaseController {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
         Messages("bc.business-registration.text.agent", service),
+        Messages("bc.business-registration.lede.text"),
         BCUtils.getIsoCodeTupleList)
     } else {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.non-uk.header"),
         Messages("bc.business-registration.text.client", service),
+        Messages("bc.business-registration.lede.text"),
         BCUtils.getIsoCodeTupleList)
     }
   }

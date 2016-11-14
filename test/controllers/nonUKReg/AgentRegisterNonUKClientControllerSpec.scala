@@ -165,7 +165,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
         "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
           }
@@ -174,7 +174,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
         "valid registration details are entered and BUId question is selected as No, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
           }
@@ -183,7 +183,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
         "throw exception, if redirect url is not defined" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined") { result =>
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined", None) { result =>
             val thrown = the[RuntimeException] thrownBy await(result)
             thrown.getMessage must be("Service does not exist for : undefined. This should be in the conf file against govuk-tax.$env.services.{1}.serviceRedirectUrl")
           }
@@ -234,7 +234,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     test(result)
   }
 
-  def submitWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(businessType: String = "NUK", redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -248,7 +248,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service)(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -257,7 +257,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -267,7 +267,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     test(result)
   }
 
-  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 

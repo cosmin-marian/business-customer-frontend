@@ -42,4 +42,7 @@ GET         /logoutAndRedirectToHome/:service                                   
 GET         /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.view(service: String)
 POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String)
 
+GET         /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)
+POST        /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None)
+
 
