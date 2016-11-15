@@ -6,6 +6,10 @@ th {
     width: 40%;
 }
 
+.text-bold {
+font-weight: bold;
+}
+
 .tick{
     position:inherit;
     padding-right:10px;

@@ -54,7 +54,7 @@ trait AgentRegisterNonUKClientController extends BaseController with RunMode {
     BusinessRegistrationDisplayDetails("NUK",
       Messages("bc.non-uk-reg.header"),
       Messages("bc.non-uk-reg.sub-header"),
-      Messages("bc.non-uk-reg.lede.text"),
+      Some(Messages("bc.non-uk-reg.lede.text")),
       BCUtils.getIsoCodeTupleList)
   }
 

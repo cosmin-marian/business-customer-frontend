@@ -25,12 +25,25 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
   def businessRegistrationService: BusinessRegistrationService
 
+  def editAgent(service: String) = AuthAction(service).async { implicit bcContext =>
+    businessRegistrationService.getDetails.map{
+      businessDetails =>
+        businessDetails match {
+          case Some(detailsTuple) =>
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None))
+          case _ =>
+            Logger.warn(s"[ReviewDetailsController][editAgent] - No registration details found to edit")
+            throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
+        }
+    }
+  }
+
   def edit(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
     businessRegistrationService.getDetails.map{
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service), redirectUrl))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, true), redirectUrl))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -43,34 +56,40 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service), redirectUrl)))
+        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, true), redirectUrl)))
       },
       registerData => {
         businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
           redirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
-            case _ =>
-              Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = $service")
-              throw new RuntimeException(Messages("bc.business-review.error.no-service", service, service.toLowerCase))
+            case _ => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
           }
         }
       }
     )
   }
 
-  private def displayDetails(service: String)(implicit bcContext: BusinessCustomerContext) = {
+  private def displayDetails(service: String, isRegisterClient: Boolean)(implicit bcContext: BusinessCustomerContext) = {
     if (bcContext.user.isAgent){
-      BusinessRegistrationDisplayDetails("NUK",
-        Messages("bc.non-uk-reg.header"),
-        Messages("bc.non-uk-reg.sub-header"),
-        Messages("bc.non-uk-reg.lede.update-text"),
-        BCUtils.getIsoCodeTupleList)
+      if (isRegisterClient) {
+        BusinessRegistrationDisplayDetails("NUK",
+          Messages("bc.non-uk-reg.header"),
+          Messages("bc.non-uk-reg.sub-header"),
+          Some(Messages("bc.non-uk-reg.lede.update-text")),
+          BCUtils.getIsoCodeTupleList)
+      } else {
+          BusinessRegistrationDisplayDetails("NUK",
+            Messages("bc.business-registration.agent.non-uk.header"),
+            Messages("bc.business-registration.text.agent", service),
+            None,
+            BCUtils.getIsoCodeTupleList)
+      }
     }
     else {
       BusinessRegistrationDisplayDetails("NUK",
         Messages("bc.business-registration.user.non-uk.header"),
         Messages("bc.business-registration.text.client", service),
-        Messages("bc.business-registration.lede.update-text"),
+        Some(Messages("bc.business-registration.lede.update-text")),
         BCUtils.getIsoCodeTupleList)
 
     }

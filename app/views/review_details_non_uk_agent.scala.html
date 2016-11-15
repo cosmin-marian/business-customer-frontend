@@ -1,0 +1,76 @@
+@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import utils._
+
+@bcMain(title = Messages("business-review.agent-editable.title", service), service = Some(service)) {
+
+  <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
+  <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent-editable.title"))</h1>
+
+<table>
+  <tr>
+    <td class="text-bold" valign="top">
+      @Messages("business-review.business-name")
+    </td>
+    <td id="business-name">
+      @businessDetails.businessName
+    </td>
+    <td valign="top">
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")</a>
+    </td>
+  </tr>
+  <tr>
+    <td class="text-bold" valign="top">
+      @Messages("business-review.address")
+    </td>
+    <td id="business-address">
+      <div>
+        <div id="registered-address-line-1">@businessDetails.businessAddress.line_1</div>
+        <div id="registered-address-line-2">@businessDetails.businessAddress.line_2</div>
+        @businessDetails.businessAddress.line_3.map {line_3 =>
+        <div id="registered-address-line-3">@line_3</div>
+        }
+        @businessDetails.businessAddress.line_4.map {line_4 =>
+        <div id="registered-address-line-4">@line_4</div>
+        }
+        @businessDetails.businessAddress.postcode.map {postcode =>
+        <div id="registered-postcode">@postcode</div>
+        }
+        <div id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</div>
+      </div>
+    </td>
+    <td valign="top">
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")</a>
+    </td>
+  </tr>
+  <tr>
+    <td class="text-bold" valign="top">
+      @Messages("business-review.overseas-tax-reference")
+    </td>
+    <td id="overseas-details">
+      @businessDetails.identification.map { identification =>
+        <div>
+          <div id="overseas-id-number">@identification.idNumber</div>
+          <div id="overseas-issuingCountryCode">@BCUtils.getSelectedCountry(identification.issuingCountryCode)</div>
+          <div id="overseas-issuingInstitution">@identification.issuingInstitution</div>
+        </div>
+      }
+    </td>
+    <td valign="top">
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="overseas-edit">@Messages("bc.edit")</a>
+    </td>
+  </tr>
+</table>
+
+
+
+  <div class="form-group">
+    @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
+      <button class="button" id="submit" type="submit" onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')">
+        @Messages("business-review.registration-button")
+      </button>
+    }
+  </div>
+}
+

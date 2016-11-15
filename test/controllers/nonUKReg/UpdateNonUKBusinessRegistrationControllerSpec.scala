@@ -62,7 +62,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
       }
     }
 
-    "Authorised Users" must {
+    "edit client" must {
 
       "return business registration view for a Non-UK based client with found data" in {
         val busRegData = BusinessRegistration(businessName = "testName",
@@ -74,7 +74,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
         )
         when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
 
-        editWithAuthorisedUser(serviceName, "NUK") { result =>
+        editClientWithAuthorisedUser(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
@@ -98,7 +98,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
         )
         when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
 
-        editWithAuthorisedAgent(serviceName, "NUK") { result =>
+        editClientWithAuthorisedAgent(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
@@ -122,7 +122,72 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
         when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
-        editWithAuthorisedUser(serviceName, "NUK") { result =>
+        editClientWithAuthorisedUser(serviceName, "NUK") { result =>
+          val thrown = the[RuntimeException] thrownBy await(result)
+          thrown.getMessage must be("No Registration Details found")
+        }
+      }
+    }
+
+    "edit agent" must {
+
+      "return business registration view for a Non-UK based client with found data" in {
+        val busRegData = BusinessRegistration(businessName = "testName",
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+          hasBusinessUniqueId = Some(true),
+          issuingInstitution = Some("issuingInstitution"),
+          issuingCountry = None
+        )
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+
+        editAgentWithAuthorisedUser(serviceName, "NUK") { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
+
+          document.getElementById("businessName_field").text() must be("Business name")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+      "return business registration view for a Non-UK based agent creating a client with found data" in {
+        val busRegData = BusinessRegistration(businessName = "testName",
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+          hasBusinessUniqueId = Some(true),
+          issuingInstitution = Some("issuingInstitution"),
+          issuingCountry = None
+        )
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+
+        editAgentWithAuthorisedAgent(serviceName, "NUK") { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
+          document.title() must be("Enter your overseas agent details")
+          document.getElementById("business-reg-header").text() must be("Enter your overseas agent details")
+
+          document.getElementById("businessName_field").text() must be("Business name")
+          document.getElementById("businessAddress.line_1_field").text() must be("Address")
+          document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+          document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+          document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+          document.getElementById("businessAddress.country_field").text() must include("Country")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+      "throw an exception if we have no data" in {
+
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
+        editAgentWithAuthorisedUser(serviceName, "NUK") { result =>
           val thrown = the[RuntimeException] thrownBy await(result)
           thrown.getMessage must be("No Registration Details found")
         }
@@ -223,12 +288,12 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           }
         }
 
-        "throw exception, if redirect url is not defined" in {
+        "redirect to the review details page if we have no redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined", None) { result =>
-            val thrown = the[RuntimeException] thrownBy await(result)
-            thrown.getMessage must be("Service does not exist for : undefined. This should be in the conf file against govuk-tax.$env.services.{1}.serviceRedirectUrl")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some("/business-customer/review-details/ATED"))
           }
         }
 
@@ -249,7 +314,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     test(result)
   }
 
-  def editWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
+  def editClientWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -263,7 +328,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     test(result)
   }
 
-  def editWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
+  def editClientWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -278,6 +343,42 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestNonUKController.edit(serviceName, None).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def editAgentWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    val result = TestNonUKController.editAgent(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def editAgentWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+    (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+
+
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val result = TestNonUKController.editAgent(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
