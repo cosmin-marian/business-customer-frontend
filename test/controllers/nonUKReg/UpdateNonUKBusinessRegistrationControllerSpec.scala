@@ -223,12 +223,12 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           }
         }
 
-        "throw exception, if redirect url is not defined" in {
+        "redirect to the review details page if we have no redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined", None) { result =>
-            val thrown = the[RuntimeException] thrownBy await(result)
-            thrown.getMessage must be("Service does not exist for : undefined. This should be in the conf file against govuk-tax.$env.services.{1}.serviceRedirectUrl")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some("/business-customer/review-details/ATED"))
           }
         }
 

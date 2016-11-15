@@ -1,0 +1,48 @@
+@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import utils._
+
+@bcMain(title = Messages("business-review.agent.title", service), service = Some(service)) {
+
+  <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
+  <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent-editable.title"))</h1>
+
+<table>
+  <tr>
+    <td>
+      business name
+    </td>
+  </tr>
+</table>
+  <div class="form-group">
+
+    <h2 class="heading-medium" id="business-name">@businessDetails.businessName</h2>
+
+    <ul id="business-address">
+      <li id="registered-address-line-1">@businessDetails.businessAddress.line_1</li>
+      <li id="registered-address-line-2">@businessDetails.businessAddress.line_2</li>
+      @businessDetails.businessAddress.line_3.map {line_3 =>
+        <li id="registered-address-line-3">@line_3</li>
+      }
+      @businessDetails.businessAddress.line_4.map {line_4 =>
+        <li id="registered-address-line-4">@line_4</li>
+      }
+      @businessDetails.businessAddress.postcode.map {postcode =>
+        <li id="registered-postcode">@postcode</li>
+      }
+      <li id="registered-country">@BCUtils.getSelectedCountry(businessDetails.businessAddress.country)</li>
+    </ul>
+
+  </div>
+
+  <div class="form-group">
+    @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
+      <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>
+        @Messages("business-review.registration-button")
+      </button>
+    }
+  </div>
+  <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">Edit</a>
+}
+

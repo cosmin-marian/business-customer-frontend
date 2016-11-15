@@ -116,24 +116,13 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       businessDetailsWithAuthorisedUser(directMatch = false) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
-        document.getElementById("bc.business-registration.text").text() must be("ATED registration")
-        document.getElementById("business-name").text must be("ACME")
-        document.getElementById("business-address").text must be("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom")
-        document.getElementById("wrong-account-title").text must be("Not the right address?")
-        document.getElementById("wrong-account-text").text must startWith("You can still register but you will need to update your information outside of this service.")
-        document.getElementById("wrong-account-text-item-1").text must startWith("If you registered with Companies House you need to inform")
-        document.getElementById("wrong-account-text-item-2").text must startWith("If you are not registered with Companies House you need to inform")
-        document.select(".button").text must be("Confirm")
       }
     }
 
     "return Review Details view for a user, when we directly found this user" in {
       businessDetailsWithAuthorisedUser(directMatch = true) { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.getElementById("wrong-account-title").text must be("Not the right details?")
-        document.getElementById("wrong-account-text").text must startWith("If this is not the right business, you should sign out and change to another account")
-        document.getElementById("wrong-account-text-item-1").text must startWith("If you registered with Companies House you need to inform")
-        document.getElementById("wrong-account-text-item-2").text must startWith("If you are not registered with Companies House you need to inform")
+        document.select("h1").text must be("Confirm your business details")
       }
     }
 
@@ -141,11 +130,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       businessDetailsWithAuthorisedAgent(directMatch = false) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your agency details")
-        document.getElementById("wrong-account-title-agent").text must be("Not the right address?")
-        document.getElementById("bc.business-registration-agent.text").text() must be("ATED agency set up")
-        document.getElementById("wrong-account-text-agent").text() must be("You can still register but you will need to update your information outside of this service.")
-        document.getElementById("wrong-account-text-agent-item-1").text must startWith("If you registered with Companies House you need to inform")
-        document.getElementById("wrong-account-text-agent-item-2").text must startWith("If you are not registered with Companies House you need to inform")
       }
     }
 
@@ -153,11 +137,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       businessDetailsWithAuthorisedAgent(directMatch = true) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your agency details")
-        document.getElementById("wrong-account-title-agent").text must be("Not the right details?")
-        document.getElementById("bc.business-registration-agent.text").text() must be("ATED agency set up")
-        document.getElementById("wrong-account-text-agent").text() must be("If this is not the right business, you should sign out and change to another account")
-        document.getElementById("wrong-account-text-agent-item-1").text must startWith("If you registered with Companies House you need to inform")
-        document.getElementById("wrong-account-text-agent-item-2").text must startWith("If you are not registered with Companies House you need to inform")
       }
     }
 

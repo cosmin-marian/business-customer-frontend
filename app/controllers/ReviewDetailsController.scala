@@ -26,7 +26,12 @@ trait ReviewDetailsController extends BaseController with RunMode {
 
   def businessDetails(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
-      case Some(businessDetails) => Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
+      case Some(businessDetails) =>
+        if ( bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
+          Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, bcContext.user.isAgent, businessDetails)))
+        } else {
+          Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
+        }
       case _ =>
         Logger.warn(s"[ReviewDetailsController][businessDetails] - No Service details found in DataCache for")
         throw new RuntimeException(Messages("bc.business-review.error.not-found"))

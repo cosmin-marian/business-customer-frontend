@@ -10,7 +10,7 @@ bc.investment-tax-relief.serviceName = Apply for Enterprise Investment Scheme
 
 business-review.user.title = Confirm your business details
 business-review.agent.title = Confirm your agency details
-business-review.agent-editable.title = Confirm that you have entered your agency details correctly
+business-review.agent-editable.title = Check your agency details
 bc.business-review.title = Welcome to {0} subscription
 
 business-review.name = Name

@@ -6,13 +6,8 @@
 @bcMain(title = if (isAgent) { Messages("business-review.agent.title", service) } else {Messages("business-review.user.title", service) }, service = Some(service)) {
 
   @if(isAgent){
-    @if(businessDetails.isBusinessDetailsEditable){
-    <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
-    <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent-editable.title"))</h1>
-    } else {
     <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
     <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
-    }
   } else {
     <p class="heading-sub" id="bc.business-registration.text">@Messages("bc.business-registration.text.client", service.toUpperCase)</p>
     <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
@@ -109,12 +104,6 @@
       <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>
         @Messages("business-review.registration-button")
       </button>
-    }
-  </div>
-  <div class="form-group">
-    @form(action = controllers.routes.UpdateNonUKBusinessRegistrationController.update(service)) {
-    <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>Edit
-    </button>
     }
   </div>
 }

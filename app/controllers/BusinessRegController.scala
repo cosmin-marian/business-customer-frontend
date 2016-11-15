@@ -42,7 +42,7 @@ trait BusinessRegController extends BaseController {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.agent.non-uk.header"),
         Messages("bc.business-registration.text.agent", service),
-        Messages("bc.business-registration.lede.text"),
+        "",
         BCUtils.getIsoCodeTupleList)
     } else {
       BusinessRegistrationDisplayDetails(businessType,
