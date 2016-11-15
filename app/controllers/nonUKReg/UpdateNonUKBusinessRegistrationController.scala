@@ -32,7 +32,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
           case Some(detailsTuple) =>
             Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None))
           case _ =>
-            Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
+            Logger.warn(s"[ReviewDetailsController][editAgent] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
         }
     }

@@ -36,7 +36,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
   val nonDirectMatchReviewDetails = ReviewDetails("ACME", Some("Limited"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-  def testReviewDetailsController(directMatch: Boolean) = {
+  def testReviewDetailsController(reviewDetails: ReviewDetails) = {
     val mockDataCacheConnector = new DataCacheConnector {
       val sessionCache = BusinessCustomerSessionCache
       override val sourceId: String = "Test"
@@ -45,12 +45,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       override def fetchAndGetBusinessDetailsForSession(implicit hc: HeaderCarrier) = {
         reads = reads + 1
-        if (directMatch) {
-          Future.successful(Some(directMatchReviewDetails))
-        }
-        else {
-          Future.successful(Some(nonDirectMatchReviewDetails))
-        }
+        Future.successful(Some(reviewDetails))
       }
     }
     new ReviewDetailsController {
@@ -113,35 +108,42 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
 
     "return Review Details view for a user, when user can't be directly found with login credentials" in {
-      businessDetailsWithAuthorisedUser(directMatch = false) { result =>
+      businessDetailsWithAuthorisedUser(nonDirectMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
       }
     }
 
     "return Review Details view for a user, when we directly found this user" in {
-      businessDetailsWithAuthorisedUser(directMatch = true) { result =>
+      businessDetailsWithAuthorisedUser(directMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your business details")
       }
     }
 
     "return Review Details view for an agent, when agent can't be directly found with login credentials" in {
-      businessDetailsWithAuthorisedAgent(directMatch = false) { result =>
+      businessDetailsWithAuthorisedAgent(nonDirectMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your agency details")
       }
     }
 
     "return Review Details view for an agent, when we directly found this agent" in {
-      businessDetailsWithAuthorisedAgent(directMatch = true) { result =>
+      businessDetailsWithAuthorisedAgent(directMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
         document.select("h1").text must be("Confirm your agency details")
       }
     }
 
+    "return Review Details view for an agent, when we directly found this agent with editable address" in {
+      businessDetailsWithAuthorisedAgent(directMatchReviewDetails.copy(isBusinessDetailsEditable = true)) { result =>
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").text must be("Check your agency details")
+      }
+    }
+
     "read existing business details data from cache (without updating data)" in {
-      val testDetailsController = businessDetailsWithAuthorisedUser(directMatch = false) { result =>
+      val testDetailsController = businessDetailsWithAuthorisedUser(nonDirectMatchReviewDetails) { result =>
         status(result) must be(OK)
       }
       testDetailsController.dataCacheConnector.reads must be(1)
@@ -218,14 +220,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithUnAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
   private def continueWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
@@ -235,26 +237,26 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
-    val result = testReviewDetailsController(directMatch = false).continue(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
 
-  def businessDetailsWithAuthorisedAgent(directMatch: Boolean)(test: Future[Result] => Any) = {
+  def businessDetailsWithAuthorisedAgent(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    val testDetailsController = testReviewDetailsController(directMatch = directMatch)
+    val testDetailsController = testReviewDetailsController(reviewDetails)
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
     testDetailsController
   }
 
-  def businessDetailsWithAuthorisedUser(directMatch: Boolean)(test: Future[Result] => Any) = {
+  def businessDetailsWithAuthorisedUser(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    val testDetailsController = testReviewDetailsController(directMatch = directMatch)
+    val testDetailsController = testReviewDetailsController(reviewDetails)
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
@@ -277,7 +279,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = testReviewDetailsController(directMatch = false).businessDetails(service).apply(fakeRequestWithSession(userId))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)
   }

@@ -1,4 +1,4 @@
-@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
@@ -13,18 +13,18 @@
     <td class="text-bold" valign="top">
       @Messages("business-review.business-name")
     </td>
-    <td>
+    <td id="business-name">
       @businessDetails.businessName
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")</a>
     </td>
   </tr>
   <tr>
     <td class="text-bold" valign="top">
       @Messages("business-review.address")
     </td>
-    <td>
+    <td id="business-address">
       <div>
         <div id="registered-address-line-1">@businessDetails.businessAddress.line_1</div>
         <div id="registered-address-line-2">@businessDetails.businessAddress.line_2</div>
@@ -48,7 +48,7 @@
     <td class="text-bold" valign="top">
       @Messages("business-review.overseas-tax-reference")
     </td>
-    <td>
+    <td id="overseas-details">
       @businessDetails.identification.map { identification =>
         <div>
           <div id="overseas-id-number">@identification.idNumber</div>
@@ -58,7 +58,7 @@
       }
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="overseas-edit">@Messages("bc.edit")</a>
     </td>
   </tr>
 </table>
@@ -67,7 +67,7 @@
 
   <div class="form-group">
     @form(action = controllers.routes.ReviewDetailsController.continue(service)) {
-      <button class="button" id="submit" type="submit" @if(isAgent){onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')"}>
+      <button class="button" id="submit" type="submit" onclick="ga('send', 'event', 'Agent - registration - end', 'button clicked')">
         @Messages("business-review.registration-button")
       </button>
     }

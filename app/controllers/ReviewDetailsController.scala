@@ -28,7 +28,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) =>
         if ( bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
-          Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, bcContext.user.isAgent, businessDetails)))
+          Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails)))
         } else {
           Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
         }
