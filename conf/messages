@@ -2,6 +2,7 @@ bc.title = Business Customer
 bc.radio.yes.label = Yes
 bc.radio.no.label = No
 bc.continue = Continue
+bc.edit = Edit
 
 bc.ated.serviceName = Annual Tax on Enveloped Dwellings (ATED)
 bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
@@ -14,6 +15,8 @@ business-review.agent-editable.title = Check your agency details
 bc.business-review.title = Welcome to {0} subscription
 
 business-review.name = Name
+business-review.business-name = Business name
+business-review.overseas-tax-reference = Overseas tax reference
 business-review.type = Type of business
 business-review.address = Registered address
 business-review.telephone = Telephone
