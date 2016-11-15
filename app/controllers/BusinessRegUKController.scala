@@ -46,14 +46,14 @@ trait BusinessRegUKController extends BaseController {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.group.header"),
         Messages("bc.business-registration.group.subheader"),
-        "",
+        None,
         BCUtils.getIsoCodeTupleList)
     }
     else {
       BusinessRegistrationDisplayDetails(businessType,
         Messages("bc.business-registration.user.new-business.header"),
         Messages("bc.business-registration.business.subheader"),
-        "",
+        None,
         BCUtils.getIsoCodeTupleList)
     }
   }

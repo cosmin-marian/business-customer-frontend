@@ -75,13 +75,13 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
         BusinessRegistrationDisplayDetails("NUK",
           Messages("bc.non-uk-reg.header"),
           Messages("bc.non-uk-reg.sub-header"),
-          Messages("bc.non-uk-reg.lede.update-text"),
+          Some(Messages("bc.non-uk-reg.lede.update-text")),
           BCUtils.getIsoCodeTupleList)
       } else {
           BusinessRegistrationDisplayDetails("NUK",
             Messages("bc.business-registration.agent.non-uk.header"),
             Messages("bc.business-registration.text.agent", service),
-            "",
+            None,
             BCUtils.getIsoCodeTupleList)
       }
     }
@@ -89,7 +89,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       BusinessRegistrationDisplayDetails("NUK",
         Messages("bc.business-registration.user.non-uk.header"),
         Messages("bc.business-registration.text.client", service),
-        Messages("bc.business-registration.lede.update-text"),
+        Some(Messages("bc.business-registration.lede.update-text")),
         BCUtils.getIsoCodeTupleList)
 
     }

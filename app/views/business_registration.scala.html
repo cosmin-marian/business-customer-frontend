@@ -38,8 +38,9 @@
   <p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
   <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
-  <p class="lede" id="business-registration-lede">@Html(displayDetails.businessRegLede)</p>
-
+  @displayDetails.businessRegLede.map { businessRegLede =>
+    <p class="lede" id="business-registration-lede">@Html(businessRegLede)</p>
+  }
 
   @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 
