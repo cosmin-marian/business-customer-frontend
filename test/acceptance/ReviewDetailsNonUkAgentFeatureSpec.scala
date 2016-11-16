@@ -50,14 +50,24 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       assert(document.select("h1").text === ("Check your agency details"))
 
       assert(document.getElementById("bc.business-registration-agent.text").text() === ("ATED agency set up"))
+
+      And("Business name is correct")
+      assert(document.getElementById("business-name-title").text === ("Business name"))
       assert(document.getElementById("business-name").text === ("ACME"))
+      assert(document.getElementById("bus-name-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
+
+      And("Business address is correct")
+      assert(document.getElementById("business-address-title").text === ("Registered address"))
       assert(document.getElementById("business-address").text === ("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom"))
+      assert(document.getElementById("bus-reg-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
+
+      And("Overseas tax referebce is correct")
+      assert(document.getElementById("overseas-tax-reference-title").text === ("Overseas company registration number"))
       assert(document.getElementById("overseas-details").text === ("id France inst"))
+      assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
 
       assert(document.select(".button").text === ("Confirm"))
-      assert(document.getElementById("bus-name-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
-      assert(document.getElementById("bus-reg-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
-      assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
+
     }
 
   }
