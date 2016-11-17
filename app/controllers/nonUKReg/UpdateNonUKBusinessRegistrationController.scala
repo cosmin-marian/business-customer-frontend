@@ -30,7 +30,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None, false))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][editAgent] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -43,7 +43,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, true), redirectUrl))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, true), redirectUrl, true))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -52,11 +52,11 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
   }
 
-  def update(service: String, redirectUrl : Option[String]) = AuthAction(service).async { implicit bcContext =>
+  def update(service: String, redirectUrl : Option[String], isRegisterClient: Boolean) = AuthAction(service).async { implicit bcContext =>
 
     BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, true), redirectUrl)))
+        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, isRegisterClient), redirectUrl, isRegisterClient)))
       },
       registerData => {
         businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>

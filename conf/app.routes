@@ -44,6 +44,6 @@ POST        /agent/register/non-uk-client/:service                              
 
 GET         /agent/register/non-uk-client/:service/edit                         controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.editAgent(service: String)
 GET         /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)
-POST        /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None)
+POST        /register/non-uk-client/:service/edit/:isRegisterClient             controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None, isRegisterClient : Boolean)
 
 
