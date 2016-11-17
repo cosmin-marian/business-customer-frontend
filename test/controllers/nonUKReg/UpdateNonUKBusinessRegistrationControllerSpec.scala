@@ -392,7 +392,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestNonUKController.update(service, redirectUrl).apply(FakeRequest().withSession(
+    val result = TestNonUKController.update(service, redirectUrl, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -412,7 +412,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
-    val result = TestNonUKController.update(service, redirectUrl).apply(fakeRequest.withSession(
+    val result = TestNonUKController.update(service, redirectUrl, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -426,7 +426,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestNonUKController.update(service, redirectUrl).apply(fakeRequest.withSession(
+    val result = TestNonUKController.update(service, redirectUrl, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
