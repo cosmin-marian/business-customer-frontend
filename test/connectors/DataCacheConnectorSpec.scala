@@ -9,7 +9,7 @@ import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -52,5 +52,13 @@ class DataCacheConnectorSpec extends PlaySpec with OneServerPerSuite with Mockit
 
     }
 
+    "clearCache" must {
+      "clear the cache for the session" in {
+        implicit val hc: HeaderCarrier = HeaderCarrier()
+        when(mockSessionCache.remove()(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        val result = TestDataCacheConnector.clearCache
+        await(result).status must be(OK)
+      }
+    }
   }
 }
