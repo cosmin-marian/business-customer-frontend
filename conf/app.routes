@@ -46,4 +46,5 @@ GET         /agent/register/non-uk-client/:service/edit                         
 GET         /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)
 POST        /register/non-uk-client/:service/edit/:isRegisterClient             controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None, isRegisterClient : Boolean)
 
-
+GET         /business-customer/clear-cache/:service                             controllers.BusinessCustomerController.clearCache(service: String)
+GET         /business-customer/review-details/:service                          controllers.BusinessCustomerController.getReviewDetails(service: String)

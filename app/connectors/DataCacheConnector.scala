@@ -3,7 +3,7 @@ package connectors
 import config.BusinessCustomerSessionCache
 import models.ReviewDetails
 import uk.gov.hmrc.http.cache.client.SessionCache
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -26,6 +26,10 @@ trait DataCacheConnector {
     result flatMap {
       data => Future.successful(data.getEntry[ReviewDetails](sourceId))
     }
+  }
+
+  def clearCache(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    sessionCache.remove()
   }
 
 }

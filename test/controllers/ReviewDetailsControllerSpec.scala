@@ -242,7 +242,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   def businessDetailsWithAuthorisedAgent(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
-    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController(reviewDetails)
@@ -253,7 +252,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   def businessDetailsWithAuthorisedUser(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
-    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsController(reviewDetails)
@@ -264,7 +262,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   def businessDetailsWithAuthorisedUserNotFound(test: Future[Result] => Any) = {
-    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     val testDetailsController = testReviewDetailsControllerNotFound
@@ -275,7 +272,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   }
 
   def businessDetailsWithUnAuthorisedUser(test: Future[Result] => Any) {
-    val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
