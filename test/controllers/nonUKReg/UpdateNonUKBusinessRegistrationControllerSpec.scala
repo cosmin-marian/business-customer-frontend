@@ -83,7 +83,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -113,7 +113,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -150,7 +150,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -178,7 +178,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do you have an overseas Tax Reference?")
+          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
