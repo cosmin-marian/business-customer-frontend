@@ -35,15 +35,16 @@
 @bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
 
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")
-
-<p class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </p>
+<div class="form-group">
+<div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
 <h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
 @displayDetails.businessRegLede.map { businessRegLede =>
-  <p class="lede" id="non-uk-reg-lede">@Html(businessRegLede)</p>
+  <span class="lede" id="non-uk-reg-lede">@Html(businessRegLede)</span>
 }
 
 @form(action = controllers.nonUKReg.routes.AgentRegisterNonUKClientController.submit(service)) {
+</div>
 
 <div class="form-group">
 
