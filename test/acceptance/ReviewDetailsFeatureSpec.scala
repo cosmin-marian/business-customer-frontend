@@ -42,8 +42,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
 
       val document = Jsoup.parse(html.toString())
 
-      And("The submit button is - Confirm")
-      assert(document.getElementById("submit").text() === "Confirm")
+      And("The submit button is - Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm and continue")
 
       Then("The title should match - Confirm your business details")
       assert(document.select("h1").text === ("Confirm your business details"))
@@ -56,7 +56,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("wrong-account-text-item-1").text().startsWith("If you registered with Companies House you need to inform") === true)
       assert(document.getElementById("wrong-account-text-item-2").text().startsWith("If you are not registered with Companies House you need to inform") === true)
 
-      assert(document.select(".button").text === ("Confirm"))
+      assert(document.select(".button").text === ("Confirm and continue"))
       assert(document.getElementById("bus-reg-edit") === null)
     }
 
@@ -70,8 +70,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
 
       val document = Jsoup.parse(html.toString())
 
-      And("The submit button is - Confirm")
-      assert(document.getElementById("submit").text() === "Confirm")
+      And("The submit button is - Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm and continue")
 
       Then("The title should match - Confirm your business details")
       assert(document.select("h1").text === ("Confirm your business details"))
@@ -84,7 +84,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("wrong-account-text-item-1").text().startsWith("If you registered with Companies House you need to inform") === true)
       assert(document.getElementById("wrong-account-text-item-2").text().startsWith("If you are not registered with Companies House you need to inform") === true)
 
-      assert(document.select(".button").text === ("Confirm"))
+      assert(document.select(".button").text === ("Confirm and continue"))
       assert(document.getElementById("bus-reg-edit") === null)
     }
 
@@ -98,8 +98,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
 
       val document = Jsoup.parse(html.toString())
 
-      And("The submit button is - Confirm")
-      assert(document.getElementById("submit").text() === "Confirm")
+      And("The submit button is - Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm and continue")
 
       Then("The title should match - Confirm your business details")
       assert(document.select("h1").text === ("Confirm your agency details"))
@@ -110,7 +110,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("business-address").text === ("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom"))
       assert(document.getElementById("wrong-account-title") === null)
 
-      assert(document.select(".button").text === ("Confirm"))
+      assert(document.select(".button").text === ("Confirm and continue"))
       assert(document.getElementById("bus-reg-edit") === null)
 
 
