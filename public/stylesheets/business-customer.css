@@ -157,12 +157,6 @@ select {
   margin-top: -6px;
 }
 
-input[type="radio"], input[type="checkbox"] {
-    height: 29px;
-    width: 29px;
-    top: 28px;
-}
-
 .block-label {
     padding-left: 54px;
 }
