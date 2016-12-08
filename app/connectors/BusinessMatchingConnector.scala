@@ -91,8 +91,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
         "individual" -> s"${input.individual}",
         "organisation" -> s"${input.organisation}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 }

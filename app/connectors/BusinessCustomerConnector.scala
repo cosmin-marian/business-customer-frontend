@@ -81,8 +81,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
           "isAnAgent" -> s"${input.isAnAgent}",
           "organisation" -> s"${input.organisation}",
           "responseStatus" -> s"${response.status}",
-          "responseBody" -> s"${response.body}"),
-        eventType = eventType)
+          "responseBody" -> s"${response.body}",
+          "status" ->  s"${eventType}"))
     }
 
     val authLink = bcContext.user.authLink
@@ -143,8 +143,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       detail = Map("txName" -> "ggAddKnownFactsCall",
         "facts" -> s"${input.facts}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 

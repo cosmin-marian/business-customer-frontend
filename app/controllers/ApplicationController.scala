@@ -54,8 +54,9 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
             "easyToUse" -> feedback.easyToUse.mkString,
             "satisfactionLevel" -> feedback.satisfactionLevel.mkString,
             "howCanWeImprove" -> feedback.howCanWeImprove.mkString,
-            "referer" -> feedBack.referer.mkString
-          ), eventType = EventTypes.Succeeded)
+            "referer" -> feedBack.referer.mkString,
+            "status" ->  EventTypes.Succeeded
+          ))
         }
         auditFeedback(feedback)
         Redirect(controllers.routes.ApplicationController.feedbackThankYou(service))
