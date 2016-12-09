@@ -42,8 +42,6 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
       auditMatchCall(lookupData, userType, response, service)
       response.status match {
         case OK | NOT_FOUND =>
-          Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = $url && " +
-            s"response.status = ${response.status} &&  response.body = ${response.body}")
           //try catch added to handle JsonParseException in case ETMP/DES response with contact Details with ',' in it
           try {
             Json.parse(response.body)

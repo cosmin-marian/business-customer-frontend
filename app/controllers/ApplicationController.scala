@@ -49,7 +49,6 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
       formWithErrors => BadRequest(views.html.feedback(formWithErrors, service)),
       feedback => {
         def auditFeedback(feedBack: FeedBack)(implicit hc: HeaderCarrier) = {
-          Logger.info(s"[ApplicationController][submitFeedback] feedback data = $feedBack")
           sendDataEvent(s"$service-exit-survey", detail = Map(
             "easyToUse" -> feedback.easyToUse.mkString,
             "satisfactionLevel" -> feedback.satisfactionLevel.mkString,
