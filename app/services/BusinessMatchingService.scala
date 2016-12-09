@@ -63,7 +63,6 @@ trait BusinessMatchingService {
 
   private def validateAndCache(dataReturned: JsValue, directMatch: Boolean, utr: Option[String])(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
-    Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = $dataReturned, isFailureResponse = $isFailureResponse")
     if (isFailureResponse) Future.successful(dataReturned)
     else {
       val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]

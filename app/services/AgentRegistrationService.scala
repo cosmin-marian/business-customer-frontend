@@ -76,9 +76,9 @@ trait AgentRegistrationService extends RunMode with Auditable {
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
       "service" -> enrolResponse.serviceName,
-      "identifiers" -> enrolResponse.identifiers.toString()),
-      eventType = EventTypes.Succeeded
-    )
+      "identifiers" -> enrolResponse.identifiers.toString(),
+      "status" -> EventTypes.Succeeded
+    ))
   }
 }
 

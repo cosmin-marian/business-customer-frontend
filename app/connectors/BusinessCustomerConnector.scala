@@ -44,7 +44,6 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/${GovernmentGatewayConstants.KnownFactsAgentServiceName}/$knownFactsUri"""
-    Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
     http.POST[JsValue, HttpResponse](postUrl, jsonData) map { response =>
       auditAddKnownFactsCall(knownFacts, response)
@@ -81,13 +80,12 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
           "isAnAgent" -> s"${input.isAnAgent}",
           "organisation" -> s"${input.organisation}",
           "responseStatus" -> s"${response.status}",
-          "responseBody" -> s"${response.body}"),
-        eventType = eventType)
+          "responseBody" -> s"${response.body}",
+          "status" ->  s"${eventType}"))
     }
 
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/$registerUri"""
-    Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map { response =>
       auditRegisterCall(registerData, response, service, isNonUKClientRegisteredByAgent)
@@ -143,8 +141,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       detail = Map("txName" -> "ggAddKnownFactsCall",
         "facts" -> s"${input.facts}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 
