@@ -37,6 +37,7 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
             (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
     val authLink = bcContext.user.authLink
     val url = s"""$serviceUrl$authLink/$baseUri/$lookupUri/${lookupData.utr}/$userType"""
+    Logger.debug(s"[BusinessMatchingConnector][lookup] Call $url")
     http.POST[JsValue, HttpResponse](url, Json.toJson(lookupData)) map { response =>
       auditMatchCall(lookupData, userType, response, service)
       response.status match {

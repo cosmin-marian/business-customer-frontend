@@ -4,8 +4,6 @@ import config.FrontendAuthConnector
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import utils.BCUtils

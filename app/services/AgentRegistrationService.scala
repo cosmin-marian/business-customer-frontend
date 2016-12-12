@@ -4,7 +4,6 @@ import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
 import models._
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.{Logger, Play}

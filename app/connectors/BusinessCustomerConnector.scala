@@ -5,8 +5,6 @@ import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
 import models._
 import play.api.Logger
 import play.api.http.Status._
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
@@ -41,6 +39,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def knownFactsUri: String
 
   def http: HttpGet with HttpPost
+
 
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
