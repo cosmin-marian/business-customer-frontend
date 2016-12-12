@@ -1,12 +1,12 @@
-@(field: play.api.data.Field, elementOptions: Seq[(String, String)], displayEmptyValue: Boolean, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+@(field: play.api.data.Field, elementOptions: Seq[(String, String)], displayEmptyValue: Boolean, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang, messages: Messages)
 
 @import play.api.i18n._
 @import views.html.helper._
 
-@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, lang) }
+@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, messages) }
 @parentField = @{ args.toMap.get('parentField).asInstanceOf[Option[Field]] }
 
-@parentElements = @{ parentField.map(pf => FieldElements(pf.id, pf, Html(""), Map(), lang)) }
+@parentElements = @{ parentField.map(pf => FieldElements(pf.id, pf, Html(""), Map(), messages)) }
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x } }
 @labelAfter = @{ elements.args.getOrElse('_labelAfter, false).asInstanceOf[Boolean] }
 @labelHighlight = @{ elements.args.getOrElse('_labelHighlight, false).asInstanceOf[Boolean] }

@@ -4,7 +4,7 @@
   service: Option[String] = None,
   pageScripts: Option[Html] = None,
   sidebarLinks: Option[Html] = None,
-  sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_])
+  sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.layouts
 @import utils.BCUtils
