@@ -9,7 +9,7 @@
     userLoggedIn: Boolean = false,
     scriptElement: Option[Html] = None,
     linkElement : Option[Html] = None
-    )(mainContent: Html = HtmlFormat.empty)(implicit request : Request[_], messages: Messages)
+    )(mainContent: Html = HtmlFormat.empty)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}

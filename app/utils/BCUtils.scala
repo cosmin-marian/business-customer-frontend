@@ -1,13 +1,14 @@
 package utils
 
 import java.util.Properties
+
 import play.api.Play
-import scala.io.Source
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import play.api.i18n.Messages
 
+import scala.io.Source
+
 object BCUtils {
+
   val p = new Properties
   p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
 

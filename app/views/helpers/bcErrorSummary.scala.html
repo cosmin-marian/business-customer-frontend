@@ -1,4 +1,4 @@
-@(form: Form[_], errorMessageFieldPrefix: String, formErrorMessage: Option[String] = None)(implicit lang: Lang, messages: Messages)
+@(form: Form[_], errorMessageFieldPrefix: String, formErrorMessage: Option[String] = None)(implicit lang: Lang)
 
 @if(form.hasGlobalErrors || form.hasErrors) {
 

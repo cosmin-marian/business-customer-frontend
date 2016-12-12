@@ -89,7 +89,6 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return the correct map for amls" in {
-        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("amls", false)
         typeMap.size must be(5)
         typeMap mustBe Seq(
@@ -102,7 +101,6 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return the correct map for investment-tax-relief" in {
-        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("investment-tax-relief", false)
         typeMap.size must be(1)
         typeMap mustBe Seq(
@@ -111,7 +109,6 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return default map when passed nothing" in {
-        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("", false)
         typeMap.size must be(6)
         typeMap mustBe Seq(

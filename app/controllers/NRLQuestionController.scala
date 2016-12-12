@@ -2,8 +2,6 @@ package controllers
 
 import config.FrontendAuthConnector
 import forms.BusinessRegistrationForms.nrlQuestionForm
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
 object NRLQuestionController extends NRLQuestionController {
   val authConnector = FrontendAuthConnector

@@ -38,7 +38,6 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       Given("An agent has an editable business registration details")
       When("The user views the page")
       implicit val request = FakeRequest()
-      implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
       val html = views.html.review_details_non_uk_agent("ATED", reviewDetails.copy(directMatch = false))
 
