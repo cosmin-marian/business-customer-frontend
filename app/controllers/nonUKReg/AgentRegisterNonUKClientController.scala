@@ -6,6 +6,8 @@ import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.BusinessRegistrationDisplayDetails
 import play.api.{Logger, Play}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.config.RunMode

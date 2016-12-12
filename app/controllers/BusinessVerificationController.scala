@@ -5,6 +5,8 @@ import forms.BusinessVerificationForms._
 import forms._
 import models.{BusinessCustomerContext, Individual, Organisation, ReviewDetails}
 import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
