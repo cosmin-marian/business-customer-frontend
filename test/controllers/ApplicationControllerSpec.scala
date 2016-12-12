@@ -16,11 +16,13 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
     "unauthorised" must {
 
       "respond with an OK" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val result = controllers.ApplicationController.unauthorised().apply(FakeRequest())
         status(result) must equal(OK)
       }
 
       "load the unauthorised page" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val result = controllers.ApplicationController.unauthorised().apply(FakeRequest())
         val content = contentAsString(result)
         val doc = Jsoup.parse(content)

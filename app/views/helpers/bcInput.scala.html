@@ -1,13 +1,13 @@
-@(field: Field, args: (Symbol,Any)*)(implicit lang: Lang, formInstance: Option[Form[_]] = None)
+@(field: Field, args: (Symbol,Any)*)(implicit lang: Lang, formInstance: Option[Form[_]] = None, messages: Messages)
 
 @import play.api.i18n._
 @import views.html.helper._
 @import views.helpers._
 
-@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, lang) }
+@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, messages) }
 @parentField = @{ args.toMap.get('parentField).asInstanceOf[Option[Field]] }
 @errors = @{ FormHelpers.getErrors(field, parentField) }
-@parentElements = @{ parentField.map(pf => FieldElements(pf.id, pf, Html(""), Map(), lang)) }
+@parentElements = @{ parentField.map(pf => FieldElements(pf.id, pf, Html(""), Map(), messages)) }
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x } }
 @labelAfter = @{ elements.args.getOrElse('_labelAfter, false).asInstanceOf[Boolean] }
 @labelHighlight = @{ elements.args.getOrElse('_labelHighlight, false).asInstanceOf[Boolean] }

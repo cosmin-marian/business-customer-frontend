@@ -10,6 +10,9 @@ import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import play.api.i18n.Messages
 
 object ApplicationController extends ApplicationController {
   override val audit: Audit = new Audit(AppName.appName, BusinessCustomerFrontendAuditConnector)
@@ -22,7 +25,7 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
 
   def unauthorised() = UnauthorisedAction {
     implicit request =>
-      Ok(views.html.unauthorised(request))
+      Ok(views.html.unauthorised())
   }
 
   def cancel = UnauthorisedAction { implicit request =>
@@ -68,7 +71,7 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
   }
 
   def signedOut = UnauthorisedAction { implicit request =>
-    Ok(views.html.logout(request))
+    Ok(views.html.logout())
   }
 
   def logoutAndRedirectToHome(service: String) = UnauthorisedAction { implicit request =>
