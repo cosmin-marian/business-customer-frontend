@@ -11,10 +11,10 @@
   @bcErrorSummary(limitedLiabilityPartnershipForm, "bc.business-verification-error.general.llp")
 
   @if(isAgent) {
-    <p class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </p>
+    <div class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </div>
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header") </h1>
   } else {
-    <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </p>
+    <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </div>
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
 
