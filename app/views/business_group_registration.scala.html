@@ -8,7 +8,7 @@
 
 @bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
 
-  <p class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.text", service.toUpperCase) </p>
+  <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.text", service.toUpperCase) </div>
 
   @bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
 
