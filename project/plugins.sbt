@@ -9,6 +9,8 @@ resolvers ++= Seq("hmrc-snapshots" at hmrcRepoHost + "/content/repositories/hmrc
   "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/",
   Resolver.url("hmrc-sbt-plugin-releases", url("https://dl.bintray.com/hmrc/sbt-plugin-releases"))(Resolver.ivyStylePatterns))
 
+resolvers += Resolver.url("scoverage-bintray", url("https://dl.bintray.com/sksamuel/sbt-plugins/"))(Resolver.ivyStylePatterns)
+
 resolvers ++= Seq("sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/")
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.5")
