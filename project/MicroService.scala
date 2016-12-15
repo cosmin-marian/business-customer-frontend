@@ -2,6 +2,7 @@ import sbt.Keys._
 import sbt.Tests.{SubProcess, Group}
 import sbt._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+import play.routes.compiler.StaticRoutesGenerator
 
 trait MicroService {
 
@@ -10,15 +11,17 @@ trait MicroService {
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
   import scoverage.ScoverageSbtPlugin._
   import TestPhases._
+  import play.sbt.routes.RoutesKeys.routesGenerator
 
   val appName: String
   val appVersion: String
 
   lazy val appDependencies : Seq[ModuleID] = ???
-  lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
+  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
   lazy val scoverageSettings = {
+    import scoverage.ScoverageKeys
     Seq(
       ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;views.html.*;app.Routes.*;prod.*;uk.gov.hmrc.*;testOnlyDoNotUseInAppConf.*;forms.*;config.*;models.*;views.*",
       ScoverageKeys.coverageMinimum := 100,
@@ -42,7 +45,8 @@ trait MicroService {
       libraryDependencies ++= appDependencies,
       parallelExecution in Test := false,
       fork in Test := false,
-      retrieveManaged := true
+      retrieveManaged := true,
+      routesGenerator := StaticRoutesGenerator
     )
     .settings(Repositories.playPublishingSettings : _*)
     .settings(inConfig(TemplateTest)(Defaults.testSettings): _*)
@@ -56,7 +60,7 @@ trait MicroService {
       parallelExecution in IntegrationTest := false)
     .settings(SbtBuildInfo(): _*)
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-    .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
+    .settings(resolvers ++= Seq(Resolver.bintrayRepo("hmrc", "releases"), Resolver.jcenterRepo))
 }
 
 private object TestPhases {

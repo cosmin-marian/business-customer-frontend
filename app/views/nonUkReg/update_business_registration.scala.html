@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, redirectUrl: Option[String], isRegisterClient: Boolean)(implicit request: Request[_])
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, redirectUrl: Option[String], isRegisterClient: Boolean)(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._

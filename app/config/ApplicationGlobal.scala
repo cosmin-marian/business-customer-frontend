@@ -13,6 +13,9 @@ import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 
 object ApplicationGlobal extends DefaultFrontendGlobal with RunMode {
 
@@ -25,12 +28,8 @@ object ApplicationGlobal extends DefaultFrontendGlobal with RunMode {
     ApplicationCrypto.verifyConfiguration()
   }
 
-  override def onLoadConfig(config: Configuration, path: File, classLoader: ClassLoader, mode: Mode): Configuration = {
-    super.onLoadConfig(config, path, classLoader, mode)
-  }
-
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.html.global_error(pageTitle, heading, message)
+    views.html.global_error(pageTitle, heading, message)(request, applicationMessages)
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"govuk-tax.$env.metrics")
 
@@ -40,11 +39,11 @@ object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
 }
 
-object BusinessCustomerFrontendLoggingFilter extends FrontendLoggingFilter {
+object BusinessCustomerFrontendLoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport  {
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object BusinessCustomerFrontendAuditFilter extends FrontendAuditFilter with RunMode with AppName {
+object BusinessCustomerFrontendAuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport  {
 
   override lazy val maskedFormFields = Seq.empty
 
