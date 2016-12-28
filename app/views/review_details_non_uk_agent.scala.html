@@ -17,7 +17,9 @@
       @businessDetails.businessName
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.business-name")</span>
+      </a>
     </td>
   </tr>
   <tr>
@@ -41,7 +43,9 @@
       </div>
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.address")</span>
+      </a>
     </td>
   </tr>
   <tr>
@@ -58,7 +62,9 @@
       }
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="overseas-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="overseas-edit">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.overseas-tax-reference")</span>
+      </a>
     </td>
   </tr>
 </table>
