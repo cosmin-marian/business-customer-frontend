@@ -18,7 +18,9 @@
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
 
-  <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
+  <div class="form-group">
+   <span class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </span>
+  </div>
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
