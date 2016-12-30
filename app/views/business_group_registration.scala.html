@@ -10,9 +10,9 @@
 
   <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.text", service.toUpperCase) </div>
 
-  @bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
-
   <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+
+  @bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
 
   @form(action = controllers.routes.BusinessRegUKController.send(service, displayDetails.businessType)) {
 

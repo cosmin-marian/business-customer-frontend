@@ -8,13 +8,13 @@
 
 @bcMain(title = Messages("bc.nrl.title"), service = Some(service)) {
 
-@bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
-
   @form(action = controllers.routes.NRLQuestionController.continue(service)) {
 
     <div class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</div>
 
     <h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
+
+    @bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
 
     <div class="form-group" id="paysSA">
 

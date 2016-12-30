@@ -8,8 +8,6 @@
 
 @bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-SOP-header")}, service = Some(service)) {
 
-@bcErrorSummary(soleTraderForm, "bc.business-verification-error.general")
-
   @if(isAgent) {
     <div class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </div>
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header")</h1>
@@ -17,6 +15,8 @@
     <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </div>
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-SOP-header") </h1>
   }
+
+  @bcErrorSummary(soleTraderForm, "bc.business-verification-error.general")
 
   @if(!isAgent && service.toUpperCase == "ATED"){
     <p class="lede" id="business-type-paragraph-nrl"> @Messages("bc.business-verification-lede.nrl") </p>
