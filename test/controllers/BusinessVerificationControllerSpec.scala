@@ -63,12 +63,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.title() must be("Select your business type")
             document.getElementById("business-verification-text").text() must be("ATED registration")
             document.getElementById("business-verification-header").text() must be("Select your business type")
-            document.getElementById("not-listed").text() must be("What if I am a unit trust or collective investment vehicle?")
-            document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
             document.select(".block-label").text() must include("Limited company")
             document.select(".block-label").text() must include("Limited liability partnership")
             document.select(".block-label").text() must include("partnership")
             document.select(".block-label").text() must include("I have an overseas company without a UK Unique Taxpayer Reference")
+            document.select(".block-label").text() must include("Unit trust or collective investment vehicle")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
           }
@@ -82,8 +81,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.title() must be("Select a business type for your agency")
             document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
             document.getElementById("business-verification-agent-header").text() must be("Select a business type for your agency")
-            document.getElementById("not-listed").text() must be("What if I am a unit trust or collective investment vehicle?")
-            document.getElementById("not-listed-text").text() must be("If your business is a unit trust or collective investment vehicle then select limited company.")
             document.select(".block-label").text() must include("Limited company")
             document.select(".block-label").text() must include("Sole trader / self-employed")
             document.select(".block-label").text() must include("Limited liability partnership")
@@ -321,6 +318,65 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'.")
           document.getElementById("cotaxUTR").attr("type") must be("number")
           document.getElementById("submit").text() must include("Continue")
+        }
+      }
+
+    }
+
+    "when selecting Unit Trust option" must {
+
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("UT", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "UT"}"""))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "fail with a bad request when UT is selected for an Sa user" in {
+        continueWithAuthorisedSaUserJson("UT", FakeRequest().withJsonBody(Json.parse(
+          """
+            |{
+            |  "businessType": "UT",
+            |  "isSaAccount": "true",
+            |  "isOrgAccount": "false"
+            |}
+          """.stripMargin))) { result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("You are logged in as an individual with your Government Gateway ID. You cannot select Limited company/Partnership as your business type. You need to have an organisation Government Gateway ID.")
+        }
+      }
+
+      "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects UT" in {
+        continueWithAuthorisedSaOrgUserJson("UT", FakeRequest().withJsonBody(Json.parse(
+          """
+            |{
+            |  "businessType": "UT",
+            |  "isSaAccount": "true",
+            |  "isOrgAccount":"true"
+            |}
+          """.stripMargin))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "add additional form fields to the screen for entry" in {
+        businessLookupWithAuthorisedUser("UT") { result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+          document.getElementById("businessName_field").text() must include("Registered company name")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
+          document.getElementById("cotaxUTR_field").text() must include("Corporation Tax Unique Taxpayer Reference (UTR)")
+          document.getElementById("utr-help-question").text() must include("Where to find your UTR")
+          document.getElementById("utr-help-questionAnswer").text() must include("It is issued by HMRC when you register your business or for Self Assessment. Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10. Your accountant or tax manager would normally have your UTR.")
+          document.getElementById("cotaxUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'.")
+          document.getElementById("cotaxUTR").attr("type") must be("number")
+          document.getElementById("submit").text() must include("Continue")
+
         }
       }
 
