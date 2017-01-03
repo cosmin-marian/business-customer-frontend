@@ -46,6 +46,7 @@ trait BusinessVerificationController extends BaseController {
           case Some("OBP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP"))
           case Some("LLP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP"))
           case Some("LP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP"))
+          case Some("UT") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT"))
           case _ => Redirect(controllers.routes.HomeController.homePage(service))
         }
       }
@@ -60,6 +61,7 @@ trait BusinessVerificationController extends BaseController {
       case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, bcContext.user.isAgent, service, businessType))
       case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType))
       case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType))
+      case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType))
     }
   }
 
@@ -71,6 +73,7 @@ trait BusinessVerificationController extends BaseController {
       case "LP" => lpFormHandling(limitedPartnershipForm, businessType, service)
       case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service)
       case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service)
+      case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service)
     }
   }
 

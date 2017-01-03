@@ -389,6 +389,23 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
+    "if the Unit Trust form  is successfully validated:" must {
+      "for successful match, status should be 303 and  user should be redirected to review details page" in {
+        submitWithAuthorisedUserSuccessOrg("UT", request.withFormUrlEncodedBody("cotaxUTR" -> s"$matchUtr", "businessName" -> "Smith & Co")) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+        }
+      }
+      "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
+        submitWithAuthorisedUserFailure("UT", request.withFormUrlEncodedBody("cotaxUTR" -> s"$noMatchUtr", "businessName" -> "Smith & Co")) {
+          result =>
+            status(result) must be(BAD_REQUEST)
+            val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-type-ltd-form-error").text() must be("Your business details have not been found. Check that your details are correct and try again.")
+        }
+      }
+    }
   }
 
   def submitWithAuthorisedUserSuccessOrg(businessType: String, fakeRequest: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
@@ -403,6 +420,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "OBP" => matchSuccessResponseOBP
       case "LTD" => matchSuccessResponseLTD
       case "LP" => matchSuccessResponseLP
+      case "UT" => matchSuccessResponseLTD
     }
     when(mockBusinessMatchingService.matchBusinessWithOrganisationName(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
     (Matchers.any(), Matchers.any())).thenReturn(Future.successful(matchSuccessResponse))
