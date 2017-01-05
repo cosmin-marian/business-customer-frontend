@@ -180,6 +180,12 @@ object BusinessRegistrationForms {
     )(NRLQuestion.apply)(NRLQuestion.unapply)
   )
 
+  val paySAQuestionForm = Form(
+    mapping(
+      "paySA" -> optional(boolean).verifying(Messages("bc.nonuk.paySA.not-selected.error"), a => a.isDefined)
+    )(PaySAQuestion.apply)(PaySAQuestion.unapply)
+  )
+
   val clientPermissionForm = Form(
     mapping(
       "permission" -> optional(boolean).verifying(Messages("bc.permission.not-selected.error"), a => a.isDefined)

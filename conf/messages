@@ -295,6 +295,13 @@ bc.nrl.title = Do you live outside of the UK for 6 months or more a year and rec
 bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
 bc.nrl.paysSA.not-selected.error = You must select an option.
 
+# non-uk client - paySA question page
+bc.nonuk.paySA.subheader = ATED registration
+bc.nonuk.paySA.header = Do you pay tax in the UK through self assessment?
+bc.nonuk.paySA.title = Do you pay tax in the UK through self assessment?
+bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question.
+bc.nonuk.paySA.not-selected.error = You must answer the self assessment question.
+
 ## client permission page
 bc.permission.title = Do you have permission to register for your client?
 bc.permission.subheader = Add a client

@@ -21,7 +21,7 @@ trait NRLQuestionController extends BaseController {
       formWithErrors => BadRequest(views.html.nrl_question(formWithErrors, service)),
       formData => {
         val paysSa = formData.paysSA.getOrElse(false)
-        if (paysSa) Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP"))
+        if (paysSa) Redirect(controllers.nonUKReg.routes.PaySAQuestionController.view(service))
         else Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
       }
     )
