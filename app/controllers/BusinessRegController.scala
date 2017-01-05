@@ -3,7 +3,7 @@ package controllers
 import config.FrontendAuthConnector
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
+import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
@@ -27,12 +27,12 @@ trait BusinessRegController extends BaseController {
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
+        businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }

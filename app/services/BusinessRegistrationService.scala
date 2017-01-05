@@ -26,19 +26,20 @@ trait BusinessRegistrationService {
   def nonUKBusinessType: String
 
   def registerBusiness(registerData: BusinessRegistration,
+                       overseasCompany: OverseasCompany,
                        isGroup: Boolean,
                        isNonUKClientRegisteredByAgent: Boolean = false,
                        service: String,
                        isBusinessDetailsEditable: Boolean = false)
                       (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
-    val businessRegisterDetails = createBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
+    val businessRegisterDetails = createBusinessRegistrationRequest(registerData, overseasCompany, isGroup, isNonUKClientRegisteredByAgent)
 
     for {
       registerResponse <- businessCustomerConnector.register(businessRegisterDetails, service, isNonUKClientRegisteredByAgent)
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse.sapNumber,
-          registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData, isBusinessDetailsEditable)
+          registerResponse.safeId, registerResponse.agentReferenceNumber, isGroup, registerData, overseasCompany, isBusinessDetailsEditable)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
     } yield {
@@ -48,13 +49,14 @@ trait BusinessRegistrationService {
 
 
   def updateRegisterBusiness(registerData: BusinessRegistration,
+                             overseasCompany: OverseasCompany,
                              isGroup: Boolean,
                              isNonUKClientRegisteredByAgent: Boolean = false,
                              service: String,
                              isBusinessDetailsEditable: Boolean = false)
                             (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[ReviewDetails] = {
 
-    val updateRegisterDetails = createUpdateBusinessRegistrationRequest(registerData, isGroup, isNonUKClientRegisteredByAgent)
+    val updateRegisterDetails = createUpdateBusinessRegistrationRequest(registerData, overseasCompany, isGroup, isNonUKClientRegisteredByAgent)
 
     for {
       oldReviewDetials <- dataCacheConnector.fetchAndGetBusinessDetailsForSession
@@ -65,7 +67,7 @@ trait BusinessRegistrationService {
       }
       reviewDetailsCache <- {
         val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId,
-          registerResponse.agentReferenceNumber, isGroup, registerData,
+          registerResponse.agentReferenceNumber, isGroup, registerData, overseasCompany,
           isBusinessDetailsEditable)
         dataCacheConnector.saveReviewDetails(reviewDetails)
       }
@@ -75,19 +77,18 @@ trait BusinessRegistrationService {
   }
 
 
-  def getDetails()(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Option[(String, BusinessRegistration)]] = {
+  def getDetails()(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Option[(String, BusinessRegistration, OverseasCompany)]] = {
 
-    def createBusinessRegistration(reviewDetailsOpt: Option[ReviewDetails]) : Option[(String, BusinessRegistration)] = {
+    def createBusinessRegistration(reviewDetailsOpt: Option[ReviewDetails]) : Option[(String, BusinessRegistration, OverseasCompany)] = {
       reviewDetailsOpt.flatMap( details =>
         details.businessType.map{ busType =>
 
-          (busType, BusinessRegistration(details.businessName,
-            details.businessAddress,
-            Some(details.identification.isDefined),
+          val overseasCompany = OverseasCompany(Some(details.identification.isDefined),
             details.identification.map(_.idNumber),
             details.identification.map(_.issuingInstitution),
             details.identification.map(_.issuingCountryCode))
-            )
+
+          (busType, BusinessRegistration(details.businessName, details.businessAddress), overseasCompany)
         }
       )
     }
@@ -98,6 +99,7 @@ trait BusinessRegistrationService {
 
 
   private def createUpdateBusinessRegistrationRequest(registerData: BusinessRegistration,
+                                                      overseasCompany: OverseasCompany,
                                                       isGroup: Boolean,
                                                       isNonUKClientRegisteredByAgent: Boolean = false)
                                                      (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): UpdateRegistrationDetailsRequest = {
@@ -111,11 +113,12 @@ trait BusinessRegistrationService {
       contactDetails = EtmpContactDetails(),
       isAnAgent = if (isNonUKClientRegisteredByAgent) false else bcContext.user.isAgent,
       isAGroup = isGroup,
-      identification = getEtmpIdentification(registerData)
+      identification = getEtmpIdentification(overseasCompany, registerData.businessAddress)
     )
   }
 
   private def createBusinessRegistrationRequest(registerData: BusinessRegistration,
+                                                overseasCompany: OverseasCompany,
                                                 isGroup: Boolean,
                                                 isNonUKClientRegisteredByAgent: Boolean = false)
                                                (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): BusinessRegistrationRequest = {
@@ -126,7 +129,7 @@ trait BusinessRegistrationService {
       address = getEtmpBusinessAddress(registerData.businessAddress),
       isAnAgent = if (isNonUKClientRegisteredByAgent) false else bcContext.user.isAgent,
       isAGroup = isGroup,
-      identification = getEtmpIdentification(registerData),
+      identification = getEtmpIdentification(overseasCompany, registerData.businessAddress),
       contactDetails = EtmpContactDetails()
     )
   }
@@ -136,12 +139,13 @@ trait BusinessRegistrationService {
                                   agentReferenceNumber: Option[String],
                                   isGroup: Boolean,
                                   registerData: BusinessRegistration,
+                                  overseasCompany: OverseasCompany,
                                   isBusinessDetailsEditable: Boolean): ReviewDetails = {
 
-    val identification = registerData.businessUniqueId.map( busUniqueId =>
+    val identification = overseasCompany.businessUniqueId.map( busUniqueId =>
       Identification(busUniqueId,
-        registerData.issuingInstitution.getOrElse(""),
-        registerData.issuingCountry.getOrElse("")
+        overseasCompany.issuingInstitution.getOrElse(""),
+        overseasCompany.issuingCountry.getOrElse("")
       )
     )
 
@@ -167,11 +171,11 @@ trait BusinessRegistrationService {
       countryCode = businessAddress.country)
   }
 
-  private def getEtmpIdentification(registerData: BusinessRegistration) = {
-    if (registerData.businessUniqueId.isDefined || registerData.issuingInstitution.isDefined) {
-      Some(EtmpIdentification(idNumber = registerData.businessUniqueId.getOrElse(""),
-        issuingInstitution = registerData.issuingInstitution.getOrElse(""),
-        issuingCountryCode = registerData.issuingCountry.getOrElse(registerData.businessAddress.country)))
+  private def getEtmpIdentification(overseasCompany: OverseasCompany, businessAddress: Address) = {
+    if (overseasCompany.businessUniqueId.isDefined || overseasCompany.issuingInstitution.isDefined) {
+      Some(EtmpIdentification(idNumber = overseasCompany.businessUniqueId.getOrElse(""),
+        issuingInstitution = overseasCompany.issuingInstitution.getOrElse(""),
+        issuingCountryCode = overseasCompany.issuingCountry.getOrElse(businessAddress.country)))
     } else {
       None
     }

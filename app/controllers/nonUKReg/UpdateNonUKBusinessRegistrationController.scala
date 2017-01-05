@@ -4,7 +4,7 @@ import config.FrontendAuthConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
+import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
 import play.api.Logger
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -56,12 +56,12 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
   def update(service: String, redirectUrl : Option[String], isRegisterClient: Boolean) = AuthAction(service).async { implicit bcContext =>
 
-    BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, isRegisterClient), redirectUrl, isRegisterClient)))
       },
       registerData => {
-        businessRegistrationService.updateRegisterBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
+        businessRegistrationService.updateRegisterBusiness(registerData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
           redirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)
             case _ => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))

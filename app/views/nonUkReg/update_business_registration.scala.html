@@ -85,46 +85,6 @@
     '_emptyValueText -> Messages("bc.non-uk-reg.country.select"),
     '_label -> Html(Messages("bc.non-uk-reg.country")))
 
-    <div class="form-group" id="hasBusinessUniqueId">
-
-      @bcInputRadioGroup(businessRegistrationForm("hasBusinessUniqueId"),
-      Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),
-      '_legend -> Messages("bc.non-uk-reg.hasBusinessUniqueId"),
-      '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
-      '_fieldsetQuestion -> Messages("bc.non-uk-reg.hasBusinessUniqueId.help.question"),
-      '_HelpQuestionAnswer -> Html(Messages("bc.non-uk-reg.hasBusinessUniqueId.help.answer")),
-      '_groupClass -> "inline",
-      '_labelClass -> "block-label",
-      '_labelAfter -> true)
-
-    </div>
-
-    <div class="form-group">
-
-      <div id="hidden-identifiers" class="indent">
-
-        @bcInput(businessRegistrationForm("businessUniqueId"),
-        '_label ->  Html(Messages("bc.non-uk-reg.businessUniqueId")),
-        '_id -> "businessUniqueId",
-        '_hintText -> Messages("bc.non-uk-reg.businessUniqueId.hint"),
-        '_showConstraints -> false)
-
-        @bcDropdown(businessRegistrationForm("issuingCountry"),
-        elementOptions = displayDetails.listOfIsoCode,
-        displayEmptyValue = true,
-        '_id -> "issuingCountry",
-        '_emptyValueText -> Messages("bc.non-uk-reg.country.select"),
-        '_label -> Html(Messages("bc.non-uk-reg.issuingCountry")))
-
-        @bcInput(businessRegistrationForm("issuingInstitution"),
-        '_label ->  Html(Messages("bc.non-uk-reg.issuingInstitution")),
-        '_id -> "issuingInstitution",
-        '_hintText -> Messages("bc.non-uk-reg.issuingInstitution.hint"),
-        '_showConstraints -> false)
-
-      </div>
-
-    </div>
 
   </div>
 

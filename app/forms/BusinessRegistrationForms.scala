@@ -46,14 +46,19 @@ object BusinessRegistrationForms {
         "country" -> text.
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
 
-      )(Address.apply)(Address.unapply),
+      )(Address.apply)(Address.unapply)
+    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
+  )
+
+  val overseasCompanyForm = Form(
+    mapping(
       "hasBusinessUniqueId" -> optional(boolean).verifying(Messages("bc.business-registration-error.hasBusinessUniqueId.not-selected"), x => x.isDefined),
       "businessUniqueId" -> optional(text)
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
         .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40)),
       "issuingCountry" -> optional(text)
-    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
+    )(OverseasCompany.apply)(OverseasCompany.unapply)
   )
 
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
@@ -63,23 +68,19 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
-    validateNonUkIdentifiers(validateCountryNonUK(registrationData))
+  def validateNonUK(registrationData: Form[OverseasCompany]): Form[OverseasCompany] = {
+    validateNonUkIdentifiers(registrationData)
   }
 
   def validateUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
-    validateUkIdentifiers(validatePostCode(registrationData))
+    validatePostCode(registrationData)
   }
 
-  def validateUkIdentifiers(registrationData: Form[BusinessRegistration]) = {
-    registrationData
-  }
-
-  def validateNonUkIdentifiers(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
+  def validateNonUkIdentifiers(registrationData: Form[OverseasCompany]): Form[OverseasCompany] = {
     validateNonUkIdentifiersInstitution(validateNonUkIdentifiersCountry(validateNonUkIdentifiersId(registrationData)))
   }
 
-  def validateNonUkIdentifiersInstitution(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersInstitution(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -99,7 +100,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUkIdentifiersCountry(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersCountry(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -121,7 +122,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUkIdentifiersId(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersId(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -160,7 +161,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
+  def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
     } filterNot {

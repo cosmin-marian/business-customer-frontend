@@ -79,7 +79,6 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -95,11 +94,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
                        line2: String = "line-2",
                        line3: String = "",
                        line4: String = "",
-                       country: String = "FR",
-                       hasBusinessUniqueId: Boolean = true,
-                       bUId: String = "some-id",
-                       issuingInstitution: String = "some-institution",
-                       issuingCountry: String = "FR") =
+                       country: String = "FR") =
           Json.parse(
             s"""
                |{
@@ -110,11 +105,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
                |    "line_3": "$line3",
                |    "line_4": "$line4",
                |    "country": "$country"
-               |  },
-               |  "hasBusinessUniqueId": $hasBusinessUniqueId,
-               |  "businessUniqueId": "$bUId",
-               |  "issuingInstitution": "$issuingInstitution",
-               |  "issuingCountry": "$issuingCountry"
+               |  }
                |}
           """.stripMargin)
 
@@ -124,7 +115,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(businessName = "", line1 = "", line2 = "", country = "", bUId = "", issuingInstitution = "", issuingCountry = "")
+          val inputJson = createJson(businessName = "", line1 = "", line2 = "", country = "")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
@@ -133,9 +124,6 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
             contentAsString(result) must include("You must enter an address into Address line 2.")
             contentAsString(result) mustNot include("Postcode must be entered")
             contentAsString(result) must include("You must enter a country")
-            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter a Business Unique Identifier.")
           }
         }
 
@@ -146,11 +134,8 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
-          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address"),
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
-          (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
-        )
+          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
+         )
 
         formValidationInputDataSet.foreach { data =>
           s"${data._2}" in {
@@ -171,18 +156,10 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           }
         }
 
-        "valid registration details are entered and BUId question is selected as No, continue button must redirect to service specific redirect url" in {
-          implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
-          }
-        }
 
         "throw exception, if redirect url is not defined" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
+          val inputJson = createJson()
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "undefined", None) { result =>
             val thrown = the[RuntimeException] thrownBy await(result)
             thrown.getMessage must be("Service does not exist for : undefined. This should be in the conf file against govuk-tax.$env.services.{1}.serviceRedirectUrl")
@@ -257,7 +234,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

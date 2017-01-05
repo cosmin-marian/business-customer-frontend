@@ -27,13 +27,18 @@ object Address {
 }
 
 case class BusinessRegistration(businessName: String,
-                                businessAddress: Address,
-                                hasBusinessUniqueId: Option[Boolean],
-                                businessUniqueId: Option[String],
-                                issuingInstitution: Option[String],
-                                issuingCountry: Option[String])
+                                businessAddress: Address)
 
 object BusinessRegistration {
   implicit val formats = Json.format[BusinessRegistration]
 }
 
+
+case class OverseasCompany(hasBusinessUniqueId: Option[Boolean] = Some(false),
+                          businessUniqueId: Option[String] = None,
+                          issuingInstitution: Option[String] = None,
+                          issuingCountry: Option[String] = None)
+
+object OverseasCompany {
+  implicit val formats = Json.format[OverseasCompany]
+}

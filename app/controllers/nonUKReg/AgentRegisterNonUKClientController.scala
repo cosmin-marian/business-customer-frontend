@@ -4,7 +4,7 @@ import config.FrontendAuthConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
 import play.api.{Logger, Play}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -34,12 +34,12 @@ trait AgentRegisterNonUKClientController extends BaseController with RunMode {
   }
 
   def submit(service: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails)))
       },
       registerData => {
-        businessRegistrationService.registerBusiness(registerData, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
+        businessRegistrationService.registerBusiness(registerData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
           val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
           serviceRedirectUrl match {
             case Some(serviceUrl) => Redirect(serviceUrl)

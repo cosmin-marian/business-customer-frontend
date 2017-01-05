@@ -45,6 +45,9 @@ POST        /register/non-uk-client/paySA/:service                              
 GET         /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.view(service: String)
 POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String)
 
+GET         /register/non-uk-client/overseas-company/:service                   controllers.nonUKReg.OverseasCompanyRegController.view(service: String)
+POST        /register/non-uk-client/overseas-company/:service                   controllers.nonUKReg.OverseasCompanyRegController.send(service: String)
+
 GET         /agent/register/non-uk-client/:service/edit                         controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.editAgent(service: String)
 GET         /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)
 POST        /register/non-uk-client/:service/edit/:isRegisterClient             controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.update(service: String, redirectUrl : Option[String] ?= None, isRegisterClient : Boolean)
