@@ -70,6 +70,10 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
     Ok(views.html.feedbackThankYou(service))
   }
 
+  def keepAlive = UnauthorisedAction { implicit request =>
+    Ok("OK")
+    }
+
   def signedOut = UnauthorisedAction { implicit request =>
     Ok(views.html.logout())
   }
