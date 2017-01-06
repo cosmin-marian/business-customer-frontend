@@ -189,3 +189,95 @@ select {
    overflow: hidden;
    position: absolute !important;
 }
+
+
+/* Timeout Modal */
+
+
+@media (max-width: 640px){
+  .timeout-dialog {
+    width: 280px !important;
+  }
+}
+
+.timeout-dialog  ~ .ui-widget-overlay {
+
+  top: 0;
+  left: 0;
+  background-color: #000;
+  filter: alpha(opacity=40);
+  -khtml-opacity: 0.4;
+  -moz-opacity: 0.4;
+  opacity: 0.4;
+
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-front {
+    z-index: 100;
+}
+
+html.noScroll {
+  overflow: hidden;
+}
+
+.timeout-dialog {
+  position: absolute;
+  padding: 40px 30px 40px 30px;
+  border: 1px solid #0b0c0c;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0px 5px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0px 5px rgba(0, 0, 0, 0.5);
+}
+
+.ui-dialog-titlebar-close{
+  display: none;
+}
+
+.timeout-dialog .ui-dialog-title {
+  display: block;
+  margin-bottom: 1em;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.timeout-dialog .button{
+  margin-bottom: 1em;
+}
+
+.timeout-dialog .button.button--link{
+  margin: 0;
+  padding: 0;
+}
+
+.timeout-dialog p {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.31579;
+    font-weight: 400;
+    text-transform: none;
+    margin: .63158em 0;
+}
+
+/* Modal Styles */
+
+.md-modal-heading {
+    padding: 0;
+    padding-bottom: 5px;
+    font-family: "nta", Arial, sans-serif;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 400;
+    text-transform: none;
+    font-weight: 700;
+}
+
+.md-modal-cancel {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: underline;
+}
