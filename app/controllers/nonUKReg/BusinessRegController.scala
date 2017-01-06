@@ -1,6 +1,7 @@
-package controllers
+package controllers.nonUKReg
 
 import config.FrontendAuthConnector
+import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
@@ -22,14 +23,14 @@ trait BusinessRegController extends BaseController {
   def businessRegistrationService: BusinessRegistrationService
 
   def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+    Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
+        Future.successful(BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
         businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {

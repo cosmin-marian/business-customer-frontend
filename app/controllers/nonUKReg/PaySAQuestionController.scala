@@ -13,7 +13,7 @@ object PaySAQuestionController extends PaySAQuestionController {
 trait PaySAQuestionController extends BaseController {
 
   def view(service: String) = AuthAction(service) { implicit bcContext =>
-    if (bcContext.user.isAgent) Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
+    if (bcContext.user.isAgent) Redirect(controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
     else Ok(views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service))
   }
 
@@ -23,7 +23,7 @@ trait PaySAQuestionController extends BaseController {
       formData => {
         val paysSa = formData.paySA.getOrElse(false)
         if (paysSa) Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP"))
-        else Redirect(controllers.routes.BusinessRegController.register(service, "NUK"))
+        else Redirect(controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
       }
     )
   }

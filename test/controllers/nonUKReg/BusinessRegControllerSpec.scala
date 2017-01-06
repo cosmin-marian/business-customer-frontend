@@ -1,4 +1,4 @@
-package controllers
+package controllers.nonUKReg
 
 import java.util.UUID
 

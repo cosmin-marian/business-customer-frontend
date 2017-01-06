@@ -1,14 +1,16 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
-import controllers.{BaseController, BusinessRegController}
+import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{Address, BusinessRegistration}
+import play.api.{Logger, Play}
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import services.BusinessRegistrationService
+import uk.gov.hmrc.play.config.RunMode
 import utils.BCUtils
 
 import scala.concurrent.Future
@@ -18,7 +20,7 @@ object OverseasCompanyRegController extends OverseasCompanyRegController {
   override val businessRegistrationService = BusinessRegistrationService
 }
 
-trait OverseasCompanyRegController extends BaseController {
+trait OverseasCompanyRegController extends BaseController with RunMode {
 
   def businessRegistrationService: BusinessRegistrationService
 
@@ -34,7 +36,8 @@ trait OverseasCompanyRegController extends BaseController {
       },
       overseasCompany => {
         businessRegistrationService.registerBusiness(BusinessRegistration("", Address("","", None, None, None, "")), overseasCompany, isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
-          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          registrationSuccessResponse =>
+            Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
     )

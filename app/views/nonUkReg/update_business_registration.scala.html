@@ -8,7 +8,6 @@
 
 @pageScripts = {
 <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-country-auto-complete.js")'></script>
-<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-registration.js")'></script>
 <script>
     $(document).ready(function() {
       countryCodeAutoComplete("#businessAddress\\.country")
@@ -18,16 +17,6 @@
       var divId1 = "businessAddress\\.country_div"
       var fieldId1 = "businessAddress.country_"
       createLabelForHiddenSelect(divId1, fieldId1, labelText1);
-
-      countryCodeAutoComplete("#issuingCountry")
-      var classOfSelect2 = $('#issuingCountry_').attr('class');
-      $("#issuingCountry").addClass(classOfSelect2)
-      var labelText2 = $("#issuingCountry_field").text();
-      var divId2 = "issuingCountry_div"
-      var fieldId2 = "issuingCountry_"
-      createLabelForHiddenSelect(divId2, fieldId2, labelText2);
-
-      showHideIdentifiersSection();
     });
   </script>
 }
