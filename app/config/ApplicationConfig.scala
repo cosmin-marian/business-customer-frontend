@@ -14,6 +14,8 @@ trait ApplicationConfig {
   val verificationPageBackLink: String
   val verificationPageAgentBackLink: String
   def nonUKClientRegistrationBackLink(service: String): String
+  val defaultTimeoutSeconds: Int
+  val timeoutCountdown: Int
 }
 
 object ApplicationConfig extends ApplicationConfig with ServicesConfig {
@@ -34,5 +36,6 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
   override lazy val verificationPageBackLink = getConfString("ated.serviceReturnUrl", "/ated-subscription/appoint-agent")
   override lazy val verificationPageAgentBackLink = getConfString("ated.serviceAgentReturnUrl", "/ated-subscription/start-agent-subscription")
   override def nonUKClientRegistrationBackLink(service: String) = loadConfig(s"govuk-tax.$env.services.agent-client-mandate-frontend.backLink") + s"/$service"
-
+  override lazy val defaultTimeoutSeconds: Int = loadConfig("defaultTimeoutSeconds").toInt
+  override lazy val timeoutCountdown: Int = loadConfig("timeoutCountdown").toInt
 }
