@@ -302,6 +302,11 @@ bc.nonuk.paySA.title = Do you pay tax in the UK through self assessment?
 bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question.
 bc.nonuk.paySA.not-selected.error = You must answer the self assessment question.
 
+# non-uk client - Overseas Company Identification
+bc.nonuk.overseas.title = Do you have an overseas company registration number?
+bc.nonuk.overseas.subheader = ATED registration
+bc.nonuk.overseas.header = Do you have an overseas company registration number?
+
 ## client permission page
 bc.permission.title = Do you have permission to register for your client?
 bc.permission.subheader = Add a client

@@ -32,7 +32,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
   "OverseasCompanyRegController" must {
 
     "respond to /view" in {
-      val result = route(FakeRequest(GET, s"/business-customer/register/overseas/$serviceName")).get
+      val result = route(FakeRequest(GET, s"/business-customer/register/non-uk-client/overseas-company/$serviceName")).get
       status(result) must not be NOT_FOUND
     }
 
@@ -60,38 +60,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas business details")
-          document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-registration-header").text() must be("Enter your overseas business details")
-          document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("businessAddress.line_1_field").text() must be("Address")
-          document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-          document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-          document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-          document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas company registration number?")
-          document.getElementById("submit").text() must be("Continue")
-        }
-      }
-
-
-      "return business registration view for an agent" in {
-
-        registerWithAuthorisedAgent(serviceName, "NUK") { result =>
-          status(result) must be(OK)
-          val document = Jsoup.parse(contentAsString(result))
-
-          document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-verification-text").text() must be("ATED agency set up")
-          document.getElementById("business-registration-header").text() must be("Enter your overseas agent details")
-          document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("businessAddress.line_1_field").text() must be("Address")
-          document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
-          document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
-          document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
-          document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas company registration number?")
-          document.getElementById("submit").text() must be("Continue")
+          document.title() must be("Do you have an overseas company registration number?")
         }
       }
     }

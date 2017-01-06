@@ -23,11 +23,11 @@
   </script>
 }
 
-@bcMain(title = "title", service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = Messages("bc.nonuk.overseas.title"), service = Some(service), pageScripts = Some(pageScripts)) {
 
 <div class="form-group">
-<div class="heading-sub" id="business-verification-text"> sfd </div>
-<h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> gfh </h1>
+  <div class="heading-sub" id="overseas-subheader"> @Messages("bc.nonuk.overseas.subheader")</div>
+  <h1 class="heading-xlarge" id="overseas-header"> @Messages("bc.nonuk.overseas.header")</h1>
 
   @bcErrorSummary(overseasCompanyForm, "bc.non-uk-reg-error.general")
   
@@ -43,14 +43,14 @@
     <div class="form-group" id="hasBusinessUniqueId">
 
       @bcInputRadioGroup(overseasCompanyForm("hasBusinessUniqueId"),
-      Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),
-      '_legend -> Messages("bc.non-uk-reg.hasBusinessUniqueId"),
-      '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
-      '_fieldsetQuestion -> Messages("bc.non-uk-reg.hasBusinessUniqueId.help.question"),
-      '_HelpQuestionAnswer -> Html(Messages("bc.non-uk-reg.hasBusinessUniqueId.help.answer")),
-      '_groupClass -> "inline",
-      '_labelClass -> "block-label",
-      '_labelAfter -> true)
+        Seq("true" -> Messages("bc.radio.yes.label"),
+        "false" -> Messages("bc.radio.no.label")),
+        '_groupClass -> "inline",
+        '_legend -> Messages("bc.nonuk.overseas.title"),
+        '_legendClass -> "screen-reader-text",
+        '_labelClass -> "block-label",
+        '_labelAfter -> true
+      )
     </div>
 
     <div class="form-group">
