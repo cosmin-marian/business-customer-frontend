@@ -2,7 +2,8 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import models.{Address, ReviewDetails}
+import connectors.BusinessRegCacheConnector
+import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -24,11 +25,11 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   val request = FakeRequest()
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
-    override val businessRegistrationService = mockBusinessRegistrationService
+    override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
   val serviceName: String = "ATED"
@@ -247,9 +248,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+    val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

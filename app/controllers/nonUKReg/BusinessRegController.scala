@@ -1,6 +1,7 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
+import connectors.BusinessRegCacheConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
@@ -15,12 +16,12 @@ import scala.concurrent.Future
 
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
-  override val businessRegistrationService = BusinessRegistrationService
+  override val businessRegistrationCache = BusinessRegCacheConnector
 }
 
 trait BusinessRegController extends BaseController {
 
-  def businessRegistrationService: BusinessRegistrationService
+  def businessRegistrationCache: BusinessRegCacheConnector
 
   def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
     Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
@@ -33,7 +34,7 @@ trait BusinessRegController extends BaseController {
         Future.successful(BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
+        businessRegistrationCache.saveBusinessRegDetails(registrationData).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
