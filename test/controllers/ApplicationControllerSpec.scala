@@ -59,6 +59,15 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
     }
 
+    "Keep Alive" must {
+
+      "respond with an OK" in {
+        val result = controllers.ApplicationController.keepAlive.apply(FakeRequest())
+
+        status(result) must be(OK)
+      }
+    }
+    
     "Logout" must {
 
       "respond with a redirect" in {
