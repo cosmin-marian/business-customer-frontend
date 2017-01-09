@@ -46,11 +46,12 @@ trait BusinessMatchingService {
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String, service: String)
                                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
+    val trimmedUtr = utr.replaceAll(" ", "")
     val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
-      utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
+      utr = trimmedUtr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-      validateAndCache(dataReturned = dataReturned, directMatch = false, Some(utr))
+      validateAndCache(dataReturned = dataReturned, directMatch = false, Some(trimmedUtr))
     }
   }
 
