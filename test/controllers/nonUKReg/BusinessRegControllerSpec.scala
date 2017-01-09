@@ -7,6 +7,7 @@ import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{JsValue, Json}
@@ -20,10 +21,10 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.concurrent.Future
 
 
-class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar  with BeforeAndAfterEach {
 
   val request = FakeRequest()
-  val service = "ATED"
+  val serviceName = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
@@ -32,7 +33,10 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
-  val serviceName: String = "ATED"
+  override def beforeEach(): Unit = {
+    reset(mockAuthConnector)
+    reset(mockBusinessRegistrationCache)
+  }
 
   "BusinessRegController" must {
 
@@ -133,7 +137,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(businessName = "", line1 = "", line2 = "", postcode = "", country = "")
 
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("You must enter a business name")
             contentAsString(result) must include("You must enter an address into Address line 1.")
@@ -157,7 +161,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         formValidationInputDataSet.foreach { data =>
           s"${data._2}" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(data._1)) { result =>
+            submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(data._1)) { result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include(data._3)
             }
@@ -167,18 +171,18 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$service/false")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$serviceName/false")
           }
         }
 
         "If registration details entered are valid and business-identifier question is selected as No, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$service/false")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$serviceName/false")
           }
         }
 
@@ -227,7 +231,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(service: String, businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -241,7 +245,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(service: String, fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -260,7 +264,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserFailure(service: String, fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 

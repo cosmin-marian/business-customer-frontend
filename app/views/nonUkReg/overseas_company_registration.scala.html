@@ -1,4 +1,4 @@
-@(overseasCompanyForm: Form[models.OverseasCompany], service: String, isAgent: Boolean, addClient: Boolean, countryList: List[(String, String)])(implicit request: Request[_], messages: Messages)
+@(overseasCompanyForm: Form[models.OverseasCompany], service: String, isAgent: Boolean, addClient: Boolean, countryList: List[(String, String)], redirectUrl: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -43,7 +43,7 @@
   
   <span class="lede" id="non-uk-reg-lede">fgh</span>
 
-@form(action = controllers.nonUKReg.routes.OverseasCompanyRegController.send(service, addClient)) {
+@form(action = controllers.nonUKReg.routes.OverseasCompanyRegController.send(service, addClient, redirectUrl)) {
 </div>
 
 <div class="form-group">

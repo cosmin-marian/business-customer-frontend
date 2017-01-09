@@ -130,7 +130,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
           }
         }
 
-        "If registration details entered are valid, continue button must redirect to next page" in {
+        "If registration details entered are valid, continue button must redirect to the redirectUrl" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
           sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
@@ -139,6 +139,14 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
           }
         }
 
+        "If registration details entered are valid, continue button must redirect with to next page if no redirectUrl" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson()
+          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails, Some("http://redirectHere")) { result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result) must be(Some("http://redirectHere"))
+          }
+        }
       }
     }
   }
@@ -187,7 +195,8 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
   def sendWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson],
                                     service: String = service,
                                     busRegCache : Option[BusinessRegistration] = None,
-                                    reviewDetails : ReviewDetails)(test: Future[Result] => Any) {
+                                    reviewDetails : ReviewDetails,
+                                    redirectUrl: Option[String] = None)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -196,7 +205,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession(Matchers.any())).thenReturn(Future.successful(busRegCache))
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(reviewDetails))
 
-    val result = TestController.send(service, true).apply(fakeRequest.withSession(
+    val result = TestController.send(service, true, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

@@ -2,7 +2,8 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import models.{Address, ReviewDetails}
+import connectors.BusinessRegCacheConnector
+import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -25,16 +26,16 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
   val request = FakeRequest()
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
   object TestAgentRegisterNonUKClientController extends AgentRegisterNonUKClientController {
     override val authConnector = mockAuthConnector
-    override val businessRegistrationService = mockBusinessRegistrationService
+    override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
-    reset(mockBusinessRegistrationService)
+    reset(mockBusinessRegistrationCache)
   }
 
   val serviceName: String = "ATED"
@@ -152,7 +153,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           val inputJson = createJson()
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
+            redirectLocation(result).get must include("/business-customer/register/non-uk-client/overseas-company/ATED/true?redirectUrl=")
           }
         }
 
@@ -232,10 +233,9 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+    val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
-
+    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",

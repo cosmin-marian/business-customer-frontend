@@ -27,15 +27,15 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
   def businessRegistrationService: BusinessRegistrationService
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def view(service: String, addClient: Boolean) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList))
+  def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service) { implicit bcContext =>
+    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList, redirectUrl))
   }
 
 
-  def send(service: String, addClient: Boolean) = AuthAction(service).async { implicit bcContext =>
+  def send(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList)))
+        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList, redirectUrl)))
       },
       overseasCompany => {
         for {
@@ -43,12 +43,16 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
           reviewDetails <-
             cachedBusinessReg match {
               case Some(businessReg) =>
-                businessRegistrationService.registerBusiness(businessReg, overseasCompany, isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true)
+                businessRegistrationService.registerBusiness(businessReg, overseasCompany, isGroup = false, isNonUKClientRegisteredByAgent = addClient, service, isBusinessDetailsEditable = true)
               case None =>
                 throw new RuntimeException(s"[OverseasCompanyRegController][send] - service :$service. Error : No Cached BusinessRegistration")
             }
          } yield {
-          Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          redirectUrl match {
+            case Some(x) => Redirect(x)
+            case None => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          }
+
         }
       }
     )
