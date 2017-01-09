@@ -35,7 +35,7 @@ trait BusinessRegController extends BaseController {
       },
       registrationData => {
         businessRegistrationCache.saveBusinessRegDetails(registrationData).map {
-          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          registrationSuccessResponse => Redirect(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false))
         }
       }
     )

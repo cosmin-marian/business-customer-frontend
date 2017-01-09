@@ -304,7 +304,9 @@ bc.nonuk.paySA.not-selected.error = You must answer the self assessment question
 
 # non-uk client - Overseas Company Identification
 bc.nonuk.overseas.title = Do you have an overseas company registration number?
-bc.nonuk.overseas.subheader = ATED registration
+bc.nonuk.overseas.agent.subheader = ATED agency set up
+bc.nonuk.overseas.agent.add-client.sub-header = Add a client
+bc.nonuk.overseas.client.subheader = ATED registration
 bc.nonuk.overseas.header = Do you have an overseas company registration number?
 
 ## client permission page

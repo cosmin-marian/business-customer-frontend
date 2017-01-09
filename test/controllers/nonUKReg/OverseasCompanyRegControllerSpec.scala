@@ -40,7 +40,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
   "OverseasCompanyRegController" must {
 
     "respond to /view" in {
-      val result = route(FakeRequest(GET, s"/business-customer/register/non-uk-client/overseas-company/$serviceName")).get
+      val result = route(FakeRequest(GET, s"/business-customer/register/non-uk-client/overseas-company/$serviceName/true")).get
       status(result) must not be NOT_FOUND
     }
 
@@ -148,7 +148,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = TestController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestController.view(serviceName, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -162,7 +162,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    val result = TestController.view(service).apply(FakeRequest().withSession(
+    val result = TestController.view(service, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -176,7 +176,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestController.view(service).apply(FakeRequest().withSession(
+    val result = TestController.view(service, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -196,7 +196,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession(Matchers.any())).thenReturn(Future.successful(busRegCache))
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(reviewDetails))
 
-    val result = TestController.send(service).apply(fakeRequest.withSession(
+    val result = TestController.send(service, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -210,7 +210,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestController.send(service).apply(fakeRequest.withSession(
+    val result = TestController.send(service, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

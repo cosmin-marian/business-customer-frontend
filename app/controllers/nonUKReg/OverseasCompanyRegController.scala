@@ -27,15 +27,15 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
   def businessRegistrationService: BusinessRegistrationService
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def view(service: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, BCUtils.getIsoCodeTupleList))
+  def view(service: String, addClient: Boolean) = AuthAction(service) { implicit bcContext =>
+    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList))
   }
 
 
-  def send(service: String) = AuthAction(service).async { implicit bcContext =>
+  def send(service: String, addClient: Boolean) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service, BCUtils.getIsoCodeTupleList)))
+        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList)))
       },
       overseasCompany => {
         for {

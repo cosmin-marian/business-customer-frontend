@@ -169,7 +169,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           val inputJson = createJson()
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$service/false")
           }
         }
 
@@ -178,7 +178,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           val inputJson = createJson()
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$service/false")
           }
         }
 
