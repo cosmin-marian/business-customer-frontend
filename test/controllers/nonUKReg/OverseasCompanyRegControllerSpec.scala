@@ -121,7 +121,16 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
           }
         }
 
-        "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
+        "If we have no cache then an execption must be thrown" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson()
+          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None, reviewDetails) { result =>
+            val thrown = the[RuntimeException] thrownBy await(result)
+            thrown.getMessage must be("[OverseasCompanyRegController][send] - service :ATED. Error : No Cached BusinessRegistration")
+          }
+        }
+
+        "If registration details entered are valid, continue button must redirect to next page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
           sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
