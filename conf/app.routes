@@ -48,7 +48,10 @@ GET         /agent/register/non-uk-client/:service                              
 POST        /agent/register/non-uk-client/:service                              controllers.nonUKReg.AgentRegisterNonUKClientController.submit(service: String)
 
 GET         /register/non-uk-client/overseas-company/:service/:addClient        controllers.nonUKReg.OverseasCompanyRegController.view(service: String, addClient: Boolean, redirectUrl : Option[String] ?= None)
-POST        /register/non-uk-client/overseas-company/:service/:addClient        controllers.nonUKReg.OverseasCompanyRegController.send(service: String, addClient: Boolean, redirectUrl : Option[String] ?= None)
+POST        /register/non-uk-client/overseas-company/:service/:addClient        controllers.nonUKReg.OverseasCompanyRegController.register(service: String, addClient: Boolean, redirectUrl : Option[String] ?= None)
+
+GET         /register/non-uk-client/edit-overseas-company/:service/:addClient   controllers.nonUKReg.UpdateOverseasCompanyRegController.viewForUpdate(service: String, addClient: Boolean, redirectUrl : Option[String] ?= None)
+POST        /register/non-uk-client/edit-overseas-company/:service/:addClient   controllers.nonUKReg.UpdateOverseasCompanyRegController.update(service: String, addClient: Boolean, redirectUrl : Option[String] ?= None)
 
 GET         /agent/register/non-uk-client/:service/edit                         controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.editAgent(service: String)
 GET         /register/non-uk-client/:service/edit                               controllers.nonUKReg.UpdateNonUKBusinessRegistrationController.edit(service: String, redirectUrl : Option[String] ?= None)

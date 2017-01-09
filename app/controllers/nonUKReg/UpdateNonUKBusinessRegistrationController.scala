@@ -34,7 +34,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
           case Some(detailsTuple) =>
             Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None, false))
           case _ =>
-            Logger.warn(s"[ReviewDetailsController][editAgent] - No registration details found to edit")
+            Logger.warn(s"[UpdateNonUKBusinessRegistrationController][editAgent] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
         }
     }
@@ -47,7 +47,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
           case Some(detailsTuple) =>
             Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, true), redirectUrl, true))
           case _ =>
-            Logger.warn(s"[ReviewDetailsController][edit] - No registration details found to edit")
+            Logger.warn(s"[UpdateNonUKBusinessRegistrationController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
         }
     }
@@ -61,11 +61,20 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
         Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, isRegisterClient), redirectUrl, isRegisterClient)))
       },
       registerData => {
-        businessRegistrationService.updateRegisterBusiness(registerData, OverseasCompany(), isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
-          redirectUrl match {
-            case Some(serviceUrl) => Redirect(serviceUrl)
-            case _ => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-          }
+        businessRegistrationService.getDetails.flatMap{
+          businessDetails =>
+            businessDetails match {
+              case Some(detailsTuple) =>
+                businessRegistrationService.updateRegisterBusiness(registerData, detailsTuple._3, isGroup = false, isNonUKClientRegisteredByAgent = true, service, isBusinessDetailsEditable = true).map { response =>
+                  redirectUrl match {
+                    case Some(serviceUrl) => Redirect(serviceUrl)
+                    case _ => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+                  }
+                }
+              case _ =>
+                Logger.warn(s"[UpdateNonUKBusinessRegistrationController][update] - No registration details found to edit")
+                throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
+            }
         }
       }
     )

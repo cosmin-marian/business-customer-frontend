@@ -96,7 +96,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(bUId = "", issuingInstitution = "", issuingCountry = "")
 
-          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
+          registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
             contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
@@ -114,7 +114,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
         formValidationInputDataSet.foreach { data =>
           s"${data._2}" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(data._1), "ATED", Some(businessReg), reviewDetails) { result =>
+            registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(data._1), "ATED", Some(businessReg), reviewDetails) { result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include(data._3)
             }
@@ -124,7 +124,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
         "If we have no cache then an execption must be thrown" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None, reviewDetails) { result =>
+          registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None, reviewDetails) { result =>
             val thrown = the[RuntimeException] thrownBy await(result)
             thrown.getMessage must be("[OverseasCompanyRegController][send] - service :ATED. Error : No Cached BusinessRegistration")
           }
@@ -133,7 +133,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
         "If registration details entered are valid, continue button must redirect to the redirectUrl" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
+          registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("/business-customer/review-details/ATED"))
           }
@@ -142,7 +142,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
         "If registration details entered are valid, continue button must redirect with to next page if no redirectUrl" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          sendWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails, Some("http://redirectHere")) { result =>
+          registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails, Some("http://redirectHere")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("http://redirectHere"))
           }
@@ -192,7 +192,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     test(result)
   }
 
-  def sendWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson],
+  def registerWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson],
                                     service: String = service,
                                     busRegCache : Option[BusinessRegistration] = None,
                                     reviewDetails : ReviewDetails,
@@ -205,7 +205,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession(Matchers.any())).thenReturn(Future.successful(busRegCache))
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(reviewDetails))
 
-    val result = TestController.send(service, true, redirectUrl).apply(fakeRequest.withSession(
+    val result = TestController.register(service, true, redirectUrl).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -213,13 +213,13 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     test(result)
   }
 
-  def sendWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
+  def registerWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    val result = TestController.send(service, true).apply(fakeRequest.withSession(
+    val result = TestController.register(service, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))

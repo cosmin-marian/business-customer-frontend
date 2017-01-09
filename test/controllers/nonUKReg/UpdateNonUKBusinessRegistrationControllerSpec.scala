@@ -263,18 +263,19 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
         "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
+
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
           }
         }
 
-        "valid registration details are entered and BUId question is selected as No, continue button must redirect to service specific redirect url" in {
+        "If we have no cache then an exception must be thrown" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None, false) { result =>
+            val thrown = the[RuntimeException] thrownBy await(result)
+            thrown.getMessage must be("No Registration Details found")
           }
         }
 
@@ -390,13 +391,25 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"), hasCache: Boolean = true)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val busRegData = BusinessRegistration(businessName = "testName", businessAddress = address)
+    val overseasCompany = OverseasCompany(
+      businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+      hasBusinessUniqueId = Some(true),
+      issuingInstitution = Some("issuingInstitution"),
+      issuingCountry = None
+    )
+    if (hasCache)
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
+    else
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
     when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
