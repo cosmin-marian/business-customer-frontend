@@ -56,12 +56,10 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def register(registerData: BusinessRegistrationRequest, service: String, isNonUKClientRegisteredByAgent: Boolean = false)
               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
 
-    def auditRegisterCall(
-                                   input: BusinessRegistrationRequest,
-                                   response: HttpResponse,
-                                   service: String,
-                                   isNonUKClientRegisteredByAgent: Boolean = false)
-                                 (implicit hc: HeaderCarrier) = {
+    def auditRegisterCall(input: BusinessRegistrationRequest,
+                          response: HttpResponse,
+                          service: String,
+                          isNonUKClientRegisteredByAgent: Boolean = false)(implicit hc: HeaderCarrier) = {
       val eventType = response.status match {
         case OK => EventTypes.Succeeded
         case _ => EventTypes.Failed
@@ -83,6 +81,22 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
           "responseStatus" -> s"${response.status}",
           "responseBody" -> s"${response.body}",
           "status" ->  s"${eventType}"))
+
+      def getAddressPiece(piece: Option[String]):String = {
+        if (piece.isDefined)
+          piece.get
+        else
+          ""
+      }
+
+      sendDataEvent(transactionName = if (input.address.postalCode.isDefined) "manualAddressSubmitted" else "internationalAddressSubmitted",
+        detail = Map(
+          "submittedLine1" -> input.address.addressLine1.toString,
+          "submittedLine2" -> input.address.addressLine2.toString,
+          "submittedLine3" -> getAddressPiece(input.address.addressLine3),
+          "submittedLine4" -> getAddressPiece(input.address.addressLine4),
+          "submittedPostcode" -> getAddressPiece(input.address.postalCode),
+          "submittedCountry" -> input.address.countryCode))
     }
 
     val authLink = bcContext.user.authLink
