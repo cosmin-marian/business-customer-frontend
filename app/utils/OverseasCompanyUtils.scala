@@ -5,9 +5,6 @@ import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 
-/**
-  * Created by paulcarrielies on 11/01/2017.
-  */
 object OverseasCompanyUtils {
   def displayDetails(isAgent: Boolean, addClient: Boolean) = {
 
