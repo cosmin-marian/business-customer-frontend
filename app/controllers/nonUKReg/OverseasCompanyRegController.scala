@@ -5,14 +5,13 @@ import connectors.BusinessRegCacheConnector
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{Address, BusinessRegistration}
 import play.api.{Logger, Play}
 import play.api.Play.current
-import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.config.RunMode
-import utils.BCUtils
+import utils.{OverseasCompanyUtils, BCUtils}
 
 import scala.concurrent.Future
 
@@ -28,14 +27,16 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList, redirectUrl))
+    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
+      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl))
   }
 
 
   def register(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service, bcContext.user.isAgent, addClient, BCUtils.getIsoCodeTupleList, redirectUrl)))
+        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl)))
       },
       overseasCompany => {
         for {
@@ -57,5 +58,6 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
       }
     )
   }
+
 }
 

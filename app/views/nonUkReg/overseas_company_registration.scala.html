@@ -1,4 +1,4 @@
-@(overseasCompanyForm: Form[models.OverseasCompany], service: String, isAgent: Boolean, addClient: Boolean, countryList: List[(String, String)], redirectUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(overseasCompanyForm: Form[models.OverseasCompany], service: String, displayDetails: OverseasCompanyDisplayDetails, countryList: List[(String, String)], redirectUrl: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -23,26 +23,17 @@
   </script>
 }
 
-@bcMain(title = Messages("bc.nonuk.overseas.title"), service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts)) {
 
 <div class="form-group">
 
-  <div class="heading-sub" id="overseas-subheader">
-    @if(isAgent){
-      @if(addClient){
-        @Messages("bc.nonuk.overseas.agent.add-client.sub-header")
-      }else {
-        @Messages("bc.nonuk.overseas.agent.subheader")
-      }
-    }else{
-      @Messages("bc.nonuk.overseas.client.subheader")
-    }</div>
-  <h1 class="heading-xlarge" id="overseas-header"> @Messages("bc.nonuk.overseas.header")</h1>
+  <div class="heading-sub" id="overseas-subheader">@displayDetails.subHeader</div>
+  <h1 class="heading-xlarge" id="overseas-header">@displayDetails.header</h1>
 
   @bcErrorSummary(overseasCompanyForm, "bc.non-uk-reg-error.general")
 
 
-@form(action = controllers.nonUKReg.routes.OverseasCompanyRegController.register(service, addClient, redirectUrl)) {
+@form(action = controllers.nonUKReg.routes.OverseasCompanyRegController.register(service, displayDetails.addClient, redirectUrl)) {
 </div>
 
 <div class="form-group">

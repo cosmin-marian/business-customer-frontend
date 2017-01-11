@@ -2,6 +2,11 @@ package models
 
 import play.api.libs.json.Json
 
+case class OverseasCompanyDisplayDetails(title: String,
+                                         header: String,
+                                         subHeader: String,
+                                         addClient: Boolean)
+
 case class BusinessRegistrationDisplayDetails(businessType: String,
                                               businessRegHeader: String,
                                               businessRegSubHeader: String,
