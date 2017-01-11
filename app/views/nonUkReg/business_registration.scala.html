@@ -7,7 +7,6 @@
 
 @pageScripts = {
   <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-country-auto-complete.js")'></script>
-  <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-registration.js")'></script>
   <script>
     $(document).ready(function() {
       countryCodeAutoComplete("#businessAddress\\.country")
@@ -17,16 +16,6 @@
       var divId1 = "businessAddress\\.country_div"
       var fieldId1 = "businessAddress.country_"
       createLabelForHiddenSelect(divId1, fieldId1, labelText1);
-
-      countryCodeAutoComplete("#issuingCountry")
-      var classOfSelect2 = $('#issuingCountry_').attr('class');
-      $("#issuingCountry").addClass(classOfSelect2)
-      var labelText2 = $("#issuingCountry_field").text();
-      var divId2 = "issuingCountry_div"
-      var fieldId2 = "issuingCountry_"
-      createLabelForHiddenSelect(divId2, fieldId2, labelText2);
-
-      showHideIdentifiersSection();
     });
   </script>
 }
@@ -42,7 +31,7 @@
     <p class="lede" id="business-registration-lede">@Html(businessRegLede)</p>
   }
 
-  @form(action = controllers.routes.BusinessRegController.send(service, displayDetails.businessType)) {
+  @form(action = controllers.nonUKReg.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 
     <div class="form-group">
 
@@ -83,47 +72,6 @@
           '_id -> "businessAddress.country",
           '_emptyValueText -> Messages("bc.business-registration.country.select"),
           '_label -> Html(Messages("bc.business-registration.country")))
-
-        <div class="form-group" id="hasOverseasTaxReference">
-
-          @bcInputRadioGroup(businessRegistrationForm("hasBusinessUniqueId"),
-            Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),
-            '_legend -> Messages("bc.business-registration.hasBusinessUniqueId"),
-            '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
-            '_fieldsetQuestion -> Messages("bc.business-registration.hasBusinessUniqueId.help.question"),
-            '_HelpQuestionAnswer -> Html(Messages("bc.business-registration.hasBusinessUniqueId.help.answer")),
-            '_groupClass -> "inline",
-            '_labelClass -> "block-label",
-            '_labelAfter -> true)
-
-        </div>
-
-        <div class="form-group">
-
-          <div id="hidden-identifiers" class="indent">
-
-            @bcInput(businessRegistrationForm("businessUniqueId"),
-              '_label ->  Html(Messages("bc.business-registration.businessUniqueId")),
-              '_id -> "businessUniqueId",
-              '_hintText -> Messages("bc.business-registration.businessUniqueId.hint"),
-              '_showConstraints -> false)
-
-            @bcDropdown(businessRegistrationForm("issuingCountry"),
-              elementOptions = displayDetails.listOfIsoCode,
-              displayEmptyValue = true,
-              '_id -> "issuingCountry",
-              '_emptyValueText -> Messages("bc.business-registration.country.select"),
-              '_label -> Html(Messages("bc.business-registration.issuingCountry")))
-
-            @bcInput(businessRegistrationForm("issuingInstitution"),
-              '_label ->  Html(Messages("bc.business-registration.issuingInstitution")),
-              '_id -> "issuingInstitution",
-             '_hintText -> Messages("bc.business-registration.issuingInstitution.hint"),
-              '_showConstraints -> false)
-
-          </div>
-
-        </div>
 
       </div>
 

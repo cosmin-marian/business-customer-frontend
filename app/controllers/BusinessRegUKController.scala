@@ -3,7 +3,7 @@ package controllers
 import config.FrontendAuthConnector
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
@@ -22,7 +22,7 @@ trait BusinessRegUKController extends BaseController {
   def businessRegistrationService: BusinessRegistrationService
 
   def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
-    val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
+    val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
     Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
   }
 
@@ -32,7 +32,7 @@ trait BusinessRegUKController extends BaseController {
         Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
+        businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }

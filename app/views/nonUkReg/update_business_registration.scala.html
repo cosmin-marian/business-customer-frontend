@@ -8,7 +8,6 @@
 
 @pageScripts = {
 <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-customer-country-auto-complete.js")'></script>
-<script type="text/javascript" src='@controllers.routes.Assets.at("javascript/business-registration.js")'></script>
 <script>
     $(document).ready(function() {
       countryCodeAutoComplete("#businessAddress\\.country")
@@ -18,16 +17,6 @@
       var divId1 = "businessAddress\\.country_div"
       var fieldId1 = "businessAddress.country_"
       createLabelForHiddenSelect(divId1, fieldId1, labelText1);
-
-      countryCodeAutoComplete("#issuingCountry")
-      var classOfSelect2 = $('#issuingCountry_').attr('class');
-      $("#issuingCountry").addClass(classOfSelect2)
-      var labelText2 = $("#issuingCountry_field").text();
-      var divId2 = "issuingCountry_div"
-      var fieldId2 = "issuingCountry_"
-      createLabelForHiddenSelect(divId2, fieldId2, labelText2);
-
-      showHideIdentifiersSection();
     });
   </script>
 }
@@ -85,46 +74,6 @@
     '_emptyValueText -> Messages("bc.non-uk-reg.country.select"),
     '_label -> Html(Messages("bc.non-uk-reg.country")))
 
-    <div class="form-group" id="hasBusinessUniqueId">
-
-      @bcInputRadioGroup(businessRegistrationForm("hasBusinessUniqueId"),
-      Seq("true" -> Messages("bc.radio.yes.label"), "false" -> Messages("bc.radio.no.label")),
-      '_legend -> Messages("bc.non-uk-reg.hasBusinessUniqueId"),
-      '_fieldsetAttributesHelpQuestion -> "hasBusinessUniqueId-help-question",
-      '_fieldsetQuestion -> Messages("bc.non-uk-reg.hasBusinessUniqueId.help.question"),
-      '_HelpQuestionAnswer -> Html(Messages("bc.non-uk-reg.hasBusinessUniqueId.help.answer")),
-      '_groupClass -> "inline",
-      '_labelClass -> "block-label",
-      '_labelAfter -> true)
-
-    </div>
-
-    <div class="form-group">
-
-      <div id="hidden-identifiers" class="indent">
-
-        @bcInput(businessRegistrationForm("businessUniqueId"),
-        '_label ->  Html(Messages("bc.non-uk-reg.businessUniqueId")),
-        '_id -> "businessUniqueId",
-        '_hintText -> Messages("bc.non-uk-reg.businessUniqueId.hint"),
-        '_showConstraints -> false)
-
-        @bcDropdown(businessRegistrationForm("issuingCountry"),
-        elementOptions = displayDetails.listOfIsoCode,
-        displayEmptyValue = true,
-        '_id -> "issuingCountry",
-        '_emptyValueText -> Messages("bc.non-uk-reg.country.select"),
-        '_label -> Html(Messages("bc.non-uk-reg.issuingCountry")))
-
-        @bcInput(businessRegistrationForm("issuingInstitution"),
-        '_label ->  Html(Messages("bc.non-uk-reg.issuingInstitution")),
-        '_id -> "issuingInstitution",
-        '_hintText -> Messages("bc.non-uk-reg.issuingInstitution.hint"),
-        '_showConstraints -> false)
-
-      </div>
-
-    </div>
 
   </div>
 

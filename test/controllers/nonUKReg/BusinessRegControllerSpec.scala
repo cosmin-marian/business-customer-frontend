@@ -1,11 +1,13 @@
-package controllers
+package controllers.nonUKReg
 
 import java.util.UUID
 
-import models.{Address, ReviewDetails}
+import connectors.BusinessRegCacheConnector
+import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.{JsValue, Json}
@@ -19,19 +21,22 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.concurrent.Future
 
 
-class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar {
+class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar  with BeforeAndAfterEach {
 
   val request = FakeRequest()
-  val service = "ATED"
+  val serviceName = "ATED"
   val mockAuthConnector = mock[AuthConnector]
-  val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
-    override val businessRegistrationService = mockBusinessRegistrationService
+    override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
-  val serviceName: String = "ATED"
+  override def beforeEach(): Unit = {
+    reset(mockAuthConnector)
+    reset(mockBusinessRegistrationCache)
+  }
 
   "BusinessRegController" must {
 
@@ -73,7 +78,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -94,7 +98,6 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasOverseasTaxReference").text() must include("Do you have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -110,11 +113,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
                        line3: String = "",
                        line4: String = "",
                        postcode: String = "12345678",
-                       country: String = "FR",
-                       hasBusinessUniqueId: Boolean = true,
-                       bUId: String = "some-id",
-                       issuingInstitution: String = "some-institution",
-                       issuingCountry: String = "FR") =
+                       country: String = "FR") =
           Json.parse(
             s"""
                |{
@@ -126,11 +125,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
                |    "line_4": "$line4",
                |    "postcode": "$postcode",
                |    "country": "$country"
-               |  },
-               |  "hasBusinessUniqueId": $hasBusinessUniqueId,
-               |  "businessUniqueId": "$bUId",
-               |  "issuingInstitution": "$issuingInstitution",
-               |  "issuingCountry": "$issuingCountry"
+               |  }
                |}
           """.stripMargin)
 
@@ -140,18 +135,15 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(businessName = "", line1 = "", line2 = "", postcode = "", country = "", bUId = "", issuingInstitution = "", issuingCountry = "")
+          val inputJson = createJson(businessName = "", line1 = "", line2 = "", postcode = "", country = "")
 
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("You must enter a business name")
             contentAsString(result) must include("You must enter an address into Address line 1.")
             contentAsString(result) must include("You must enter an address into Address line 2.")
             contentAsString(result) mustNot include("Postcode must be entered")
             contentAsString(result) must include("You must enter a country")
-            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter a Business Unique Identifier.")
           }
         }
 
@@ -163,16 +155,13 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
           (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "A postcode cannot be more than 10 characters."),
-          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address"),
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
-          (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
+          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 
         formValidationInputDataSet.foreach { data =>
           s"${data._2}" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
-            submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(data._1)) { result =>
+            submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(data._1)) { result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include(data._3)
             }
@@ -182,18 +171,18 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$serviceName/false")
           }
         }
 
         "If registration details entered are valid and business-identifier question is selected as No, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
+          val inputJson = createJson()
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+            redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$serviceName/false")
           }
         }
 
@@ -242,7 +231,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithUnAuthorisedUser(service: String, businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
@@ -256,16 +245,16 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(service: String, fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
-    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+    val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -275,7 +264,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     test(result)
   }
 
-  def submitWithAuthorisedUserFailure(fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserFailure(service: String, fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 

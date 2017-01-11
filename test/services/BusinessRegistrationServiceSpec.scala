@@ -94,10 +94,11 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       busRegDetails.businessAddress.postcode must be (None)
       busRegDetails.businessAddress.country must be ("GB")
 
-      busRegDetails.hasBusinessUniqueId must be (Some(true))
-      busRegDetails.businessUniqueId must be (Some("123345"))
-      busRegDetails.issuingCountry must be ( Some("FR"))
-      busRegDetails.issuingInstitution must be (Some("IssInst"))
+      val overseasCompany = busReg.get._3
+      overseasCompany.hasBusinessUniqueId must be (Some(true))
+      overseasCompany.businessUniqueId must be (Some("123345"))
+      overseasCompany.issuingCountry must be ( Some("FR"))
+      overseasCompany.issuingInstitution must be (Some("IssInst"))
     }
 
   }
@@ -115,19 +116,21 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockBusinessCustomerConnector.register(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
 
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(true),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = Some("GB")
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val reviewDetails = await(regResult)
 
@@ -140,19 +143,20 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
 
       when(mockBusinessCustomerConnector.register(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(true),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = Some("GB")
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
 
       val reviewDetails = await(regResult)
 
@@ -164,18 +168,19 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockBusinessCustomerConnector.register(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(false),
         businessUniqueId = None,
         issuingInstitution = None,
         issuingCountry = None
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
       val reviewDetails = await(regResult)
 
       reviewDetails.businessName must be(busRegData.businessName)
@@ -186,19 +191,20 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       implicit val hc = new HeaderCarrier(sessionId = None)
       when(mockBusinessCustomerConnector.register(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         hasBusinessUniqueId = Some(true),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = None
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 
-      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.registerBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Registration Failed")
@@ -225,19 +231,20 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
 
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(true),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = Some("GB")
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val reviewDetails = await(regResult)
 
@@ -251,19 +258,20 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
       when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(true),
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = Some("GB")
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
 
-      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = true, service)
 
       val reviewDetails = await(regResult)
 
@@ -276,18 +284,19 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
       when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         hasBusinessUniqueId = Some(false),
         businessUniqueId = None,
         issuingInstitution = None,
         issuingCountry = None
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
 
-      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
       val reviewDetails = await(regResult)
 
       reviewDetails.businessName must be(busRegData.businessName)
@@ -298,13 +307,15 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(None))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         hasBusinessUniqueId = Some(true),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = None
       )
-      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Update Registration Failed")
@@ -315,19 +326,20 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
       when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
       val busRegData = BusinessRegistration(businessName = "testName",
-        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+        businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+      )
+      val overseasCompany = OverseasCompany(
         businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
         hasBusinessUniqueId = Some(true),
         issuingInstitution = Some("issuingInstitution"),
         issuingCountry = None
       )
-
       val returnedReviewDetails = new ReviewDetails(businessName = busRegData.businessName, businessType = None, businessAddress = busRegData.businessAddress,
         sapNumber = "sap123", safeId = "safe123", isAGroup = false, agentReferenceNumber = Some("agent123"))
       when(mockDataCacheConnector.saveReviewDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
 
-      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
+      val regResult = TestBusinessRegistrationService.updateRegisterBusiness(busRegData, overseasCompany, isGroup = true, isNonUKClientRegisteredByAgent = false, service)
 
       val thrown = the[InternalServerException] thrownBy await(regResult)
       thrown.getMessage must include("Update Registration Failed")

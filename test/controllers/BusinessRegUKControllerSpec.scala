@@ -112,11 +112,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
                        line3: String = "",
                        line4: String = "",
                        postcode: String = "NE981ZZ",
-                       country: String = "GB",
-                       hasBusinessUniqueId: Boolean = false,
-                       bUId: String = "",
-                       issuingInstitution: String = "",
-                       issuingCountry: String = "") =
+                       country: String = "GB") =
           Json.parse(
             s"""
                |{
@@ -128,11 +124,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
                |    "line_4": "$line4",
                |    "postcode": "$postcode",
                |    "country": "$country"
-               |  },
-               |  "hasBusinessUniqueId": $hasBusinessUniqueId,
-               |  "businessUniqueId": "$bUId",
-               |  "issuingInstitution": "$issuingInstitution",
-               |  "issuingCountry": "$issuingCountry"
+               |  }
                |}
           """.stripMargin)
 
@@ -239,7 +231,7 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(

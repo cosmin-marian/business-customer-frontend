@@ -1,9 +1,11 @@
-package controllers
+package controllers.nonUKReg
 
 import config.FrontendAuthConnector
+import connectors.BusinessRegCacheConnector
+import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{BusinessCustomerContext, BusinessRegistrationDisplayDetails}
+import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
@@ -14,26 +16,26 @@ import scala.concurrent.Future
 
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
-  override val businessRegistrationService = BusinessRegistrationService
+  override val businessRegistrationCache = BusinessRegCacheConnector
 }
 
 trait BusinessRegController extends BaseController {
 
-  def businessRegistrationService: BusinessRegistrationService
+  def businessRegistrationCache: BusinessRegCacheConnector
 
   def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+    Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
   }
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.business_registration(formWithErrors, service, displayDetails(businessType, service))))
+        Future.successful(BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup = false, isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = true).map {
-          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+        businessRegistrationCache.saveBusinessRegDetails(registrationData).map {
+          registrationSuccessResponse => Redirect(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false))
         }
       }
     )

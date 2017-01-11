@@ -145,14 +145,6 @@ bc.business-registration.postcode = Postcode
 bc.business-registration.country = Country
 bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.country.select = please select one country
-bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
-bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
-bc.business-registration.hasBusinessUniqueId = Do you have an overseas company registration number?
-bc.business-registration.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
-bc.business-registration.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
-bc.business-registration.businessUniqueId =Tax Reference
-bc.business-registration.issuingInstitution = Which institution issued the number?
-bc.business-registration.issuingCountry = Which country issued the number?
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -302,6 +294,18 @@ bc.nonuk.paySA.title = Do you pay tax in the UK through self assessment?
 bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question.
 bc.nonuk.paySA.not-selected.error = You must answer the self assessment question.
 
+# non-uk client - Overseas Company Identification
+bc.nonuk.overseas.agent.title = Do you have an overseas company registration number?
+bc.nonuk.overseas.agent.header = Do you have an overseas company registration number?
+bc.nonuk.overseas.agent.subheader = ATED agency set up
+bc.nonuk.overseas.agent.add-client.title = Does your client have an overseas company registration number?
+bc.nonuk.overseas.agent.add-client.header = Does your client have an overseas company registration number?
+bc.nonuk.overseas.agent.add-client.subheader = Add a client
+bc.nonuk.overseas.client.title = Do you have an overseas company registration number?
+bc.nonuk.overseas.client.header = Do you have an overseas company registration number?
+bc.nonuk.overseas.client.subheader = ATED registration
+
+
 ## client permission page
 bc.permission.title = Do you have permission to register for your client?
 bc.permission.subheader = Add a client
@@ -368,8 +372,7 @@ bc.non-uk-reg-error.hasBusinessUniqueId.not-selected = You must select one optio
 bc.non-uk-reg.hasBusinessUniqueId = Do they have an overseas company registration number?
 bc.non-uk-reg.hasBusinessUniqueId.help.question = What is an overseas company registration number?
 bc.non-uk-reg.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
-bc.non-uk-reg.businessUniqueId = Tax Reference
-bc.non-uk-reg.businessUniqueId.hint = Example, the number on the document
-bc.non-uk-reg.issuingInstitution = Institution of issue
+bc.non-uk-reg.businessUniqueId = Overseas company registration number
+bc.non-uk-reg.issuingInstitution = Institution that issued the number
 bc.non-uk-reg.issuingInstitution.hint = For example, an overseas tax department
-bc.non-uk-reg.issuingCountry = Country of issue
+bc.non-uk-reg.issuingCountry = Country that issued the number
