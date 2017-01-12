@@ -104,6 +104,7 @@ bc.business-verification-error.invalidSAUTR=The Self Assessment Unique Taxpayer 
 bc.business-verification-error.invalidCOUTR=The Corporation Tax Unique Taxpayer Reference is not valid.
 bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Unique Taxpayer Reference is not valid.
 bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
+bc.business-registration-error.hasBusinessUniqueId.not-selected=You must select one option
 bc.business-registration-error.businessUniqueId.select=You must enter a Business Unique Identifier.
 bc.business-registration-error.issuingCountry.select=You must enter a country that issued the business unique identifier.
 bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the business unique identifier.
