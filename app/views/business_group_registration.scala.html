@@ -6,7 +6,7 @@
 
 @implicitFormInstance = @{ Some(businessRegistrationForm) }
 
-@bcMain(title = Messages("business-registration.group.title"), service = Some(service)) {
+@bcMain(title = Messages("business-registration.group.title", service.toUpperCase), service = Some(service)) {
 
   <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.text", service.toUpperCase) </div>
 

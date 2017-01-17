@@ -28,14 +28,14 @@ trait UpdateOverseasCompanyRegController extends BaseController with RunMode {
 
   def viewForUpdate(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     Ok(views.html.nonUkReg.update_overseas_company_registration(overseasCompanyForm, service,
-      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl))
+      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
 
     businessRegistrationService.getDetails.map{
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
             Ok(views.html.nonUkReg.update_overseas_company_registration(overseasCompanyForm.fill(detailsTuple._3), service,
-              OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl))
+              OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
           case _ =>
             Logger.warn(s"[UpdateOverseasCompanyRegController][viewForUpdate] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -48,7 +48,7 @@ trait UpdateOverseasCompanyRegController extends BaseController with RunMode {
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.update_overseas_company_registration(formWithErrors, service,
-          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl)))
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl)))
       },
       overseasCompany => {
         businessRegistrationService.getDetails.flatMap{

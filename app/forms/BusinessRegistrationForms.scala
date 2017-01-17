@@ -187,10 +187,4 @@ object BusinessRegistrationForms {
     )(PaySAQuestion.apply)(PaySAQuestion.unapply)
   )
 
-  val clientPermissionForm = Form(
-    mapping(
-      "permission" -> optional(boolean).verifying(Messages("bc.permission.not-selected.error"), a => a.isDefined)
-    )(ClientPermission.apply)(ClientPermission.unapply)
-  )
-
 }

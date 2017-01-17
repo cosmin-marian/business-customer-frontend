@@ -28,7 +28,7 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
 
   def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service) { implicit bcContext =>
     Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
-      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl))
+      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
   }
 
 
@@ -36,7 +36,7 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
-          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient), BCUtils.getIsoCodeTupleList, redirectUrl)))
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl)))
       },
       overseasCompany => {
         for {

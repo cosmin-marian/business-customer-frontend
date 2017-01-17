@@ -6,26 +6,26 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 
 object OverseasCompanyUtils {
-  def displayDetails(isAgent: Boolean, addClient: Boolean) = {
+  def displayDetails(isAgent: Boolean, addClient: Boolean, service: String) = {
 
     (isAgent, addClient) match {
       case (true, true) =>
         OverseasCompanyDisplayDetails(
           Messages("bc.nonuk.overseas.agent.add-client.title"),
           Messages("bc.nonuk.overseas.agent.add-client.header"),
-          Messages("bc.nonuk.overseas.agent.add-client.subheader"),
+          Messages("bc.nonuk.overseas.agent.add-client.subheader", service.toUpperCase),
           addClient)
       case (true, false) =>
         OverseasCompanyDisplayDetails(
           Messages("bc.nonuk.overseas.agent.title"),
           Messages("bc.nonuk.overseas.agent.header"),
-          Messages("bc.nonuk.overseas.agent.subheader"),
+          Messages("bc.nonuk.overseas.agent.subheader", service.toUpperCase),
           addClient)
       case (_, _) =>
         OverseasCompanyDisplayDetails(
           Messages("bc.nonuk.overseas.client.title"),
           Messages("bc.nonuk.overseas.client.header"),
-          Messages("bc.nonuk.overseas.client.subheader"),
+          Messages("bc.nonuk.overseas.client.subheader", service.toUpperCase),
           addClient)
     }
 

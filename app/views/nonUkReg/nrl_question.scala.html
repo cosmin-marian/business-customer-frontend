@@ -10,7 +10,7 @@
 
   @form(action = controllers.nonUKReg.routes.NRLQuestionController.continue(service)) {
 
-    <div class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</div>
+    <div class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader", service.toUpperCase)</div>
 
     <h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
 
