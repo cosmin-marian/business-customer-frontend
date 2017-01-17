@@ -124,8 +124,8 @@ bc.business-registration.agent.non-uk.header = Enter your overseas agent details
 bc.business-registration.lede.text = This is the registered address of your overseas business, you can enter a different address for correspondence on the next page.
 bc.business-registration.lede.update-text = This is the registered address of your overseas business.
 bc.business-registration.user.new-business.header = New business details
-business-registration.group.title = Create AWRS group
-bc.business-registration.user.group.header = Create AWRS group
+business-registration.group.title = Create {0} group
+bc.business-registration.user.group.header = Create {0} group
 bc.business-registration.group.businessName = Group representative name
 bc.business-registration.group.businessName.hintText = This is your registered company name
 bc.business-registration.business.subheader = You need to tell us the details of your business.
@@ -282,14 +282,14 @@ title.dissatisfied=Dissatisfied
 feedback.redirect-startpage= Please return to start page
 
 ## non-resident landlord
-bc.nrl.subheader = ATED registration
+bc.nrl.subheader = {0} registration
 bc.nrl.header = Do you live outside of the UK for 6 months or more a year and receive rental income from the property?
 bc.nrl.title = Do you live outside of the UK for 6 months or more a year and receive rental income from the property?
 bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
 bc.nrl.paysSA.not-selected.error = You must select an option.
 
 # non-uk client - paySA question page
-bc.nonuk.paySA.subheader = ATED registration
+bc.nonuk.paySA.subheader = {0} registration
 bc.nonuk.paySA.header = Do you pay tax in the UK through self assessment?
 bc.nonuk.paySA.title = Do you pay tax in the UK through self assessment?
 bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question.
@@ -298,13 +298,13 @@ bc.nonuk.paySA.not-selected.error = You must answer the self assessment question
 # non-uk client - Overseas Company Identification
 bc.nonuk.overseas.agent.title = Do you have an overseas company registration number?
 bc.nonuk.overseas.agent.header = Do you have an overseas company registration number?
-bc.nonuk.overseas.agent.subheader = ATED agency set up
+bc.nonuk.overseas.agent.subheader = {0} agency set up
 bc.nonuk.overseas.agent.add-client.title = Does your client have an overseas company registration number?
 bc.nonuk.overseas.agent.add-client.header = Does your client have an overseas company registration number?
 bc.nonuk.overseas.agent.add-client.subheader = Add a client
 bc.nonuk.overseas.client.title = Do you have an overseas company registration number?
 bc.nonuk.overseas.client.header = Do you have an overseas company registration number?
-bc.nonuk.overseas.client.subheader = ATED registration
+bc.nonuk.overseas.client.subheader = {0} registration
 
 
 ## client permission page
