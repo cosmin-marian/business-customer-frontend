@@ -37,7 +37,7 @@ class ExternalUrlsSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "have serviceWelcomePath" in {
-      ExternalUrls.serviceWelcomePath("ATED") must be("http://localhost:9916/ated/welcome")
+      ExternalUrls.serviceWelcomePath("ATED") must be("http://localhost:9916/ated/home")
       ExternalUrls.serviceWelcomePath("X") must be("#")
     }
 
