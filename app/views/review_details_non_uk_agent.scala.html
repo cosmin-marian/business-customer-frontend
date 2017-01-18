@@ -17,7 +17,7 @@
       @businessDetails.businessName
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit" data-journey-click="business-customer:click:bus-name-edit-link">@Messages("bc.edit")
         <span class="screen-reader-text">@Messages("business-review.business-name")</span>
       </a>
     </td>
@@ -43,7 +43,7 @@
       </div>
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit" data-journey-click="business-customer:click:bus-reg-edit-link">@Messages("bc.edit")
         <span class="screen-reader-text">@Messages("business-review.address")</span>
       </a>
     </td>
@@ -62,7 +62,7 @@
       }
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateOverseasCompanyRegController.viewForUpdate(service, false)' id="overseas-edit">@Messages("bc.edit")
+      <a href='@controllers.nonUKReg.routes.UpdateOverseasCompanyRegController.viewForUpdate(service, false)' id="overseas-edit" data-journey-click="business-customer:click:overseas-edit-link">@Messages("bc.edit")
         <span class="screen-reader-text">@Messages("business-review.overseas-tax-reference")</span>
       </a>
     </td>

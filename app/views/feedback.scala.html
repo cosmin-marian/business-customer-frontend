@@ -13,9 +13,9 @@
 
     <p> @Messages("label.youre_now_signed_out_of_your_service_account", service.toUpperCase) </p>
 
-    <a href="@ExternalUrls.serviceWelcomePath(service)"> @Messages("feedback.redirect-startpage") </a>
+    <a href="@ExternalUrls.serviceWelcomePath(service)" data-journey-click="business-customer:click:external-urls-link"> @Messages("feedback.redirect-startpage") </a>
 
-    <p><a href="http://www.gov.uk"> @Messages("label.explore_gov_uk") </a></p>
+    <p><a href="http://www.gov.uk" data-journey-click="business-customer:click:gov-uk-link"> @Messages("label.explore_gov_uk") </a></p>
 
     <hr class="ated-hr" />
 
