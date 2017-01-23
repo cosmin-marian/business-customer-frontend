@@ -60,9 +60,9 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           businessVerificationWithAuthorisedUser { result =>
             val document = Jsoup.parse(contentAsString(result))
 
-            document.title() must be("Select your business type")
+            document.title() must be("What is your business type?")
             document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("business-verification-header").text() must be("Select your business type")
+            document.getElementById("business-verification-header").text() must be("What is your business type?")
             document.select(".block-label").text() must include("Limited company")
             document.select(".block-label").text() must include("Limited liability partnership")
             document.select(".block-label").text() must include("partnership")
