@@ -174,8 +174,8 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas agent details")
+          document.title() must be("What is the registered business name and address of your overseas agency?")
+          document.getElementById("business-reg-header").text() must be("What is the registered business name and address of your overseas agency?")
 
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
