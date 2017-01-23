@@ -71,9 +71,9 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your client's overseas business details")
+          document.title() must be("What is your client's overseas registered business name and address?")
           document.getElementById("business-verification-text").text() must be("Add a client")
-          document.getElementById("non-uk-reg-header").text() must be("Enter your client's overseas business details")
+          document.getElementById("non-uk-reg-header").text() must be("What is your client's overseas registered business name and address?")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
