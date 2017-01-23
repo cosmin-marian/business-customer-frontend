@@ -45,7 +45,7 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       val document = Jsoup.parse(html.toString())
 
       And("The submit button is - Confirm and continue")
-      assert(document.getElementById("submit").text() === "Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm")
 
       Then("The title should match - Confirm your business details")
       assert(document.select("h1").text === ("Check your agency details"))
@@ -66,7 +66,7 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       assert(document.getElementById("overseas-tax-reference-title").text === ("Overseas company registration number"))
       assert(document.getElementById("overseas-details").text === ("id France inst"))
       assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/register/non-uk-client/edit-overseas-company/ATED/false"))
-      assert(document.select(".button").text === ("Confirm and continue"))
+      assert(document.select(".button").text === ("Confirm"))
 
     }
 
