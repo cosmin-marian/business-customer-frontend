@@ -46,8 +46,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       And("The submit button is - Confirm and continue")
       assert(document.getElementById("submit").text() === "Confirm and continue")
 
-      Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      Then("The title should match - Check this is the agency you want to set up")
+      assert(document.select("h1").text === ("Check this is the agency you want to set up"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
@@ -75,8 +75,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       And("The submit button is - Confirm and continue")
       assert(document.getElementById("submit").text() === "Confirm and continue")
 
-      Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      Then("The title should match - Check this is the agency you want to set up")
+      assert(document.select("h1").text === ("Check this is the agency you want to set up"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
@@ -104,8 +104,8 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       And("The submit button is - Confirm and continue")
       assert(document.getElementById("submit").text() === "Confirm and continue")
 
-      Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your agency details"))
+      Then("The title should match - Check this is the agency you want to set up")
+      assert(document.select("h1").text === ("Check this is the agency you want to set up"))
 
       assert(document.getElementById("wrong-account-title-agent").text === ("Not the right details?"))
       assert(document.getElementById("bc.business-registration-agent.text").text() === ("ATED agency set up"))
