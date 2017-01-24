@@ -99,10 +99,10 @@ object BusinessVerificationForms {
 
   val soleTraderForm = Form(mapping(
     "firstName" -> text
-      .verifying(Messages("bc.business-verification-error.firstname"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.firstname"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.firstname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length40)),
     "lastName" -> text
-      .verifying(Messages("bc.business-verification-error.surname"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.surname"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.surname.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length40)),
     "saUTR" -> text
       .verifying(Messages("bc.business-verification-error.sautr"), x => x.replaceAll(" ", "").length > length0)
@@ -118,7 +118,7 @@ object BusinessVerificationForms {
 
   val limitedCompanyForm = Form(mapping(
     "businessName" -> text
-      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
     "cotaxUTR" -> text
       .verifying(Messages("bc.business-verification-error.cotaxutr"), x => x.replaceAll(" ", "").length > length0)
@@ -134,7 +134,7 @@ object BusinessVerificationForms {
 
   val unincorporatedBodyForm = Form(mapping(
     "businessName" -> text
-      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
     "cotaxUTR" -> text
       .verifying(Messages("bc.business-verification-error.cotaxutr"), x => x.replaceAll(" ", "").length > length0)
@@ -150,7 +150,7 @@ object BusinessVerificationForms {
 
   val ordinaryBusinessPartnershipForm = Form(mapping(
     "businessName" -> text
-      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
     "psaUTR" -> text
       .verifying(Messages("bc.business-verification-error.psautr"), x => x.replaceAll(" ", "").length > length0)
@@ -166,7 +166,7 @@ object BusinessVerificationForms {
 
   val limitedLiabilityPartnershipForm = Form(mapping(
     "businessName" -> text
-      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
     "psaUTR" -> text
       .verifying(Messages("bc.business-verification-error.psautr"), x => x.replaceAll(" ", "").length > length0)
@@ -181,7 +181,7 @@ object BusinessVerificationForms {
   )(LimitedLiabilityPartnershipMatch.apply)(LimitedLiabilityPartnershipMatch.unapply))
   val limitedPartnershipForm = Form(mapping(
     "businessName" -> text
-      .verifying(Messages("bc.business-verification-error.businessName"), x => x.length > length0)
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
       .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
     "psaUTR" -> text
       .verifying(Messages("bc.business-verification-error.psautr"), x => x.replaceAll(" ", "").length > length0)

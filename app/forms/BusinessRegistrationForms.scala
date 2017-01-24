@@ -27,14 +27,14 @@ object BusinessRegistrationForms {
   val businessRegistrationForm = Form(
     mapping(
       "businessName" -> text.
-        verifying(Messages("bc.business-registration-error.businessName"), x => x.length > length0)
+        verifying(Messages("bc.business-registration-error.businessName"), x => x.trim.length > length0)
         .verifying(Messages("bc.business-registration-error.businessName.length", length105), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
       "businessAddress" -> mapping(
         "line_1" -> text.
-          verifying(Messages("bc.business-registration-error.line_1"), x => x.length > length0)
+          verifying(Messages("bc.business-registration-error.line_1"), x => x.trim.length > length0)
           .verifying(Messages("bc.business-registration-error.line_1.length", length35), x => x.isEmpty || (x.nonEmpty && x.length <= length35)),
         "line_2" -> text.
-          verifying(Messages("bc.business-registration-error.line_2"), x => x.length > length0)
+          verifying(Messages("bc.business-registration-error.line_2"), x => x.trim.length > length0)
           .verifying(Messages("bc.business-registration-error.line_2.length", length35), x => x.isEmpty || (x.nonEmpty && x.length <= length35)),
         "line_3" -> optional(text)
           .verifying(Messages("bc.business-registration-error.line_3.length", length35), x => x.isEmpty || (x.nonEmpty && x.get.length <= length35)),
