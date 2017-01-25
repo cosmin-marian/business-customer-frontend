@@ -110,14 +110,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     "return Review Details view for a user, when user can't be directly found with login credentials" in {
       businessDetailsWithAuthorisedUser(nonDirectMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Check this is the agency you want to set up")
+        document.select("h1").text must be("Confirm your business details")
       }
     }
 
     "return Review Details view for a user, when we directly found this user" in {
       businessDetailsWithAuthorisedUser(directMatchReviewDetails) { result =>
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text must be("Check this is the agency you want to set up")
+        document.select("h1").text must be("Confirm your business details")
       }
     }
 

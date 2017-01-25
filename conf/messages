@@ -9,7 +9,7 @@ bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
 bc.amls.serviceName = Anti Money Laundering Scheme (AMLS)
 bc.investment-tax-relief.serviceName = Apply for Enterprise Investment Scheme
 
-business-review.user.title = Check this is the agency you want to set up
+business-review.user.title = Confirm your business details
 business-review.agent.title = Check this is the agency you want to set up
 business-review.agent-editable.title = Check your agency details
 bc.business-review.title = Welcome to {0} subscription
