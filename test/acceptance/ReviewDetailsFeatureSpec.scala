@@ -47,7 +47,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("submit").text() === "Confirm")
 
       Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      assert(document.select("h1").text === ("Check this is the business you want to register"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
@@ -76,7 +76,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("submit").text() === "Confirm")
 
       Then("The title should match - Confirm your business details ")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      assert(document.select("h1").text === ("Check this is the business you want to register"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
