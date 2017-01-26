@@ -9,8 +9,8 @@ bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
 bc.amls.serviceName = Anti Money Laundering Scheme (AMLS)
 bc.investment-tax-relief.serviceName = Apply for Enterprise Investment Scheme
 
-business-review.user.title = Confirm your business details
-business-review.agent.title = Confirm your agency details
+business-review.user.title = Check this is the business you want to register
+business-review.agent.title = Check this is the agency you want to set up
 business-review.agent-editable.title = Check your agency details
 bc.business-review.title = Welcome to {0} subscription
 
@@ -31,7 +31,7 @@ business-review.invalid-address.text = You can still register but you will need 
 business-review.invalid-business.address-header = Not the right address
 business-review.invalid-business.header = Not the right details?
 business-review.invalid-business.text = If this is not the right business, you should sign out and change to another account
-business-review.registration-button = Confirm and continue
+business-review.registration-button = Confirm
 business-review.registered-with-companies-house.text = If you registered with Companies House you need to inform <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house" data-journey-click="business-customer:click:companies-house-link">Companies House</a>
 business-review.sole-trader.text =  If you are not registered with Companies House you need to inform <a href="https://www.gov.uk/tell-hmrc-change-of-details/change-name-or-address" data-journey-click="business-customer:click:not-registered-link">HMRC</a>.
 
@@ -42,14 +42,14 @@ bc.business-verification.text ={0} account registration
 bc.business-verification.client.text={0} registration
 bc.business-verification.agent.text={0} agency set up
 bc.business-verification.title=Select a business type for your agency
-bc.business-verification.user.header = What is the business type for your agency?
+bc.business-verification.user.header = What is your business type?
 bc.business-verification.agent.header = What is the business type for your agency?
 bc.business-verification.agent.reveal= What if I am a unit trust or collective investment vehicle?
 bc.business-verification.agent.reveal-text= If your business is a unit trust or collective investment vehicle then select limited company.
 bc.business-verification.lookup=Business Lookup
-bc.business-verification-selected-user-header=Enter your business details
+bc.business-verification-selected-user-header=What are your business details?
 bc.business-verification-selected-user-SOP-header=Enter your Self Assessment details
-bc.business-verification-selected-agent-header=Enter your agency details
+bc.business-verification-selected-agent-header=What are your agency details?
 bc.business-verification-lede= We will attempt to match your details against information we currently hold.
 bc.business-verification-lede.nrl= As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.
 bc.business-verification.NUK=I have an overseas company without a UK Unique Taxpayer Reference
@@ -120,7 +120,7 @@ bc.unauthorised.heading=You are not authorised to use this service
 
 business-registration.title = Business Registration
 bc.business-registration.user.non-uk.header = Enter your overseas business details
-bc.business-registration.agent.non-uk.header = Enter your overseas agent details
+bc.business-registration.agent.non-uk.header = What is the registered business name and address of your overseas agency?
 bc.business-registration.lede.text = This is the registered address of your overseas business, you can enter a different address for correspondence on the next page.
 bc.business-registration.lede.update-text = This is the registered address of your overseas business.
 bc.business-registration.user.new-business.header = New business details
@@ -308,8 +308,8 @@ bc.nonuk.overseas.client.subheader = {0} registration
 
 
 ## non-uk-registration of client by agent ##
-bc.non-uk-reg.title = Enter your client''s overseas business details
-bc.non-uk-reg.header = Enter your client''s overseas business details
+bc.non-uk-reg.title = What is your client''s overseas registered business name and address?
+bc.non-uk-reg.header = What is your client''s overseas registered business name and address?
 bc.non-uk-reg.sub-header = Add a client
 bc.non-uk-reg.lede.text = This is the registered address of your client''s overseas business, you can enter a different address for correspondence on the next page.
 bc.non-uk-reg.lede.update-text = This is the registered address of your client''s overseas business.

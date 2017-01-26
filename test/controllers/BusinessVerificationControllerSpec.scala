@@ -60,9 +60,10 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           businessVerificationWithAuthorisedUser { result =>
             val document = Jsoup.parse(contentAsString(result))
 
-            document.title() must be("What is the business type for your agency?")
+
+            document.title() must be("What is your business type?")
             document.getElementById("business-verification-text").text() must be("ATED registration")
-            document.getElementById("business-verification-header").text() must be("What is the business type for your agency?")
+            document.getElementById("business-verification-header").text() must be("What is your business type?")
             document.select(".block-label").text() must include("Limited company")
             document.select(".block-label").text() must include("Limited liability partnership")
             document.select(".block-label").text() must include("partnership")
@@ -230,7 +231,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("firstName_field").text() must be("First name")
           document.getElementById("lastName_field").text() must be("Last name")
@@ -288,7 +289,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -308,7 +309,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -366,7 +367,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -397,7 +398,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("AWRS registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -416,7 +417,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -445,7 +446,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Partnership name")
           document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
@@ -464,7 +465,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Partnership name")
           document.getElementById("businessName_hint").text() must be("This is the name that you registered with HMRC")
@@ -493,7 +494,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -511,7 +512,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Registered company name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -540,7 +541,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your business details")
+          document.getElementById("business-type-header").text() must be("What are your business details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Partnership name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
@@ -558,7 +559,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-          document.getElementById("business-type-agent-header").text() must be("Enter your agency details")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("businessName_field").text() must include("Partnership name")
           document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
