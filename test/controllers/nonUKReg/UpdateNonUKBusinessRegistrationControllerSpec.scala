@@ -81,7 +81,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           val document = Jsoup.parse(contentAsString(result))
 
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-header").text() must be("What is your overseas business registered name and address?")
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
@@ -150,7 +150,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           val document = Jsoup.parse(contentAsString(result))
 
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-header").text() must be("What is your overseas business registered name and address?")
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
