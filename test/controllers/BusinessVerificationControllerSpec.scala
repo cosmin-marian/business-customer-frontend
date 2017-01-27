@@ -60,6 +60,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           businessVerificationWithAuthorisedUser { result =>
             val document = Jsoup.parse(contentAsString(result))
 
+
             document.title() must be("What is your business type?")
             document.getElementById("business-verification-text").text() must be("ATED registration")
             document.getElementById("business-verification-header").text() must be("What is your business type?")
@@ -78,11 +79,11 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
           businessVerificationWithAuthorisedAgent { result =>
             val document = Jsoup.parse(contentAsString(result))
 
-            document.title() must be("Select a business type for your agency")
+            document.title() must be("What is the business type for your agency?")
             document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
-            document.getElementById("business-verification-agent-header").text() must be("Select a business type for your agency")
+            document.getElementById("business-verification-agent-header").text() must be("What is the business type for your agency?")
             document.select(".block-label").text() must include("Limited company")
-            document.select(".block-label").text() must include("Sole trader / self-employed")
+            document.select(".block-label").text() must include("Sole trader self-employed")
             document.select(".block-label").text() must include("Limited liability partnership")
             document.select(".block-label").text() must include("partnership")
             document.select(".block-label").text() must include("I have an overseas company without a UK Unique Taxpayer Reference")

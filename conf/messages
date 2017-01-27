@@ -43,7 +43,7 @@ bc.business-verification.client.text={0} registration
 bc.business-verification.agent.text={0} agency set up
 bc.business-verification.title=Select a business type for your agency
 bc.business-verification.user.header = What is your business type?
-bc.business-verification.agent.header = Select a business type for your agency
+bc.business-verification.agent.header = What is the business type for your agency?
 bc.business-verification.agent.reveal= What if I am a unit trust or collective investment vehicle?
 bc.business-verification.agent.reveal-text= If your business is a unit trust or collective investment vehicle then select limited company.
 bc.business-verification.lookup=Business Lookup
@@ -58,7 +58,7 @@ bc.business-verification.LLP=Limited liability partnership
 bc.business-verification.LP=Limited partnership
 bc.business-verification.UIB=Unincorporated association
 bc.business-verification.LTD=Limited company
-bc.business-verification.SOP=Sole trader / self-employed
+bc.business-verification.SOP=Sole trader self-employed
 bc.business-verification.UT=Unit trust or collective investment vehicle
 
 bc.business-verification.amls.SOP = Sole Proprietor
