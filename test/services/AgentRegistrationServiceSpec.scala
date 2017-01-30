@@ -52,7 +52,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
 
       val result = TestAgentRegistrationService.enrolAgent("ATED")
       val thrown = the[RuntimeException] thrownBy await(result)
-      thrown.getMessage must include("No Agent Reference Number Found")
+      thrown.getMessage must include("No Unique Authorisation Number Found")
     }
 
     "enrolAgent return the status if it worked" in {
