@@ -69,9 +69,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas business details")
+          document.title() must be("What is your overseas business registered name and address?")
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-registration-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-registration-header").text() must be("What is your overseas business registered name and address?")
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
           document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
