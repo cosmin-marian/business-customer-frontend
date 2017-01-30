@@ -10,10 +10,10 @@
 @import utils.BCUtils
 
 @scriptElement = {
-  <script type="text/javascript" src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
-  <script type="text/javascript" src='@controllers.routes.Assets.at("jquery/jquery-ui-1.12.1.min.js")'></script>
-  <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/timeout-dialog.js")'></script>
-  <script type="text/javascript" src='@controllers.routes.Assets.at("javascript/details.polyfill.js")'></script>
+  <script type="text/javascript" src='@controllers.routes.AssetsController.at("jquery/jquery-ui.min.js")'></script>
+  <script type="text/javascript" src='@controllers.routes.AssetsController.at("jquery/jquery-ui-1.12.1.min.js")'></script>
+  <script type="text/javascript" src='@controllers.routes.AssetsController.at("javascript/timeout-dialog.js")'></script>
+  <script type="text/javascript" src='@controllers.routes.AssetsController.at("javascript/details.polyfill.js")'></script>
   @pageScripts
   <script type="text/javascript" charset="utf-8">
     @if(userLoggedIn) {
@@ -24,9 +24,9 @@
 }
 
 @linkElement = {
-  <link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/business-customer.css")'/>
-  <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.min.css")'/>
-  <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.AssetsController.at("stylesheets/business-customer.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.AssetsController.at("jquery/jquery-ui.min.css")'/>
+  <link rel="stylesheet" href='@controllers.routes.AssetsController.at("jquery/jquery-ui.structure.min.css")'/>
 }
 
 @main(

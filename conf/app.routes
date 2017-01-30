@@ -2,7 +2,7 @@
 
 ->          /template                                                           template.Routes
 
-GET         /assets/*file                                                       controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                                       controllers.AssetsController.at(path="/public", file)
 
 GET         /business-verification/:service                                     controllers.BusinessVerificationController.businessVerification(service: String)
 
