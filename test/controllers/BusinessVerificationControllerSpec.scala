@@ -193,7 +193,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("What are your Self Assessment details?")
           document.getElementById("business-type-paragraph-nrl").text() must be("As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.")
           document.getElementById("firstName_field").text() must be("First name")
           document.getElementById("lastName_field").text() must be("Last name")
@@ -212,7 +212,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
 
           val document = Jsoup.parse(contentAsString(result))
           document.getElementById("business-verification-text").text() must be("AWRS registration")
-          document.getElementById("business-type-header").text() must be("Enter your Self Assessment details")
+          document.getElementById("business-type-header").text() must be("What are your Self Assessment details?")
           document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
           document.getElementById("firstName_field").text() must be("First name")
           document.getElementById("lastName_field").text() must be("Last name")
