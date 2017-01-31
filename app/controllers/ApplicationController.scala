@@ -2,6 +2,7 @@ package controllers
 
 import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
+import controllers.auth.ExternalUrls._
 import models.FeedBack
 import models.FeedbackForm.feedbackForm
 import play.api.mvc.DiscardingCookie
@@ -35,7 +36,9 @@ trait ApplicationController extends FrontendController with RunMode with Auditab
 
   def logout(service: String) = UnauthorisedAction { implicit request =>
     service.toUpperCase match {
-      case "ATED" => Redirect(controllers.routes.ApplicationController.feedback(service)).withNewSession
+      case "ATED" => {
+        Redirect(Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.logoutUrl").getOrElse("/ated/logout")).withNewSession
+      }
       case _ => Redirect(controllers.routes.ApplicationController.signedOut).withNewSession
     }
   }
