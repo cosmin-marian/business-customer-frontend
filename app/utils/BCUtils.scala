@@ -73,6 +73,14 @@ object BCUtils {
     }
   }
 
+  val isCGTBusinessTypes = Seq (
+    "NUK" -> Messages("bc.business-verification.NUK"),
+    "LTD" -> Messages("bc.business-verification.LTD"),
+    "OBP" -> Messages("bc.business-verification.PRT"),
+    "LP" -> Messages("bc.business-verification.LP"),
+    "LLP" -> Messages("bc.business-verification.LLP"),
+    "UIB" -> Messages("bc.business-verification.UIB")
+  )
 
   def businessTypeMap(service: String, isAgent: Boolean): Seq[(String, String)] = {
 
@@ -114,6 +122,7 @@ object BCUtils {
         "UIB" -> Messages("bc.business-verification.amls.UIB")
       )
       case "investment-tax-relief" => Seq("LTD" -> Messages("bc.business-verification.LTD"))
+      case "capital-gains-tax" => isCGTBusinessTypes
       case _ => fixedBusinessTypes
     }
   }
