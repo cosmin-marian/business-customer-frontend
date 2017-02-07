@@ -37,6 +37,7 @@ trait BusinessVerificationController extends BaseController {
           bcContext.user.isSa, bcContext.user.isOrg)),
       value => {
         value.businessType match {
+          case Some("NUK") if service.equals("capital-gains-tax") => Redirect(controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
           case Some("NUK") => Redirect(controllers.nonUKReg.routes.NRLQuestionController.view(service))
           case Some("NEW") => Redirect(controllers.routes.BusinessRegUKController.register(service, "NEW"))
           case Some("GROUP") => Redirect(controllers.routes.BusinessRegUKController.register(service, "GROUP"))
