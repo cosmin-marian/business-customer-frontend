@@ -70,7 +70,9 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
             s"gg url:$postUrl, " +
             s"status:$status Exception account Ref:${enrolRequest.knownFacts}, " +
-            s"Service: ${enrolRequest.serviceName}}")
+            s"Service: ${enrolRequest.serviceName}, " +
+            s"Reponse Body: ${response.body}," +
+            s"Reponse Status: ${response.status}")
           throw new InternalServerException(response.body)
       }
     }
