@@ -93,6 +93,7 @@ object BCUtils {
       "OBP" -> Messages("bc.business-verification.PRT"),
       "UIB" -> Messages("bc.business-verification.UIB"),
       "LP" -> Messages("bc.business-verification.LP"),
+      "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
 
     )
