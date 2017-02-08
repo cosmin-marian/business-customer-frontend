@@ -47,7 +47,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
           case OK => Redirect(controllers.routes.AgentController.register(serviceName))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
-            throw new RuntimeException(Messages("bc.business-registration-error.duplicate.identifier"))
+            Ok(views.html.global_error("OneTwoThree", "title", "message"))
         }
       }
     } else {
