@@ -47,7 +47,6 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
           } catch {
             case jse: JsonParseException => truncateContactDetails(response.body)
           }
-        ///////////////////// try catch end
         case SERVICE_UNAVAILABLE =>
           Logger.warn(s"[BusinessMatchingConnector][lookup] - Service unavailableException ${lookupData.utr}")
           throw new ServiceUnavailableException("Service unavailable")
@@ -90,6 +89,31 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
         "responseStatus" -> s"${response.status}",
         "responseBody" -> s"${response.body}",
         "status" ->  s"${eventType}"))
+
+    def getAddressPiece(piece: Option[JsValue]):String = {
+      if (piece.isDefined)
+        piece.get.toString()
+      else
+        ""
+    }
+
+    if (eventType == EventTypes.Succeeded) {
+      val data = try {
+        Json.parse(response.body)
+      } catch {
+        case jse: JsonParseException => truncateContactDetails(response.body)
+      }
+      (data \\ "address").headOption.map { x =>
+        sendDataEvent(transactionName = "postcodeAddressSubmitted",
+          detail = Map(
+            "submittedLine1" -> (data \\ "addressLine1").head.as[String],
+            "submittedLine2" -> (data \\ "addressLine2").head.as[String],
+            "submittedLine3" -> getAddressPiece((data \\ "addressLine3").headOption),
+            "submittedLine4" -> getAddressPiece((data \\ "addressLine4").headOption),
+            "submittedPostcode" -> getAddressPiece((data \\ "postalCode").headOption),
+            "submittedCountry" -> (data \\ "countryCode").head.as[String]))
+      }
+    }
   }
 
 }

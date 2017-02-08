@@ -56,7 +56,14 @@ class BusinessMatchingConnectorSpec extends PlaySpec with OneServerPerSuite with
         |  "businessType":"Unincorporated body",
         |  "businessAddress":"23 High Street\nPark View\nThe Park\nGloucester\nGloucestershire\nABC 123",
         |  "businessTelephone":"201234567890",
-        |  "businessEmail":"contact@acme.com"
+        |  "businessEmail":"contact@acme.com",
+        |  "address": {
+        |    "addressLine1" : "XYZ  ESTATE",
+        |    "addressLine2" : "XYZ DRIVE",
+        |    "addressLine3" : "XYZ",
+        |    "postalCode" : "HU24 1ST",
+        |    "countryCode" : "GB"
+        |  }
         |}
       """.stripMargin)
 

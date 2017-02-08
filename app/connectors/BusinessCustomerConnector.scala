@@ -46,10 +46,7 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/${GovernmentGatewayConstants.KnownFactsAgentServiceName}/$knownFactsUri"""
     val jsonData = Json.toJson(knownFacts)
-    http.POST[JsValue, HttpResponse](postUrl, jsonData) map { response =>
-      auditAddKnownFactsCall(knownFacts, response)
-      response
-    }
+    http.POST[JsValue, HttpResponse](postUrl, jsonData)
   }
 
 
@@ -145,21 +142,5 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       }
     }
   }
-
-
-  private def auditAddKnownFactsCall(input: KnownFactsForService, response: HttpResponse)(implicit hc: HeaderCarrier) = {
-    val eventType = response.status match {
-      case OK => EventTypes.Succeeded
-      case _ => EventTypes.Failed
-    }
-    sendDataEvent(transactionName = "ggAddKnownFactsCall",
-      detail = Map("txName" -> "ggAddKnownFactsCall",
-        "facts" -> s"${input.facts}",
-        "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}",
-        "status" ->  s"${eventType}"))
-  }
-
-
 
 }
