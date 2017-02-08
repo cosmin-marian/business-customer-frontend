@@ -24,7 +24,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   def businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[EnrolResponse] = {
+  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ =>
@@ -77,9 +77,9 @@ trait AgentRegistrationService extends RunMode with Auditable {
     sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
-      "service" -> serviceName),
-      eventType = EventTypes.Succeeded
-    )
+      "service" -> serviceName,
+      "status" -> EventTypes.Succeeded
+    ))
   }
 }
 
