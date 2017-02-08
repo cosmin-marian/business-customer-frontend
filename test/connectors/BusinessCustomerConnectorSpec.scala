@@ -49,7 +49,7 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
   "BusinessCustomerConnector" must {
     val businessOrgData = EtmpOrganisation(organisationName = "testName")
     val etmpIdentification = EtmpIdentification(idNumber = "id1", issuingInstitution = "HRMC", issuingCountryCode = "UK")
-    val businessAddress = EtmpAddress("line1", "line2", None, None, None, "GB")
+    val businessAddress = EtmpAddress("line1", "line2", None, None, Some("NE1 1EN"), "GB")
     val nonUkBusinessAddress = EtmpAddress("line1", "line2", None, None, None, "FR")
 
 

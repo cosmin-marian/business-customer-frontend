@@ -6,7 +6,8 @@ import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.SessionUtils
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -45,11 +46,12 @@ trait BusinessMatchingService {
 
   def matchBusinessWithOrganisationName(isAnAgent: Boolean, organisation: Organisation, utr: String, service: String)
                                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
+    val trimmedUtr = utr.replaceAll(" ", "")
     val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
-      utr = utr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
+      utr = trimmedUtr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = None, organisation = Some(organisation))
     val userType = "org"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-      validateAndCache(dataReturned = dataReturned, directMatch = false, Some(utr))
+      validateAndCache(dataReturned = dataReturned, directMatch = false, Some(trimmedUtr))
     }
   }
 
@@ -63,7 +65,6 @@ trait BusinessMatchingService {
 
   private def validateAndCache(dataReturned: JsValue, directMatch: Boolean, utr: Option[String])(implicit hc: HeaderCarrier): Future[JsValue] = {
     val isFailureResponse = dataReturned.validate[MatchFailureResponse].isSuccess
-    Logger.info(s"[BusinessMatchingService][validateAndCache]dataReturned = $dataReturned, isFailureResponse = $isFailureResponse")
     if (isFailureResponse) Future.successful(dataReturned)
     else {
       val isAnIndividual = (dataReturned \ "isAnIndividual").as[Boolean]
@@ -124,21 +125,21 @@ trait BusinessMatchingService {
   }
 
   private def getAddress(dataReturned: JsValue): EtmpAddress = {
-    val addressReturned = (dataReturned \ "address").as[Option[EtmpAddress]]
+    val addressReturned = (dataReturned \ "address").asOpt[EtmpAddress]
     addressReturned.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getAddress] - No Address returned from ETMP"))
   }
 
   private def getSafeId(dataReturned: JsValue): String = {
-    val safeId = (dataReturned \ "safeId").as[Option[String]]
+    val safeId = (dataReturned \ "safeId").asOpt[String]
     safeId.getOrElse(throw new RuntimeException(s"[BusinessMatchingService][getSafeId] - No Safe Id returned from ETMP"))
   }
 
   private def getSapNumber(dataReturned: JsValue): String = {
-    (dataReturned \ "sapNumber").as[Option[String]].getOrElse("")
+    (dataReturned \ "sapNumber").asOpt[String].getOrElse("")
   }
 
   private def getAgentRefNum(dataReturned: JsValue): Option[String] = {
-    (dataReturned \ "agentReferenceNumber").as[Option[String]]
+    (dataReturned \ "agentReferenceNumber").asOpt[String]
   }
 
 }

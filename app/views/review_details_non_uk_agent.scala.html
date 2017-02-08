@@ -1,11 +1,11 @@
-@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_])
+@(service: String, businessDetails: models.ReviewDetails)(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
 
 @bcMain(title = Messages("business-review.agent-editable.title", service), service = Some(service)) {
 
-  <p class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</p>
+  <div class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</div>
   <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent-editable.title"))</h1>
 
 <table>
@@ -17,7 +17,9 @@
       @businessDetails.businessName
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-name-edit" data-journey-click="business-customer:click:bus-name-edit-link">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.business-name")</span>
+      </a>
     </td>
   </tr>
   <tr>
@@ -41,7 +43,9 @@
       </div>
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="bus-reg-edit" data-journey-click="business-customer:click:bus-reg-edit-link">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.address")</span>
+      </a>
     </td>
   </tr>
   <tr>
@@ -58,7 +62,9 @@
       }
     </td>
     <td valign="top">
-      <a href='@controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.editAgent(service)' id="overseas-edit">@Messages("bc.edit")</a>
+      <a href='@controllers.nonUKReg.routes.UpdateOverseasCompanyRegController.viewForUpdate(service, false)' id="overseas-edit" data-journey-click="business-customer:click:overseas-edit-link">@Messages("bc.edit")
+        <span class="screen-reader-text">@Messages("business-review.overseas-tax-reference")</span>
+      </a>
     </td>
   </tr>
 </table>

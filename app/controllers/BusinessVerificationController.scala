@@ -5,6 +5,8 @@ import forms.BusinessVerificationForms._
 import forms._
 import models.{BusinessCustomerContext, Individual, Organisation, ReviewDetails}
 import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.mvc._
 import services.BusinessMatchingService
@@ -35,7 +37,7 @@ trait BusinessVerificationController extends BaseController {
           bcContext.user.isSa, bcContext.user.isOrg)),
       value => {
         value.businessType match {
-          case Some("NUK") => Redirect(controllers.routes.NRLQuestionController.view(service))
+          case Some("NUK") => Redirect(controllers.nonUKReg.routes.NRLQuestionController.view(service))
           case Some("NEW") => Redirect(controllers.routes.BusinessRegUKController.register(service, "NEW"))
           case Some("GROUP") => Redirect(controllers.routes.BusinessRegUKController.register(service, "GROUP"))
           case Some("SOP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP"))
@@ -44,6 +46,7 @@ trait BusinessVerificationController extends BaseController {
           case Some("OBP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP"))
           case Some("LLP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP"))
           case Some("LP") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP"))
+          case Some("UT") => Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT"))
           case _ => Redirect(controllers.routes.HomeController.homePage(service))
         }
       }
@@ -58,6 +61,7 @@ trait BusinessVerificationController extends BaseController {
       case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, bcContext.user.isAgent, service, businessType))
       case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType))
       case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType))
+      case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType))
     }
   }
 
@@ -69,6 +73,7 @@ trait BusinessVerificationController extends BaseController {
       case "LP" => lpFormHandling(limitedPartnershipForm, businessType, service)
       case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service)
       case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service)
+      case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service)
     }
   }
 

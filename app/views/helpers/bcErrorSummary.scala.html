@@ -1,9 +1,9 @@
-@(form: Form[_], errorMessageFieldPrefix: String, formErrorMessage: Option[String] = None)(implicit lang: Lang)
+@(form: Form[_], errorMessageFieldPrefix: String, formErrorMessage: Option[String] = None)(implicit lang: Lang, messages: Messages)
 
 @if(form.hasGlobalErrors || form.hasErrors) {
 
   <div id="errors" tabindex="-1" role="group" aria-labelledby="form-error-heading" class="validation-summary">
-    <h1 class="heading-medium" id="form-error-heading">@Messages("bc.business-verification-error.summaryHeader")</h1>
+    <h2 class="heading-medium" id="form-error-heading">@Messages("bc.business-verification-error.summaryHeader")</h2>
     <ul class="error-summary-list">
       @form.errors.map { error =>
         @defining(

@@ -2,7 +2,7 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import models.{BusinessRegistration, Address, ReviewDetails}
+import models.{OverseasCompany, BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -66,45 +66,48 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
       "return business registration view for a Non-UK based client with found data" in {
         val busRegData = BusinessRegistration(businessName = "testName",
-          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+        )
+        val overseasCompany = OverseasCompany(
           businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
           hasBusinessUniqueId = Some(true),
           issuingInstitution = Some("issuingInstitution"),
           issuingCountry = None
         )
-        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
 
         editClientWithAuthorisedUser(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-header").text() must be("What is your overseas business registered name and address?")
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
 
       "return business registration view for a Non-UK based agent creating a client with found data" in {
         val busRegData = BusinessRegistration(businessName = "testName",
-          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+        )
+        val overseasCompany = OverseasCompany(
           businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
           hasBusinessUniqueId = Some(true),
           issuingInstitution = Some("issuingInstitution"),
           issuingCountry = None
         )
-        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
 
         editClientWithAuthorisedAgent(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your client's overseas business details")
+          document.title() must be("What is your client's overseas registered business name and address?")
           document.getElementById("business-verification-text").text() must be("Add a client")
-          document.getElementById("business-reg-header").text() must be("Enter your client's overseas business details")
+          document.getElementById("business-reg-header").text() must be("What is your client's overseas registered business name and address?")
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your client's overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
@@ -113,7 +116,6 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -133,44 +135,47 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
       "return business registration view for a Non-UK based client with found data" in {
         val busRegData = BusinessRegistration(businessName = "testName",
-          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+        )
+        val overseasCompany = OverseasCompany(
           businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
           hasBusinessUniqueId = Some(true),
           issuingInstitution = Some("issuingInstitution"),
           issuingCountry = None
         )
-        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
 
         editAgentWithAuthorisedUser(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
           document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas business details")
+          document.getElementById("business-reg-header").text() must be("What is your overseas business registered name and address?")
           document.getElementById("business-reg-lede").text() must be("This is the registered address of your overseas business.")
 
           document.getElementById("businessName_field").text() must be("Business name")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
 
       "return business registration view for a Non-UK based agent creating a client with found data" in {
         val busRegData = BusinessRegistration(businessName = "testName",
-          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country"),
+          businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
+        )
+        val overseasCompany = OverseasCompany(
           businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
           hasBusinessUniqueId = Some(true),
           issuingInstitution = Some("issuingInstitution"),
           issuingCountry = None
         )
-        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData))))
+        when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
 
         editAgentWithAuthorisedAgent(serviceName, "NUK") { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
-          document.title() must be("Enter your overseas agent details")
-          document.getElementById("business-reg-header").text() must be("Enter your overseas agent details")
+          document.title() must be("What is the registered business name and address of your overseas agency?")
+          document.getElementById("business-reg-header").text() must be("What is the registered business name and address of your overseas agency?")
 
           document.getElementById("businessName_field").text() must be("Business name")
           document.getElementById("businessAddress.line_1_field").text() must be("Address")
@@ -178,7 +183,6 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
-          document.getElementById("hasBusinessUniqueId").text() must include("Do they have an overseas company registration number?")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -203,11 +207,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
                        line2: String = "line-2",
                        line3: String = "",
                        line4: String = "",
-                       country: String = "FR",
-                       hasBusinessUniqueId: Boolean = true,
-                       bUId: String = "some-id",
-                       issuingInstitution: String = "some-institution",
-                       issuingCountry: String = "FR") =
+                       country: String = "FR") =
           Json.parse(
             s"""
                |{
@@ -218,11 +218,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
                |    "line_3": "$line3",
                |    "line_4": "$line4",
                |    "country": "$country"
-               |  },
-               |  "hasBusinessUniqueId": $hasBusinessUniqueId,
-               |  "businessUniqueId": "$bUId",
-               |  "issuingInstitution": "$issuingInstitution",
-               |  "issuingCountry": "$issuingCountry"
+               |  }
                |}
           """.stripMargin)
 
@@ -232,7 +228,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(businessName = "", line1 = "", line2 = "", country = "", bUId = "", issuingInstitution = "", issuingCountry = "")
+          val inputJson = createJson(businessName = "", line1 = "", line2 = "", country = "")
 
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
@@ -241,9 +237,6 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
             contentAsString(result) must include("You must enter an address into Address line 2.")
             contentAsString(result) mustNot include("Postcode must be entered")
             contentAsString(result) must include("You must enter a country")
-            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter a Business Unique Identifier.")
           }
         }
 
@@ -254,10 +247,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
-          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address"),
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
-          (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
+          (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 
         formValidationInputDataSet.foreach { data =>
@@ -273,24 +263,25 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
         "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
+
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
           }
         }
 
-        "valid registration details are entered and BUId question is selected as No, continue button must redirect to service specific redirect url" in {
+        "If we have no cache then an exception must be thrown" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
-          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
-            status(result) must be(SEE_OTHER)
-            redirectLocation(result) must be(Some("http://localhost:9933/ated-subscription/registered-business-address"))
+          val inputJson = createJson()
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None, false) { result =>
+            val thrown = the[RuntimeException] thrownBy await(result)
+            thrown.getMessage must be("No Registration Details found")
           }
         }
 
         "redirect to the review details page if we have no redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
-          val inputJson = createJson(hasBusinessUniqueId = false, issuingCountry = "", issuingInstitution = "", bUId = "")
+          val inputJson = createJson()
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("/business-customer/review-details/ATED"))
@@ -336,7 +327,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
 
@@ -372,7 +363,7 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
     (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
 
@@ -400,16 +391,28 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
     test(result)
   }
 
-  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
+  def submitWithAuthorisedUserSuccess(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"), hasCache: Boolean = true)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val busRegData = BusinessRegistration(businessName = "testName", businessAddress = address)
+    val overseasCompany = OverseasCompany(
+      businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+      hasBusinessUniqueId = Some(true),
+      issuingInstitution = Some("issuingInstitution"),
+      issuingCountry = None
+    )
+    if (hasCache)
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
+    else
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
     val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
 
-    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
     val result = TestNonUKController.update(service, redirectUrl, true).apply(fakeRequest.withSession(

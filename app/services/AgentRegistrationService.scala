@@ -4,6 +4,7 @@ import audit.Auditable
 import config.BusinessCustomerFrontendAuditConnector
 import connectors.{BusinessCustomerConnector, DataCacheConnector, GovernmentGatewayConnector}
 import models._
+import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.{Logger, Play}
@@ -23,7 +24,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   def businessCustomerConnector: BusinessCustomerConnector
 
-  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
+  def enrolAgent(serviceName: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[EnrolResponse] = {
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) => enrolAgent(serviceName, businessDetails)
       case _ =>

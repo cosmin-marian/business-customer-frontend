@@ -2,6 +2,11 @@ package models
 
 import play.api.libs.json.Json
 
+case class OverseasCompanyDisplayDetails(title: String,
+                                         header: String,
+                                         subHeader: String,
+                                         addClient: Boolean)
+
 case class BusinessRegistrationDisplayDetails(businessType: String,
                                               businessRegHeader: String,
                                               businessRegSubHeader: String,
@@ -27,13 +32,18 @@ object Address {
 }
 
 case class BusinessRegistration(businessName: String,
-                                businessAddress: Address,
-                                hasBusinessUniqueId: Option[Boolean],
-                                businessUniqueId: Option[String],
-                                issuingInstitution: Option[String],
-                                issuingCountry: Option[String])
+                                businessAddress: Address)
 
 object BusinessRegistration {
   implicit val formats = Json.format[BusinessRegistration]
 }
 
+
+case class OverseasCompany(hasBusinessUniqueId: Option[Boolean] = Some(false),
+                          businessUniqueId: Option[String] = None,
+                          issuingInstitution: Option[String] = None,
+                          issuingCountry: Option[String] = None)
+
+object OverseasCompany {
+  implicit val formats = Json.format[OverseasCompany]
+}

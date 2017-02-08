@@ -3,6 +3,8 @@ package forms
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 
@@ -25,14 +27,14 @@ object BusinessRegistrationForms {
   val businessRegistrationForm = Form(
     mapping(
       "businessName" -> text.
-        verifying(Messages("bc.business-registration-error.businessName"), x => x.length > length0)
+        verifying(Messages("bc.business-registration-error.businessName"), x => x.trim.length > length0)
         .verifying(Messages("bc.business-registration-error.businessName.length", length105), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
       "businessAddress" -> mapping(
         "line_1" -> text.
-          verifying(Messages("bc.business-registration-error.line_1"), x => x.length > length0)
+          verifying(Messages("bc.business-registration-error.line_1"), x => x.trim.length > length0)
           .verifying(Messages("bc.business-registration-error.line_1.length", length35), x => x.isEmpty || (x.nonEmpty && x.length <= length35)),
         "line_2" -> text.
-          verifying(Messages("bc.business-registration-error.line_2"), x => x.length > length0)
+          verifying(Messages("bc.business-registration-error.line_2"), x => x.trim.length > length0)
           .verifying(Messages("bc.business-registration-error.line_2.length", length35), x => x.isEmpty || (x.nonEmpty && x.length <= length35)),
         "line_3" -> optional(text)
           .verifying(Messages("bc.business-registration-error.line_3.length", length35), x => x.isEmpty || (x.nonEmpty && x.get.length <= length35)),
@@ -44,14 +46,19 @@ object BusinessRegistrationForms {
         "country" -> text.
           verifying(Messages("bc.business-registration-error.country"), x => x.length > length0)
 
-      )(Address.apply)(Address.unapply),
+      )(Address.apply)(Address.unapply)
+    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
+  )
+
+  val overseasCompanyForm = Form(
+    mapping(
       "hasBusinessUniqueId" -> optional(boolean).verifying(Messages("bc.business-registration-error.hasBusinessUniqueId.not-selected"), x => x.isDefined),
       "businessUniqueId" -> optional(text)
         .verifying(Messages("bc.business-registration-error.businessUniqueId.length", length60), x => x.isEmpty || (x.nonEmpty && x.get.length <= length60)),
       "issuingInstitution" -> optional(text)
         .verifying(Messages("bc.business-registration-error.issuingInstitution.length", length40), x => x.isEmpty || (x.nonEmpty && x.get.length <= length40)),
       "issuingCountry" -> optional(text)
-    )(BusinessRegistration.apply)(BusinessRegistration.unapply)
+    )(OverseasCompany.apply)(OverseasCompany.unapply)
   )
 
   def checkFieldLengthIfPopulated(optionValue: Option[String], fieldLength: Int): Boolean = {
@@ -61,23 +68,19 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
-    validateNonUkIdentifiers(validateCountryNonUK(registrationData))
+  def validateNonUK(registrationData: Form[OverseasCompany]): Form[OverseasCompany] = {
+    validateNonUkIdentifiers(registrationData)
   }
 
   def validateUK(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
-    validateUkIdentifiers(validatePostCode(registrationData))
+    validatePostCode(registrationData)
   }
 
-  def validateUkIdentifiers(registrationData: Form[BusinessRegistration]) = {
-    registrationData
-  }
-
-  def validateNonUkIdentifiers(registrationData: Form[BusinessRegistration]): Form[BusinessRegistration] = {
+  def validateNonUkIdentifiers(registrationData: Form[OverseasCompany]): Form[OverseasCompany] = {
     validateNonUkIdentifiersInstitution(validateNonUkIdentifiersCountry(validateNonUkIdentifiersId(registrationData)))
   }
 
-  def validateNonUkIdentifiersInstitution(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersInstitution(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -97,7 +100,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUkIdentifiersCountry(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersCountry(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -119,7 +122,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateNonUkIdentifiersId(registrationData: Form[BusinessRegistration]) = {
+  def validateNonUkIdentifiersId(registrationData: Form[OverseasCompany]) = {
     val hasBusinessUniqueId = registrationData.data.get("hasBusinessUniqueId") map {
       _.trim
     } filterNot {
@@ -158,7 +161,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  private def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
+  def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
     } filterNot {
@@ -178,10 +181,10 @@ object BusinessRegistrationForms {
     )(NRLQuestion.apply)(NRLQuestion.unapply)
   )
 
-  val clientPermissionForm = Form(
+  val paySAQuestionForm = Form(
     mapping(
-      "permission" -> optional(boolean).verifying(Messages("bc.permission.not-selected.error"), a => a.isDefined)
-    )(ClientPermission.apply)(ClientPermission.unapply)
+      "paySA" -> optional(boolean).verifying(Messages("bc.nonuk.paySA.not-selected.error"), a => a.isDefined)
+    )(PaySAQuestion.apply)(PaySAQuestion.unapply)
   )
 
 }

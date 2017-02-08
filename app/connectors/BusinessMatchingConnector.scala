@@ -37,13 +37,10 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
             (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
     val authLink = bcContext.user.authLink
     val url = s"""$serviceUrl$authLink/$baseUri/$lookupUri/${lookupData.utr}/$userType"""
-    Logger.debug(s"[BusinessMatchingConnector][lookup] Call $url")
     http.POST[JsValue, HttpResponse](url, Json.toJson(lookupData)) map { response =>
       auditMatchCall(lookupData, userType, response, service)
       response.status match {
         case OK | NOT_FOUND =>
-          Logger.info(s"[BusinessMatchingConnector][lookup] - postUrl = $url && " +
-            s"response.status = ${response.status} &&  response.body = ${response.body}")
           //try catch added to handle JsonParseException in case ETMP/DES response with contact Details with ',' in it
           try {
             Json.parse(response.body)
@@ -91,8 +88,8 @@ trait BusinessMatchingConnector extends ServicesConfig with RawResponseReads wit
         "individual" -> s"${input.individual}",
         "organisation" -> s"${input.organisation}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 }

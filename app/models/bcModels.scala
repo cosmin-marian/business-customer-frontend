@@ -51,4 +51,6 @@ object MatchSuccessResponse {
 
 case class NRLQuestion(paysSA: Option[Boolean] = None)
 
+case class PaySAQuestion(paySA: Option[Boolean] = None)
+
 case class ClientPermission(permission: Option[Boolean] = None)

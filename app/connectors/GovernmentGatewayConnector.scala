@@ -97,8 +97,8 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
         "portalId" -> s"${input.portalId}",
         "knownFacts" -> s"${input.knownFacts}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 }

@@ -38,13 +38,14 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       Given("An agent has an editable business registration details")
       When("The user views the page")
       implicit val request = FakeRequest()
+      implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
       val html = views.html.review_details_non_uk_agent("ATED", reviewDetails.copy(directMatch = false))
 
       val document = Jsoup.parse(html.toString())
 
       And("The submit button is - Confirm and continue")
-      assert(document.getElementById("submit").text() === "Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm")
 
       Then("The title should match - Confirm your business details")
       assert(document.select("h1").text === ("Check your agency details"))
@@ -64,9 +65,8 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       And("Overseas tax referebce is correct")
       assert(document.getElementById("overseas-tax-reference-title").text === ("Overseas company registration number"))
       assert(document.getElementById("overseas-details").text === ("id France inst"))
-      assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/agent/register/non-uk-client/ATED/edit"))
-
-      assert(document.select(".button").text === ("Confirm and continue"))
+      assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/register/non-uk-client/edit-overseas-company/ATED/false"))
+      assert(document.select(".button").text === ("Confirm"))
 
     }
 

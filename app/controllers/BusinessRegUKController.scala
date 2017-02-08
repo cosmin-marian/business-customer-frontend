@@ -3,7 +3,9 @@ package controllers
 import config.FrontendAuthConnector
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.BusinessRegistrationDisplayDetails
+import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import utils.BCUtils
@@ -20,17 +22,17 @@ trait BusinessRegUKController extends BaseController {
   def businessRegistrationService: BusinessRegistrationService
 
   def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
-    val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB") + ("hasBusinessUniqueId" -> "false")
-    Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType)))
+    val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
+    Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType, service)))
   }
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType))))
+        Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType, service))))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
+        businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
           registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
         }
       }
@@ -41,10 +43,10 @@ trait BusinessRegUKController extends BaseController {
     businessType.equals("GROUP")
   }
 
-  private def displayDetails(businessType: String) = {
+  private def displayDetails(businessType: String, service: String) = {
     if (isGroup(businessType)) {
       BusinessRegistrationDisplayDetails(businessType,
-        Messages("bc.business-registration.user.group.header"),
+        Messages("bc.business-registration.user.group.header", service.toUpperCase),
         Messages("bc.business-registration.group.subheader"),
         None,
         BCUtils.getIsoCodeTupleList)

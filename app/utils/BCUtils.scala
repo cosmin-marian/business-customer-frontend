@@ -1,14 +1,13 @@
 package utils
 
 import java.util.Properties
-
 import play.api.Play
+import scala.io.Source
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 
-import scala.io.Source
-
 object BCUtils {
-
   val p = new Properties
   p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
 
@@ -94,13 +93,19 @@ object BCUtils {
       "OBP" -> Messages("bc.business-verification.PRT"),
       "UIB" -> Messages("bc.business-verification.UIB"),
       "LP" -> Messages("bc.business-verification.LP"),
+      "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
 
     )
 
+    val atedExtraBusinessTypes = Seq(
+      "UT" -> Messages("bc.business-verification.UT"),
+      "NUK" -> Messages("bc.business-verification.NUK")
+    )
+
     service.toLowerCase match {
       case "ated" if isAgent => isAtedAgentBusinessTypes.filterNot(p => p._1 == "UIB")
-      case "ated" => fixedBusinessTypes.filterNot(p => p._1 == "UIB").filterNot(p => p._1 == "SOP") ++ Seq("NUK" -> Messages("bc.business-verification.NUK"))
+      case "ated" => fixedBusinessTypes.filterNot(p => p._1 == "UIB").filterNot(p => p._1 == "SOP") ++ atedExtraBusinessTypes
       case "awrs" => Seq("GROUP" -> Messages("bc.business-verification.GROUP")) ++ fixedBusinessTypes
       case "amls" => Seq("LTD" -> Messages("bc.business-verification.LTD"),
         "SOP" -> Messages("bc.business-verification.amls.SOP"),

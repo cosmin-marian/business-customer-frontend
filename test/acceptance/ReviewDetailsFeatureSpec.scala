@@ -37,16 +37,17 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       Given("client has directly matched a business registration")
       When("The user views the page")
       implicit val request = FakeRequest()
+      implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
       val html = views.html.review_details("ATED", isAgent = false, reviewDetails)
 
       val document = Jsoup.parse(html.toString())
 
       And("The submit button is - Confirm and continue")
-      assert(document.getElementById("submit").text() === "Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm")
 
       Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      assert(document.select("h1").text === ("Check this is the business you want to register"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
@@ -56,7 +57,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("wrong-account-text-item-1").text().startsWith("If you registered with Companies House you need to inform") === true)
       assert(document.getElementById("wrong-account-text-item-2").text().startsWith("If you are not registered with Companies House you need to inform") === true)
 
-      assert(document.select(".button").text === ("Confirm and continue"))
+      assert(document.select(".button").text === ("Confirm"))
       assert(document.getElementById("bus-reg-edit") === null)
     }
 
@@ -65,16 +66,17 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       Given("An agent has an editable business registration details")
       When("The user views the page")
       implicit val request = FakeRequest()
+      implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
       val html = views.html.review_details("ATED", isAgent = false, reviewDetails.copy(directMatch = false))
 
       val document = Jsoup.parse(html.toString())
 
       And("The submit button is - Confirm and continue")
-      assert(document.getElementById("submit").text() === "Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm")
 
-      Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your business details"))
+      Then("The title should match - Confirm your business details ")
+      assert(document.select("h1").text === ("Check this is the business you want to register"))
 
       assert(document.getElementById("bc.business-registration.text").text() === ("ATED registration"))
       assert(document.getElementById("business-name").text === ("ACME"))
@@ -84,7 +86,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("wrong-account-text-item-1").text().startsWith("If you registered with Companies House you need to inform") === true)
       assert(document.getElementById("wrong-account-text-item-2").text().startsWith("If you are not registered with Companies House you need to inform") === true)
 
-      assert(document.select(".button").text === ("Confirm and continue"))
+      assert(document.select(".button").text === ("Confirm"))
       assert(document.getElementById("bus-reg-edit") === null)
     }
 
@@ -93,16 +95,17 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       Given("An agent has an editable business registration details")
       When("The user views the page")
       implicit val request = FakeRequest()
+      implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
       val html = views.html.review_details("ATED", isAgent = true, reviewDetails.copy(directMatch = true))
 
       val document = Jsoup.parse(html.toString())
 
       And("The submit button is - Confirm and continue")
-      assert(document.getElementById("submit").text() === "Confirm and continue")
+      assert(document.getElementById("submit").text() === "Confirm")
 
-      Then("The title should match - Confirm your business details")
-      assert(document.select("h1").text === ("Confirm your agency details"))
+      Then("The title should match - Check this is the agency you want to set up")
+      assert(document.select("h1").text === ("Check this is the agency you want to set up"))
 
       assert(document.getElementById("wrong-account-title-agent").text === ("Not the right details?"))
       assert(document.getElementById("bc.business-registration-agent.text").text() === ("ATED agency set up"))
@@ -110,7 +113,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("business-address").text === ("23 High Street Park View Gloucester Gloucestershire, NE98 1ZZ NE98 1ZZ United Kingdom"))
       assert(document.getElementById("wrong-account-title") === null)
 
-      assert(document.select(".button").text === ("Confirm and continue"))
+      assert(document.select(".button").text === ("Confirm"))
       assert(document.getElementById("bus-reg-edit") === null)
 
 

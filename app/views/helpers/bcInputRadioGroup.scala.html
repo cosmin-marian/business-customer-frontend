@@ -1,14 +1,15 @@
-@(field: Field, radioOptions: Seq[(String, String)], args: (Symbol, Any)*)(implicit lang: play.api.i18n.Lang, formInstance: Option[Form[_]] = None)
+@(field: Field, radioOptions: Seq[(String, String)], args: (Symbol, Any)*)(implicit lang: play.api.i18n.Lang, formInstance: Option[Form[_]] = None, messages: Messages)
 
 @import play.api.i18n._
 @import views.html.helper._
 @import views.helpers._
 
-@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, lang) }
+@elements = @{ FieldElements(field.id, field, Html(""), args.toMap, messages) }
 @parentField = @{ args.toMap.get('parentField).asInstanceOf[Option[Field]] }
 @errors = @{ FormHelpers.getErrors(field, parentField) }
 @fieldsetClass = { @elements.args.get('_groupClass) @if(errors.nonEmpty){ form-field--error} }
 @labelAfter = @{ elements.args.getOrElse('_labelAfter, false).asInstanceOf[Boolean] }
+@trackGA = @{ elements.args.get('_trackGA).getOrElse(false).asInstanceOf[Boolean] }
 
 <fieldset class="@fieldsetClass" @if(elements.args.get('_fieldsetAttributes).isDefined) { @elements.args.get('_fieldsetAttributes) }>
 
@@ -47,6 +48,7 @@
               value="@value"
               @elements.args.get('_inputClass).map{ inputClass => class="@inputClass" }
               @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes) }
+              @trackGA = @{ elements.args.get('_trackGA).getOrElse(false).asInstanceOf[Boolean] }
               @field.value.filter( _ == value).map{ _ => checked="checked" }
         />
 

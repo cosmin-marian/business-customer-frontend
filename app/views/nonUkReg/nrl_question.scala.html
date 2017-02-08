@@ -1,4 +1,4 @@
-@(nrlQuestionForm: Form[models.NRLQuestion], service: String)(implicit request: Request[_])
+@(nrlQuestionForm: Form[models.NRLQuestion], service: String)(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -8,15 +8,13 @@
 
 @bcMain(title = Messages("bc.nrl.title"), service = Some(service)) {
 
-@bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
+  @form(action = controllers.nonUKReg.routes.NRLQuestionController.continue(service)) {
 
-  @form(action = controllers.routes.NRLQuestionController.continue(service)) {
-
-    <p class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader")</p>
+    <div class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader", service.toUpperCase)</div>
 
     <h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
 
-    <p class ="lede" id="non-resident-text"> @Messages("bc.nrl.text")</p>
+    @bcErrorSummary(nrlQuestionForm, "bc.nrl-error.general")
 
     <div class="form-group" id="paysSA">
 
@@ -28,7 +26,8 @@
         '_legend -> Messages("bc.nrl.header"),
         '_legendClass -> "screen-reader-text",
         '_labelAfter -> true,
-        '_groupClass -> "inline"
+        '_groupClass -> "inline",
+       '_trackGA -> true
       )
 
     </div>

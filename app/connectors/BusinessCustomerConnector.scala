@@ -5,6 +5,8 @@ import config.{BusinessCustomerFrontendAuditConnector, WSHttp}
 import models._
 import play.api.Logger
 import play.api.http.Status._
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
@@ -40,11 +42,9 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
 
   def http: HttpGet with HttpPost
 
-
   def addKnownFacts(knownFacts: KnownFactsForService)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/${GovernmentGatewayConstants.KnownFactsAgentServiceName}/$knownFactsUri"""
-    Logger.debug(s"[BusinessCustomerConnector][addKnownFacts] Call $postUrl")
     val jsonData = Json.toJson(knownFacts)
     http.POST[JsValue, HttpResponse](postUrl, jsonData) map { response =>
       auditAddKnownFactsCall(knownFacts, response)
@@ -56,12 +56,10 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   def register(registerData: BusinessRegistrationRequest, service: String, isNonUKClientRegisteredByAgent: Boolean = false)
               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[BusinessRegistrationResponse] = {
 
-    def auditRegisterCall(
-                                   input: BusinessRegistrationRequest,
-                                   response: HttpResponse,
-                                   service: String,
-                                   isNonUKClientRegisteredByAgent: Boolean = false)
-                                 (implicit hc: HeaderCarrier) = {
+    def auditRegisterCall(input: BusinessRegistrationRequest,
+                          response: HttpResponse,
+                          service: String,
+                          isNonUKClientRegisteredByAgent: Boolean = false)(implicit hc: HeaderCarrier) = {
       val eventType = response.status match {
         case OK => EventTypes.Succeeded
         case _ => EventTypes.Failed
@@ -81,13 +79,28 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
           "isAnAgent" -> s"${input.isAnAgent}",
           "organisation" -> s"${input.organisation}",
           "responseStatus" -> s"${response.status}",
-          "responseBody" -> s"${response.body}"),
-        eventType = eventType)
+          "responseBody" -> s"${response.body}",
+          "status" ->  s"${eventType}"))
+
+      def getAddressPiece(piece: Option[String]):String = {
+        if (piece.isDefined)
+          piece.get
+        else
+          ""
+      }
+
+      sendDataEvent(transactionName = if (input.address.postalCode.isDefined) "manualAddressSubmitted" else "internationalAddressSubmitted",
+        detail = Map(
+          "submittedLine1" -> input.address.addressLine1.toString,
+          "submittedLine2" -> input.address.addressLine2.toString,
+          "submittedLine3" -> getAddressPiece(input.address.addressLine3),
+          "submittedLine4" -> getAddressPiece(input.address.addressLine4),
+          "submittedPostcode" -> getAddressPiece(input.address.postalCode),
+          "submittedCountry" -> input.address.countryCode))
     }
 
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/$registerUri"""
-    Logger.debug(s"[BusinessCustomerConnector][register] Call $postUrl")
     val jsonData = Json.toJson(registerData)
     http.POST(postUrl, jsonData) map { response =>
       auditRegisterCall(registerData, response, service, isNonUKClientRegisteredByAgent)
@@ -143,8 +156,8 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
       detail = Map("txName" -> "ggAddKnownFactsCall",
         "facts" -> s"${input.facts}",
         "responseStatus" -> s"${response.status}",
-        "responseBody" -> s"${response.body}"),
-      eventType = eventType)
+        "responseBody" -> s"${response.body}",
+        "status" ->  s"${eventType}"))
   }
 
 

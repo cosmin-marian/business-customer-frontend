@@ -9,7 +9,7 @@
     userLoggedIn: Boolean = false,
     scriptElement: Option[Html] = None,
     linkElement : Option[Html] = None
-    )(mainContent: Html = HtmlFormat.empty)
+    )(mainContent: Html = HtmlFormat.empty)(implicit request : Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
@@ -73,7 +73,8 @@
   @uiLayouts.serviceInfo(
   betaBanner = betaBanner,
   includeGridWrapper = false,
-  serviceInfoContent = None)
+  serviceInfoContent = None,
+  includeHMRCBranding = false)
 }
 
 @getHelpForm = {

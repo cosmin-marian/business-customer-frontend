@@ -53,7 +53,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
     "getNavTitle" must {
       "for ated as service name, return ated" in {
-        BCUtils.getNavTitle(Some("ated")) must be(Some("Annual Tax on Enveloped Dwellings (ATED)"))
+        BCUtils.getNavTitle(Some("ated")) must be(Some("Submit and view your ATED returns"))
       }
       "for awrs as service name, return awrs" in {
         BCUtils.getNavTitle(Some("awrs")) must be(Some("Alcohol Wholesaler Registration Scheme (AWRS)"))
@@ -76,7 +76,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
 
       "return the correct map for ated" in {
         val typeMap = BCUtils.businessTypeMap("ated", false)
-        typeMap.size must be(5)
+        typeMap.size must be(6)
         typeMap.head._1 must be("LTD")
         typeMap(1)._1 must be("OBP")
       }
@@ -89,6 +89,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return the correct map for amls" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("amls", false)
         typeMap.size must be(5)
         typeMap mustBe Seq(
@@ -101,6 +102,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return the correct map for investment-tax-relief" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("investment-tax-relief", false)
         typeMap.size must be(1)
         typeMap mustBe Seq(
@@ -109,6 +111,7 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
       }
 
       "return default map when passed nothing" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("", false)
         typeMap.size must be(6)
         typeMap mustBe Seq(

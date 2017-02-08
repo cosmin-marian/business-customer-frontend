@@ -16,11 +16,13 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
     "unauthorised" must {
 
       "respond with an OK" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val result = controllers.ApplicationController.unauthorised().apply(FakeRequest())
         status(result) must equal(OK)
       }
 
       "load the unauthorised page" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val result = controllers.ApplicationController.unauthorised().apply(FakeRequest())
         val content = contentAsString(result)
         val doc = Jsoup.parse(content)
@@ -57,6 +59,15 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
     }
 
+    "Keep Alive" must {
+
+      "respond with an OK" in {
+        val result = controllers.ApplicationController.keepAlive.apply(FakeRequest())
+
+        status(result) must be(OK)
+      }
+    }
+    
     "Logout" must {
 
       "respond with a redirect" in {
@@ -66,7 +77,7 @@ class ApplicationControllerSpec extends PlaySpec with OneServerPerSuite {
 
       "be redirected to the feedback page for ATED service" in {
         val result = controllers.ApplicationController.logout(service).apply(FakeRequest())
-        redirectLocation(result).get must include("/business-customer/feedback/ATED")
+        redirectLocation(result).get must include("/ated/logout")
       }
 
       "be redirected to the logout page for any other service other than ATED" in {

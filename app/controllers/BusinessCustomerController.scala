@@ -21,7 +21,6 @@ trait BusinessCustomerController extends BaseController {
     dataCacheConnector.clearCache.map { x =>
       x.status match {
         case OK =>
-          Logger.info(s"session has been cleared for $service")
           Ok
         case _ =>
           Logger.error(s"session has not been cleared for $service")
@@ -33,9 +32,7 @@ trait BusinessCustomerController extends BaseController {
   def getReviewDetails(service: String) = AuthAction(service).async { implicit bcContext =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession.map {
       case Some(businessDetails) =>
-        Logger.info(s"business details retrieved for $service")
         Ok(Json.toJson(businessDetails))
-
       case _ =>
         Logger.error(s"could not retrieve business details for $service")
         InternalServerError
