@@ -10,7 +10,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsResultException, JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.http.hooks.HttpHook
@@ -93,7 +93,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
       }
-      "return status anything else, for bad data sent for enrol" in {
+      "return status is anything, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(subscribeFailureResponseJson))))
         val result = TestGovernmentGatewayConnector.enrol(request)
@@ -101,6 +101,16 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
       }
+/*      "return status 502, for bad data sent for enrol" in {
+        when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, Some(subscribeFailureResponseJson))))
+        val result = TestGovernmentGatewayConnector.enrol(request)
+       /* val thrown = the[InternalServerException] thrownBy await(result)
+        Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
+        verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())*/
+       val enrolResponse = await(result)
+        enrolResponse must be(response)
+      }*/
     }
   }
 }

@@ -65,14 +65,20 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
             s"Service Unavailable Exception account Ref:${enrolRequest.knownFacts}, " +
             s"Service: ${enrolRequest.serviceName}}")
           throw new ServiceUnavailableException(response.body)
+      /*  case BAD_GATEWAY =>
+          metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
+          Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+            s"gg url:$postUrl, " +
+            s"Service: ${enrolRequest.serviceName}, " +
+            s"Reponse Body: ${response.body}," +
+            s"Reponse Status: ${response.status}")
+          response.json.as[EnrolResponse]*/
         case status =>
           metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
             s"gg url:$postUrl, " +
             s"status:$status Exception account Ref:${enrolRequest.knownFacts}, " +
-            s"Service: ${enrolRequest.serviceName}, " +
-            s"Reponse Body: ${response.body}," +
-            s"Reponse Status: ${response.status}")
+            s"Service: ${enrolRequest.serviceName}}")
           throw new InternalServerException(response.body)
       }
     }
