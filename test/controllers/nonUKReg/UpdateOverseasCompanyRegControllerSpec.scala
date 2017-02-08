@@ -144,8 +144,8 @@ class UpdateOverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerS
 
           registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED") { result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("ou must enter the country that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter the institution that issued the business unique identifier.")
+            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
+            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
             contentAsString(result) must include("You must enter a Business Unique Identifier.")
           }
         }
