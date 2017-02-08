@@ -10,7 +10,7 @@ import play.api.i18n.Messages
 import play.api.{Logger, Play}
 import uk.gov.hmrc.play.audit.model.{Audit, EventTypes}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import utils.GovernmentGatewayConstants
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,12 +34,12 @@ trait AgentRegistrationService extends RunMode with Auditable {
   }
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
-                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[EnrolResponse] = {
+                        (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     for {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
     } yield {
-      auditEnrolAgent(businessDetails, enrolResponse)
+      auditEnrolAgent(businessDetails, enrolResponse, serviceName)
       Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> $enrolResponse")
       enrolResponse
     }
@@ -73,14 +73,13 @@ trait AgentRegistrationService extends RunMode with Auditable {
     KnownFactsForService(knownFacts)
   }
 
-  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: EnrolResponse)(implicit hc: HeaderCarrier) = {
+  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: HttpResponse, serviceName: String)(implicit hc: HeaderCarrier) = {
     sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
-      "service" -> enrolResponse.serviceName,
-      "identifiers" -> enrolResponse.identifiers.toString(),
-      "status" -> EventTypes.Succeeded
-    ))
+      "service" -> serviceName),
+      eventType = EventTypes.Succeeded
+    )
   }
 }
 

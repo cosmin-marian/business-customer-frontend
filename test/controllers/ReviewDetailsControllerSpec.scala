@@ -15,9 +15,8 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AgentRegistrationService
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -198,6 +197,16 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
             redirectLocation(result).get must include("/business-customer/agent/register")
         }
       }
+
+      "throw an exception if different agent try to register with same details" in {
+
+        continueWithUnAuthorisedAgent(service) {
+          result =>
+            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
+            thrown.getMessage must include("William Words Worth to decide...........")
+        }
+      }
+
       "throw an exception if it's an unknown service" in {
         continueWithAuthorisedUser("unknownServiceTest") {
           result =>
@@ -236,7 +245,16 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
-    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
+    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  private def continueWithUnAuthorisedAgent(service: String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }

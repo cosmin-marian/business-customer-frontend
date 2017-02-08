@@ -33,7 +33,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
 
   def metrics: Metrics
 
-  def enrol(enrolRequest: EnrolRequest)(implicit hc: HeaderCarrier): Future[EnrolResponse] = {
+  def enrol(enrolRequest: EnrolRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val jsonData = Json.toJson(enrolRequest)
     val postUrl = s"""$serviceUrl/$enrolUri"""
 
@@ -44,7 +44,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
       response.status match {
         case OK =>
           metrics.incrementSuccessCounter(MetricsEnum.GG_AGENT_ENROL)
-          response.json.as[EnrolResponse]
+          response
         case BAD_REQUEST =>
           metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
@@ -65,14 +65,14 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
             s"Service Unavailable Exception account Ref:${enrolRequest.knownFacts}, " +
             s"Service: ${enrolRequest.serviceName}}")
           throw new ServiceUnavailableException(response.body)
-      /*  case BAD_GATEWAY =>
+        case BAD_GATEWAY =>
           metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
             s"gg url:$postUrl, " +
             s"Service: ${enrolRequest.serviceName}, " +
             s"Reponse Body: ${response.body}," +
             s"Reponse Status: ${response.status}")
-          response.json.as[EnrolResponse]*/
+          response
         case status =>
           metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +

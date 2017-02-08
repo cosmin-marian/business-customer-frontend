@@ -48,7 +48,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
       when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
+      when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       val result = TestAgentRegistrationService.enrolAgent("ATED")
       val thrown = the[RuntimeException] thrownBy await(result)
@@ -68,10 +68,10 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
       when(mockBusinessCustomerConnector.addKnownFacts(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
-      when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(enrolSuccessResponse))
+      when(mockGGConnector.enrol(Matchers.any())(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
 
       val result = TestAgentRegistrationService.enrolAgent("ATED")
-      await(result) must be(enrolSuccessResponse)
+      await(result).status must be(OK)
     }
 
     "enrolAgent throw an exception if we have no details" in {

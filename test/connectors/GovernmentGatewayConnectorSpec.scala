@@ -66,7 +66,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
 
         val result = TestGovernmentGatewayConnector.enrol(request)
         val enrolResponse = await(result)
-        enrolResponse must be(response)
+        enrolResponse.status must be(OK)
       }
 
       "return status as BAD_REQUEST, for bad data sent for enrol" in {
@@ -101,7 +101,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
       }
-/*      "return status 502, for bad data sent for enrol" in {
+    "return status 502, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, Some(subscribeFailureResponseJson))))
         val result = TestGovernmentGatewayConnector.enrol(request)
@@ -109,8 +109,8 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())*/
        val enrolResponse = await(result)
-        enrolResponse must be(response)
-      }*/
+       enrolResponse.status must be(BAD_GATEWAY)
+      }
     }
   }
 }

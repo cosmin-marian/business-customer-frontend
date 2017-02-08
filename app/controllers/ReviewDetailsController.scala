@@ -29,7 +29,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
   def businessDetails(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) =>
-        if ( bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
+        if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
           Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails)))
         } else {
           Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
@@ -43,7 +43,12 @@ trait ReviewDetailsController extends BaseController with RunMode {
   def continue(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     if (bcContext.user.isAgent) {
       agentRegistrationService.enrolAgent(serviceName).map { response =>
-        Redirect(controllers.routes.AgentController.register(serviceName))
+        response.status match {
+          case OK => Redirect(controllers.routes.AgentController.register(serviceName))
+          case _ =>
+            Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
+            throw new RuntimeException(Messages("bc.business-registration-error.duplicate.identifier"))
+        }
       }
     } else {
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")

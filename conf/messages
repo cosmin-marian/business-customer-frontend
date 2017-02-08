@@ -106,8 +106,9 @@ bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Uni
 bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
 bc.business-registration-error.hasBusinessUniqueId.not-selected=You must select one option
 bc.business-registration-error.businessUniqueId.select=You must enter a Business Unique Identifier.
-bc.business-registration-error.issuingCountry.select=ou must enter the country that issued the business unique identifier.
-bc.business-registration-error.issuingInstitution.select= You must enter the institution that issued the business unique identifier.
+bc.business-registration-error.issuingCountry.select=You must enter a country that issued the business unique identifier.
+bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the business unique identifier.
+bc.business-registration-error.duplicate.identifier = William Words Worth to decide...........
 
 
 bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters.
@@ -146,6 +147,16 @@ bc.business-registration.postcode = Postcode
 bc.business-registration.country = Country
 bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.country.select = please select one country
+bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
+bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
+bc.business-registration.hasBusinessUniqueId = Do you have an overseas company registration number?
+bc.business-registration.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
+bc.business-registration.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
+bc.business-registration.businessUniqueId = Tax Reference
+bc.business-registration.businessUniqueId.hint = Example, the number on the document
+bc.business-registration.issuingInstitution = Institution of issue
+bc.business-registration.issuingInstitution.hint = For example, an overseas tax department
+bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.submit= Continue
 bc.business-registration.cancel= Cancel
 bc.business-registration.back= Back
@@ -306,6 +317,24 @@ bc.nonuk.overseas.client.title = Do you have an overseas company registration nu
 bc.nonuk.overseas.client.header = Do you have an overseas company registration number?
 bc.nonuk.overseas.client.subheader = {0} registration
 
+
+## non-uk client reg
+bc.nonuk.client.reg.title = Does your client have a UK Unique Tax Reference for their business?
+bc.nonuk.client.reg.header = Does your client have a UK Unique Tax Reference for their business?
+bc.nonuk.client.reg.subheader = Add a client
+bc.nonuk.client.reg.yes.label = Yes
+bc.nonuk.client.reg.no.label = No
+bc.nonuk.client.reg.question.true.info-title = Your agent reference is GG123456
+bc.nonuk.client.reg.question.true-text1 = <p>You need to give this agent reference to your client so they can authorise you.</p><p>Your client will then need to:</p>
+bc.nonuk.client.reg.question.true-info1 = Register their company to use the new <a href="" target="_blank">ATED service</a>, they may need to create a new organisational Government Gateway account.
+bc.nonuk.client.reg.question.true-info2 = Enter the agent reference you gave them.
+bc.nonuk.client.reg.question.true-info3 = Let you know once they have completed this process.
+bc.nonuk.client.reg.question.true-text2 = <p>You have 28 days to sign in and accept the agent request, you won’t receive an email notification.</p><p>The ATED1 and 64-8 do not cover you for this service.</p>
+bc.nonuk.client.reg.question.true.box.text = If you have a number of agents working on ATED within your organisation you may want to filter your pending clients. To do this you need to add administrators to your account in Government Gateway. To complete the process give your clients your Agent ID as well as your agent reference.
+bc.nonuk.client.reg.question.true.reveal = What is an Agent ID?
+bc.nonuk.client.reg.question.true.reveal-text = An Agent ID is generated when you <a href="http://www.gateway.gov.uk/Default.aspx" target="_blank">create an agent adminstrator Government Gateway account.</a>
+bc.nonuk.client.reg.view-clients = View all my clients
+bc.nonuk.client.reg.unique-tax-reference.not-selected = You must select an option
 
 ## non-uk-registration of client by agent ##
 bc.non-uk-reg.title = What is your client''s overseas registered business name and address?
