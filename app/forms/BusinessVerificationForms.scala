@@ -1,6 +1,7 @@
 package forms
 
 
+import models.ReviewDetails
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages.Implicits._

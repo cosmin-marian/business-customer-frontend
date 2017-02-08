@@ -200,10 +200,9 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
 
       "throw an exception if different agent try to register with same details" in {
 
-        continueWithUnAuthorisedAgent(service) {
+        continueWithDuplicategent(service) {
           result =>
-            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
-            thrown.getMessage must include("William Words Worth to decide...........")
+            status(result) must be(OK)
         }
       }
 
@@ -250,7 +249,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     test(result)
   }
 
-  private def continueWithUnAuthorisedAgent(service: String)(test: Future[Result] => Any) {
+  private def continueWithDuplicategent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
