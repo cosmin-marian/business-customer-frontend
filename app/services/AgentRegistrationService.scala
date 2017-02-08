@@ -40,6 +40,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
       enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
     } yield {
       auditEnrolAgent(businessDetails, enrolResponse)
+      Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> $enrolResponse")
       enrolResponse
     }
   }
