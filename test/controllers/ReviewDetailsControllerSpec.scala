@@ -198,11 +198,19 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         }
       }
 
-      "throw an exception if different agent try to register with same details" in {
+      "return OK and redirect to error page, if different agent try to register with same details" in {
 
         continueWithDuplicategent(service) {
           result =>
             status(result) must be(OK)
+        }
+      }
+
+      "throw an exception if status is OK or BAD_GATEWAY" in {
+        continueWithAAuthAgent("ATED") {
+          result =>
+            val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
+            thrown.getMessage must include("We could not find your details. Check and try again.")
         }
       }
 
@@ -215,7 +223,6 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
     }
   }
-
 
   private def fakeRequestWithSession(userId: String) = {
     val sessionId = s"session-${UUID.randomUUID}"
@@ -254,6 +261,15 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY)))
+    val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
+    test(result)
+  }
+
+  private def continueWithAAuthAgent(service: String)(test: Future[Result] => Any) {
+    val userId = s"user-${UUID.randomUUID}"
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }

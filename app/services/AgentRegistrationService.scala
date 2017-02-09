@@ -13,6 +13,8 @@ import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import utils.GovernmentGatewayConstants
 
+import play.api.http.Status._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -35,13 +37,17 @@ trait AgentRegistrationService extends RunMode with Auditable {
 
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
                         (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
+
+    val enrolReq = createEnrolRequest(serviceName, businessDetails)
     for {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
-      enrolResponse <- governmentGatewayConnector.enrol(createEnrolRequest(serviceName, businessDetails))
+      enrolResponse <- governmentGatewayConnector.enrol(enrolReq)
     } yield {
-      auditEnrolAgent(businessDetails, enrolResponse, serviceName)
-      Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> $enrolResponse")
-      enrolResponse
+      Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> ${enrolResponse.body}")
+      enrolResponse.status match {
+        case OK => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Succeeded); enrolResponse
+        case _ => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Failed); enrolResponse
+      }
     }
   }
 
@@ -73,12 +79,13 @@ trait AgentRegistrationService extends RunMode with Auditable {
     KnownFactsForService(knownFacts)
   }
 
-  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: HttpResponse, serviceName: String)(implicit hc: HeaderCarrier) = {
-    sendDataEvent("enrolAgent", detail = Map(
+  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: HttpResponse, enrolReq: EnrolRequest, eventType: String)(implicit hc: HeaderCarrier) = {
+      sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
-      "service" -> serviceName,
-      "status" -> EventTypes.Succeeded
+      "safeId" -> businessDetails.safeId,
+      "service" -> enrolReq.serviceName,
+      "status" -> eventType
     ))
   }
 }
