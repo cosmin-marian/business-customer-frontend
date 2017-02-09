@@ -43,6 +43,7 @@ trait AgentRegistrationService extends RunMode with Auditable {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(enrolReq)
     } yield {
+      Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> ${enrolResponse.body}")
       enrolResponse.status match {
         case OK => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Succeeded); enrolResponse
         case _ => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Failed); enrolResponse
