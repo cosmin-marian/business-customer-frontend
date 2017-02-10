@@ -110,6 +110,20 @@ class BCUtilsSpec extends PlaySpec with OneServerPerSuite {
         )
       }
 
+      "return the correct map for capital-gains-tax" in {
+        implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
+        val typeMap = BCUtils.businessTypeMap("capital-gains-tax", false)
+        typeMap.size must be(6)
+        typeMap mustBe Seq(
+          "NUK" -> Messages("bc.business-verification.NUK"),
+          "LTD" -> Messages("bc.business-verification.LTD"),
+          "OBP" -> Messages("bc.business-verification.PRT"),
+          "LP" -> Messages("bc.business-verification.LP"),
+          "LLP" -> Messages("bc.business-verification.LLP"),
+          "UIB" -> Messages("bc.business-verification.UIB")
+        )
+      }
+
       "return default map when passed nothing" in {
         implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
         val typeMap = BCUtils.businessTypeMap("", false)

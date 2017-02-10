@@ -114,6 +114,13 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
+      "if non-uk with capital-gains-tax service, continue to registration page" in {
+        continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")), "capital-gains-tax") { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include(s"/business-customer/register/capital-gains-tax/NUK")
+        }
+      }
+
       "if non-uk, continue to registration page" in {
         continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) { result =>
           status(result) must be(SEE_OTHER)
@@ -646,7 +653,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     test(result)
   }
 
-  def continueWithAuthorisedUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson])(test: Future[Result] => Any) {
+  def continueWithAuthorisedUserJson(businessType: String, fakeRequest: FakeRequest[AnyContentAsJson], service: String = service)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 

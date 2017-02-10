@@ -73,11 +73,9 @@ object BCUtils {
     }
   }
 
-
   def businessTypeMap(service: String, isAgent: Boolean): Seq[(String, String)] = {
 
     val fixedBusinessTypes = Seq(
-
       "SOP" -> Messages("bc.business-verification.SOP"),
       "LTD" -> Messages("bc.business-verification.LTD"),
       "OBP" -> Messages("bc.business-verification.PRT"),
@@ -95,12 +93,20 @@ object BCUtils {
       "LP" -> Messages("bc.business-verification.LP"),
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
-
     )
 
     val atedExtraBusinessTypes = Seq(
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
+    )
+
+    val isCGTBusinessTypes = Seq (
+      "NUK" -> Messages("bc.business-verification.NUK"),
+      "LTD" -> Messages("bc.business-verification.LTD"),
+      "OBP" -> Messages("bc.business-verification.PRT"),
+      "LP" -> Messages("bc.business-verification.LP"),
+      "LLP" -> Messages("bc.business-verification.LLP"),
+      "UIB" -> Messages("bc.business-verification.UIB")
     )
 
     service.toLowerCase match {
@@ -114,6 +120,7 @@ object BCUtils {
         "UIB" -> Messages("bc.business-verification.amls.UIB")
       )
       case "investment-tax-relief" => Seq("LTD" -> Messages("bc.business-verification.LTD"))
+      case "capital-gains-tax" => isCGTBusinessTypes
       case _ => fixedBusinessTypes
     }
   }
