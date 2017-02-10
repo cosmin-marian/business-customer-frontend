@@ -202,7 +202,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         continueWithAuthorisedAgent(service) {
           result =>
             status(result) must be(SEE_OTHER)
-            redirectLocation(result).get must include("/business-customer/agent/register")
+            redirectLocation(result).get must include("/ated-subscription/agent-confirmation")
         }
       }
 
