@@ -43,11 +43,8 @@ trait AgentRegistrationService extends RunMode with Auditable {
       _ <- businessCustomerConnector.addKnownFacts(createKnownFacts(businessDetails))
       enrolResponse <- governmentGatewayConnector.enrol(enrolReq)
     } yield {
-      Logger.warn(s"[AgentRegistrationService][enrolAgent] - enrolResponse ---> ${enrolResponse.body}")
-      enrolResponse.status match {
-        case OK => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Succeeded); enrolResponse
-        case _ => auditEnrolAgent(businessDetails, enrolResponse, enrolReq, EventTypes.Failed); enrolResponse
-      }
+      auditEnrolAgent(businessDetails, enrolResponse, enrolReq); enrolResponse
+      enrolResponse
     }
   }
 
@@ -79,13 +76,17 @@ trait AgentRegistrationService extends RunMode with Auditable {
     KnownFactsForService(knownFacts)
   }
 
-  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: HttpResponse, enrolReq: EnrolRequest, eventType: String)(implicit hc: HeaderCarrier) = {
+  private def auditEnrolAgent(businessDetails: ReviewDetails, enrolResponse: HttpResponse, enrolReq: EnrolRequest)(implicit hc: HeaderCarrier) = {
+    val status = enrolResponse.status match {
+      case OK => EventTypes.Succeeded
+      case _ => EventTypes.Failed
+    }
       sendDataEvent("enrolAgent", detail = Map(
       "txName" -> "enrolAgent",
       "agentReferenceNumber" -> businessDetails.agentReferenceNumber.getOrElse(""),
       "safeId" -> businessDetails.safeId,
       "service" -> enrolReq.serviceName,
-      "status" -> eventType
+      "status" -> status
     ))
   }
 }
