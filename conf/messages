@@ -110,7 +110,7 @@ bc.business-registration-error.issuingCountry.select=You must enter a country th
 bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the business unique identifier.
 bc.business-registration-error.duplicate.identifier.header = Somebody has already registered from your agency.
 bc.business-registration-error.duplicate.identifier.title = Somebody has already registered from your agency.
-bc.business-registration-error.duplicate.identifier.message = If you require access you need to <a href="https://myaccount.gateway.gov.uk/Pages/Credentials/Admin/List.aspx">add administrators to your account in Government Gateway.</a>.
+bc.business-registration-error.duplicate.identifier.message = If you require access you need to <a href="https://myaccount.gateway.gov.uk/Pages/Credentials/Admin/List.aspx" target="_blank">add administrators to your account in Government Gateway </a>
 
 
 bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters.

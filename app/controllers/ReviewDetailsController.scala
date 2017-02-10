@@ -2,6 +2,7 @@ package controllers
 
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
+import models.{EnrolErrorResponse, EnrolResponse}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
@@ -45,16 +46,15 @@ trait ReviewDetailsController extends BaseController with RunMode {
       agentRegistrationService.enrolAgent(serviceName).map { response =>
         response.status match {
           case OK => Redirect(controllers.routes.AgentController.register(serviceName))
+          case BAD_GATEWAY =>
+            Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
+            Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
+              Messages("bc.business-registration-error.duplicate.identifier.title"),
+              Messages("bc.business-registration-error.duplicate.identifier.message")))
           case _ =>
-            if(response.status == BAD_GATEWAY) {
-              Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
-              Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
-                Messages("bc.business-registration-error.duplicate.identifier.title"),
-                Messages("bc.business-registration-error.duplicate.identifier.message")))
-            } else {
-              Logger.warn(s"[ReviewDetailsController][continue] - Execption other tha status - OK and BAD_GATEWAY")
-              throw new RuntimeException(Messages("bc.business-review.error.not-found"))
-            }
+            Logger.warn(s"[ReviewDetailsController][continue] - Execption other tha status - OK and BAD_GATEWAY")
+            throw new RuntimeException(Messages("bc.business-review.error.not-found"))
+
         }
       }
     } else {

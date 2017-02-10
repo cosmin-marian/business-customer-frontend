@@ -19,3 +19,9 @@ case class EnrolResponse(serviceName: String, state: String, identifiers: Seq[Id
 object EnrolResponse {
   implicit val formats = Json.format[EnrolResponse]
 }
+
+case class EnrolErrorResponse(statusCode: String, message: String)
+
+object EnrolErrorResponse {
+  implicit val formats = Json.format[EnrolErrorResponse]
+}
