@@ -2,6 +2,7 @@ package controllers
 
 import config.FrontendAuthConnector
 import connectors.DataCacheConnector
+import controllers.auth.ExternalUrls
 import models.{EnrolErrorResponse, EnrolResponse}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -45,7 +46,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
     if (bcContext.user.isAgent) {
       agentRegistrationService.enrolAgent(serviceName).map { response =>
         response.status match {
-          case OK => Redirect(controllers.routes.AgentController.register(serviceName))
+          case OK => Redirect(ExternalUrls.agentConfirmationPath(serviceName))
           case BAD_GATEWAY =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
             Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),

@@ -31,8 +31,6 @@ GET         /thank-you/:service                                                 
 GET         /agent/:service                                                     controllers.HomeController.homePage(service: String)
 GET         /:service                                                           controllers.HomeController.homePage(service: String)
 
-GET         /agent/register/:service                                            controllers.AgentController.register(service: String)
-
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 
 GET         /nrl/:service                                                       controllers.nonUKReg.NRLQuestionController.view(service: String)
