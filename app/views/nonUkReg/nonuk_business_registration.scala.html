@@ -69,7 +69,21 @@
     '_id -> "businessAddress.line_4",
     '_showConstraints -> false)
 
-    @bcDropdown(businessRegistrationForm("businessAddress.country"),
+    @bcInput(businessRegistrationForm("businessAddress.postcode"),
+    '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
+    '_id -> "businessAddress.postcode",
+    '_showConstraints -> false)
+
+    <details role="group">
+      <summary role="button" aria-controls="details-content-0" tabindex="0">
+        <span class="summary" id="email-risk-question" data-journey-click="ated-subscription:click:email-risk-question">@Messages("bc.non-uk-reg.postcode.help.question")</span>
+      </summary>
+      <div id="details-content-0" class="panel-indent font-xsmall">
+        <p id="email-risk-ans">@Html(Messages("bc.non-uk-reg.postcode.help.answer"))</p>
+      </div>
+    <details
+
+      @bcDropdown(businessRegistrationForm("businessAddress.country"),
     elementOptions = displayDetails.listOfIsoCode,
     displayEmptyValue = true,
     '_id -> "businessAddress.country",
