@@ -24,16 +24,16 @@
 @bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
 
 <div class="form-group">
-<div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
-<h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+  <div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
+  <h1 class="heading-xlarge" id="non-uk-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
   @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")
 
-@displayDetails.businessRegLede.map { businessRegLede =>
+  @displayDetails.businessRegLede.map { businessRegLede =>
   <span class="lede" id="non-uk-reg-lede">@Html(businessRegLede)</span>
-}
+  }
 
-@form(action = controllers.nonUKReg.routes.AgentRegisterNonUKClientController.submit(service)) {
+  @form(action = controllers.nonUKReg.routes.AgentRegisterNonUKClientController.submit(service)) {
 </div>
 
 <div class="form-group">
@@ -68,6 +68,22 @@
     '_labelClass -> "visuallyhidden",
     '_id -> "businessAddress.line_4",
     '_showConstraints -> false)
+
+    @bcInput(businessRegistrationForm("businessAddress.postcode"),
+    '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
+    '_id -> "businessAddress.postcode",
+    '_inputClass -> "input--small",
+    '_showConstraints -> false)
+
+    <details role="group">
+      <summary role="button" aria-controls="details-content-0" tabindex="0">
+        <span class="summary" id="email-risk-question" data-journey-click="ated-subscription:click:email-risk-question">@Messages("bc.non-uk-reg.postcode.help.question")</span>
+      </summary>
+      <div id="details-content-0" class="panel-indent font-xsmall">
+        <p id="email-risk-ans">@Html(Messages("bc.non-uk-reg.postcode.help.answer"))</p>
+      </div>
+    </details>
+
 
     @bcDropdown(businessRegistrationForm("businessAddress.country"),
     elementOptions = displayDetails.listOfIsoCode,
