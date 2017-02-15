@@ -205,8 +205,8 @@ bc.agent-service.error.no-registration-details=No Registration Details found
 bc.business-registration-error.general.businessName = There is a problem with the business name
 bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1.
 bc.business-registration-error.general.businessAddress.line_2  = There is a problem with address line 2.
-bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field
-bc.business-registration-error.general.businessAddress.postcode = A postcode cannot be more than 10 characters.
+bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field.
+bc.business-registration-error.general.businessAddress.postcode = There is a problem with the postal code field.
 
 
 bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1.
