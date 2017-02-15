@@ -35,6 +35,11 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
+
+  def isAgentEnrolmentAllowed(serviceName: String) :Boolean = {
+    getServiceAgentEnrolmentType(serviceName).isDefined
+  }
+
   private def enrolAgent(serviceName: String, businessDetails: ReviewDetails)
                         (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
 
@@ -48,9 +53,12 @@ trait AgentRegistrationService extends RunMode with Auditable {
     }
   }
 
+  private def getServiceAgentEnrolmentType(serviceName: String) : Option[String] = {
+    Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
+  }
+
   private def createEnrolRequest(serviceName: String, businessDetails: ReviewDetails)(implicit bcContext: BusinessCustomerContext): EnrolRequest = {
-    val agentEnrolmentService: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.agentEnrolmentService")
-    agentEnrolmentService match {
+    getServiceAgentEnrolmentType(serviceName) match {
       case Some(enrolServiceName) =>
         val knownFactsList = List(businessDetails.agentReferenceNumber, Some(""), Some(""), Some(businessDetails.safeId)).flatten
         EnrolRequest(portalId = GovernmentGatewayConstants.PortalIdentifier,
