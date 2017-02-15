@@ -22,8 +22,8 @@ trait BusinessCustomerController extends BaseController {
       x.status match {
         case OK =>
           Ok
-        case _ =>
-          Logger.error(s"session has not been cleared for $service. Error: ${x.body}")
+        case errorStatus =>
+          Logger.error(s"session has not been cleared for $service. Status: $errorStatus, Error: ${x.body}")
           InternalServerError
       }
     }
