@@ -35,6 +35,15 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
       AgentRegistrationService.governmentGatewayConnector must be(GovernmentGatewayConnector)
     }
 
+    "isAgentEnrolmentAllowed is true if the configuration is setup" in {
+      TestAgentRegistrationService.isAgentEnrolmentAllowed("ATED") must be (true)
+    }
+
+    "isAgentEnrolmentAllowed is false if the configuration is setup" in {
+      TestAgentRegistrationService.isAgentEnrolmentAllowed("AWRS") must be (false)
+      TestAgentRegistrationService.isAgentEnrolmentAllowed("AMLS") must be (false)
+    }
+
     "enrolAgent throw exception if we have no agent ref no" in {
       val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
       val returnedReviewDetails = new ReviewDetails(businessName = "Bus Name", businessType = None,
