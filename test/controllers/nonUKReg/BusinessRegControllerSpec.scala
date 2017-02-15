@@ -154,7 +154,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
           (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
           (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
-          (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "A postcode cannot be more than 10 characters."),
+          (createJson(postcode = "a" * 11), "Postcode is optional but if entered, must be maximum of 10 characters", "There is a problem with the postal code field."),
           (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 
