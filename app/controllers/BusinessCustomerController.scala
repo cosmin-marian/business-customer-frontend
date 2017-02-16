@@ -20,11 +20,12 @@ trait BusinessCustomerController extends BaseController {
   def clearCache(service: String) = AuthAction(service).async { implicit bcContext =>
     dataCacheConnector.clearCache.map { x =>
       x.status match {
-        case OK =>
+        case OK | NO_CONTENT =>
           Ok
-        case errorStatus =>
+        case errorStatus => {
           Logger.error(s"session has not been cleared for $service. Status: $errorStatus, Error: ${x.body}")
           InternalServerError
+        }
       }
     }
   }
