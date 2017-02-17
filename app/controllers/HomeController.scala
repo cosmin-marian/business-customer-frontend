@@ -1,6 +1,7 @@
 package controllers
 
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import models.ReviewDetails
 import play.api.libs.json.{JsError, JsSuccess}
 import services.BusinessMatchingService
@@ -10,22 +11,24 @@ import scala.concurrent.Future
 object HomeController extends HomeController {
   val businessMatchService: BusinessMatchingService = BusinessMatchingService
   val authConnector = FrontendAuthConnector
+  override val controllerId: String = this.getClass.getName
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait HomeController extends BaseController {
+trait HomeController extends BackLinkController {
 
   def businessMatchService: BusinessMatchingService
 
   def homePage(service: String) = AuthAction(service).async { implicit bcContext =>
     businessMatchService.matchBusinessWithUTR(isAnAgent = bcContext.user.isAgent, service) match {
       case Some(futureJsValue) =>
-        futureJsValue map {
+        futureJsValue flatMap {
           jsValue => jsValue.validate[ReviewDetails] match {
-            case success: JsSuccess[ReviewDetails] => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
-            case failure: JsError => Redirect(controllers.routes.BusinessVerificationController.businessVerification(service))
+            case success: JsSuccess[ReviewDetails] => ForwardWithBack(ReviewDetailsController.controllerId, controllers.routes.ReviewDetailsController.businessDetails(service))
+            case failure: JsError => ForwardWithBack(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
           }
         }
-      case None => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessVerification(service)))
+      case None => ForwardWithBack(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
     }
   }
 

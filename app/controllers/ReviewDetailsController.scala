@@ -1,7 +1,7 @@
 package controllers
 
 import config.FrontendAuthConnector
-import connectors.DataCacheConnector
+import connectors.{BackLinkCacheConnector, DataCacheConnector}
 import controllers.auth.ExternalUrls
 import models.{EnrolErrorResponse, EnrolResponse}
 import play.api.i18n.Messages.Implicits._
@@ -17,19 +17,21 @@ object ReviewDetailsController extends ReviewDetailsController {
   val dataCacheConnector = DataCacheConnector
   val authConnector = FrontendAuthConnector
   val agentRegistrationService = AgentRegistrationService
+  override val controllerId: String = this.getClass.getName
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait ReviewDetailsController extends BaseController with RunMode {
+trait ReviewDetailsController extends BackLinkController with RunMode {
 
   import play.api.Play.current
 
-  def dataCacheConnector: DataCacheConnector
+  def backLinkCacheConnector: DataCacheConnector
 
   def agentRegistrationService: AgentRegistrationService
 
 
   def businessDetails(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
-    dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
+    backLinkCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) =>
         if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
           Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails)))

@@ -1,8 +1,8 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
-import connectors.BusinessRegCacheConnector
-import controllers.BaseController
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
+import controllers.{BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
@@ -17,21 +17,27 @@ import scala.concurrent.Future
 object BusinessRegController extends BusinessRegController {
   override val authConnector = FrontendAuthConnector
   override val businessRegistrationCache = BusinessRegCacheConnector
+  override val controllerId: String = this.getClass.getName
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait BusinessRegController extends BaseController {
+trait BusinessRegController extends BackLinkController {
 
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+  def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
+    addBackLinkToPage(
+        Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service)))
+    )
   }
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service))))
+        addBackLinkToPage(
+          BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service)))
+        )
       },
       registrationData => {
         businessRegistrationCache.saveBusinessRegDetails(registrationData).map {

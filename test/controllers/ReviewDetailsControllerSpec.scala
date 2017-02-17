@@ -48,7 +48,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
     }
     new ReviewDetailsController {
-      override def dataCacheConnector = mockDataCacheConnector
+      override def backLinkCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
     }
@@ -67,7 +67,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
     }
     new ReviewDetailsController {
-      override def dataCacheConnector = mockDataCacheConnector
+      override def backLinkCacheConnector = mockDataCacheConnector
 
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService

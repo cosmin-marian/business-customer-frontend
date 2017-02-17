@@ -11,18 +11,26 @@ import scala.concurrent.Future
 trait BackLinkController extends BaseController {
 
   val controllerId: String
-  val dataCacheConnector: BackLinkCacheConnector
+  val backLinkCacheConnector: BackLinkCacheConnector
 
   def setBackLink(pageId: String, returnUrl: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) : Future[CacheMap] = {
-    dataCacheConnector.saveBackLink(pageId, returnUrl)
+    backLinkCacheConnector.saveBackLink(pageId, returnUrl)
   }
 
   def currentBackLink(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier):Future[Option[String]] = {
-    dataCacheConnector.fetchAndGetBackLink(controllerId)
+    backLinkCacheConnector.fetchAndGetBackLink(controllerId)
   }
 
 
-  def ForwardWithBack(nextPageId: String, redirectCall: Call): Future[Result] = {
+  def addBackLinkToPage(currentPage: Result)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) :Future[Result] = {
+    currentBackLink.map(backLink => currentPage)
+  }
+
+  def RedirectToExernal(redirectCall: String, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) = {
+    Future.successful(Redirect(redirectCall))
+  }
+
+  def ForwardWithBack(nextPageId: String, redirectCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     for {
       currentBackLink <- currentBackLink
       cache <- setBackLink(nextPageId, currentBackLink)
@@ -31,7 +39,7 @@ trait BackLinkController extends BaseController {
     }
   }
 
-  def RedirectWithBack(nextPageId: String, redirectCall: Call, backCall: Call): Future[Result] = {
+  def RedirectWithBack(nextPageId: String, redirectCall: Call, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     for {
       cache <- setBackLink(nextPageId, Some(backCall.url))
     } yield{
