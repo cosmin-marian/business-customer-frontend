@@ -5,7 +5,7 @@ import connectors.BackLinkCacheConnector
 import controllers.nonUKReg.{NRLQuestionController, BusinessRegController}
 import forms.BusinessVerificationForms._
 import forms._
-import models.{BusinessCustomerContext, Individual, Organisation, ReviewDetails}
+import models._
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -20,7 +20,7 @@ import scala.concurrent.Future
 object BusinessVerificationController extends BusinessVerificationController {
   val businessMatchingService: BusinessMatchingService = BusinessMatchingService
   val authConnector = FrontendAuthConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "BusinessVerificationController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -30,18 +30,14 @@ trait BusinessVerificationController extends BackLinkController {
 
   def businessVerification(service: String) = AuthAction(service).async {
     implicit bcContext =>
-      addBackLinkToPage(
-          Ok(views.html.business_verification(businessTypeForm, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg))
-      )
+      currentBackLink.map(backLink => Ok(views.html.business_verification(businessTypeForm, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg, backLink)))
   }
 
   // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthAction(service).async { implicit bcContext =>
     BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
       formWithErrors =>
-        addBackLinkToPage(
-            BadRequest(views.html.business_verification(formWithErrors, bcContext.user.isAgent, service,
-                bcContext.user.isSa, bcContext.user.isOrg))
+        currentBackLink.map(backLink => BadRequest(views.html.business_verification(formWithErrors, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg, backLink))
         ),
       value => {
         val returnCall = routes.BusinessVerificationController.businessVerification(service)
@@ -53,51 +49,58 @@ trait BusinessVerificationController extends BackLinkController {
           case Some("NEW") =>
             RedirectWithBackLink(BusinessRegUKController.controllerId, controllers.routes.BusinessRegUKController.register(service, "NEW"), returnCall)
           case Some("GROUP") =>
-            RedirectWithBackLink("BusinessRegUKController", controllers.routes.BusinessRegUKController.register(service, "GROUP"), returnCall)
-          case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
-          case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
-          case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
-          case Some("OBP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
-          case Some("LLP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
-          case Some("LP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
-          case Some("UT") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT")))
+            RedirectWithBackLink(BusinessRegUKController.controllerId, controllers.routes.BusinessRegUKController.register(service, "GROUP"), returnCall)
+          case Some("SOP") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
+          case Some("UIB") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
+          case Some("LTD") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
+          case Some("OBP") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "OBP")))
+          case Some("LLP") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LLP")))
+          case Some("LP") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
+          case Some("UT") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT")))
           case _ =>
-            RedirectWithBackLink("HomeController", controllers.routes.HomeController.homePage(service), returnCall)
+            RedirectWithBackLink(HomeController.controllerId, controllers.routes.HomeController.homePage(service), returnCall)
         }
       }
     )
   }
 
-  def businessForm(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    addBackLinkToPage(
+  def businessForm(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
+      val backLink = Some(routes.BusinessVerificationController.businessVerification(service).url)
       businessType match {
-        case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, bcContext.user.isAgent, service, businessType))
-        case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType))
-        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, bcContext.user.isAgent, service, businessType))
-        case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, bcContext.user.isAgent, service, businessType))
-        case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType))
-        case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType))
-        case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType))
+        case "SOP" => Ok(views.html.business_lookup_SOP(soleTraderForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "LTD" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "UIB" => Ok(views.html.business_lookup_UIB(unincorporatedBodyForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "OBP" => Ok(views.html.business_lookup_OBP(ordinaryBusinessPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType, backLink))
       }
-    )
   }
 
   def submit(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
+    val backLink = Some(routes.BusinessVerificationController.businessVerification(service).url)
     businessType match {
-      case "UIB" => uibFormHandling(unincorporatedBodyForm, businessType, service)
-      case "SOP" => sopFormHandling(soleTraderForm, businessType, service)
-      case "LLP" => llpFormHandling(limitedLiabilityPartnershipForm, businessType, service)
-      case "LP" => lpFormHandling(limitedPartnershipForm, businessType, service)
-      case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service)
-      case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service)
-      case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service)
+      case "UIB" => uibFormHandling(unincorporatedBodyForm, businessType, service, backLink)
+      case "SOP" => sopFormHandling(soleTraderForm, businessType, service, backLink)
+      case "LLP" => llpFormHandling(limitedLiabilityPartnershipForm, businessType, service, backLink)
+      case "LP" => lpFormHandling(limitedPartnershipForm, businessType, service, backLink)
+      case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service, backLink)
+      case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
+      case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
     }
   }
 
   private def uibFormHandling(unincorporatedBodyForm: Form[UnincorporatedMatch], businessType: String,
-                              service: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+                              service: String, backLink: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     unincorporatedBodyForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_UIB(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       unincorporatedFormData => {
         val organisation = Organisation(unincorporatedFormData.businessName, UnincorporatedBody)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
@@ -112,17 +115,17 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = unincorporatedBodyForm.withError(key = "business-type-uib-form", message = errorMsg).fill(unincorporatedFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_UIB(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_UIB(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }
     )
   }
 
-  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String)
+  private def sopFormHandling(soleTraderForm: Form[SoleTraderMatch], businessType: String, service: String, backLink: Option[String])
                              (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     soleTraderForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_SOP(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       soleTraderFormData => {
         val individual = Individual(soleTraderFormData.firstName, soleTraderFormData.lastName, None)
         businessMatchingService.matchBusinessWithIndividualName(isAnAgent = bcContext.user.isAgent,
@@ -137,7 +140,7 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = soleTraderForm.withError(key = "business-type-sop-form", message = errorMsg).fill(soleTraderFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_SOP(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_SOP(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }
@@ -145,9 +148,9 @@ trait BusinessVerificationController extends BackLinkController {
   }
 
   private def llpFormHandling(limitedLiabilityPartnershipForm: Form[LimitedLiabilityPartnershipMatch], businessType: String,
-                              service: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+                              service: String, backLink: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     limitedLiabilityPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LLP(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => currentBackLink.map(implicit backLink => BadRequest(views.html.business_lookup_LLP(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       llpFormData => {
         val organisation = Organisation(llpFormData.businessName, Llp)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
@@ -162,17 +165,17 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = limitedLiabilityPartnershipForm.withError(key = "business-type-llp-form", message = errorMsg).fill(llpFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_LLP(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_LLP(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }
     )
   }
 
-  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String)
+  private def lpFormHandling(limitedPartnershipForm: Form[LimitedPartnershipMatch], businessType: String, service: String, backLink: Option[String])
                             (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     limitedPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LP(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       lpFormData => {
         val organisation = Organisation(lpFormData.businessName, Partnership)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
@@ -187,7 +190,7 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = limitedPartnershipForm.withError(key = "business-type-lp-form", message = errorMsg).fill(lpFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_LP(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_LP(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }
@@ -195,9 +198,9 @@ trait BusinessVerificationController extends BackLinkController {
   }
 
   private def obpFormHandling(ordinaryBusinessPartnershipForm: Form[OrdinaryBusinessPartnershipMatch], businessType: String,
-                              service: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+                              service: String, backLink: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     ordinaryBusinessPartnershipForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_OBP(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       obpFormData => {
         val organisation = Organisation(obpFormData.businessName, Partnership)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
@@ -212,7 +215,7 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = ordinaryBusinessPartnershipForm.withError(key = "business-type-obp-form", message = errorMsg).fill(obpFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_OBP(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_OBP(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }
@@ -220,9 +223,10 @@ trait BusinessVerificationController extends BackLinkController {
   }
 
   private def ltdFormHandling(limitedCompanyForm: Form[LimitedCompanyMatch], businessType: String,
-                              service: String)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+                              service: String, backLink: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+
     limitedCompanyForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, bcContext.user.isAgent, service, businessType))),
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_LTD(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
       limitedCompanyFormData => {
         val organisation = Organisation(limitedCompanyFormData.businessName, CorporateBody)
         businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
@@ -237,7 +241,7 @@ trait BusinessVerificationController extends BackLinkController {
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
               val errorForm = limitedCompanyForm.withError(key = "business-type-ltd-form", message = errorMsg).fill(limitedCompanyFormData)
-              addBackLinkToPage(BadRequest(views.html.business_lookup_LTD(errorForm, bcContext.user.isAgent, service, businessType)))
+              Future.successful(BadRequest(views.html.business_lookup_LTD(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
           }
         }
       }

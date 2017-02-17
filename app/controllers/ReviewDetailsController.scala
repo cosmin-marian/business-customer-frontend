@@ -17,7 +17,7 @@ object ReviewDetailsController extends ReviewDetailsController {
   val dataCacheConnector = DataCacheConnector
   val authConnector = FrontendAuthConnector
   val agentRegistrationService = AgentRegistrationService
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "ReviewDetailsController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -33,11 +33,13 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
   def businessDetails(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) =>
-        if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
-          addBackLinkToPage(Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails)))
-        } else {
-          addBackLinkToPage(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
-        }
+        currentBackLink.map(backLink =>
+          if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
+            Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails, backLink))
+          } else {
+            Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails, backLink))
+          }
+        )
       case _ =>
         Logger.warn(s"[ReviewDetailsController][businessDetails] - No Service details found in DataCache for")
         throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -51,7 +53,7 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
           case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), controllers.routes.ReviewDetailsController.businessDetails(serviceName))
           case BAD_GATEWAY =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
-            addBackLinkToPage(Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
+            Future.successful(Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
               Messages("bc.business-registration-error.duplicate.identifier.title"),
               Messages("bc.business-registration-error.duplicate.identifier.message")))
             )

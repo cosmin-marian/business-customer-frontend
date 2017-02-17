@@ -9,7 +9,7 @@ import play.api.Play.current
 
 object PaySAQuestionController extends PaySAQuestionController {
   val authConnector = FrontendAuthConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "PaySAQuestionController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -19,16 +19,16 @@ trait PaySAQuestionController extends BackLinkController {
     if (bcContext.user.isAgent)
       ForwardBackLinkToNextPage(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
     else
-      addBackLinkToPage(
-        Ok(views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service))
+      currentBackLink.map(backLink =>
+        Ok(views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service, backLink))
       )
   }
 
   def continue(service: String) = AuthAction(service).async { implicit bcContext =>
     paySAQuestionForm.bindFromRequest.fold(
       formWithErrors =>
-        addBackLinkToPage(
-            BadRequest(views.html.nonUkReg.paySAQuestion(formWithErrors, service))
+        currentBackLink.map(backLink =>
+          BadRequest(views.html.nonUkReg.paySAQuestion(formWithErrors, service, backLink))
         ),
       formData => {
         val paysSa = formData.paySA.getOrElse(false)

@@ -11,7 +11,7 @@ import scala.concurrent.Future
 object HomeController extends HomeController {
   val businessMatchService: BusinessMatchingService = BusinessMatchingService
   val authConnector = FrontendAuthConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "HomeController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 

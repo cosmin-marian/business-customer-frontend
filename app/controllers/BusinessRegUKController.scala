@@ -16,7 +16,7 @@ import scala.concurrent.Future
 object BusinessRegUKController extends BusinessRegUKController {
   val authConnector = FrontendAuthConnector
   val businessRegistrationService = BusinessRegistrationService
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "BusinessRegUKController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -26,15 +26,15 @@ trait BusinessRegUKController extends BackLinkController {
 
   def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
-    addBackLinkToPage(
-      Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType, service)))
+    currentBackLink.map(backLink =>
+      Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType, service), backLink))
     )
   }
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        addBackLinkToPage(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType, service))))
+        currentBackLink.map(backLink => BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType, service), backLink)))
       },
       registrationData => {
         businessRegistrationService.registerBusiness(registrationData,

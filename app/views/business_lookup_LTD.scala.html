@@ -1,4 +1,8 @@
-@(limitedCompanyForm: Form[forms.LimitedCompanyMatch], isAgent: Boolean, service: String, businessType: String)(implicit request: Request[_], messages: Messages)
+@(limitedCompanyForm: Form[forms.LimitedCompanyMatch],
+ isAgent: Boolean,
+ service: String,
+ businessType: String,
+ backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -6,7 +10,7 @@
 
 @implicitFormInstance = @{ Some(limitedCompanyForm) }
 
-@bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service)) {
+@bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service), backLink = backLink) {
 
   @if(isAgent) {
     <div class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </div>
@@ -50,6 +54,7 @@
 
     </div>
 
+    @backLink
   }
 
 }

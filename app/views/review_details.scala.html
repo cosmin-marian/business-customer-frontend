@@ -1,9 +1,9 @@
-@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails)(implicit request: Request[_], messages: Messages)
+@(service: String, isAgent: Boolean, businessDetails: models.ReviewDetails, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import utils._
 
-@bcMain(title = if (isAgent) { Messages("business-review.agent.title", service) } else {Messages("business-review.user.title", service) }, service = Some(service)) {
+@bcMain(title = if (isAgent) { Messages("business-review.agent.title", service) } else {Messages("business-review.user.title", service) }, service = Some(service), backLink = backLink) {
 
   @if(isAgent){
     <div class="heading-sub" id="bc.business-registration-agent.text">@Messages("bc.business-registration.text.agent", service.toUpperCase)</div>

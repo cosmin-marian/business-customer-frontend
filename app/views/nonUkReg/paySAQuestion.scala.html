@@ -1,4 +1,4 @@
-@(paySAQuestionForm: Form[models.PaySAQuestion], service: String)(implicit request: Request[_], messages: Messages)
+@(paySAQuestionForm: Form[models.PaySAQuestion], service: String, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -6,7 +6,7 @@
 
 @implicitFormInstance = @{ Some(paySAQuestionForm) }
 
-@bcMain(title = Messages("bc.nonuk.paySA.title"), service = Some(service)) {
+@bcMain(title = Messages("bc.nonuk.paySA.title"), service = Some(service), backLink = backLink) {
 
 <div class="heading-sub" id="paySa-subheader"> @Messages("bc.nonuk.paySA.subheader", service.toUpperCase)</div>
 

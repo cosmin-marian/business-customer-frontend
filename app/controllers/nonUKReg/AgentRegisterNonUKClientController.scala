@@ -21,7 +21,7 @@ object AgentRegisterNonUKClientController extends AgentRegisterNonUKClientContro
   // $COVERAGE-OFF$
   override val authConnector: AuthConnector = FrontendAuthConnector
   override val businessRegistrationCache = BusinessRegCacheConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "AgentRegisterNonUKClientController"
   override val backLinkCacheConnector = BackLinkCacheConnector
   // $COVERAGE-ON$
 }
@@ -33,8 +33,8 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def view(service: String) = AuthAction(service).async { implicit bcContext =>
-    addBackLinkToPage(
-        Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails))
+    currentBackLink.map(backLink =>
+      Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
     )
 
   }
@@ -42,8 +42,8 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
   def submit(service: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        addBackLinkToPage(
-            BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails))
+        currentBackLink.map(backLink =>
+          BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails, backLink))
         )
       },
       registerData => {

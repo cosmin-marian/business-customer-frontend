@@ -19,7 +19,7 @@ object OverseasCompanyRegController extends OverseasCompanyRegController {
   override val authConnector = FrontendAuthConnector
   override val businessRegistrationService = BusinessRegistrationService
   override val businessRegistrationCache = BusinessRegCacheConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "OverseasCompanyRegController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -29,9 +29,9 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
-    addBackLinkToPage(
+    currentBackLink.map(backLink =>
       Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
-        OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
+        OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
     )
   }
 
@@ -39,8 +39,8 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
   def register(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
-        addBackLinkToPage(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
-          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
+        currentBackLink.map(backLink => BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
         )
       },
       overseasCompany => {

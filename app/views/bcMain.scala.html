@@ -4,7 +4,9 @@
   service: Option[String] = None,
   pageScripts: Option[Html] = None,
   sidebarLinks: Option[Html] = None,
-  sidebarClass: Option[String] = None)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+  sidebarClass: Option[String] = None,
+  backLink: Option[String] = None
+)(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.layouts
 @import utils.BCUtils
@@ -39,6 +41,7 @@
   sidebarClass = sidebarClass,
   userLoggedIn = userLoggedIn,
   scriptElement = Some(scriptElement),
-  linkElement = Some(linkElement)) {
+  linkElement = Some(linkElement),
+  backLink = backLink) {
     @mainContent
   }

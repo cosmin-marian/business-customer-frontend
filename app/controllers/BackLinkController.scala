@@ -1,8 +1,9 @@
 package controllers
 
 import connectors.BackLinkCacheConnector
-import models.BusinessCustomerContext
-import play.api.mvc.{Results, Result, Call}
+import models.{BackLinkModel, BusinessCustomerContext}
+import play.api.mvc.{AnyContent, Request, Call, Result}
+import play.mvc.Http.Response
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -18,12 +19,7 @@ trait BackLinkController extends BaseController {
   }
 
   def currentBackLink(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier):Future[Option[String]] = {
-    backLinkCacheConnector.fetchAndGetBackLink(controllerId)
-  }
-
-
-  def addBackLinkToPage(currentPage: Result)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) :Future[Result] = {
-    currentBackLink.map(backLink => currentPage)
+    backLinkCacheConnector.fetchAndGetBackLink(controllerId).map(_.getOrElse(BackLinkModel(None)).backLink)
   }
 
   def RedirectToExernal(redirectCall: String, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) = {

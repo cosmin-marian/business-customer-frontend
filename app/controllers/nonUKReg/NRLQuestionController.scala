@@ -9,7 +9,7 @@ import play.api.Play.current
 
 object NRLQuestionController extends NRLQuestionController {
   val authConnector = FrontendAuthConnector
-  override val controllerId: String = this.getClass.getName
+  override val controllerId: String = "NRLQuestionController"
   override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
@@ -19,13 +19,13 @@ trait NRLQuestionController extends BackLinkController {
     if (bcContext.user.isAgent)
       ForwardBackLinkToNextPage(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
     else
-      addBackLinkToPage(Ok(views.html.nonUkReg.nrl_question(nrlQuestionForm, service)))
+      currentBackLink.map(backLink => Ok(views.html.nonUkReg.nrl_question(nrlQuestionForm, service, backLink)))
   }
 
   def continue(service: String) = AuthAction(service).async { implicit bcContext =>
     nrlQuestionForm.bindFromRequest.fold(
       formWithErrors =>
-        addBackLinkToPage(BadRequest(views.html.nonUkReg.nrl_question(formWithErrors, service))),
+        currentBackLink.map(backLink => BadRequest(views.html.nonUkReg.nrl_question(formWithErrors, service, backLink))),
       formData => {
         val paysSa = formData.paysSA.getOrElse(false)
         if (paysSa)
