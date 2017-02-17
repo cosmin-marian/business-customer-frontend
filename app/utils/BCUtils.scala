@@ -97,7 +97,7 @@ object BCUtils {
 
     val atedExtraBusinessTypes = Seq(
       "UT" -> Messages("bc.business-verification.UT"),
-      "NUK" -> Messages("bc.business-verification.NUK")
+      "NUK" -> Messages("bc.business-verification.agent.NUK")
     )
 
     val isCGTBusinessTypes = Seq (
