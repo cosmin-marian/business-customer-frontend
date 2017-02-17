@@ -17,7 +17,7 @@ trait NRLQuestionController extends BackLinkController {
 
   def view(service: String) = AuthAction(service).async { implicit bcContext =>
     if (bcContext.user.isAgent)
-      ForwardWithBack(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
+      ForwardBackLinkToNextPage(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
     else
       addBackLinkToPage(Ok(views.html.nonUkReg.nrl_question(nrlQuestionForm, service)))
   }
@@ -29,12 +29,12 @@ trait NRLQuestionController extends BackLinkController {
       formData => {
         val paysSa = formData.paysSA.getOrElse(false)
         if (paysSa)
-          RedirectWithBack(PaySAQuestionController.controllerId,
+          RedirectWithBackLink(PaySAQuestionController.controllerId,
             controllers.nonUKReg.routes.PaySAQuestionController.view(service),
             controllers.nonUKReg.routes.NRLQuestionController.view(service)
           )
         else
-          RedirectWithBack(BusinessRegController.controllerId,
+          RedirectWithBackLink(BusinessRegController.controllerId,
             controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"),
             controllers.nonUKReg.routes.NRLQuestionController.view(service)
           )

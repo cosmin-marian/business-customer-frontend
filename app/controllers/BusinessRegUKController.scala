@@ -44,7 +44,7 @@ trait BusinessRegUKController extends BackLinkController {
           service,
           isBusinessDetailsEditable = false).flatMap {
           registrationSuccessResponse =>
-            RedirectWithBack(
+            RedirectWithBackLink(
               ReviewDetailsController.controllerId,
               controllers.routes.ReviewDetailsController.businessDetails(service),
               controllers.routes.BusinessRegUKController.register(service, businessType))

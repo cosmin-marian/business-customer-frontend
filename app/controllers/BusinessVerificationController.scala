@@ -47,13 +47,13 @@ trait BusinessVerificationController extends BackLinkController {
         val returnCall = routes.BusinessVerificationController.businessVerification(service)
         value.businessType match {
           case Some("NUK") if service.equals("capital-gains-tax") =>
-            RedirectWithBack(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"), returnCall)
+            RedirectWithBackLink(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"), returnCall)
           case Some("NUK") =>
-            RedirectWithBack(NRLQuestionController.controllerId, controllers.nonUKReg.routes.NRLQuestionController.view(service), returnCall)
+            RedirectWithBackLink(NRLQuestionController.controllerId, controllers.nonUKReg.routes.NRLQuestionController.view(service), returnCall)
           case Some("NEW") =>
-            RedirectWithBack(BusinessRegUKController.controllerId, controllers.routes.BusinessRegUKController.register(service, "NEW"), returnCall)
+            RedirectWithBackLink(BusinessRegUKController.controllerId, controllers.routes.BusinessRegUKController.register(service, "NEW"), returnCall)
           case Some("GROUP") =>
-            RedirectWithBack("BusinessRegUKController", controllers.routes.BusinessRegUKController.register(service, "GROUP"), returnCall)
+            RedirectWithBackLink("BusinessRegUKController", controllers.routes.BusinessRegUKController.register(service, "GROUP"), returnCall)
           case Some("SOP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "SOP")))
           case Some("UIB") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UIB")))
           case Some("LTD") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LTD")))
@@ -62,7 +62,7 @@ trait BusinessVerificationController extends BackLinkController {
           case Some("LP") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
           case Some("UT") => Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT")))
           case _ =>
-            RedirectWithBack("HomeController", controllers.routes.HomeController.homePage(service), returnCall)
+            RedirectWithBackLink("HomeController", controllers.routes.HomeController.homePage(service), returnCall)
         }
       }
     )
@@ -105,7 +105,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )
@@ -130,7 +130,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )
@@ -155,7 +155,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )
@@ -180,7 +180,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )
@@ -205,7 +205,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )
@@ -230,7 +230,7 @@ trait BusinessVerificationController extends BackLinkController {
           val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
           validatedReviewDetails match {
             case Some(reviewDetailsValidated) =>
-              RedirectWithBack(ReviewDetailsController.controllerId,
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
                 controllers.routes.BusinessVerificationController.continue(service)
               )

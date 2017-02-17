@@ -24,11 +24,11 @@ trait HomeController extends BackLinkController {
       case Some(futureJsValue) =>
         futureJsValue flatMap {
           jsValue => jsValue.validate[ReviewDetails] match {
-            case success: JsSuccess[ReviewDetails] => ForwardWithBack(ReviewDetailsController.controllerId, controllers.routes.ReviewDetailsController.businessDetails(service))
-            case failure: JsError => ForwardWithBack(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
+            case success: JsSuccess[ReviewDetails] => ForwardBackLinkToNextPage(ReviewDetailsController.controllerId, controllers.routes.ReviewDetailsController.businessDetails(service))
+            case failure: JsError => ForwardBackLinkToNextPage(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
           }
         }
-      case None => ForwardWithBack(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
+      case None => ForwardBackLinkToNextPage(BusinessVerificationController.controllerId, controllers.routes.BusinessVerificationController.businessVerification(service))
     }
   }
 

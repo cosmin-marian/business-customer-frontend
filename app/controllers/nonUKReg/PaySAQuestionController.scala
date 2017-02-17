@@ -17,10 +17,10 @@ trait PaySAQuestionController extends BackLinkController {
 
   def view(service: String) = AuthAction(service).async { implicit bcContext =>
     if (bcContext.user.isAgent)
-      ForwardWithBack(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
+      ForwardBackLinkToNextPage(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
     else
       addBackLinkToPage(
-          Ok(views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service))
+        Ok(views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service))
       )
   }
 
@@ -33,12 +33,12 @@ trait PaySAQuestionController extends BackLinkController {
       formData => {
         val paysSa = formData.paySA.getOrElse(false)
         if (paysSa)
-          RedirectWithBack(BusinessVerificationController.controllerId,
+          RedirectWithBackLink(BusinessVerificationController.controllerId,
             controllers.routes.BusinessVerificationController.businessForm(service, "SOP"),
             controllers.nonUKReg.routes.PaySAQuestionController.view(service)
           )
         else
-          RedirectWithBack(BusinessRegController.controllerId,
+          RedirectWithBackLink(BusinessRegController.controllerId,
             controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"),
             controllers.nonUKReg.routes.PaySAQuestionController.view(service)
           )

@@ -52,7 +52,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
             val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
             serviceRedirectUrl match {
               case Some(redirectUrl) =>
-                RedirectWithBack(OverseasCompanyRegController.controllerId,
+                RedirectWithBackLink(OverseasCompanyRegController.controllerId,
                   controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, true, serviceRedirectUrl),
                   controllers.nonUKReg.routes.AgentRegisterNonUKClientController.view(service)
                 )

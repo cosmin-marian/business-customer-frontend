@@ -55,7 +55,7 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
             }
           redirectPage <- redirectUrl match {
             case Some(x) => RedirectToExernal(x, controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl))
-            case None => RedirectWithBack(
+            case None => RedirectWithBackLink(
               ReviewDetailsController.controllerId,
               controllers.routes.ReviewDetailsController.businessDetails(service),
               controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl)
