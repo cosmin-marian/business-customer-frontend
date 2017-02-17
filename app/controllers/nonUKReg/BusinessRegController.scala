@@ -40,8 +40,12 @@ trait BusinessRegController extends BackLinkController {
         )
       },
       registrationData => {
-        businessRegistrationCache.saveBusinessRegDetails(registrationData).map {
-          registrationSuccessResponse => Redirect(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false))
+        businessRegistrationCache.saveBusinessRegDetails(registrationData).flatMap {
+          registrationSuccessResponse => RedirectWithBackLink(
+            OverseasCompanyRegController.controllerId,
+            controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false),
+            controllers.nonUKReg.routes.BusinessRegController.register(service, businessType)
+          )
         }
       }
     )
