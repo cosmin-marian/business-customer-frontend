@@ -110,7 +110,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -135,7 +135,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -160,7 +160,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -185,7 +185,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -210,7 +210,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
@@ -236,7 +236,7 @@ trait BusinessVerificationController extends BackLinkController {
             case Some(reviewDetailsValidated) =>
               RedirectWithBackLink(ReviewDetailsController.controllerId,
                 controllers.routes.ReviewDetailsController.businessDetails(service),
-                controllers.routes.BusinessVerificationController.continue(service)
+                controllers.routes.BusinessVerificationController.businessForm(service, businessType)
               )
             case None =>
               val errorMsg = Messages("bc.business-verification-error.not-found")
