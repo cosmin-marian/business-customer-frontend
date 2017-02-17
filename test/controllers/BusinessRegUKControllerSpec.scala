@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 
+import connectors.BackLinkCacheConnector
 import models.{Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -25,10 +26,13 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationService = mock[BusinessRegistrationService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   object TestBusinessRegController extends BusinessRegUKController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationService = mockBusinessRegistrationService
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   val serviceName: String = "ATED"

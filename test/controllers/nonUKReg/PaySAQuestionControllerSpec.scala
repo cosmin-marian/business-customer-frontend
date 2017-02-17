@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -22,14 +23,18 @@ import scala.concurrent.Future
 class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuthConnector = mock[AuthConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "serviceName"
 
   object TestPaySaQuestionController extends PaySAQuestionController {
     override val authConnector = mockAuthConnector
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach = {
     reset(mockAuthConnector)
+    reset(mockBackLinkCache)
   }
 
   "PaySAQuestionController" must {

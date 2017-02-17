@@ -2,7 +2,7 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import connectors.BusinessRegCacheConnector
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -27,15 +27,19 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   val serviceName = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   object TestBusinessRegController extends BusinessRegController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationCache = mockBusinessRegistrationCache
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockBusinessRegistrationCache)
+    reset(mockBackLinkCache)
   }
 
   "BusinessRegController" must {

@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 
+import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -24,6 +25,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   val request = FakeRequest()
   val mockBusinessMatchingService = mock[BusinessMatchingService]
   val mockAuthConnector = mock[AuthConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "ATED"
   val matchUtr = new SaUtrGenerator().nextSaUtr
   val noMatchUtr = new SaUtrGenerator().nextSaUtr
@@ -485,6 +487,8 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
   object TestBusinessVerificationController extends BusinessVerificationController {
     override val businessMatchingService = mockBusinessMatchingService
     val authConnector = mockAuthConnector
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
 }

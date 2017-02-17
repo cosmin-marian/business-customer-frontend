@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import config.BusinessCustomerSessionCache
-import connectors.DataCacheConnector
+import connectors.{BackLinkCacheConnector, DataCacheConnector}
 import models.{Address, EnrolResponse, Identifier, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -26,8 +26,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   val service = "ATED"
 
   val mockAuthConnector = mock[AuthConnector]
-
   val mockAgentRegistrationService = mock[AgentRegistrationService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "GB")
 
@@ -48,9 +48,11 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
     }
     new ReviewDetailsController {
-      override def backLinkCacheConnector = mockDataCacheConnector
+      override def dataCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
+      override val controllerId = "test"
+      override val backLinkCacheConnector = mockBackLinkCache
     }
   }
 
@@ -67,16 +69,18 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
     }
     new ReviewDetailsController {
-      override def backLinkCacheConnector = mockDataCacheConnector
-
+      override def dataCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
+      override val controllerId = "test"
+      override val backLinkCacheConnector = mockBackLinkCache
     }
   }
 
   override def beforeEach = {
     reset(mockAgentRegistrationService)
     reset(mockAuthConnector)
+    reset(mockBackLinkCache)
   }
 
   "ReviewDetailsController" must {

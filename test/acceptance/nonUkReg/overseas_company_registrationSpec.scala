@@ -44,7 +44,7 @@ class overseas_company_registrationSpec extends FeatureSpec with OneServerPerSui
       implicit val request = FakeRequest()
       implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, displayDetails, List(("UK", "UK")), None)
+      val html = views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service, displayDetails, List(("UK", "UK")), None, Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 

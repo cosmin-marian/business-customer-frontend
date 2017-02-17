@@ -40,7 +40,7 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.review_details_non_uk_agent("ATED", reviewDetails.copy(directMatch = false))
+      val html = views.html.review_details_non_uk_agent("ATED", reviewDetails.copy(directMatch = false), Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 

@@ -2,7 +2,7 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import connectors.BusinessRegCacheConnector
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import models.{ReviewDetails, BusinessRegistration, Address}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -28,11 +28,14 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationService = mock[BusinessRegistrationService]
   val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   object TestController extends OverseasCompanyRegController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationService = mockBusinessRegistrationService
     override val businessRegistrationCache = mockBusinessRegistrationCache
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   val serviceName: String = "ATED"

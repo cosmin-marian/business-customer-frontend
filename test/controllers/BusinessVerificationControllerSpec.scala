@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.AuthBuilder
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -22,11 +23,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessMatchingService = mock[BusinessMatchingService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     override val authConnector = mockAuthConnector
     override val businessMatchingService = mockBusinessMatchingService
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   "BusinessVerificationController" must {

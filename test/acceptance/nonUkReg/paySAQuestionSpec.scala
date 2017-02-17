@@ -38,7 +38,7 @@ class paySAQuestionSpec extends FeatureSpec with OneServerPerSuite with MockitoS
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service)
+      val html = views.html.nonUkReg.paySAQuestion(paySAQuestionForm, service, Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 

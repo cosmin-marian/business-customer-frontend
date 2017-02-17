@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.{AuthBuilder, SessionBuilder}
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import models.{Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -27,8 +28,8 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val service = "ATED"
 
   val mockAuthConnector = mock[AuthConnector]
-
   val mockBusinessMatchingService = mock[BusinessMatchingService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
 
@@ -37,11 +38,14 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   object TestHomeController extends HomeController {
     override val businessMatchService: BusinessMatchingService = mockBusinessMatchingService
     override val authConnector = mockAuthConnector
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach = {
     reset(mockAuthConnector)
     reset(mockBusinessMatchingService)
+    reset(mockBackLinkCache)
   }
 
   "HomeController" must {
