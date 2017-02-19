@@ -3,11 +3,14 @@ bc.radio.yes.label = Yes
 bc.radio.no.label = No
 bc.continue = Continue
 bc.edit = Edit
+bc.sign-out = Sign out
 
 bc.ated.serviceName = Submit and view your ATED returns
 bc.awrs.serviceName = Alcohol Wholesaler Registration Scheme (AWRS)
 bc.amls.serviceName = Anti Money Laundering Scheme (AMLS)
 bc.investment-tax-relief.serviceName = Apply for Enterprise Investment Scheme
+
+bc.nav-title = Submit and view your {0} returns
 
 business-review.user.title = Check this is the business you want to register
 business-review.agent.title = Check this is the agency you want to set up

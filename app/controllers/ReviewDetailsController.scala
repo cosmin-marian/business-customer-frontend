@@ -51,7 +51,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
             Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
               Messages("bc.business-registration-error.duplicate.identifier.title"),
-              Messages("bc.business-registration-error.duplicate.identifier.message")))
+              Messages("bc.business-registration-error.duplicate.identifier.message"), Some(serviceName)))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][continue] - Execption other tha status - OK and BAD_GATEWAY")
             throw new RuntimeException(Messages("bc.business-review.error.not-found"))
