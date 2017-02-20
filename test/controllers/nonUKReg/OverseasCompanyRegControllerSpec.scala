@@ -136,6 +136,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
         "If registration details entered are valid, continue button must redirect to the redirectUrl" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
           registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result) must be(Some("/business-customer/review-details/ATED"))
@@ -159,6 +160,8 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+
     val result = TestController.view(serviceName, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -172,6 +175,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestController.view(service, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -186,6 +190,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestController.view(service, true).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -204,6 +209,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession(Matchers.any())).thenReturn(Future.successful(busRegCache))
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(reviewDetails))
@@ -221,6 +227,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestController.register(service, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

@@ -6,6 +6,7 @@ import builders.SessionBuilder
 import config.FrontendAuthConnector
 import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
+import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
@@ -66,6 +67,7 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     "continue" must {
       "if user doesn't select any radio button, show form error with bad_request" in {
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paySA": ""}"""))
+        when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedClient(fakeRequest, service) { result =>
           status(result) must be(BAD_REQUEST)
         }
@@ -96,6 +98,8 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestPaySaQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -109,6 +113,7 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestPaySaQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -121,7 +126,7 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestPaySaQuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)
   }

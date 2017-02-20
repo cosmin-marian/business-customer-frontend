@@ -19,7 +19,7 @@ trait BackLinkController extends BaseController {
   }
 
   def currentBackLink(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier):Future[Option[String]] = {
-    backLinkCacheConnector.fetchAndGetBackLink(controllerId).map(_.getOrElse(BackLinkModel(None)).backLink)
+    backLinkCacheConnector.fetchAndGetBackLink(controllerId)
   }
 
   def RedirectToExernal(redirectCall: String, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) = {

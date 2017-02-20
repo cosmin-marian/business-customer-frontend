@@ -109,6 +109,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithUnAuthorisedUser(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -121,6 +122,8 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithAuthorisedUserMatched(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val reviewDetails = Json.toJson(testReviewDetails)
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(reviewDetails)))
@@ -131,6 +134,8 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithAuthorisedUserNotMatched(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val notFound = Json.parse( """{"Reason" : "Text from reason column"}""")
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(notFound)))
@@ -141,6 +146,8 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithAuthorisedUserNoUTR(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(None)
     val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))

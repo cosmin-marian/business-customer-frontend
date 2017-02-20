@@ -2,12 +2,11 @@ package connectors
 
 import config.BusinessCustomerSessionCache
 import models.BackLinkModel
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object BackLinkCacheConnector extends BackLinkCacheConnector {
   val sessionCache: SessionCache = BusinessCustomerSessionCache
@@ -23,8 +22,8 @@ trait BackLinkCacheConnector {
   private def getKey(pageId: String) = {
     s"$sourceId:$pageId"
   }
-  def fetchAndGetBackLink(pageId: String)(implicit hc: HeaderCarrier): Future[Option[BackLinkModel]] = {
-    sessionCache.fetchAndGetEntry[BackLinkModel](getKey(pageId))
+  def fetchAndGetBackLink(pageId: String)(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    sessionCache.fetchAndGetEntry[BackLinkModel](getKey(pageId)).map(_.flatMap(_.backLink))
   }
 
   def saveBackLink(pageId: String, returnUrl: Option[String])(implicit hc: HeaderCarrier): Future[Option[String]] = {
