@@ -4,7 +4,7 @@ import java.io.File
 
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
-import play.api.Mode._
+import play.api.Play._
 import play.api.mvc.Request
 import play.api.{Application, Configuration, Play}
 import play.twirl.api.Html
@@ -17,6 +17,8 @@ import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 
+import scala.collection.JavaConversions._
+
 object ApplicationGlobal extends DefaultFrontendGlobal with RunMode {
 
   override val auditConnector = BusinessCustomerFrontendAuditConnector
@@ -28,9 +30,12 @@ object ApplicationGlobal extends DefaultFrontendGlobal with RunMode {
     ApplicationCrypto.verifyConfiguration()
   }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    views.html.global_error(pageTitle, heading, message)(request, applicationMessages)
-
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html = {
+    val url = request.path
+    val serviceList =  configuration.getStringList(s"govuk-tax.$env.services.names").getOrElse(throw new Exception("No services available in application configuration"))
+    val serviceName = serviceList.filter(url.toLowerCase.contains(_)).headOption
+    views.html.global_error(pageTitle, heading, message, service = serviceName)(request, applicationMessages)
+  }
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"govuk-tax.$env.metrics")
 
 }

@@ -73,7 +73,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
             document.select(".block-label").text() must include("Limited company")
             document.select(".block-label").text() must include("Limited liability partnership")
             document.select(".block-label").text() must include("partnership")
-            document.select(".block-label").text() must include("I have an overseas company without a UK Unique Taxpayer Reference")
+            document.select(".block-label").text() must include("I have an overseas company")
             document.select(".block-label").text() must include("Unit trust or collective investment vehicle")
             document.select(".block-label").text() must include("Limited partnership")
             document.select("button").text() must be("Continue")
