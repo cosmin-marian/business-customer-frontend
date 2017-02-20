@@ -140,6 +140,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         "not be empty" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson(businessName = "", line1 = "", line2 = "", postcode = "", country = "")
+          when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
           submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
@@ -165,6 +166,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         formValidationInputDataSet.foreach { data =>
           s"${data._2}" in {
             implicit val hc: HeaderCarrier = HeaderCarrier()
+            when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
             submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(data._1)) { result =>
               status(result) must be(BAD_REQUEST)
               contentAsString(result) must include(data._3)
@@ -174,6 +176,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
         "If registration details entered are valid, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
           val inputJson = createJson()
           submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
@@ -184,6 +187,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
         "If registration details entered are valid and business-identifier question is selected as No, continue button must redirect to review details page" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
           submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/register/non-uk-client/overseas-company/$serviceName/false")
@@ -199,6 +203,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestBusinessRegController.register(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -210,7 +215,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   def registerWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
-
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
@@ -225,6 +230,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
@@ -239,6 +245,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessRegController.send(service, businessType).apply(FakeRequest().withSession(
@@ -272,6 +279,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(

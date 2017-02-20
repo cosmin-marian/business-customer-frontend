@@ -27,9 +27,8 @@ trait BackLinkCacheConnector {
     sessionCache.fetchAndGetEntry[BackLinkModel](getKey(pageId))
   }
 
-  def saveBackLink(pageId: String, returnUrl: Option[String])(implicit hc: HeaderCarrier): Future[CacheMap] = {
-    sessionCache.cache[BackLinkModel](getKey(pageId), BackLinkModel(returnUrl))
-
+  def saveBackLink(pageId: String, returnUrl: Option[String])(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    sessionCache.cache[BackLinkModel](getKey(pageId), BackLinkModel(returnUrl)).map(cacheMap => returnUrl)
   }
 
 }

@@ -14,7 +14,7 @@ trait BackLinkController extends BaseController {
   val controllerId: String
   val backLinkCacheConnector: BackLinkCacheConnector
 
-  def setBackLink(pageId: String, returnUrl: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) : Future[CacheMap] = {
+  def setBackLink(pageId: String, returnUrl: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) : Future[Option[String]] = {
     backLinkCacheConnector.saveBackLink(pageId, returnUrl)
   }
 
