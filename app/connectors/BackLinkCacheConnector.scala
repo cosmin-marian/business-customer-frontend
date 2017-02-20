@@ -4,6 +4,7 @@ import config.BusinessCustomerSessionCache
 import models.BackLinkModel
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.BusinessCustomerFeatureSwitches
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -23,11 +24,17 @@ trait BackLinkCacheConnector {
     s"$sourceId:$pageId"
   }
   def fetchAndGetBackLink(pageId: String)(implicit hc: HeaderCarrier): Future[Option[String]] = {
-    sessionCache.fetchAndGetEntry[BackLinkModel](getKey(pageId)).map(_.flatMap(_.backLink))
+    if (BusinessCustomerFeatureSwitches.backLinks.enabled)
+      sessionCache.fetchAndGetEntry[BackLinkModel](getKey(pageId)).map(_.flatMap(_.backLink))
+    else
+      Future.successful(None)
   }
 
   def saveBackLink(pageId: String, returnUrl: Option[String])(implicit hc: HeaderCarrier): Future[Option[String]] = {
-    sessionCache.cache[BackLinkModel](getKey(pageId), BackLinkModel(returnUrl)).map(cacheMap => returnUrl)
+    if (BusinessCustomerFeatureSwitches.backLinks.enabled)
+      sessionCache.cache[BackLinkModel](getKey(pageId), BackLinkModel(returnUrl)).map(cacheMap => returnUrl)
+    else
+      Future.successful(None)
   }
 
 }
