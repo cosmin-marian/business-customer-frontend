@@ -197,6 +197,14 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
         }
       }
 
+      "redirect to the confirmation for agents address page for capital-gains-tax-subscription service" in {
+        continueWithAuthorisedUser("capital-gains-tax-agents") {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include("/capital-gains-tax/subscription/agent/registered/subscribe")
+        }
+      }
+
       "return agent registration page correctly for Agents" in {
 
         continueWithAuthorisedAgent(service) {

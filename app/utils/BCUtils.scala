@@ -83,7 +83,6 @@ object BCUtils {
       "LLP" -> Messages("bc.business-verification.LLP"),
       "UIB" -> Messages("bc.business-verification.UIB")
     )
-
     val isAtedAgentBusinessTypes = Seq(
       "LTD" -> Messages("bc.business-verification.LTD"),
       "LLP" -> Messages("bc.business-verification.LLP"),
@@ -94,12 +93,10 @@ object BCUtils {
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
     )
-
     val atedExtraBusinessTypes = Seq(
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.agent.NUK")
     )
-
     val isCGTBusinessTypes = Seq (
       "NUK" -> Messages("bc.business-verification.NUK"),
       "LTD" -> Messages("bc.business-verification.LTD"),
@@ -108,6 +105,7 @@ object BCUtils {
       "LLP" -> Messages("bc.business-verification.LLP"),
       "UIB" -> Messages("bc.business-verification.UIB")
     )
+    val isCGTAgentTypes = Seq ("LTD", "LLP", "SOP", "OBP", "LP", "NUK")
 
     service.toLowerCase match {
       case "ated" if isAgent => isAtedAgentBusinessTypes.filterNot(p => p._1 == "UIB")
@@ -121,6 +119,7 @@ object BCUtils {
       )
       case "investment-tax-relief" => Seq("LTD" -> Messages("bc.business-verification.LTD"))
       case "capital-gains-tax" => isCGTBusinessTypes
+      case "capital-gains-tax-agents" => isAtedAgentBusinessTypes.filter(p => isCGTAgentTypes.contains(p._1))
       case _ => fixedBusinessTypes
     }
   }
