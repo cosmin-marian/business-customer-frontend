@@ -15,6 +15,9 @@ trait ApplicationConfig {
   val verificationPageAgentBackLink: String
   val defaultTimeoutSeconds: Int
   val timeoutCountdown: Int
+  val logoutUrl: String
+
+  def serviceSignOutUrl(service: Option[String]): String
 }
 
 object ApplicationConfig extends ApplicationConfig with ServicesConfig {
@@ -36,4 +39,12 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
   override lazy val verificationPageAgentBackLink = getConfString("ated.serviceAgentReturnUrl", "/ated-subscription/start-agent-subscription")
   override lazy val defaultTimeoutSeconds: Int = loadConfig("defaultTimeoutSeconds").toInt
   override lazy val timeoutCountdown: Int = loadConfig("timeoutCountdown").toInt
+  override lazy val logoutUrl = s"""${configuration.getString(s"govuk-tax.$env.logout.url").getOrElse("/gg/sign-out")}"""
+
+  override def serviceSignOutUrl(service: Option[String]): String = {
+    service match {
+      case Some(delegatedService) if (!delegatedService.isEmpty()) => configuration.getString(s"govuk-tax.$env.delegated-service-sign-out-url.${delegatedService.toLowerCase}").getOrElse(logoutUrl)
+      case _ => logoutUrl
+    }
+  }
 }
