@@ -83,7 +83,6 @@ object BCUtils {
       "LLP" -> Messages("bc.business-verification.LLP"),
       "UIB" -> Messages("bc.business-verification.UIB")
     )
-
     val isAtedAgentBusinessTypes = Seq(
       "LTD" -> Messages("bc.business-verification.LTD"),
       "LLP" -> Messages("bc.business-verification.LLP"),
@@ -94,12 +93,10 @@ object BCUtils {
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
     )
-
     val atedExtraBusinessTypes = Seq(
       "UT" -> Messages("bc.business-verification.UT"),
       "NUK" -> Messages("bc.business-verification.NUK")
     )
-
     val isCGTBusinessTypes = Seq (
       "NUK" -> Messages("bc.business-verification.NUK"),
       "LTD" -> Messages("bc.business-verification.LTD"),
@@ -108,7 +105,6 @@ object BCUtils {
       "LLP" -> Messages("bc.business-verification.LLP"),
       "UIB" -> Messages("bc.business-verification.UIB")
     )
-
     val isCGTAgentTypes = Seq ("LTD", "LLP", "SOP", "OBP", "LP", "NUK")
 
     service.toLowerCase match {
