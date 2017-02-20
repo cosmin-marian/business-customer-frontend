@@ -1,4 +1,9 @@
-@(overseasCompanyForm: Form[models.OverseasCompany], service: String, displayDetails: OverseasCompanyDisplayDetails, countryList: List[(String, String)], redirectUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(overseasCompanyForm: Form[models.OverseasCompany],
+  service: String,
+  displayDetails: OverseasCompanyDisplayDetails,
+  countryList: List[(String, String)],
+  redirectUrl: Option[String],
+  backLink: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -23,7 +28,7 @@
   </script>
 }
 
-@bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts)) {
+@bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts), backLink = backLink) {
 
 <div class="form-group">
 
