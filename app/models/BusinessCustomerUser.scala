@@ -21,5 +21,4 @@ case class BusinessCustomerUser(authContext: AuthContext) {
       case _ => throw new RuntimeException("User does not have the correct authorisation")
     }
   }
-
 }
