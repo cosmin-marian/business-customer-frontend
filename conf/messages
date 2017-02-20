@@ -56,6 +56,7 @@ bc.business-verification-selected-agent-header=What are your agency details?
 bc.business-verification-lede= We will attempt to match your details against information we currently hold.
 bc.business-verification-lede.nrl= As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.
 bc.business-verification.NUK=I have an overseas company without a UK Unique Taxpayer Reference
+bc.business-verification.agent.NUK=I have an overseas company
 bc.business-verification.PRT=Business partnership
 bc.business-verification.LLP=Limited liability partnership
 bc.business-verification.LP=Limited partnership
