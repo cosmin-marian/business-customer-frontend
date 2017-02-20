@@ -110,12 +110,12 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
   def getWithUnAuthenticated(test: Future[Result] => Any) {
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSessionNoUser())
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSessionNoUser())
     test(result)
   }
 
@@ -127,7 +127,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     val reviewDetails = Json.toJson(testReviewDetails)
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(reviewDetails)))
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -139,7 +139,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     val notFound = Json.parse( """{"Reason" : "Text from reason column"}""")
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(notFound)))
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -150,7 +150,7 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
     when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(None)
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 

@@ -35,12 +35,12 @@ trait PaySAQuestionController extends BackLinkController {
         if (paysSa)
           RedirectWithBackLink(BusinessVerificationController.controllerId,
             controllers.routes.BusinessVerificationController.businessForm(service, "SOP"),
-            controllers.nonUKReg.routes.PaySAQuestionController.view(service)
+            Some(controllers.nonUKReg.routes.PaySAQuestionController.view(service).url)
           )
         else
           RedirectWithBackLink(BusinessRegController.controllerId,
             controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"),
-            controllers.nonUKReg.routes.PaySAQuestionController.view(service)
+            Some(controllers.nonUKReg.routes.PaySAQuestionController.view(service).url)
           )
       }
     )

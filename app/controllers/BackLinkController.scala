@@ -35,9 +35,9 @@ trait BackLinkController extends BaseController {
     }
   }
 
-  def RedirectWithBackLink(nextPageId: String, redirectCall: Call, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+  def RedirectWithBackLink(nextPageId: String, redirectCall: Call, backCall: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
     for {
-      cache <- setBackLink(nextPageId, Some(backCall.url))
+      cache <- setBackLink(nextPageId, backCall)
     } yield{
       Redirect(redirectCall)
     }

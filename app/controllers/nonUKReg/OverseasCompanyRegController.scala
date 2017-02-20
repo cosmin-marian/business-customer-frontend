@@ -58,7 +58,7 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
             case None => RedirectWithBackLink(
               ReviewDetailsController.controllerId,
               controllers.routes.ReviewDetailsController.businessDetails(service),
-              controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl)
+              Some(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl).url)
             )
           }
          } yield {

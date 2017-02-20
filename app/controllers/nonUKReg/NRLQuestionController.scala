@@ -31,12 +31,12 @@ trait NRLQuestionController extends BackLinkController {
         if (paysSa)
           RedirectWithBackLink(PaySAQuestionController.controllerId,
             controllers.nonUKReg.routes.PaySAQuestionController.view(service),
-            controllers.nonUKReg.routes.NRLQuestionController.view(service)
+            Some(controllers.nonUKReg.routes.NRLQuestionController.view(service).url)
           )
         else
           RedirectWithBackLink(BusinessRegController.controllerId,
             controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"),
-            controllers.nonUKReg.routes.NRLQuestionController.view(service)
+            Some(controllers.nonUKReg.routes.NRLQuestionController.view(service).url)
           )
 
       }

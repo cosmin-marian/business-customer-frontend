@@ -54,7 +54,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
               case Some(redirectUrl) =>
                 RedirectWithBackLink(OverseasCompanyRegController.controllerId,
                   controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, true, serviceRedirectUrl),
-                  controllers.nonUKReg.routes.AgentRegisterNonUKClientController.view(service)
+                  Some(controllers.nonUKReg.routes.AgentRegisterNonUKClientController.view(service).url)
                 )
               case _ =>
                 Logger.warn(s"[ReviewDetailsController][submit] - No Service config found for = $service")

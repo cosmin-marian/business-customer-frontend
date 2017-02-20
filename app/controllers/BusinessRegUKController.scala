@@ -47,7 +47,7 @@ trait BusinessRegUKController extends BackLinkController {
             RedirectWithBackLink(
               ReviewDetailsController.controllerId,
               controllers.routes.ReviewDetailsController.businessDetails(service),
-              controllers.routes.BusinessRegUKController.register(service, businessType))
+              Some(controllers.routes.BusinessRegUKController.register(service, businessType).url))
         }
       }
     )
