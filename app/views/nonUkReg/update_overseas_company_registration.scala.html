@@ -28,11 +28,10 @@
   </script>
 }
 
-@bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts), backLink = backLink) {
+@bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts)) {
 
 <div class="form-group">
-
-  <div class="heading-sub" id="overseas-subheader">@displayDetails.subHeader</div>
+  @backLinkAndSubHeader(backLink, "overseas-subheader", displayDetails.subHeader)
   <h1 class="heading-xlarge" id="overseas-header">@displayDetails.header</h1>
 
   @bcErrorSummary(overseasCompanyForm, "bc.non-uk-reg-error.general")

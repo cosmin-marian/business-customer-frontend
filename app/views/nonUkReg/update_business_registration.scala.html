@@ -26,9 +26,8 @@
   </script>
 }
 
-@bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts), backLink = backLink) {
-
-<div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
+@bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
+@backLinkAndSubHeader(backLink, "business-verification-text", displayDetails.businessRegSubHeader)
 <h1 class="heading-xlarge" id="business-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")

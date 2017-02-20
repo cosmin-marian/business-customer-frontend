@@ -20,9 +20,9 @@
   </script>
 }
 
-@bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts), backLink = backLink) {
+@bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
 
-  <div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
+  @backLinkAndSubHeader(backLink, "business-verification-text", displayDetails.businessRegSubHeader)
   <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
   @bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")

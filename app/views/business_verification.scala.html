@@ -13,13 +13,13 @@
 
 @implicitFormInstance = @{ Some(businessTypeForm) }
 
-@bcMain(title = if(isAgent) {Messages("bc.business-verification.agent.header")} else {Messages("bc.business-verification.user.header")}, service = Some(service), backLink = backLink) {
+@bcMain(title = if(isAgent) {Messages("bc.business-verification.agent.header")} else {Messages("bc.business-verification.user.header")}, service = Some(service)) {
 
   @if(isAgent) {
-    <div class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </div>
+    @backLinkAndSubHeader(backLink, "business-verification-agent-text", Messages("bc.business-verification.agent.text", service.toUpperCase))
     <h1 class="heading-xlarge" id="business-verification-agent-header" aria-level="1" role="heading"> @Html(Messages("bc.business-verification.agent.header")) </h1>
   } else {
-    <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </div>
+    @backLinkAndSubHeader(backLink, "business-verification-text", Messages("bc.business-verification.client.text", service.toUpperCase))
     <h1 class="heading-xlarge" id="business-verification-header" aria-level="1" role="heading"> @Html(Messages("bc.business-verification.user.header")) </h1>
   }
 

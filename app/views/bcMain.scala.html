@@ -4,8 +4,7 @@
   service: Option[String] = None,
   pageScripts: Option[Html] = None,
   sidebarLinks: Option[Html] = None,
-  sidebarClass: Option[String] = None,
-  backLink: Option[String] = None
+  sidebarClass: Option[String] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.layouts
@@ -31,13 +30,6 @@
   <link rel="stylesheet" href='@controllers.routes.AssetsController.at("jquery/jquery-ui.structure.min.css")'/>
 }
 
-@backLinkMainContent = {
-  @backLink.map { backLinkUri =>
-    <a id="backLinkHref" class="back-link" href='@backLinkUri'>@Messages("bc.business-verification.back")</a>
-  }
-  @mainContent
-}
-
 @main(
   applicationConfig = config.ApplicationConfig,
   supportLinkEnabled = supportLinkEnabled,
@@ -49,5 +41,5 @@
   userLoggedIn = userLoggedIn,
   scriptElement = Some(scriptElement),
   linkElement = Some(linkElement)) {
-    @backLinkMainContent
+    @mainContent
   }

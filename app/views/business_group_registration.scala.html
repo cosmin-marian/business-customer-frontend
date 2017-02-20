@@ -6,10 +6,9 @@
 
 @implicitFormInstance = @{ Some(businessRegistrationForm) }
 
-@bcMain(title = Messages("business-registration.group.title", service.toUpperCase), service = Some(service), backLink = backLink) {
+@bcMain(title = Messages("business-registration.group.title", service.toUpperCase), service = Some(service)) {
 
-  <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.text", service.toUpperCase) </div>
-
+  @backLinkAndSubHeader(backLink, "business-verification-text", Messages("bc.business-verification.text", service.toUpperCase))
   <h1 class="heading-xlarge" id="business-registration.header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
   @bcErrorSummary(businessRegistrationForm, "bc.business-verification-error.general")
