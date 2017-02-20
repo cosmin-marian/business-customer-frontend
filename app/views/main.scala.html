@@ -8,8 +8,7 @@
     contentHeader: Option[Html] = None,
     userLoggedIn: Boolean = false,
     scriptElement: Option[Html] = None,
-    linkElement : Option[Html] = None,
-    backLink: Option[String] = None
+    linkElement : Option[Html] = None
     )(mainContent: Html = HtmlFormat.empty)(implicit request : Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
@@ -30,10 +29,6 @@
   @if(userLoggedIn) {
     <li><a id="logOutNavHref" href='@routes.ApplicationController.logout(service.getOrElse(""))'>Sign out</a></li>
   }
-  @backLink.map { backLinkUri =>
-    <li><a id="backLinkHref" href='@backLinkUri'>Back</a></li>
-  }
-
 }
 
 @article = {
@@ -93,6 +88,7 @@
     @uiLayouts.main_content_header(contentHeader = contentHeader.get)
   }
 }
+
 
 @content = {
   @uiLayouts.main_content(
