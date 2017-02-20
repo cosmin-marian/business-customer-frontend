@@ -1,8 +1,8 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
-import connectors.BusinessRegCacheConnector
-import controllers.BaseController
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
+import controllers.{ReviewDetailsController, BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import play.api.{Logger, Play}
@@ -19,24 +19,29 @@ object OverseasCompanyRegController extends OverseasCompanyRegController {
   override val authConnector = FrontendAuthConnector
   override val businessRegistrationService = BusinessRegistrationService
   override val businessRegistrationCache = BusinessRegCacheConnector
+  override val controllerId: String = "OverseasCompanyRegController"
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait OverseasCompanyRegController extends BaseController with RunMode {
+trait OverseasCompanyRegController extends BackLinkController with RunMode {
 
   def businessRegistrationService: BusinessRegistrationService
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
-      OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl))
+  def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
+    currentBackLink.map(backLink =>
+      Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
+        OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
+    )
   }
 
 
   def register(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateNonUK(overseasCompanyForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
-          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl)))
+        currentBackLink.map(backLink => BadRequest(views.html.nonUkReg.overseas_company_registration(formWithErrors, service,
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
+        )
       },
       overseasCompany => {
         for {
@@ -48,12 +53,16 @@ trait OverseasCompanyRegController extends BaseController with RunMode {
               case None =>
                 throw new RuntimeException(s"[OverseasCompanyRegController][send] - service :$service. Error : No Cached BusinessRegistration")
             }
-         } yield {
-          redirectUrl match {
-            case Some(x) => Redirect(x)
-            case None => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+          redirectPage <- redirectUrl match {
+            case Some(x) => RedirectToExernal(x, controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl))
+            case None => RedirectWithBackLink(
+              ReviewDetailsController.controllerId,
+              controllers.routes.ReviewDetailsController.businessDetails(service),
+              Some(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl).url)
+            )
           }
-
+         } yield {
+          redirectPage
         }
       }
     )

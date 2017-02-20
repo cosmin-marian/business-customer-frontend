@@ -2,7 +2,7 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
-import connectors.BusinessRegCacheConnector
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -27,15 +27,19 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
   val service = "ATED"
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   object TestAgentRegisterNonUKClientController extends AgentRegisterNonUKClientController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationCache = mockBusinessRegistrationCache
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockBusinessRegistrationCache)
+    reset(mockBackLinkCache)
   }
 
   val serviceName: String = "ATED"
@@ -151,6 +155,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
         "If registration details entered are valid, continue button must redirect to service specific redirect url" in {
           implicit val hc: HeaderCarrier = HeaderCarrier()
           val inputJson = createJson()
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some("http://localhost:9933/ated-subscription/registered-business-address")) { result =>
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include("/business-customer/register/non-uk-client/overseas-company/ATED/true?redirectUrl=")
@@ -176,6 +181,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = TestAgentRegisterNonUKClientController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -189,6 +195,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -203,6 +210,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -217,6 +225,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -231,6 +240,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)

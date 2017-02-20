@@ -38,7 +38,7 @@ class nrl_questionSpec extends FeatureSpec with OneServerPerSuite with MockitoSu
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.nonUkReg.nrl_question(nrlQuestionForm, service)
+      val html = views.html.nonUkReg.nrl_question(nrlQuestionForm, service, Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 

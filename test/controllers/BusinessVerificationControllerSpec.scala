@@ -4,7 +4,10 @@ import java.util.UUID
 
 import builders.AuthBuilder
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
+import org.mockito.Matchers
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.Json
@@ -22,11 +25,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
   val request = FakeRequest()
   val mockAuthConnector = mock[AuthConnector]
   val mockBusinessMatchingService = mock[BusinessMatchingService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "ATED"
 
   object TestBusinessVerificationController extends BusinessVerificationController {
     override val authConnector = mockAuthConnector
     override val businessMatchingService = mockBusinessMatchingService
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   "BusinessVerificationController" must {
@@ -115,6 +121,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "if non-uk with capital-gains-tax service, continue to registration page" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}""")), "capital-gains-tax") { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include(s"/business-customer/register/capital-gains-tax/NUK")
@@ -122,6 +129,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "if non-uk, continue to registration page" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NUK"}"""))) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include(s"/business-customer/nrl/$service")
@@ -129,6 +137,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "if new, continue to NEW registration page" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NEW"}"""))) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include(s"/business-customer/register-gb/$service/NEW")
@@ -136,6 +145,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "if group, continue to GROUP registration page" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedUserJson("NUK", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "GROUP"}"""))) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include(s"/business-customer/register-gb/$service/GROUP")
@@ -143,6 +153,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
       }
 
       "for any other option, redirect to home page again" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         continueWithAuthorisedUserJson("XYZ", FakeRequest().withJsonBody(Json.parse("""{"businessType" : "XYZ"}"""))) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(s"/business-customer/agent/$service"))
@@ -588,6 +599,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -602,6 +614,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -616,6 +629,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.businessForm(serviceName, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -630,6 +644,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.businessVerification(service).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -644,6 +659,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.submit(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -658,6 +674,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -686,6 +703,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedSaOrgUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -700,6 +718,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.continue(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -714,6 +733,7 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     val userId = s"user-${UUID.randomUUID}"
 
     AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessVerificationController.businessForm(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,

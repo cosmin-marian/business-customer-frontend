@@ -1,4 +1,4 @@
-@(nrlQuestionForm: Form[models.NRLQuestion], service: String)(implicit request: Request[_], messages: Messages)
+@(nrlQuestionForm: Form[models.NRLQuestion], service: String, backLink: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -9,8 +9,7 @@
 @bcMain(title = Messages("bc.nrl.title"), service = Some(service)) {
 
   @form(action = controllers.nonUKReg.routes.NRLQuestionController.continue(service)) {
-
-    <div class="heading-sub" id="client-appoint-subheader"> @Messages("bc.nrl.subheader", service.toUpperCase)</div>
+    @backLinkAndSubHeader(backLink, "client-appoint-subheader", Messages("bc.nrl.subheader", service.toUpperCase))
 
     <h1 class="heading-xlarge" id="nrl-question-header"> @Messages("bc.nrl.header")</h1>
 

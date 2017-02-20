@@ -32,7 +32,12 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, false), None, false))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2),
+              service,
+              displayDetails(service, false),
+              None,
+              false,
+              getBackLink(service, None)))
           case _ =>
             Logger.warn(s"[UpdateNonUKBusinessRegistrationController][editAgent] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -45,7 +50,12 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
       businessDetails =>
         businessDetails match {
           case Some(detailsTuple) =>
-            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2), service, displayDetails(service, true), redirectUrl, true))
+            Ok(views.html.nonUkReg.update_business_registration(businessRegistrationForm.fill(detailsTuple._2),
+              service,
+              displayDetails(service, true),
+              redirectUrl,
+              true,
+              getBackLink(service, redirectUrl)))
           case _ =>
             Logger.warn(s"[UpdateNonUKBusinessRegistrationController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -58,7 +68,12 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
     BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors, service, displayDetails(service, isRegisterClient), redirectUrl, isRegisterClient)))
+        Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors,
+          service,
+          displayDetails(service, isRegisterClient),
+          redirectUrl,
+          isRegisterClient,
+          getBackLink(service, redirectUrl))))
       },
       registerData => {
         businessRegistrationService.getDetails.flatMap{
@@ -78,6 +93,13 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
         }
       }
     )
+  }
+
+  private def getBackLink(service: String, redirectUrl: Option[String]) = {
+    redirectUrl match {
+      case Some(x) => redirectUrl
+      case None => Some(controllers.routes.ReviewDetailsController.businessDetails(service).url)
+    }
   }
 
   private def displayDetails(service: String, isRegisterClient: Boolean)(implicit bcContext: BusinessCustomerContext) = {
@@ -102,7 +124,6 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
         Messages("bc.business-registration.text.client", service),
         Some(Messages("bc.business-registration.lede.update-text")),
         BCUtils.getIsoCodeTupleList)
-
     }
   }
 

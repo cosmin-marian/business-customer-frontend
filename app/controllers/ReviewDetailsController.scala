@@ -1,7 +1,7 @@
 package controllers
 
 import config.FrontendAuthConnector
-import connectors.DataCacheConnector
+import connectors.{BackLinkCacheConnector, DataCacheConnector}
 import controllers.auth.ExternalUrls
 import models.{EnrolErrorResponse, EnrolResponse}
 import play.api.i18n.Messages.Implicits._
@@ -17,9 +17,11 @@ object ReviewDetailsController extends ReviewDetailsController {
   val dataCacheConnector = DataCacheConnector
   val authConnector = FrontendAuthConnector
   val agentRegistrationService = AgentRegistrationService
+  override val controllerId: String = "ReviewDetailsController"
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait ReviewDetailsController extends BaseController with RunMode {
+trait ReviewDetailsController extends BackLinkController with RunMode {
 
   import play.api.Play.current
 
@@ -31,11 +33,13 @@ trait ReviewDetailsController extends BaseController with RunMode {
   def businessDetails(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     dataCacheConnector.fetchAndGetBusinessDetailsForSession flatMap {
       case Some(businessDetails) =>
-        if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
-          Future.successful(Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails)))
-        } else {
-          Future.successful(Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails)))
-        }
+        currentBackLink.map(backLink =>
+          if (bcContext.user.isAgent && businessDetails.isBusinessDetailsEditable) {
+            Ok(views.html.review_details_non_uk_agent(serviceName, businessDetails, backLink))
+          } else {
+            Ok(views.html.review_details(serviceName, bcContext.user.isAgent, businessDetails, backLink))
+          }
+        )
       case _ =>
         Logger.warn(s"[ReviewDetailsController][businessDetails] - No Service details found in DataCache for")
         throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -44,14 +48,14 @@ trait ReviewDetailsController extends BaseController with RunMode {
 
   def continue(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
     if (bcContext.user.isAgent) {
-      agentRegistrationService.enrolAgent(serviceName).map { response =>
+      agentRegistrationService.enrolAgent(serviceName).flatMap { response =>
         response.status match {
-          case OK => Redirect(ExternalUrls.agentConfirmationPath(serviceName))
+          case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), controllers.routes.ReviewDetailsController.businessDetails(serviceName))
           case BAD_GATEWAY =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
-            Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
+            Future.successful(Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
               Messages("bc.business-registration-error.duplicate.identifier.title"),
-              Messages("bc.business-registration-error.duplicate.identifier.message"), Some(serviceName)))
+              Messages("bc.business-registration-error.duplicate.identifier.message"), Some(serviceName))))
           case _ =>
             Logger.warn(s"[ReviewDetailsController][continue] - Execption other tha status - OK and BAD_GATEWAY")
             throw new RuntimeException(Messages("bc.business-review.error.not-found"))
@@ -61,7 +65,7 @@ trait ReviewDetailsController extends BaseController with RunMode {
     } else {
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")
       serviceRedirectUrl match {
-        case Some(serviceUrl) => Future.successful(Redirect(serviceUrl))
+        case Some(serviceUrl) => RedirectToExernal(serviceUrl, controllers.routes.ReviewDetailsController.businessDetails(serviceName))
         case _ =>
           Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = $serviceName")
           throw new RuntimeException(Messages("bc.business-review.error.no-service", serviceName, serviceName.toLowerCase))

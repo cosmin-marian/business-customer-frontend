@@ -4,7 +4,9 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import org.jsoup.Jsoup
+import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
@@ -22,14 +24,18 @@ import scala.concurrent.Future
 class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuthConnector = mock[AuthConnector]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "serviceName"
 
   object TestNRLQuestionController extends NRLQuestionController {
     override val authConnector = mockAuthConnector
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach = {
     reset(mockAuthConnector)
+    reset(mockBackLinkCache)
   }
 
   "NRLQuestionController" must {
@@ -48,6 +54,7 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
       }
 
       "redirect to register non-uk page, if user is an agent" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
         viewWithAuthorisedAgent(service) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(s"/business-customer/register/$service/NUK"))
@@ -87,6 +94,8 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+
     val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -100,6 +109,8 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+
     val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -112,6 +123,8 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
     implicit val user = builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestNRLQuestionController.continue(serviceName).apply(SessionBuilder.updateRequestWithSession(fakeRequest, userId))
     test(result)

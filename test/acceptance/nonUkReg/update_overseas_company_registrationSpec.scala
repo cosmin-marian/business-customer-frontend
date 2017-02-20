@@ -44,7 +44,7 @@ class update_overseas_company_registrationSpec extends FeatureSpec with OneServe
       implicit val request = FakeRequest()
       implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.nonUkReg.update_overseas_company_registration(overseasCompanyForm, service, displayDetails, List(("UK", "UK")), None)
+      val html = views.html.nonUkReg.update_overseas_company_registration(overseasCompanyForm, service, displayDetails, List(("UK", "UK")), None, Some("http://backLinkUrl"))
 
       val document = Jsoup.parse(html.toString())
 
@@ -53,6 +53,10 @@ class update_overseas_company_registrationSpec extends FeatureSpec with OneServe
 
       Then("The subheader should be - dynamicSubHeader")
       assert(document.getElementById("overseas-subheader").text() === displayDetails.subHeader)
+
+      Then("We should have a back link")
+      assert(document.getElementById("backLinkHref").text() === "Back")
+      assert(document.getElementById("backLinkHref").attr("href") === "http://backLinkUrl")
 
       Then("The options should be Yes and No")
       assert(document.select(".block-label").text() === "Yes No")

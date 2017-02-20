@@ -1,6 +1,7 @@
 package controllers
 
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
@@ -15,25 +16,38 @@ import scala.concurrent.Future
 object BusinessRegUKController extends BusinessRegUKController {
   val authConnector = FrontendAuthConnector
   val businessRegistrationService = BusinessRegistrationService
+  override val controllerId: String = "BusinessRegUKController"
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait BusinessRegUKController extends BaseController {
+trait BusinessRegUKController extends BackLinkController {
 
   def businessRegistrationService: BusinessRegistrationService
 
-  def register(service: String, businessType: String) = AuthAction(service) { implicit bcContext =>
+  def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     val newMapping = businessRegistrationForm.data + ("businessAddress.country" -> "GB")
-    Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType, service)))
+    currentBackLink.map(backLink =>
+      Ok(views.html.business_group_registration(businessRegistrationForm.copy(data = newMapping), service, displayDetails(businessType, service), backLink))
+    )
   }
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType, service))))
+        currentBackLink.map(backLink => BadRequest(views.html.business_group_registration(formWithErrors, service, displayDetails(businessType, service), backLink)))
       },
       registrationData => {
-        businessRegistrationService.registerBusiness(registrationData, OverseasCompany(), isGroup(businessType), isNonUKClientRegisteredByAgent = false, service, isBusinessDetailsEditable = false).map {
-          registrationSuccessResponse => Redirect(controllers.routes.ReviewDetailsController.businessDetails(service))
+        businessRegistrationService.registerBusiness(registrationData,
+          OverseasCompany(),
+          isGroup(businessType),
+          isNonUKClientRegisteredByAgent = false,
+          service,
+          isBusinessDetailsEditable = false).flatMap {
+          registrationSuccessResponse =>
+            RedirectWithBackLink(
+              ReviewDetailsController.controllerId,
+              controllers.routes.ReviewDetailsController.businessDetails(service),
+              Some(controllers.routes.BusinessRegUKController.register(service, businessType).url))
         }
       }
     )

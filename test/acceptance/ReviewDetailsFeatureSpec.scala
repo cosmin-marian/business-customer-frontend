@@ -39,7 +39,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.review_details("ATED", isAgent = false, reviewDetails)
+      val html = views.html.review_details("ATED", isAgent = false, reviewDetails, Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 
@@ -68,7 +68,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.review_details("ATED", isAgent = false, reviewDetails.copy(directMatch = false))
+      val html = views.html.review_details("ATED", isAgent = false, reviewDetails.copy(directMatch = false), Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 
@@ -97,7 +97,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       implicit val request = FakeRequest()
       implicit val messages : play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
-      val html = views.html.review_details("ATED", isAgent = true, reviewDetails.copy(directMatch = true))
+      val html = views.html.review_details("ATED", isAgent = true, reviewDetails.copy(directMatch = true), Some("backLinkUri"))
 
       val document = Jsoup.parse(html.toString())
 

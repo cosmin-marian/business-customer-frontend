@@ -4,6 +4,7 @@ import java.util.UUID
 
 import builders.{AuthBuilder, SessionBuilder}
 import config.FrontendAuthConnector
+import connectors.BackLinkCacheConnector
 import models.{Address, ReviewDetails}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -27,8 +28,8 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   val service = "ATED"
 
   val mockAuthConnector = mock[AuthConnector]
-
   val mockBusinessMatchingService = mock[BusinessMatchingService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   val testAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
 
@@ -37,11 +38,14 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   object TestHomeController extends HomeController {
     override val businessMatchService: BusinessMatchingService = mockBusinessMatchingService
     override val authConnector = mockAuthConnector
+    override val controllerId = "test"
+    override val backLinkCacheConnector = mockBackLinkCache
   }
 
   override def beforeEach = {
     reset(mockAuthConnector)
     reset(mockBusinessMatchingService)
+    reset(mockBackLinkCache)
   }
 
   "HomeController" must {
@@ -105,41 +109,48 @@ class HomeControllerSpec extends PlaySpec with OneServerPerSuite with MockitoSug
   def getWithUnAuthorisedUser(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
   def getWithUnAuthenticated(test: Future[Result] => Any) {
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSessionNoUser())
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSessionNoUser())
     test(result)
   }
 
   def getWithAuthorisedUserMatched(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val reviewDetails = Json.toJson(testReviewDetails)
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(reviewDetails)))
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
   def getWithAuthorisedUserNotMatched(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val notFound = Json.parse( """{"Reason" : "Text from reason column"}""")
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Some(Future.successful(notFound)))
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
   def getWithAuthorisedUserNoUTR(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockBusinessMatchingService.matchBusinessWithUTR(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(None)
-    val result = TestHomeController.homePage(service).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = TestHomeController.homePage(service, None).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 

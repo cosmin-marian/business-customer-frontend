@@ -28,8 +28,8 @@ GET         /feedback/:service                                                  
 POST        /feedback/:service                                                  controllers.ApplicationController.submitFeedback(service: String)
 GET         /thank-you/:service                                                 controllers.ApplicationController.feedbackThankYou(service: String)
 
-GET         /agent/:service                                                     controllers.HomeController.homePage(service: String)
-GET         /:service                                                           controllers.HomeController.homePage(service: String)
+GET         /agent/:service                                                     controllers.HomeController.homePage(service: String, backLinkUrl: Option[String] ?= None)
+GET         /:service                                                           controllers.HomeController.homePage(service: String, backLinkUrl: Option[String] ?= None)
 
 GET         /logoutAndRedirectToHome/:service                                   controllers.ApplicationController.logoutAndRedirectToHome(service:String)
 

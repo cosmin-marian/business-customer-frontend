@@ -1,29 +1,44 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
-import controllers.BaseController
-import forms.BusinessRegistrationForms.nrlQuestionForm
+import connectors.BackLinkCacheConnector
+import controllers.{BackLinkController, BaseController}
+import forms.BusinessRegistrationForms._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 object NRLQuestionController extends NRLQuestionController {
   val authConnector = FrontendAuthConnector
+  override val controllerId: String = "NRLQuestionController"
+  override val backLinkCacheConnector = BackLinkCacheConnector
 }
 
-trait NRLQuestionController extends BaseController {
+trait NRLQuestionController extends BackLinkController {
 
-  def view(service: String) = AuthAction(service) { implicit bcContext =>
-    if (bcContext.user.isAgent) Redirect(controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
-    else Ok(views.html.nonUkReg.nrl_question(nrlQuestionForm, service))
+  def view(service: String) = AuthAction(service).async { implicit bcContext =>
+    if (bcContext.user.isAgent)
+      ForwardBackLinkToNextPage(BusinessRegController.controllerId, controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
+    else
+      currentBackLink.map(backLink => Ok(views.html.nonUkReg.nrl_question(nrlQuestionForm, service, backLink)))
   }
 
-  def continue(service: String) = AuthAction(service) { implicit bcContext =>
+  def continue(service: String) = AuthAction(service).async { implicit bcContext =>
     nrlQuestionForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.nonUkReg.nrl_question(formWithErrors, service)),
+      formWithErrors =>
+        currentBackLink.map(backLink => BadRequest(views.html.nonUkReg.nrl_question(formWithErrors, service, backLink))),
       formData => {
         val paysSa = formData.paysSA.getOrElse(false)
-        if (paysSa) Redirect(controllers.nonUKReg.routes.PaySAQuestionController.view(service))
-        else Redirect(controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"))
+        if (paysSa)
+          RedirectWithBackLink(PaySAQuestionController.controllerId,
+            controllers.nonUKReg.routes.PaySAQuestionController.view(service),
+            Some(controllers.nonUKReg.routes.NRLQuestionController.view(service).url)
+          )
+        else
+          RedirectWithBackLink(BusinessRegController.controllerId,
+            controllers.nonUKReg.routes.BusinessRegController.register(service, "NUK"),
+            Some(controllers.nonUKReg.routes.NRLQuestionController.view(service).url)
+          )
+
       }
     )
   }

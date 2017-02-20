@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import config.BusinessCustomerSessionCache
-import connectors.DataCacheConnector
+import connectors.{BackLinkCacheConnector, DataCacheConnector}
 import models.{Address, EnrolResponse, Identifier, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
@@ -26,8 +26,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   val service = "ATED"
 
   val mockAuthConnector = mock[AuthConnector]
-
   val mockAgentRegistrationService = mock[AgentRegistrationService]
+  val mockBackLinkCache = mock[BackLinkCacheConnector]
 
   val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "GB")
 
@@ -51,6 +51,8 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       override def dataCacheConnector = mockDataCacheConnector
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
+      override val controllerId = "test"
+      override val backLinkCacheConnector = mockBackLinkCache
     }
   }
 
@@ -68,15 +70,17 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     }
     new ReviewDetailsController {
       override def dataCacheConnector = mockDataCacheConnector
-
       override val authConnector = mockAuthConnector
       override val agentRegistrationService = mockAgentRegistrationService
+      override val controllerId = "test"
+      override val backLinkCacheConnector = mockBackLinkCache
     }
   }
 
   override def beforeEach = {
     reset(mockAgentRegistrationService)
     reset(mockAuthConnector)
+    reset(mockBackLinkCache)
   }
 
   "ReviewDetailsController" must {
@@ -251,6 +255,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithUnAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
@@ -258,6 +263,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
@@ -265,7 +271,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAuthorisedAgent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
@@ -275,7 +281,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithDuplicategent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
@@ -284,7 +290,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAAuthAgent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
@@ -293,6 +299,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   def businessDetailsWithAuthorisedAgent(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val testDetailsController = testReviewDetailsController(reviewDetails)
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
@@ -303,6 +310,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   def businessDetailsWithAuthorisedUser(reviewDetails: ReviewDetails)(test: Future[Result] => Any) = {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val testDetailsController = testReviewDetailsController(reviewDetails)
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
@@ -313,6 +321,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   def businessDetailsWithAuthorisedUserNotFound(test: Future[Result] => Any) = {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val testDetailsController = testReviewDetailsControllerNotFound
     val result = testDetailsController.businessDetails(service).apply(fakeRequestWithSession(userId))
 
@@ -324,6 +333,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).businessDetails(service).apply(fakeRequestWithSession(userId))
 
     test(result)

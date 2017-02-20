@@ -1,4 +1,9 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, redirectUrl: Option[String], isRegisterClient: Boolean)(implicit request: Request[_], messages: Messages)
+@(businessRegistrationForm: Form[models.BusinessRegistration],
+  service: String,
+  displayDetails: models.BusinessRegistrationDisplayDetails,
+  redirectUrl: Option[String],
+  isRegisterClient: Boolean,
+  backLink: Option[String])(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -22,8 +27,7 @@
 }
 
 @bcMain(title = displayDetails.businessRegHeader, service = Some(service), pageScripts = Some(pageScripts)) {
-
-<div class="heading-sub" id="business-verification-text"> @Html(displayDetails.businessRegSubHeader) </div>
+@backLinkAndSubHeader(backLink, "business-verification-text", displayDetails.businessRegSubHeader)
 <h1 class="heading-xlarge" id="business-reg-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
 
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")

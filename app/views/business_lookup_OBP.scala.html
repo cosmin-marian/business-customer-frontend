@@ -1,4 +1,8 @@
-@(ordinaryBusinessPartnershipForm: Form[forms.OrdinaryBusinessPartnershipMatch], isAgent: Boolean, service: String, businessType: String)(implicit request: Request[_], messages: Messages)
+@(ordinaryBusinessPartnershipForm: Form[forms.OrdinaryBusinessPartnershipMatch],
+ isAgent: Boolean,
+ service: String,
+ businessType: String,
+ backLink: Option[String])(implicit request: Request[_], messages: Messages)
 
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
@@ -9,10 +13,10 @@
 @bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service)) {
 
   @if(isAgent) {
-    <div class="heading-sub" id="business-verification-agent-text"> @Messages("bc.business-verification.agent.text", service.toUpperCase) </div>
+    @backLinkAndSubHeader(backLink, "business-verification-agent-text", Messages("bc.business-verification.agent.text", service.toUpperCase))
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header") </h1>
   } else {
-    <div class="heading-sub" id="business-verification-text"> @Messages("bc.business-verification.client.text", service.toUpperCase) </div>
+    @backLinkAndSubHeader(backLink, "business-verification-text", Messages("bc.business-verification.client.text", service.toUpperCase))
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
 

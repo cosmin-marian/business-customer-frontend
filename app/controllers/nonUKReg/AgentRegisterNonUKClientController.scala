@@ -1,8 +1,8 @@
 package controllers.nonUKReg
 
 import config.FrontendAuthConnector
-import connectors.BusinessRegCacheConnector
-import controllers.BaseController
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
+import controllers.{BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
 import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
@@ -21,31 +21,41 @@ object AgentRegisterNonUKClientController extends AgentRegisterNonUKClientContro
   // $COVERAGE-OFF$
   override val authConnector: AuthConnector = FrontendAuthConnector
   override val businessRegistrationCache = BusinessRegCacheConnector
+  override val controllerId: String = "AgentRegisterNonUKClientController"
+  override val backLinkCacheConnector = BackLinkCacheConnector
   // $COVERAGE-ON$
 }
 
-trait AgentRegisterNonUKClientController extends BaseController with RunMode {
+trait AgentRegisterNonUKClientController extends BackLinkController with RunMode {
 
   import play.api.Play.current
 
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def view(service: String) = AuthAction(service) { implicit bcContext =>
-    Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails))
+  def view(service: String) = AuthAction(service).async { implicit bcContext =>
+    currentBackLink.map(backLink =>
+      Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
+    )
+
   }
 
   def submit(service: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
       formWithErrors => {
-        Future.successful(BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails)))
+        currentBackLink.map(backLink =>
+          BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails, backLink))
+        )
       },
       registerData => {
-        businessRegistrationCache.saveBusinessRegDetails(registerData).map {
+        businessRegistrationCache.saveBusinessRegDetails(registerData).flatMap {
           registrationSuccessResponse =>
             val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
             serviceRedirectUrl match {
               case Some(redirectUrl) =>
-                Redirect(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, true, serviceRedirectUrl))
+                RedirectWithBackLink(OverseasCompanyRegController.controllerId,
+                  controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, true, serviceRedirectUrl),
+                  Some(controllers.nonUKReg.routes.AgentRegisterNonUKClientController.view(service).url)
+                )
               case _ =>
                 Logger.warn(s"[ReviewDetailsController][submit] - No Service config found for = $service")
                 throw new RuntimeException(Messages("bc.business-review.error.no-service", service, service.toLowerCase))
