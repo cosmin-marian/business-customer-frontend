@@ -5,7 +5,8 @@ import uk.gov.hmrc.play.config.ServicesConfig
 
 trait ApplicationConfig {
 
-  val betaFeedbackUrl: String
+  val defaultBetaFeedbackUrl: String
+  def betaFeedbackUrl(service: Option[String], returnUri: String): String
   val betaFeedbackUnauthenticatedUrl: String
   val analyticsToken: Option[String]
   val analyticsHost: String
@@ -29,7 +30,15 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
 
   val contactFormServiceIdentifier = "BUSINESS-CUSTOMER"
 
-  override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
+  override lazy val defaultBetaFeedbackUrl = s"$contactHost/contact/beta-feedback"
+  override def betaFeedbackUrl(service: Option[String], returnUri: String) = {
+    val feedbackUrl = service match {
+      case Some(delegatedService) if (!delegatedService.isEmpty()) =>
+        configuration.getString(s"govuk-tax.$env.delegated-service.${delegatedService.toLowerCase}.beta-feedback-url").getOrElse(defaultBetaFeedbackUrl)
+      case _ => defaultBetaFeedbackUrl
+    }
+    feedbackUrl + "?return=" + returnUri
+  }
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
   override lazy val analyticsToken: Option[String] = configuration.getString(s"govuk-tax.$env.google-analytics.token")
   override lazy val analyticsHost: String = configuration.getString(s"govuk-tax.$env.google-analytics.host").getOrElse("auto")
@@ -43,7 +52,8 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
 
   override def serviceSignOutUrl(service: Option[String]): String = {
     service match {
-      case Some(delegatedService) if (!delegatedService.isEmpty()) => configuration.getString(s"govuk-tax.$env.delegated-service-sign-out-url.${delegatedService.toLowerCase}").getOrElse(logoutUrl)
+      case Some(delegatedService) if (!delegatedService.isEmpty()) =>
+        configuration.getString(s"govuk-tax.$env.delegated-service.${delegatedService.toLowerCase}.sign-out-url").getOrElse(logoutUrl)
       case _ => logoutUrl
     }
   }

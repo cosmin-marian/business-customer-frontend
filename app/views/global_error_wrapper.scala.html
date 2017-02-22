@@ -73,7 +73,7 @@
 @betaBanner = {
   @uiLayouts.betaBanner(
     userLoggedIn = userLoggedIn,
-    betaFeedbackUrl = appConfig.betaFeedbackUrl,
+    betaFeedbackUrl = appConfig.betaFeedbackUrl(delegatedService, request.uri),
     betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUnauthenticatedUrl,
     showFeedbackLinkInBetaBanner = true
   )
