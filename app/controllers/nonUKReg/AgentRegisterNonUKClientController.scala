@@ -32,10 +32,19 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
 
   def businessRegistrationCache: BusinessRegCacheConnector
 
-  def view(service: String) = AuthAction(service).async { implicit bcContext =>
-    currentBackLink.map(backLink =>
-      Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
-    )
+  def view(service: String, backLinkUrl: Option[String]) = AuthAction(service).async { implicit bcContext =>
+    backLinkUrl match {
+      case Some(backLink) => {
+        setBackLink(controllerId, backLinkUrl).map(backLink =>
+          Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
+        )
+      }
+      case None => {
+        currentBackLink.map(backLink =>
+          Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
+        )
+      }
+    }
 
   }
 

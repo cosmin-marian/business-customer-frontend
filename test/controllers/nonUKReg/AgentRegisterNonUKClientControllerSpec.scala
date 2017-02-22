@@ -17,6 +17,7 @@ import play.api.test.Helpers._
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import utils.{BusinessCustomerFeatureSwitches, FeatureSwitch}
 
 import scala.concurrent.Future
 
@@ -69,9 +70,10 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     "Authorised Users" must {
 
-      "return business registration view for a Non-UK based client by agent" in {
-
-        registerWithAuthorisedUser(serviceName, "NUK") { result =>
+      "return business registration view for a Non-UK based client by agent with no back link" in {
+        val isFeatureEnable = BusinessCustomerFeatureSwitches.backLinks.enabled
+        FeatureSwitch.enable(BusinessCustomerFeatureSwitches.backLinks)
+        viewWithAuthorisedUser(serviceName, "NUK", None, Some("http://cachedBackLink")) { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
 
@@ -85,9 +87,37 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
           document.getElementById("submit").text() must be("Continue")
+
+          document.getElementById("backLinkHref").text() must be("Back")
+          document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
         }
+        FeatureSwitch.setProp(BusinessCustomerFeatureSwitches.backLinks.name, isFeatureEnable)
       }
 
+      "return business registration view for a Non-UK based client by agent with a back link" in {
+        val isFeatureEnable = BusinessCustomerFeatureSwitches.backLinks.enabled
+        FeatureSwitch.enable(BusinessCustomerFeatureSwitches.backLinks)
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some("http://backLink")))
+        viewWithAuthorisedUser(serviceName, "NUK", Some("http://backLink"), Some("http://cachedBackLink")) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
+          document.title() must be("What is your client's overseas registered business name and address?")
+          document.getElementById("business-verification-text").text() must be("Add a client")
+          document.getElementById("non-uk-reg-header").text() must be("What is your client's overseas registered business name and address?")
+          document.getElementById("businessName_field").text() must be("Business name")
+          document.getElementById("businessAddress.line_1_field").text() must be("Address")
+          document.getElementById("businessAddress.line_2_field").text() must be("Address line 2")
+          document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
+          document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
+          document.getElementById("businessAddress.country_field").text() must include("Country")
+          document.getElementById("submit").text() must be("Continue")
+
+          document.getElementById("backLinkHref").text() must be("Back")
+          document.getElementById("backLinkHref").attr("href") must be("http://backLink")
+        }
+        FeatureSwitch.setProp(BusinessCustomerFeatureSwitches.backLinks.name, isFeatureEnable)
+      }
     }
 
     "send" must {
@@ -176,13 +206,13 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     }
   }
 
-  def registerWithUnAuthorisedUser(businessType: String = "NUK")(test: Future[Result] => Any) {
+  def registerWithUnAuthorisedUser(businessType: String = "NUK", backLink: Option[String] = None)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockUnAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
-    val result = TestAgentRegisterNonUKClientController.view(serviceName).apply(FakeRequest().withSession(
+    val result = TestAgentRegisterNonUKClientController.view(serviceName, backLink).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -190,14 +220,14 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     test(result)
   }
 
-  def registerWithAuthorisedAgent(service: String, businessType: String)(test: Future[Result] => Any) {
+  def registerWithAuthorisedAgent(service: String, businessType: String, backLink: Option[String] = None)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
-    val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
+    val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
@@ -205,14 +235,14 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     test(result)
   }
 
-  def registerWithAuthorisedUser(service: String, businessType: String)(test: Future[Result] => Any) {
+  def viewWithAuthorisedUser(service: String, businessType: String, backLink: Option[String] = None, cachedBackLink: Option[String] = None)(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(cachedBackLink))
 
-    val result = TestAgentRegisterNonUKClientController.view(service).apply(FakeRequest().withSession(
+    val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
       SessionKeys.userId -> userId))
