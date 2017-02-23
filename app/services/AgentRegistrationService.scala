@@ -77,9 +77,20 @@ trait AgentRegistrationService extends RunMode with Auditable {
       Logger.warn(s"[AgentRegistrationService][createKnownFacts] - No Agent Reference Number Found")
       throw new RuntimeException(Messages("bc.agent-service.error.no-agent-reference", "[AgentRegistrationService][createKnownFacts]"))
     }
+
+    // individual or organisation utr
+    val utrKnownFact = (businessDetails.lastName, businessDetails.firstName) match {
+      case (Some(x), Some(y)) => KnownFact(GovernmentGatewayConstants.KnownFactsUtr, businessDetails.utr.getOrElse(""))
+      case _ => KnownFact(GovernmentGatewayConstants.KnownFactsCompanyTax, businessDetails.utr.getOrElse(""))
+    }
+
+    val postCodeKnownFact = KnownFact(GovernmentGatewayConstants.KnownFactsPostcode, businessDetails.businessAddress.postcode.getOrElse(""))
+
     val knownFacts = List(
       KnownFact(GovernmentGatewayConstants.KnownFactsAgentRefNo, agentRefNo),
-      KnownFact(GovernmentGatewayConstants.KnownFactsSafeId, businessDetails.safeId)
+      KnownFact(GovernmentGatewayConstants.KnownFactsSafeId, businessDetails.safeId),
+      utrKnownFact,
+      postCodeKnownFact
     )
     KnownFactsForService(knownFacts)
   }
