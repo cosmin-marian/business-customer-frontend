@@ -73,7 +73,7 @@ object BusinessVerificationForms {
   val length105 = 105
   val utrRegex = """^[0-9]{10}$""".r
 
-  def validateBusinessType(businessTypeData: Form[BusinessType]) = {
+  def validateBusinessType(businessTypeData: Form[BusinessType], service: String) = {
     val isSaAccount = businessTypeData.data.get("isSaAccount").fold(false)(x => x.toBoolean)
     val isOrgAccount = businessTypeData.data.get("isOrgAccount").fold(false)(x => x.toBoolean)
     val businessType = businessTypeData.data.get("businessType") map {
@@ -82,8 +82,11 @@ object BusinessVerificationForms {
       _.isEmpty
     }
     (businessType.nonEmpty, businessType.getOrElse(""), isSaAccount, isOrgAccount) match {
-      case (true, "SOP", false, true) => businessTypeData.withError(key = "businessType",
-        message = "bc.business-verification-error.type_of_business_organisation_invalid")
+      case (true, "SOP", false, true) => service match {
+        case "amls" => businessTypeData
+        case _ => businessTypeData.withError(key = "businessType",
+          message = "bc.business-verification-error.type_of_business_organisation_invalid")
+      }
       case (true, "SOP", true, false) => businessTypeData
       case (true, _, true, false) => businessTypeData.withError(key = "businessType",
         message = "bc.business-verification-error.type_of_business_individual_invalid")

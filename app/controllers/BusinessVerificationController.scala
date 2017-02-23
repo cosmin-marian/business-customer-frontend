@@ -35,7 +35,7 @@ trait BusinessVerificationController extends BackLinkController {
 
   // scalastyle:off cyclomatic.complexity
   def continue(service: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest).fold(
+    BusinessVerificationForms.validateBusinessType(businessTypeForm.bindFromRequest, service).fold(
       formWithErrors =>
         currentBackLink.map(backLink => BadRequest(views.html.business_verification(formWithErrors, bcContext.user.isAgent, service, bcContext.user.isSa, bcContext.user.isOrg, backLink))
         ),
