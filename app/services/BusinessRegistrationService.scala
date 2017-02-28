@@ -59,17 +59,21 @@ trait BusinessRegistrationService {
     val updateRegisterDetails = createUpdateBusinessRegistrationRequest(registerData, overseasCompany, isGroup, isNonUKClientRegisteredByAgent)
 
     for {
-      oldReviewDetials <- dataCacheConnector.fetchAndGetBusinessDetailsForSession
-      registerResponse <-
-      oldReviewDetials match {
-        case Some(reviewDetails) => businessCustomerConnector.updateRegistrationDetails(reviewDetails.safeId, updateRegisterDetails)
+      oldReviewDetialsLookup <- dataCacheConnector.fetchAndGetBusinessDetailsForSession
+      oldReviewDetails <-  oldReviewDetialsLookup match {
+        case Some(reviewDetails) => Future.successful(reviewDetails)
         case _ => throw new InternalServerException(Messages("bc.connector.error.update-registration-failed"))
       }
+      _ <- businessCustomerConnector.updateRegistrationDetails(oldReviewDetails.safeId, updateRegisterDetails)
       reviewDetailsCache <- {
-        val reviewDetails = createReviewDetails(registerResponse.sapNumber, registerResponse.safeId,
-          registerResponse.agentReferenceNumber, isGroup, registerData, overseasCompany,
+        val updatedReviewDetails = createReviewDetails(oldReviewDetails.sapNumber,
+          oldReviewDetails.safeId,
+          oldReviewDetails.agentReferenceNumber,
+          isGroup,
+          registerData,
+          overseasCompany,
           isBusinessDetailsEditable)
-        dataCacheConnector.saveReviewDetails(reviewDetails)
+        dataCacheConnector.saveReviewDetails(updatedReviewDetails)
       }
     } yield {
       reviewDetailsCache.getOrElse(throw new InternalServerException(Messages("bc.connector.error.update-registration-failed")))

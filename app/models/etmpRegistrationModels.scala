@@ -81,12 +81,3 @@ case class UpdateRegistrationDetailsRequest(acknowledgementReference: String,
 object UpdateRegistrationDetailsRequest {
   implicit val formats = Json.format[UpdateRegistrationDetailsRequest]
 }
-
-case class UpdateRegistrationResponse(processingDate: String,
-                                        sapNumber: String,
-                                        safeId: String,
-                                        agentReferenceNumber: Option[String])
-
-object UpdateRegistrationResponse {
-  implicit val formats = Json.format[UpdateRegistrationResponse]
-}
