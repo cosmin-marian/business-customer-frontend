@@ -4,7 +4,7 @@ import java.util.UUID
 
 import builders.{AuthBuilder, TestAudit}
 import metrics.Metrics
-import models.{EnrolRequest, EnrolResponse, Identifier}
+import models.{KnownFactsForService, EnrolRequest, EnrolResponse, Identifier}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -64,7 +64,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).
           thenReturn(Future.successful(HttpResponse(OK, responseJson = Some(successfulSubscribeJson))))
 
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
         val enrolResponse = await(result)
         enrolResponse.status must be(OK)
       }
@@ -72,7 +72,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
       "return status as BAD_REQUEST, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(subscribeFailureResponseJson))))
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
         val thrown = the[BadRequestException] thrownBy await(result)
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -80,7 +80,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
       "return status as NOT_FOUND, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(subscribeFailureResponseJson))))
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
         val thrown = the[NotFoundException] thrownBy await(result)
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -88,7 +88,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
       "return status as SERVICE_UNAVAILABLE, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE, Some(subscribeFailureResponseJson))))
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
         val thrown = the[ServiceUnavailableException] thrownBy await(result)
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -96,7 +96,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
       "return status is anything, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(subscribeFailureResponseJson))))
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
         val thrown = the[InternalServerException] thrownBy await(result)
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
@@ -104,7 +104,7 @@ class GovernmentGatewayConnectorSpec extends PlaySpec with OneServerPerSuite wit
     "return status 502, for bad data sent for enrol" in {
         when(mockWSHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, Some(subscribeFailureResponseJson))))
-        val result = TestGovernmentGatewayConnector.enrol(request)
+        val result = TestGovernmentGatewayConnector.enrol(request, KnownFactsForService(Nil))
        /* val thrown = the[InternalServerException] thrownBy await(result)
         Json.parse(thrown.getMessage) must be(subscribeFailureResponseJson)
         verify(mockWSHttp, times(1)).POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())*/

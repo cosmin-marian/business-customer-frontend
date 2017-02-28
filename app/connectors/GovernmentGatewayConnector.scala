@@ -33,7 +33,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
 
   def metrics: Metrics
 
-  def enrol(enrolRequest: EnrolRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def enrol(enrolRequest: EnrolRequest, knownFacts: KnownFactsForService)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     val jsonData = Json.toJson(enrolRequest)
     val postUrl = s"""$serviceUrl/$enrolUri"""
 
@@ -67,9 +67,11 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
           throw new ServiceUnavailableException(response.body)
         case BAD_GATEWAY =>
           metrics.incrementFailedCounter(MetricsEnum.GG_AGENT_ENROL)
-          Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
+          Logger.warn(s"[GovernmentGatewayConnector][enrol] - BAD_GATEWAY " +
             s"gg url:$postUrl, " +
             s"Service: ${enrolRequest.serviceName}, " +
+            s"Register Known Facts:${knownFacts.facts}, " +
+            s"Enrol Known Facts:${enrolRequest.knownFacts}, " +
             s"Reponse Body: ${response.body}," +
             s"Reponse Status: ${response.status}")
           response
@@ -78,7 +80,9 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
           Logger.warn(s"[GovernmentGatewayConnector][enrol] - " +
             s"gg url:$postUrl, " +
             s"status:$status Exception account Ref:${enrolRequest.knownFacts}, " +
-            s"Service: ${enrolRequest.serviceName}}")
+            s"Service: ${enrolRequest.serviceName}}" +
+            s"Reponse Body: ${response.body}," +
+            s"Reponse Status: ${response.status}")
           throw new InternalServerException(response.body)
       }
     }
