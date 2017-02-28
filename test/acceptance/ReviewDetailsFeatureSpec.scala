@@ -56,6 +56,7 @@ class ReviewDetailsFeatureSpec extends FeatureSpec with OneServerPerSuite with M
       assert(document.getElementById("wrong-account-text").text === ("If this is not the right business, you should sign out and change to another account"))
       assert(document.getElementById("wrong-account-text-item-1").text().startsWith("If you registered with Companies House you need to inform") === true)
       assert(document.getElementById("wrong-account-text-item-2").text().startsWith("If you are not registered with Companies House you need to inform") === true)
+      assert(document.getElementById("check-agency-details").text ===("You are setting up your agency. These should be your company details not your clients."))
 
       assert(document.select(".button").text === ("Confirm"))
       assert(document.getElementById("bus-reg-edit") === null)

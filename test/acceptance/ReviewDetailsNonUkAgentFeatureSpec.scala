@@ -66,6 +66,7 @@ class ReviewDetailsNonUkAgentFeatureSpec extends FeatureSpec with OneServerPerSu
       assert(document.getElementById("overseas-tax-reference-title").text === ("Overseas company registration number"))
       assert(document.getElementById("overseas-details").text === ("id France inst"))
       assert(document.getElementById("overseas-edit").attr("href") === ("/business-customer/register/non-uk-client/edit-overseas-company/ATED/false"))
+      assert(document.getElementById("check-agency-details").text ===("You are setting up your agency. These should be your company details not your clients."))
       assert(document.select(".button").text === ("Confirm"))
 
     }
