@@ -218,43 +218,35 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
       )
 
       val safeId = "SAFE123123"
+      val successResponse = HttpResponse(OK, Some(Json.parse( """{"processingDate": "2014-12-17T09:30:47Z"}""")))
       "for successful save, return Response as Json" in {
-        val updateResponseData = UpdateRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
-          agentReferenceNumber = Some("AREF123123"))
-        val successResponse = Json.toJson(updateResponseData)
 
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
+          .thenReturn(Future.successful(successResponse))
 
         val result = TestBusinessCustomerConnector.updateRegistrationDetails(safeId, updateRequestData)
-        await(result) must be(updateResponseData)
+        await(result) must be(successResponse)
       }
 
       "for successful save with non-uk address, return Response as Json" in {
-        val businessResponseData = UpdateRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
-          agentReferenceNumber = Some("AREF123123"))
-        val successResponse = Json.toJson(businessResponseData)
 
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
+          .thenReturn(Future.successful(successResponse))
 
         val result = TestBusinessCustomerConnector.updateRegistrationDetails(safeId, updateRequestDataNonUk)
-        await(result) must be(businessResponseData)
+        await(result) must be(successResponse)
       }
 
       "for successful registration of NON-UK based client by an agent, return Response as Json" in {
-        val businessResponseData = UpdateRegistrationResponse(processingDate = "2015-01-01", sapNumber = "SAP123123", safeId = "SAFE123123",
-          agentReferenceNumber = Some("AREF123123"))
-        val successResponse = Json.toJson(businessResponseData)
 
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
         when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
+          .thenReturn(Future.successful(successResponse))
 
         val result = TestBusinessCustomerConnector.updateRegistrationDetails(safeId, updateRequestDataNonUk)
-        await(result) must be(businessResponseData)
+        await(result) must be(successResponse)
       }
 
       "for Service Unavailable, throw an exception" in {

@@ -120,13 +120,13 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
   }
 
   def updateRegistrationDetails(safeId: String, updateRegistrationDetails: UpdateRegistrationDetailsRequest)
-                               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[UpdateRegistrationResponse] = {
+                               (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[HttpResponse] = {
     val authLink = bcContext.user.authLink
     val postUrl = s"""$serviceUrl$authLink/$baseUri/$updateRegistrationDetailsURI/$safeId"""
     val jsonData = Json.toJson(updateRegistrationDetails)
     http.POST(postUrl, jsonData) map { response =>
       response.status match {
-        case OK => response.json.as[UpdateRegistrationResponse]
+        case OK => response
         case NOT_FOUND =>
           Logger.warn(s"[BusinessCustomerConnector][updateRegistrationDetails] - Not Found Exception ${updateRegistrationDetails.organisation.map(_.organisationName)}")
           throw new InternalServerException(s"${Messages("bc.connector.error.not-found")}  Exception ${response.body}")

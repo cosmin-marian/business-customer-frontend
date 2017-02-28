@@ -212,10 +212,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
   }
 
   "updateBusiness" must {
-    val nonUKResponse = UpdateRegistrationResponse(processingDate = "2015-01-01",
-      sapNumber = "SAP123123",
-      safeId = "SAFE123123",
-      agentReferenceNumber = Some("AREF123123"))
+    val successResponse = Json.parse( """{"processingDate": "2014-12-17T09:30:47Z"}""")
 
     val cachedReviewDetails = ReviewDetails(businessName = "ABC",
       businessType = Some("corporate body"),
@@ -228,7 +225,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
-      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
 
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
@@ -256,7 +253,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
 
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
-      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
       )
@@ -282,7 +279,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
     "save the response from the registration when we have no businessUniqueId or issuingInstitution" in {
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
-      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
       )
@@ -324,7 +321,7 @@ class BusinessRegistrationServiceSpec extends PlaySpec with OneServerPerSuite wi
     "throw exception when registration fails" in {
       implicit val hc = new HeaderCarrier(sessionId = None)
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(cachedReviewDetails)))
-      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future(nonUKResponse))
+      when(mockBusinessCustomerConnector.updateRegistrationDetails(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK, Some(successResponse))))
       val busRegData = BusinessRegistration(businessName = "testName",
         businessAddress = Address("line1", "line2", Some("line3"), Some("line4"), Some("postCode"), "country")
       )
