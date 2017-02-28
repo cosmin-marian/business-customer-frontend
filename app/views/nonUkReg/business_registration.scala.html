@@ -1,4 +1,4 @@
-@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, backLink: Option[String])(implicit request: Request[_], messages: Messages)
+@(businessRegistrationForm: Form[models.BusinessRegistration], service: String, displayDetails: models.BusinessRegistrationDisplayDetails, backLink: Option[String], isAgent: Boolean)(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -66,20 +66,23 @@
           '_id -> "businessAddress.line_4",
           '_showConstraints -> false)
 
-        @bcInput(businessRegistrationForm("businessAddress.postcode"),
-        '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
-        '_id -> "businessAddress.postcode",
-        '_inputClass -> "input--small",
-        '_showConstraints -> false)
+        @if(!isAgent) {
+          @bcInput(businessRegistrationForm("businessAddress.postcode"),
+          '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
+          '_id -> "businessAddress.postcode",
+          '_inputClass -> "input--small",
+          '_maxLength -> 10,
+          '_showConstraints -> false)
 
-        <details role="group">
-          <summary role="button" aria-controls="details-content-0" tabindex="0">
-            <span class="summary" id="email-risk-question" data-journey-click="ated-subscription:click:email-risk-question">@Messages("bc.non-uk-reg.postcode.help.question")</span>
-          </summary>
-          <div id="details-content-0" class="panel-indent font-xsmall">
-            <p id="email-risk-ans">@Html(Messages("bc.non-uk-reg.postcode.help.answer"))</p>
-          </div>
-        </details>
+          <details role="group">
+            <summary role="button" aria-controls="details-content-0" tabindex="0">
+              <span class="summary" id="email-risk-question" data-journey-click="ated-subscription:click:email-risk-question">@Messages("bc.non-uk-reg.postcode.help.question")</span>
+            </summary>
+            <div id="details-content-0" class="panel-indent font-xsmall">
+              <p id="email-risk-ans">@Html(Messages("bc.non-uk-reg.postcode.help.answer"))</p>
+            </div>
+          </details>
+        }
 
         @bcDropdown(businessRegistrationForm("businessAddress.country"),
           elementOptions = displayDetails.listOfIsoCode,

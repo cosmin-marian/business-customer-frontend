@@ -27,16 +27,16 @@ trait BusinessRegController extends BackLinkController {
 
   def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     currentBackLink.map(backLink =>
-        Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service), backLink))
+      Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
     )
   }
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, bcContext.user.isAgent).fold(
       formWithErrors => {
         currentBackLink.map(backLink =>
-          BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service), backLink))
+          BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
         )
       },
       registrationData => {

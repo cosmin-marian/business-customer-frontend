@@ -37,7 +37,8 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
               displayDetails(service, false),
               None,
               false,
-              getBackLink(service, None)))
+              getBackLink(service, None),
+              bcContext.user.isAgent))
           case _ =>
             Logger.warn(s"[UpdateNonUKBusinessRegistrationController][editAgent] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -55,7 +56,8 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
               displayDetails(service, true),
               redirectUrl,
               true,
-              getBackLink(service, redirectUrl)))
+              getBackLink(service, redirectUrl),
+              bcContext.user.isAgent))
           case _ =>
             Logger.warn(s"[UpdateNonUKBusinessRegistrationController][edit] - No registration details found to edit")
             throw new RuntimeException(Messages("bc.agent-service.error.no-registration-details"))
@@ -66,14 +68,15 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
 
   def update(service: String, redirectUrl : Option[String], isRegisterClient: Boolean) = AuthAction(service).async { implicit bcContext =>
 
-    BusinessRegistrationForms.validateCountryNonUK(businessRegistrationForm.bindFromRequest).fold(
+    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, bcContext.user.isAgent).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors,
           service,
           displayDetails(service, isRegisterClient),
           redirectUrl,
           isRegisterClient,
-          getBackLink(service, redirectUrl))))
+          getBackLink(service, redirectUrl),
+          bcContext.user.isAgent)))
       },
       registerData => {
         businessRegistrationService.getDetails.flatMap{
