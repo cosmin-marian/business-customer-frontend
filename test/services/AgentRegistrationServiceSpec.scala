@@ -72,9 +72,7 @@ class AgentRegistrationServiceSpec extends PlaySpec with OneServerPerSuite with 
         safeId = "safe123",
         isAGroup = false,
         directMatch = false,
-        agentReferenceNumber = Some("agent123"),
-        firstName = Some("Ted"),
-        lastName = Some("Something"))
+        agentReferenceNumber = Some("agent123"))
 
       implicit val hc: HeaderCarrier = HeaderCarrier()
       when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())).thenReturn(Future.successful(Some(returnedReviewDetails)))
