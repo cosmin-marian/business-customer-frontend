@@ -161,18 +161,32 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateCountryNonUK(registrationData: Form[BusinessRegistration]) = {
+  def validateCountryNonUKAndPostcode(registrationData: Form[BusinessRegistration], isAgent: Boolean) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
     } filterNot {
       _.isEmpty
     }
-    if (country.fold("")(x => x).matches(countryUK)) {
-      registrationData.withError(key = "businessAddress.country", message = Messages("bc.business-registration-error.non-uk"))
-    } else {
-      registrationData
+    val countryForm = {
+      if (country.fold("")(x => x).matches(countryUK)) {
+        registrationData.withError(key = "businessAddress.country", message = Messages("bc.business-registration-error.non-uk"))
+      } else {
+        registrationData
+      }
     }
 
+    val postCode = registrationData.data.get("businessAddress.postcode") map {
+      _.trim
+    } filterNot {
+      _.isEmpty
+    }
+
+    if (postCode.isEmpty && !isAgent) {
+      countryForm.withError(key = "businessAddress.postcode",
+        message = Messages("bc.business-registration-error.postcode"))
+    } else {
+      countryForm
+    }
   }
 
   val nrlQuestionForm = Form(

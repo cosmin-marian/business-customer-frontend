@@ -3,7 +3,8 @@
   displayDetails: models.BusinessRegistrationDisplayDetails,
   redirectUrl: Option[String],
   isRegisterClient: Boolean,
-  backLink: Option[String])(implicit request: Request[_], messages: Messages)
+  backLink: Option[String],
+  isAgent: Boolean)(implicit request: Request[_], messages: Messages)
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._
 @import views.html.helpers._
@@ -70,6 +71,15 @@
     '_labelClass -> "visuallyhidden",
     '_id -> "businessAddress.line_4",
     '_showConstraints -> false)
+
+    @if(!isAgent) {
+      @bcInput(businessRegistrationForm("businessAddress.postcode"),
+      '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
+      '_id -> "businessAddress.postcode",
+      '_inputClass -> "input--small",
+      '_maxLength -> 10,
+      '_showConstraints -> false)
+    }
 
     @bcDropdown(businessRegistrationForm("businessAddress.country"),
     elementOptions = displayDetails.listOfIsoCode,

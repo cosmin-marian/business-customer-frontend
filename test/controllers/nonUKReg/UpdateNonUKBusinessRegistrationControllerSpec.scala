@@ -207,7 +207,8 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
                        line2: String = "line-2",
                        line3: String = "",
                        line4: String = "",
-                       country: String = "FR") =
+                       country: String = "FR",
+                       postcode: String = "NE1 1EN") =
           Json.parse(
             s"""
                |{
@@ -217,7 +218,8 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
                |    "line_2": "$line2",
                |    "line_3": "$line3",
                |    "line_4": "$line4",
-               |    "country": "$country"
+               |    "country": "$country",
+               |    "postcode": "$postcode"
                |  }
                |}
           """.stripMargin)
