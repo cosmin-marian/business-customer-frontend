@@ -153,9 +153,10 @@ trait BusinessRegistrationService {
       )
     )
 
+    val updatedAddress = registerData.businessAddress
     ReviewDetails(businessName = registerData.businessName,
       businessType = Some(nonUKBusinessType),
-      businessAddress = registerData.businessAddress,
+      businessAddress = updatedAddress.copy(postcode = updatedAddress.postcode.map(_.toUpperCase)),
       sapNumber = sapNumber,
       safeId = safeId,
       isAGroup = isGroup,
