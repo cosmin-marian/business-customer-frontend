@@ -171,7 +171,7 @@ trait BusinessRegistrationService {
       addressLine2 = businessAddress.line_2,
       addressLine3 = businessAddress.line_3,
       addressLine4 = businessAddress.line_4,
-      postalCode = businessAddress.postcode,
+      postalCode = businessAddress.postcode.map(_.toUpperCase),
       countryCode = businessAddress.country)
   }
 
