@@ -14,6 +14,7 @@
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@import utils.BCUtils
 
 @linkElement = {
 <link rel="stylesheet" href='@controllers.routes.AssetsController.at("stylesheets/main.css")'/>
@@ -50,7 +51,7 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = delegatedService.map(Messages("bc.nav-title", _)),
+      navTitle = BCUtils.getNavTitle(delegatedService),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
