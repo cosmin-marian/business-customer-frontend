@@ -108,9 +108,9 @@ bc.business-verification-error.invalidCOUTR=The Corporation Tax Unique Taxpayer 
 bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Unique Taxpayer Reference is not valid.
 bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
 bc.business-registration-error.hasBusinessUniqueId.not-selected=You must select one option
-bc.business-registration-error.businessUniqueId.select=You must enter a Business Unique Identifier.
-bc.business-registration-error.issuingCountry.select=You must enter a country that issued the business unique identifier.
-bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the business unique identifier.
+bc.business-registration-error.businessUniqueId.select=You must enter an overseas company registration number
+bc.business-registration-error.issuingCountry.select=You must enter a country that issued the overseas company registration number
+bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the overseas company registration number
 bc.business-registration-error.duplicate.identifier.header = Somebody has already registered from your agency.
 bc.business-registration-error.duplicate.identifier.title = Somebody has already registered from your agency.
 bc.business-registration-error.duplicate.identifier.message = If you require access you need to <a href="https://myaccount.gateway.gov.uk/Pages/Credentials/Admin/List.aspx" target="_blank">add administrators to your account in Government Gateway </a>
@@ -152,7 +152,7 @@ bc.business-registration.postcode = Postcode
 bc.business-registration.country = Country
 bc.business-registration.issuingCountry = Country of issue
 bc.business-registration.country.select = please select one country
-bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
+bc.business-registration-error.general.hasBusinessUniqueId = There is a problem with the overseas company registration number
 bc.business-registration-error.hasBusinessUniqueId.not-selected = You must select one option
 bc.business-registration.hasBusinessUniqueId = Do you have an overseas company registration number?
 bc.business-registration.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
@@ -178,9 +178,9 @@ bc.business-registration-error.line_3.length = Address line 3 cannot be more tha
 bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
 bc.business-registration-error.line_4.length = Address line 4 cannot be more than {0} characters.
 bc.business-registration-error.postcode.length = The postcode cannot be more than {0} characters.
-bc.business-registration-error.businessUniqueId.length = Business Unique Identifier cannot be more than {0} characters.
+bc.business-registration-error.businessUniqueId.length = The overseas company registration number cannot be more than {0} characters.
 bc.business-registration-error.utr.length = The Unique Taxpayer Reference cannot be more than {0} characters.
-bc.business-registration-error.issuingInstitution.length = The institution that issued the Business Unique Identifier cannot be more than {0} characters.
+bc.business-registration-error.issuingInstitution.length = The institution that issued the overseas company registration number cannot be more than {0} characters.
 bc.business-registration-error.summaryHeader = There is a problem with the form
 bc.business-registration-error.non-uk = You cannot select United Kingdom when entering an overseas address
 
@@ -188,7 +188,7 @@ bc.business-registration-error.non-uk = You cannot select United Kingdom when en
 
 bc.business-registration-error.postcode = You must enter a postcode.
 bc.business-registration-error.postcode.invalid = The postcode is invalid
-bc.business-registration-error.businessUniqueId = You must enter a Business Unique Identifier.
+bc.business-registration-error.businessUniqueId = You must enter an overseas company registration number
 
 
 ## Errors
@@ -216,8 +216,8 @@ bc.business-verification-error.general.businessAddress.line_1  = There is a prob
 bc.business-verification-error.general.businessAddress.line_2  = There is a problem with address line 2.
 bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3.
 bc.business-registration-error.general.businessAddress.line_4 = There is a problem with address line 4.
-bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postcode
-bc.business-registration-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
+bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postal code
+bc.business-registration-error.general.businessUniqueId = There is a problem with the overseas company registration number
 bc.business-registration-error.general.issuingInstitution = There is a problem with the institution of issue.
 bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
 bc.business-verification-error.general.business-type-sop-form =Your business details have not been found. Check that your details are correct and try again.
