@@ -101,16 +101,16 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
 
           registerWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", Some(businessReg), reviewDetails) { result =>
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("You must enter a country that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter an institution that issued the business unique identifier.")
-            contentAsString(result) must include("You must enter a Business Unique Identifier.")
+            contentAsString(result) must include("You must enter a country that issued the overseas company registration number")
+            contentAsString(result) must include("You must enter an institution that issued the overseas company registration number")
+            contentAsString(result) must include("You must enter an overseas company registration number")
           }
         }
 
         // inputJson , test message, error message
         val formValidationInputDataSet: Seq[(InputJson, TestMessage, ErrorMessage)] = Seq(
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "Business Unique Identifier cannot be more than 60 characters."),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the Business Unique Identifier cannot be more than 40 characters."),
+          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "The overseas company registration number cannot be more than 60 characters."),
+          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the overseas company registration number cannot be more than 40 characters."),
           (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 
