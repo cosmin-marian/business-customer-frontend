@@ -209,7 +209,7 @@ bc.business-registration-error.general.businessName = There is a problem with th
 bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1.
 bc.business-registration-error.general.businessAddress.line_2  = There is a problem with address line 2.
 bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field.
-bc.business-registration-error.general.businessAddress.postcode = There is a problem with the postal code field.
+bc.business-registration-error.general.businessAddress.postcode = There is a problem with the postal code.
 
 
 bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1.
@@ -363,13 +363,13 @@ bc.non-uk-reg-error.general.businessAddress.line_2 = There is a problem with the
 bc.non-uk-reg-error.general.businessAddress.line_3 = There is a problem with the address line 3.
 bc.non-uk-reg-error.general.businessAddress.line_4 = There is a problem with the address line 4.
 bc.non-uk-reg-error.general.businessAddress.country = There is a problem with the country field.
-bc.non-uk-reg-error.general.businessAddress.postcode = There is a problem with the postal code field.
+bc.non-uk-reg-error.general.businessAddress.postcode = There is a problem with the postal code.
 bc.non-uk-reg.issuingCountry = Country of issue
 bc.non-uk-reg.country.select = please select one country
 bc.non-uk-reg-error.general.businessUniqueId = There is a problem with the Business Unique Identifier
 bc.non-uk-reg-error.general.issuingCountry = There is a problem with the country of issue
 bc.non-uk-reg-error.general.issuingInstitution = There is a problem with the institution of issue.
-bc.non-uk-reg-error.general.hasBusinessUniqueId = There is a problem with the Business Unique Identifier question
+bc.non-uk-reg-error.general.hasBusinessUniqueId = There is a problem with the overseas company registration number
 bc.non-uk-reg-error.hasBusinessUniqueId.not-selected = You must select one option
 bc.non-uk-reg.hasBusinessUniqueId = Do they have an overseas company registration number?
 bc.non-uk-reg.hasBusinessUniqueId.help.question = What is an overseas company registration number?
