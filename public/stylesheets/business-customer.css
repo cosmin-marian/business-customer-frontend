@@ -307,3 +307,20 @@ html.noScroll {
 
 .confirmation-notice {
 }
+
+/* error red */
+.error-notification {
+    color: #B10E1E;
+}
+
+.validation-summary a:link {
+    color: #B10E1E;
+}
+
+.validation-summary {
+    border: 3px solid #B10E1E;
+}
+
+.form-field--error {
+    border-left: 3px solid #B10E1E;
+}
