@@ -1,6 +1,6 @@
 package controllers.nonUKReg
 
-import config.FrontendAuthConnector
+import config.{ApplicationConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
@@ -23,7 +23,7 @@ object UpdateNonUKBusinessRegistrationController extends UpdateNonUKBusinessRegi
   // $COVERAGE-ON$
 }
 
-trait UpdateNonUKBusinessRegistrationController extends BaseController with RunMode {
+trait UpdateNonUKBusinessRegistrationController extends BaseController with RunMode  {
 
   def businessRegistrationService: BusinessRegistrationService
 
@@ -67,8 +67,7 @@ trait UpdateNonUKBusinessRegistrationController extends BaseController with RunM
   }
 
   def update(service: String, redirectUrl : Option[String], isRegisterClient: Boolean) = AuthAction(service).async { implicit bcContext =>
-
-    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, bcContext.user.isAgent).fold(
+    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, service, bcContext.user.isAgent).fold(
       formWithErrors => {
         Future.successful(BadRequest(views.html.nonUkReg.update_business_registration(formWithErrors,
           service,

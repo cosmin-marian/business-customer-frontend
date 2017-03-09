@@ -1,6 +1,6 @@
 package controllers.nonUKReg
 
-import config.FrontendAuthConnector
+import config.{ApplicationConfig, FrontendAuthConnector}
 import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import controllers.{BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
@@ -33,7 +33,7 @@ trait BusinessRegController extends BackLinkController {
 
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, bcContext.user.isAgent).fold(
+    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, service, bcContext.user.isAgent).fold(
       formWithErrors => {
         currentBackLink.map(backLink =>
           BadRequest(views.html.nonUkReg.business_registration(formWithErrors, service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
