@@ -49,7 +49,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
   }
 
   def submit(service: String) = AuthAction(service).async { implicit bcContext =>
-    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, true).fold(
+    BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, service, true).fold(
       formWithErrors => {
         currentBackLink.map(backLink =>
           BadRequest(views.html.nonUkReg.nonuk_business_registration(formWithErrors, service, displayDetails, backLink))

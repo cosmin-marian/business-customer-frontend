@@ -45,7 +45,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
   val serviceName: String = "ATED"
 
-  "BusinessRegController" must {
+  "AgentRegisterNonUKClientController" must {
 
     "respond to /register" in {
       val result = route(FakeRequest(GET, s"/business-customer/register/$serviceName/NUK")).get

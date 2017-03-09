@@ -1,5 +1,6 @@
 package forms
 
+import config.ApplicationConfig
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
@@ -161,7 +162,7 @@ object BusinessRegistrationForms {
     }
   }
 
-  def validateCountryNonUKAndPostcode(registrationData: Form[BusinessRegistration], isAgent: Boolean) = {
+  def validateCountryNonUKAndPostcode(registrationData: Form[BusinessRegistration], service: String, isAgent: Boolean) = {
     val country = registrationData.data.get("businessAddress.country") map {
       _.trim
     } filterNot {
@@ -180,8 +181,9 @@ object BusinessRegistrationForms {
     } filterNot {
       _.isEmpty
     }
-
-    if (postCode.isEmpty && !isAgent) {
+    
+    val validatePostCode = ApplicationConfig.validateNonUkClientPostCode(service) && !isAgent
+    if (postCode.isEmpty && validatePostCode) {
       countryForm.withError(key = "businessAddress.postcode",
         message = Messages("bc.business-registration-error.postcode"))
     } else {
