@@ -10,7 +10,6 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait BackLinkController extends BaseController {
-
   val controllerId: String
   val backLinkCacheConnector: BackLinkCacheConnector
 
@@ -22,8 +21,12 @@ trait BackLinkController extends BaseController {
     backLinkCacheConnector.fetchAndGetBackLink(controllerId)
   }
 
-  def RedirectToExernal(redirectCall: String, backCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) = {
-    Future.successful(Redirect(redirectCall))
+  def RedirectToExernal(redirectCall: String, returnUrl: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier) = {
+    for {
+      cache <- setBackLink(ExternalLinkController.controllerId, returnUrl)
+    } yield{
+      Redirect(redirectCall)
+    }
   }
 
   def ForwardBackLinkToNextPage(nextPageId: String, redirectCall: Call)(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {

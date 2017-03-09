@@ -50,7 +50,7 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
     if (bcContext.user.isAgent) {
       agentRegistrationService.enrolAgent(serviceName).flatMap { response =>
         response.status match {
-          case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), controllers.routes.ReviewDetailsController.businessDetails(serviceName))
+          case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), Some(controllers.routes.ReviewDetailsController.businessDetails(serviceName).url))
           case BAD_GATEWAY =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
             Future.successful(Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),
@@ -65,7 +65,7 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
     } else {
       val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${serviceName.toLowerCase}.serviceRedirectUrl")
       serviceRedirectUrl match {
-        case Some(serviceUrl) => RedirectToExernal(serviceUrl, controllers.routes.ReviewDetailsController.businessDetails(serviceName))
+        case Some(serviceUrl) => RedirectToExernal(serviceUrl, Some(controllers.routes.ReviewDetailsController.businessDetails(serviceName).url))
         case _ =>
           Logger.warn(s"[ReviewDetailsController][continue] - No Service config found for = $serviceName")
           throw new RuntimeException(Messages("bc.business-review.error.no-service", serviceName, serviceName.toLowerCase))

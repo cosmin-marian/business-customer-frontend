@@ -176,7 +176,6 @@ class BusinessRegUKControllerSpec extends PlaySpec with OneServerPerSuite with M
           val inputJson = createJson()
           when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
-            println(s"document = ${contentAsString(result)}")
             status(result) must be(SEE_OTHER)
             redirectLocation(result).get must include(s"/business-customer/review-details/$service")
           }
