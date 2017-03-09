@@ -54,7 +54,7 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
                 throw new RuntimeException(s"[OverseasCompanyRegController][send] - service :$service. Error : No Cached BusinessRegistration")
             }
           redirectPage <- redirectUrl match {
-            case Some(x) => RedirectToExernal(x, controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl))
+            case Some(x) => RedirectToExernal(x, Some(controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, addClient, redirectUrl).url))
             case None => RedirectWithBackLink(
               ReviewDetailsController.controllerId,
               controllers.routes.ReviewDetailsController.businessDetails(service),
