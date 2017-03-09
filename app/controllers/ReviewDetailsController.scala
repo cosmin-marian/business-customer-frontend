@@ -50,7 +50,7 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
     if (bcContext.user.isAgent) {
       agentRegistrationService.enrolAgent(serviceName).flatMap { response =>
         response.status match {
-          case OK => RedirectToExternal(ExternalUrls.agentConfirmationPath(serviceName), Some(controllers.routes.ReviewDetailsController.businessDetails(serviceName).url))
+          case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), Some(controllers.routes.ReviewDetailsController.businessDetails(serviceName).url))
           case BAD_GATEWAY =>
             Logger.warn(s"[ReviewDetailsController][continue] - The service HMRC-AGENT-AGENT requires unique identifiers")
             Future.successful(Ok(views.html.global_error(Messages("bc.business-registration-error.duplicate.identifier.header"),

@@ -263,7 +263,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAuthorisedUser(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
-    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)
   }
@@ -271,7 +271,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithAuthorisedAgent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     val enrolSuccessResponse = EnrolResponse(serviceName = "ATED", state = "NotYetActivated", identifiers = List(Identifier("ATED", "Ated_Ref_No")))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
@@ -281,7 +281,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
   private def continueWithDuplicategent(service: String)(test: Future[Result] => Any) {
     val userId = s"user-${UUID.randomUUID}"
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
-    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     when(mockAgentRegistrationService.enrolAgent(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(BAD_GATEWAY)))
     val result = testReviewDetailsController(nonDirectMatchReviewDetails).continue(service).apply(fakeRequestWithSession(userId))
     test(result)

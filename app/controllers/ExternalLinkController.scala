@@ -26,7 +26,7 @@ trait ExternalLinkController extends BackLinkController with RunMode {
     currentBackLink.map(backLink =>
       backLink match {
         case Some(x) => Redirect(x)
-        case None => throw new RuntimeException("No Back Link found")
+        case None => throw new RuntimeException(s"[ExternalLinkController][backLink] No Back Link found. Service: $serviceName")
       }
     )
   }
