@@ -290,6 +290,37 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
           }
         }
 
+        "fail if we are a client for ATED and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
+            status(result) must be(BAD_REQUEST)
+          }
+        }
+
+        "pass if we are a client for AWRS and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson), "AWRS", None) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
+
+        "pass if we are an agent for ATED and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          submitWithAuthorisedAgent(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
+
+        "pass if we are an agent for AWRS and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          submitWithAuthorisedAgent(FakeRequest().withJsonBody(inputJson), "ATED", None) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
       }
     }
   }
@@ -416,6 +447,38 @@ class UpdateNonUKBusinessRegistrationControllerSpec extends PlaySpec with OneSer
 
     when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
+
+    val result = TestNonUKController.update(service, redirectUrl, true).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def submitWithAuthorisedAgent(fakeRequest: FakeRequest[AnyContentAsJson], service: String = service, redirectUrl: Option[String] = Some("http://"), hasCache: Boolean = true)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
+
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val busRegData = BusinessRegistration(businessName = "testName", businessAddress = address)
+    val overseasCompany = OverseasCompany(
+      businessUniqueId = Some(s"BUID-${UUID.randomUUID}"),
+      hasBusinessUniqueId = Some(true),
+      issuingInstitution = Some("issuingInstitution"),
+      issuingCountry = None
+    )
+    if (hasCache)
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(("NUK", busRegData, overseasCompany))))
+    else
+      when(mockBusinessRegistrationService.getDetails()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
+    val successModel = ReviewDetails("ACME", Some("Unincorporated body"), address, "sap123", "safe123", isAGroup = false, directMatch = false, Some("agent123"))
+
+    when(mockBusinessRegistrationService.updateRegisterBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())
+    (Matchers.any(), Matchers.any())).thenReturn(Future.successful(successModel))
 
     val result = TestNonUKController.update(service, redirectUrl, true).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

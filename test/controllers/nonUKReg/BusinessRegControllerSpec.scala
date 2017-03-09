@@ -2,6 +2,7 @@ package controllers.nonUKReg
 
 import java.util.UUID
 
+import config.ApplicationConfig
 import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import models.{BusinessRegistration, Address, ReviewDetails}
 import org.jsoup.Jsoup
@@ -194,6 +195,42 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           }
         }
 
+
+        "fail if we are a client for ATED and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+          submitWithAuthorisedUserSuccess(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
+            status(result) must be(BAD_REQUEST)
+          }
+        }
+
+        "pass if we are a client for AWRS and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+          submitWithAuthorisedUserSuccess("AWRS", FakeRequest().withJsonBody(inputJson)) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
+
+        "pass if we are an agent for ATED and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+          submitWithAuthorisedAgent(serviceName, FakeRequest().withJsonBody(inputJson)) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
+
+        "pass if we are an agent for AWRS and have no PostCode" in {
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+          val inputJson = createJson(postcode = "")
+          when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+          submitWithAuthorisedAgent("AWRS", FakeRequest().withJsonBody(inputJson)) { result =>
+            status(result) must be(SEE_OTHER)
+          }
+        }
       }
     }
   }
@@ -261,6 +298,25 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val userId = s"user-${UUID.randomUUID}"
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val successModel = BusinessRegistration("ACME", address)
+
+    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+
+    val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
+  def submitWithAuthorisedAgent(service: String, fakeRequest: FakeRequest[AnyContentAsJson], businessType: String = "NUK")(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+
+    builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)

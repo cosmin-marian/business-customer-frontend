@@ -12,13 +12,12 @@ trait ApplicationConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
-  val verificationPageBackLink: String
-  val verificationPageAgentBackLink: String
   val defaultTimeoutSeconds: Int
   val timeoutCountdown: Int
   val logoutUrl: String
 
   def serviceSignOutUrl(service: Option[String]): String
+  def validateNonUkClientPostCode(service: String): Boolean
 }
 
 object ApplicationConfig extends ApplicationConfig with ServicesConfig {
@@ -44,8 +43,6 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
   override lazy val analyticsHost: String = configuration.getString(s"govuk-tax.$env.google-analytics.host").getOrElse("auto")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  override lazy val verificationPageBackLink = getConfString("ated.serviceReturnUrl", "/ated-subscription/appoint-agent")
-  override lazy val verificationPageAgentBackLink = getConfString("ated.serviceAgentReturnUrl", "/ated-subscription/start-agent-subscription")
   override lazy val defaultTimeoutSeconds: Int = loadConfig("defaultTimeoutSeconds").toInt
   override lazy val timeoutCountdown: Int = loadConfig("timeoutCountdown").toInt
   override lazy val logoutUrl = s"""${configuration.getString(s"govuk-tax.$env.logout.url").getOrElse("/gg/sign-out")}"""
@@ -56,5 +53,9 @@ object ApplicationConfig extends ApplicationConfig with ServicesConfig {
         configuration.getString(s"govuk-tax.$env.delegated-service.${delegatedService.toLowerCase}.sign-out-url").getOrElse(logoutUrl)
       case _ => logoutUrl
     }
+  }
+
+  override def validateNonUkClientPostCode(service: String) = {
+    configuration.getBoolean(s"govuk-tax.$env.services.${service.toLowerCase.trim}.validateNonUkClientPostCode").getOrElse(false)
   }
 }
