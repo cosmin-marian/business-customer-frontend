@@ -21,11 +21,8 @@
   }
   @bcErrorSummary(soleTraderForm, "bc.business-verification-error.general")
 
-  @if(!isAgent && service.toUpperCase == "ATED"){
-    <span class="lede" id="business-type-paragraph-nrl"> @Messages("bc.business-verification-lede.nrl") </span>
-  } else {
-    <span class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </span>
-  }
+  <span class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </span>
+
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 

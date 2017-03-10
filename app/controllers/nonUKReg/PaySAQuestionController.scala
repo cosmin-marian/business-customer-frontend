@@ -34,7 +34,7 @@ trait PaySAQuestionController extends BackLinkController {
         val paysSa = formData.paySA.getOrElse(false)
         if (paysSa)
           RedirectWithBackLink(BusinessVerificationController.controllerId,
-            controllers.routes.BusinessVerificationController.businessForm(service, "SOP"),
+            controllers.routes.BusinessVerificationController.businessForm(service, "NRL"),
             Some(controllers.nonUKReg.routes.PaySAQuestionController.view(service).url)
           )
         else
