@@ -74,6 +74,28 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       |}
     """.stripMargin)
 
+  val matchSuccessResponseNRL = Json.parse(
+    """
+      |{
+      |  "businessName": "ACME",
+      |  "businessType": "Limited company",
+      |  "businessAddress": {
+      |    "line_1": "23 High Street",
+      |    "line_2": "Park View",
+      |    "line_3": "Gloucester",
+      |    "line_4": "Gloucestershire",
+      |    "postcode": "NE98 1ZZ",
+      |    "country": "UK"
+      |  },
+      |  "sapNumber": "sap123",
+      |  "safeId": "safe123",
+      |  "isAGroup": false,
+      |  "directMatch" : false,
+      |  "agentReferenceNumber": "agent123",
+      |  "isBusinessDetailsEditable": false
+      |}
+    """.stripMargin)
+
   val matchSuccessResponseSOP = Json.parse(
     """
       |{
@@ -186,6 +208,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
     type ErrorMessage = String
     type BusinessType = String
 
+    def nrlUtrRequest(utr: String = matchUtr.utr, businessName: String = "ACME") = request.withFormUrlEncodedBody("saUTR" -> s"$utr", "businessName" -> s"$businessName")
     def ctUtrRequest(ct: String = matchUtr.utr, businessName: String = "ACME") = request.withFormUrlEncodedBody("cotaxUTR" -> s"$ct", "businessName" -> s"$businessName")
     def psaUtrRequest(psa: String = matchUtr.utr, businessName: String = "ACME") = request.withFormUrlEncodedBody("psaUTR" -> s"$psa", "businessName" -> s"$businessName")
     def saUtrRequest(sa: String = matchUtr.utr, firstName: String = "A", lastName: String = "B") = request.withFormUrlEncodedBody("saUTR" -> s"$sa", "firstName" -> s"$firstName", "lastName" -> s"$lastName")
@@ -210,6 +233,15 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
             ("CO Tax UTR must be 10 digits", "LTD", ctUtrRequest(ct = "1" * 11), "Corporation Tax Unique Taxpayer Reference must be 10 digits"),
             ("CO Tax UTR must contain only digits", "LTD", ctUtrRequest(ct = "12345678aa"), "Corporation Tax Unique Taxpayer Reference must be 10 digits"),
             ("CO Tax UTR must be valid", "LTD", ctUtrRequest(ct = "1234567890"), "The Corporation Tax Unique Taxpayer Reference is not valid.")
+          )
+          ),
+        ("if the selection is None Resident Landlord :",
+          Seq(
+            ("Business Name must not be empty", "NRL", nrlUtrRequest(businessName = ""), "You must enter a registered company name."),
+            ("SA UTR must not be empty", "NRL", nrlUtrRequest(utr = ""), "You must enter a Self Assessment Unique Taxpayer Reference."),
+            ("SA UTR must be 10 digits", "NRL", nrlUtrRequest(utr = "12345678901"), "Self Assessment Unique Taxpayer Reference must be 10 digits"),
+            ("SA UTR must contain only digits", "NRL", nrlUtrRequest(utr = "12345678aa"), "Self Assessment Unique Taxpayer Reference must be 10 digits"),
+            ("SA UTR must be valid", "NRL", nrlUtrRequest(utr = "1234567890"), "The Self Assessment Unique Taxpayer Reference is not valid.")
           )
           ),
         ("if the selection is Limited Liability Partnership : ",
@@ -359,6 +391,26 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       }
     }
 
+    "if the None Resident Landlord is successfully validated:" must {
+      "for successful match, status should be 303 and  user should be redirected to review details page" in {
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+        submitWithAuthorisedUserSuccessOrg("NRL", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "saUTR" -> s"$matchUtr")) {
+          result =>
+            status(result) must be(SEE_OTHER)
+            redirectLocation(result).get must include(s"/business-customer/review-details/$service")
+        }
+      }
+      "for unsuccessful match, status should be BadRequest and  user should be on same page with validation error" in {
+        submitWithAuthorisedUserFailure("NRL", request.withFormUrlEncodedBody("businessName" -> "Smith & Co", "saUTR" -> s"$noMatchUtr")) {
+          result =>
+            status(result) must be(BAD_REQUEST)
+            val document = Jsoup.parse(contentAsString(result))
+            document.getElementById("business-type-nrl-form-error").text() must be("Your business details have not been found. Check that your details are correct and try again.")
+        }
+      }
+    }
+
+
     "if the Unincorporated body form  is successfully validated:" must {
       "for successful match, status should be 303 and  user should be redirected to review details page" in {
         when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
@@ -428,6 +480,7 @@ class BusinessVerificationValidationSpec extends PlaySpec with OneServerPerSuite
       case "UIB" => matchSuccessResponseUIB
       case "LLP" => matchSuccessResponseLLP
       case "OBP" => matchSuccessResponseOBP
+      case "NRL" => matchSuccessResponseNRL
       case "LTD" => matchSuccessResponseLTD
       case "LP" => matchSuccessResponseLP
       case "UT" => matchSuccessResponseLTD

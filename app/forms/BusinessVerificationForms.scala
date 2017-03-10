@@ -15,6 +15,8 @@ case class SoleTraderMatch(firstName: String, lastName: String, saUTR: String)
 
 case class LimitedCompanyMatch(businessName: String, cotaxUTR: String)
 
+case class NonResidentLandlordMatch(businessName: String, saUTR: String)
+
 case class UnincorporatedMatch(businessName: String, cotaxUTR: String)
 
 case class OrdinaryBusinessPartnershipMatch(businessName: String, psaUTR: String)
@@ -31,7 +33,8 @@ case class BusinessDetails(businessType: String,
                            uibCompany: Option[UnincorporatedMatch],
                            obpCompany: Option[OrdinaryBusinessPartnershipMatch],
                            llpCompany: Option[LimitedLiabilityPartnershipMatch],
-                           lpCompany: Option[LimitedPartnershipMatch])
+                           lpCompany: Option[LimitedPartnershipMatch],
+                           nrlCompany: Option[NonResidentLandlordMatch])
 
 
 object SoleTraderMatch {
@@ -40,6 +43,10 @@ object SoleTraderMatch {
 
 object LimitedCompanyMatch {
   implicit val formats = Json.format[LimitedCompanyMatch]
+}
+
+object NonResidentLandlordMatch {
+  implicit val formats = Json.format[NonResidentLandlordMatch]
 }
 
 object UnincorporatedMatch {
@@ -135,6 +142,22 @@ object BusinessVerificationForms {
         trimmedString.isEmpty || (validateUTR(Option(trimmedString)) || !trimmedString.matches("""^[0-9]{10}$"""))
       })
   )(LimitedCompanyMatch.apply)(LimitedCompanyMatch.unapply))
+
+  val nonResidentLandlordForm = Form(mapping(
+    "businessName" -> text
+      .verifying(Messages("bc.business-verification-error.businessName"), x => x.trim.length > length0)
+      .verifying(Messages("bc.business-verification-error.registeredName.length"), x => x.isEmpty || (x.nonEmpty && x.length <= length105)),
+    "saUTR" -> text
+      .verifying(Messages("bc.business-verification-error.sautr"), x => x.replaceAll(" ", "").length > length0)
+      .verifying(Messages("bc.business-verification-error.sautr.length"), x => {
+        val trimmedString = x.replaceAll(" ", "")
+        trimmedString.isEmpty || (trimmedString.nonEmpty && trimmedString.matches("""^[0-9]{10}$"""))}
+      )
+      .verifying(Messages("bc.business-verification-error.invalidSAUTR"), x => {
+        val trimmedString = x.replaceAll(" ", "")
+        trimmedString.isEmpty || (validateUTR(Option(trimmedString)) || !trimmedString.matches("""^[0-9]{10}$"""))
+      })
+  )(NonResidentLandlordMatch.apply)(NonResidentLandlordMatch.unapply))
 
   val unincorporatedBodyForm = Form(mapping(
     "businessName" -> text

@@ -76,7 +76,7 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
         val fakeRequest = FakeRequest().withJsonBody(Json.parse("""{"paySA": "true"}"""))
         continueWithAuthorisedClient(fakeRequest, service) { result =>
           status(result) must be(SEE_OTHER)
-          redirectLocation(result) must be(Some(s"/business-customer/business-verification/$service/businessForm/SOP"))
+          redirectLocation(result) must be(Some(s"/business-customer/business-verification/$service/businessForm/NRL"))
 
         }
       }

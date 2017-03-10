@@ -205,25 +205,6 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
 
-      "add additional form fields to the screen for entry for ATED" in {
-        businessLookupWithAuthorisedUser("SOP", "ATED") { result =>
-          status(result) must be(OK)
-
-          val document = Jsoup.parse(contentAsString(result))
-          document.getElementById("business-verification-text").text() must be("ATED registration")
-          document.getElementById("business-type-header").text() must be("What are your Self Assessment details?")
-          document.getElementById("business-type-paragraph-nrl").text() must be("As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.")
-          document.getElementById("firstName_field").text() must be("First name")
-          document.getElementById("lastName_field").text() must be("Last name")
-          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Taxpayer Reference (UTR)")
-          document.getElementById("utr-help-question").text() must include("Where to find your UTR")
-          document.getElementById("utr-help-questionAnswer").text() must include("It is issued by HMRC when you register your business or for Self Assessment. Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10. Your accountant or tax manager would normally have your UTR.")
-          document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'.")
-          document.getElementById("saUTR").attr("type") must be("text")
-          document.getElementById("submit").text() must include("Continue")
-
-        }
-      }
       "add additional form fields to the screen for entry" in {
         businessLookupWithAuthorisedUser("SOP", "AWRS") { result =>
           status(result) must be(OK)
@@ -263,6 +244,85 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
         }
       }
     }
+
+    "when selecting None Resident Landord option" must {
+
+      "redirect to next screen to allow additional form fields to be entered" in {
+        continueWithAuthorisedUserJson("NRL", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "fail with a bad request when NRL is selected for an Sa user" in {
+        continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse(
+          """
+            |{
+            |  "businessType": "NRL",
+            |  "isSaAccount": "true",
+            |  "isOrgAccount": "false"
+            |}
+          """.stripMargin))) { result =>
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("You are logged in as an individual with your Government Gateway ID. You cannot select Limited company/Partnership as your business type. You need to have an organisation Government Gateway ID.")
+        }
+      }
+
+      "redirect to next screen to allow additional form fields to be entered when user has both Sa and Org and selects LTD" in {
+        continueWithAuthorisedSaOrgUserJson("LTD", FakeRequest().withJsonBody(Json.parse(
+          """
+            |{
+            |  "businessType": "NRL",
+            |  "isSaAccount": "true",
+            |  "isOrgAccount":"true"
+            |}
+          """.stripMargin))) { result =>
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result).get must include("/business-verification/ATED/businessForm")
+        }
+      }
+
+      "display the correct fields for a client" in {
+        businessLookupWithAuthorisedUser("NRL", "ATED") { result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("business-type-header").text() must be("What are your Self Assessment details?")
+          document.getElementById("business-type-paragraph-nrl").text() must be("As a non-resident landlord you pay tax through Self Assessment. Enter your Self Assessment details and we will attempt to match them against information we currently hold.")
+          document.getElementById("businessName_field").text() must include("Registered company name")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
+          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Taxpayer Reference (UTR)")
+          document.getElementById("utr-help-question").text() must include("Where to find your UTR")
+          document.getElementById("utr-help-questionAnswer").text() must include("It is issued by HMRC when you register your business or for Self Assessment. Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10. Your accountant or tax manager would normally have your UTR.")
+          document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'.")
+          document.getElementById("saUTR").attr("type") must be("text")
+          document.getElementById("submit").text() must include("Continue")
+
+        }
+      }
+
+      "display correct heading for AGENT selecting None Resident Landlord" in {
+        businessLookupWithAuthorisedAgent("NRL") { result =>
+          status(result) must be(OK)
+
+          val document = Jsoup.parse(contentAsString(result))
+          document.getElementById("business-verification-agent-text").text() must be("ATED agency set up")
+          document.getElementById("business-type-agent-header").text() must be("What are your agency details?")
+          document.getElementById("business-type-paragraph").text() must be("We will attempt to match your details against information we currently hold.")
+          document.getElementById("businessName_field").text() must include("Registered company name")
+          document.getElementById("businessName_hint").text() must be("This is the registered name on your incorporation certificate.")
+          document.getElementById("saUTR_field").text() must include("Self Assessment Unique Taxpayer Reference (UTR)")
+          document.getElementById("utr-help-question").text() must include("Where to find your UTR")
+          document.getElementById("utr-help-questionAnswer").text() must include("It is issued by HMRC when you register your business or for Self Assessment. Your UTR number is made up of 10 or 13 digits. If it is 13 digits only enter the last 10. Your accountant or tax manager would normally have your UTR.")
+          document.getElementById("saUTR_hint").text() must be("It can usually be found in the header of any letter issued by HMRC next to headings such as 'Tax Reference', 'UTR' or 'Official Use'.")
+          document.getElementById("saUTR").attr("type") must be("text")
+          document.getElementById("submit").text() must include("Continue")
+
+        }
+      }
+    }
+
 
     "when selecting Limited Company option" must {
 

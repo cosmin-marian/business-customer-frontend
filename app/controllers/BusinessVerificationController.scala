@@ -64,6 +64,8 @@ trait BusinessVerificationController extends BackLinkController {
             Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "LP")))
           case Some("UT") =>
             Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "UT")))
+          case Some("NRL") =>
+            Future.successful(Redirect(controllers.routes.BusinessVerificationController.businessForm(service, "NRL")))
           case _ =>
             RedirectWithBackLink(HomeController.controllerId, controllers.routes.HomeController.homePage(service), returnCall)
         }
@@ -81,6 +83,7 @@ trait BusinessVerificationController extends BackLinkController {
         case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
         case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
         case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "NRL" => Ok(views.html.business_lookup_NRL(nonResidentLandlordForm, bcContext.user.isAgent, service, businessType, backLink))
       }
   }
 
@@ -94,6 +97,7 @@ trait BusinessVerificationController extends BackLinkController {
       case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service, backLink)
       case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
       case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
+      case "NRL" => nrlFormHandling(nonResidentLandlordForm, businessType, service, backLink)
     }
   }
 
@@ -248,4 +252,29 @@ trait BusinessVerificationController extends BackLinkController {
     )
   }
 
+  private def nrlFormHandling(nrlForm: Form[NonResidentLandlordMatch], businessType: String,
+                              service: String, backLink: Option[String])(implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[Result] = {
+
+    nrlForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.business_lookup_NRL(formWithErrors, bcContext.user.isAgent, service, businessType, backLink))),
+      nrlFormData => {
+        val organisation = Organisation(nrlFormData.businessName, CorporateBody)
+        businessMatchingService.matchBusinessWithOrganisationName(isAnAgent = bcContext.user.isAgent,
+          organisation = organisation, utr = nrlFormData.saUTR, service = service) flatMap { returnedResponse =>
+          val validatedReviewDetails = returnedResponse.validate[ReviewDetails].asOpt
+          validatedReviewDetails match {
+            case Some(reviewDetailsValidated) =>
+              RedirectWithBackLink(ReviewDetailsController.controllerId,
+                controllers.routes.ReviewDetailsController.businessDetails(service),
+                Some(controllers.routes.BusinessVerificationController.businessForm(service, businessType).url)
+              )
+            case None =>
+              val errorMsg = Messages("bc.business-verification-error.not-found")
+              val errorForm = nonResidentLandlordForm.withError(key = "business-type-nrl-form", message = errorMsg).fill(nrlFormData)
+              Future.successful(BadRequest(views.html.business_lookup_NRL(errorForm, bcContext.user.isAgent, service, businessType, backLink)))
+          }
+        }
+      }
+    )
+  }
 }
