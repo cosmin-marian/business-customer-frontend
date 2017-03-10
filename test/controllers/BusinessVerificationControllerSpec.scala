@@ -248,14 +248,14 @@ class BusinessVerificationControllerSpec extends PlaySpec with OneServerPerSuite
     "when selecting None Resident Landord option" must {
 
       "redirect to next screen to allow additional form fields to be entered" in {
-        continueWithAuthorisedUserJson("NRL", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "LTD"}"""))) { result =>
+        continueWithAuthorisedUserJson("NRL", FakeRequest().withJsonBody(Json.parse( """{"businessType" : "NRL"}"""))) { result =>
           status(result) must be(SEE_OTHER)
           redirectLocation(result).get must include("/business-verification/ATED/businessForm")
         }
       }
 
       "fail with a bad request when NRL is selected for an Sa user" in {
-        continueWithAuthorisedSaUserJson("LTD", FakeRequest().withJsonBody(Json.parse(
+        continueWithAuthorisedSaUserJson("NRL", FakeRequest().withJsonBody(Json.parse(
           """
             |{
             |  "businessType": "NRL",
