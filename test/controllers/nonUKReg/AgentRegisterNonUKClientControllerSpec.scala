@@ -17,7 +17,6 @@ import play.api.test.Helpers._
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import utils.{BusinessCustomerFeatureSwitches, FeatureSwitch}
 
 import scala.concurrent.Future
 
@@ -71,8 +70,6 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     "Authorised Users" must {
 
       "return business registration view for a Non-UK based client by agent with no back link" in {
-        val isFeatureEnable = BusinessCustomerFeatureSwitches.backLinks.enabled
-        FeatureSwitch.enable(BusinessCustomerFeatureSwitches.backLinks)
         viewWithAuthorisedUser(serviceName, "NUK", None, Some("http://cachedBackLink")) { result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
@@ -91,12 +88,9 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("backLinkHref").text() must be("Back")
           document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
         }
-        FeatureSwitch.setProp(BusinessCustomerFeatureSwitches.backLinks.name, isFeatureEnable)
       }
 
       "return business registration view for a Non-UK based client by agent with a back link" in {
-        val isFeatureEnable = BusinessCustomerFeatureSwitches.backLinks.enabled
-        FeatureSwitch.enable(BusinessCustomerFeatureSwitches.backLinks)
         when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some("http://backLink")))
         viewWithAuthorisedUser(serviceName, "NUK", Some("http://backLink"), Some("http://cachedBackLink")) { result =>
           status(result) must be(OK)
@@ -116,7 +110,6 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("backLinkHref").text() must be("Back")
           document.getElementById("backLinkHref").attr("href") must be("http://backLink")
         }
-        FeatureSwitch.setProp(BusinessCustomerFeatureSwitches.backLinks.name, isFeatureEnable)
       }
     }
 
