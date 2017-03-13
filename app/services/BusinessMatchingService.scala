@@ -26,21 +26,24 @@ trait BusinessMatchingService {
                           (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Option[Future[JsValue]] = {
     getUserUtrAndType map { userUtrAndType =>
       val (userUTR, userType) = userUtrAndType
+      val trimmedUtr = userUTR.replaceAll(" ", "")
       val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
-        utr = userUTR, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
+        utr = trimmedUtr, requiresNameMatch = false, isAnAgent = isAnAgent, individual = None, organisation = None)
       businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-        validateAndCache(dataReturned = dataReturned, directMatch = true, utr = Some(userUTR))
+        validateAndCache(dataReturned = dataReturned, directMatch = true, utr = Some(trimmedUtr))
       }
     }
   }
 
   def matchBusinessWithIndividualName(isAnAgent: Boolean, individual: Individual, saUTR: String, service: String)
                                      (implicit bcContext: BusinessCustomerContext, hc: HeaderCarrier): Future[JsValue] = {
+
+    val trimmedUtr = saUTR.replaceAll(" ", "")
     val searchData = MatchBusinessData(acknowledgementReference = SessionUtils.getUniqueAckNo,
-      utr = saUTR, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
+      utr = trimmedUtr, requiresNameMatch = true, isAnAgent = isAnAgent, individual = Some(individual), organisation = None)
     val userType = "sa"
     businessMatchingConnector.lookup(searchData, userType, service) flatMap { dataReturned =>
-      validateAndCache(dataReturned = dataReturned, directMatch = false, utr = Some(saUTR))
+      validateAndCache(dataReturned = dataReturned, directMatch = false, utr = Some(trimmedUtr))
     }
   }
 
