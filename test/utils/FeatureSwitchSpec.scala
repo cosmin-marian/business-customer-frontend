@@ -44,7 +44,6 @@ class FeatureSwitchSpec extends PlaySpec with OneServerPerSuite with BeforeAndAf
     }
 
     "BusinessCustomerFeatureSwitches.byName should return Some(feature) or None" in {
-      BusinessCustomerFeatureSwitches.byName("back_links") must be(Some(BusinessCustomerFeatureSwitches.backLinks))
       BusinessCustomerFeatureSwitches.byName("xyz") must be(None)
     }
 

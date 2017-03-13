@@ -40,10 +40,7 @@ object FeatureSwitch extends RunMode {
 
 object BusinessCustomerFeatureSwitches {
 
-  def backLinks = FeatureSwitch.forName("back_links")
-
   def byName(name: String): Option[FeatureSwitch] = name match {
-    case "back_links" => Some(backLinks)
     case _ => None
   }
 
