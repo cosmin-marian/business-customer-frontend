@@ -1,7 +1,7 @@
 @(backLink: Option[String], subHeaderId: String, subHeaderValue: String)(implicit lang: play.api.i18n.Lang, messages: Messages)
 
 @if(backLink.isDefined){
-  <a id="backLinkHref" class="back-link" href='@backLink'>@Messages("bc.business-verification.back")</a>
+  <a id="backLinkHref" class="link-back" href='@backLink'>@Messages("bc.business-verification.back")</a>
   <div class="heading-sub-no-margin" id=@subHeaderId> @subHeaderValue </div>
 } else {
   <div class="heading-sub" id=@subHeaderId> @subHeaderValue </div>
