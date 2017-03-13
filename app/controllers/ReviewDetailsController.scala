@@ -47,7 +47,7 @@ trait ReviewDetailsController extends BackLinkController with RunMode {
   }
 
   def continue(serviceName: String) = AuthAction(serviceName).async { implicit bcContext =>
-    if (bcContext.user.isAgent) {
+    if (bcContext.user.isAgent && agentRegistrationService.isAgentEnrolmentAllowed(serviceName)) {
       agentRegistrationService.enrolAgent(serviceName).flatMap { response =>
         response.status match {
           case OK => RedirectToExernal(ExternalUrls.agentConfirmationPath(serviceName), Some(controllers.routes.ReviewDetailsController.businessDetails(serviceName).url))

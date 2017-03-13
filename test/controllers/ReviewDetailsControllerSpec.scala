@@ -210,7 +210,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
 
       "return agent registration page correctly for Agents" in {
-
+        when(mockAgentRegistrationService.isAgentEnrolmentAllowed(Matchers.eq(service))).thenReturn(true)
         continueWithAuthorisedAgent(service) {
           result =>
             status(result) must be(SEE_OTHER)
@@ -219,7 +219,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
 
       "return OK and redirect to error page, if different agent try to register with same details" in {
-
+        when(mockAgentRegistrationService.isAgentEnrolmentAllowed(Matchers.eq(service))).thenReturn(true)
         continueWithDuplicategent(service) {
           result =>
             status(result) must be(OK)
@@ -227,6 +227,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
 
       "throw an exception if status is OK or BAD_GATEWAY" in {
+        when(mockAgentRegistrationService.isAgentEnrolmentAllowed(Matchers.eq(service))).thenReturn(true)
         continueWithAAuthAgent("ATED") {
           result =>
             val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
@@ -235,6 +236,7 @@ class ReviewDetailsControllerSpec extends PlaySpec with OneServerPerSuite with M
       }
 
       "throw an exception if it's an unknown service" in {
+        when(mockAgentRegistrationService.isAgentEnrolmentAllowed(Matchers.eq("unknownServiceTest"))).thenReturn(false)
         continueWithAuthorisedUser("unknownServiceTest") {
           result =>
             val thrown = the[RuntimeException] thrownBy redirectLocation(result).get
