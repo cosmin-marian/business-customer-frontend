@@ -182,7 +182,7 @@ bc.business-registration-error.postcode.length = The postcode cannot be more tha
 bc.business-registration-error.businessUniqueId.length = The overseas company registration number cannot be more than {0} characters.
 bc.business-registration-error.utr.length = The Unique Taxpayer Reference cannot be more than {0} characters.
 bc.business-registration-error.issuingInstitution.length = The institution that issued the overseas company registration number cannot be more than {0} characters.
-bc.business-registration-error.summaryHeader = There is a problem with the form
+bc.business-registration-error.summaryHeader = There is a problem with this page
 bc.business-registration-error.non-uk = You cannot select United Kingdom when entering an overseas address
 
 
@@ -255,7 +255,7 @@ bc.business-verification-error.general.saUTR = There is a problem with the Self-
 
 bc.business-verification-error.general.businessName = There is a problem with the business name
 
-bc.business-verification-error.summaryHeader=There is a problem with the form
+bc.business-verification-error.summaryHeader=There is a problem with this page
 bc.business-verification-error.general.businessType=There is a problem with the type of business question.
 bc.business-verification-error.not-selected=Please select a type of business
 bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
