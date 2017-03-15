@@ -148,8 +148,8 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           submitWithAuthorisedUserSuccess(FakeRequest().withJsonBody(inputJson)) { result =>
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("You must enter a business name")
-            contentAsString(result) must include("You must enter an address into Address line 1.")
-            contentAsString(result) must include("You must enter an address into Address line 2.")
+            contentAsString(result) must include("You must enter an address into Address line 1")
+            contentAsString(result) must include("You must enter an address into Address line 2")
             contentAsString(result) mustNot include("Postcode must be entered")
             contentAsString(result) must include("You must enter a country")
           }
@@ -157,11 +157,11 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
         // inputJson , test message, error message
         val formValidationInputDataSet: Seq[(InputJson, TestMessage, ErrorMessage)] = Seq(
-          (createJson(businessName = "a" * 106), "If entered, Business name must be maximum of 105 characters", "The business name cannot be more than 105 characters."),
-          (createJson(line1 = "a" * 36), "If entered, Address line 1 must be maximum of 35 characters", "Address line 1 cannot be more than 35 characters."),
-          (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters."),
-          (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters."),
-          (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters."),
+          (createJson(businessName = "a" * 106), "If entered, Business name must be maximum of 105 characters", "The business name cannot be more than 105 characters"),
+          (createJson(line1 = "a" * 36), "If entered, Address line 1 must be maximum of 35 characters", "Address line 1 cannot be more than 35 characters"),
+          (createJson(line2 = "a" * 36), "If entered, Address line 2 must be maximum of 35 characters", "Address line 2 cannot be more than 35 characters"),
+          (createJson(line3 = "a" * 36), "Address line 3 is optional but if entered, must be maximum of 35 characters", "Address line 3 cannot be more than 35 characters"),
+          (createJson(line4 = "a" * 36), "Address line 4 is optional but if entered, must be maximum of 35 characters", "Address line 4 cannot be more than 35 characters"),
           (createJson(country = "GB"), "show an error if country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
          )
 
