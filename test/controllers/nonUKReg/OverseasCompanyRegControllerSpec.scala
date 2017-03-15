@@ -109,8 +109,8 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
 
         // inputJson , test message, error message
         val formValidationInputDataSet: Seq[(InputJson, TestMessage, ErrorMessage)] = Seq(
-          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "The overseas company registration number cannot be more than 60 characters."),
-          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the overseas company registration number cannot be more than 40 characters."),
+          (createJson(bUId = "a" * 61), "businessUniqueId must be maximum of 60 characters", "The overseas company registration number cannot be more than 60 characters"),
+          (createJson(issuingInstitution = "a" * 41), "issuingInstitution must be maximum of 40 characters", "The institution that issued the overseas company registration number cannot be more than 40 characters"),
           (createJson(issuingCountry = "GB"), "show an error if issuing country is selected as GB", "You cannot select United Kingdom when entering an overseas address")
         )
 

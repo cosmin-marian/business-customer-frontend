@@ -20,7 +20,7 @@ business-review.business-name = Business name
 business-review.overseas-tax-reference = Overseas company registration number
 business-review.type = Type of business
 business-review.address = Registered address
-business-review.telephone = Telephone
+business-review.telephone = Telephone number
 business-review.email = Email
 business-review.button = Subscribe
 business-review.cancel-subscription = Cancel
@@ -91,33 +91,33 @@ bc.business-verification.utr.help.answer = <p>It is issued by HMRC when you regi
 bc.business-verification.back=Back
 bc.business-verification.submit=Continue
 
-bc.business-verification-error.firstname=You must enter a first name.
-bc.business-verification-error.firstname.length=A first name cannot be more than 40 characters.
-bc.business-verification-error.surname=You must enter a last name.
-bc.business-verification-error.surname.length=A last name cannot be more than 40 characters.
-bc.business-verification-error.sautr=You must enter a Self Assessment Unique Taxpayer Reference.
-bc.business-verification-error.sautr.length=Self Assessment Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10.
+bc.business-verification-error.firstname=You must enter a first name
+bc.business-verification-error.firstname.length=A first name cannot be more than 40 characters
+bc.business-verification-error.surname=You must enter a last name
+bc.business-verification-error.surname.length=A last name cannot be more than 40 characters
+bc.business-verification-error.sautr=You must enter a Self Assessment Unique Taxpayer Reference
+bc.business-verification-error.sautr.length=Self Assessment Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10
 bc.business-verification-error.utr=Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10.
-bc.business-verification-error.businessName=You must enter a registered company name.
-bc.business-verification-error.businessName.length=A business name cannot be more than 105 characters.
-bc.business-verification-error.cotaxutr=You must enter a Corporation Tax Unique Taxpayer Reference.
-bc.business-verification-error.cotaxutr.length=Corporation Tax Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10.
-bc.business-verification-error.psautr=You must enter a Partnership Self Assessment Unique Taxpayer Reference.
-bc.business-verification-error.psautr.length=Partnership Self Assessment Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10.
-bc.business-verification-error.invalidSAUTR=The Self Assessment Unique Taxpayer Reference is not valid.
-bc.business-verification-error.invalidCOUTR=The Corporation Tax Unique Taxpayer Reference is not valid.
-bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Unique Taxpayer Reference is not valid.
+bc.business-verification-error.businessName=You must enter a registered company name
+bc.business-verification-error.businessName.length=A business name cannot be more than 105 characters
+bc.business-verification-error.cotaxutr=You must enter a Corporation Tax Unique Taxpayer Reference
+bc.business-verification-error.cotaxutr.length=Corporation Tax Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10
+bc.business-verification-error.psautr=You must enter a Partnership Self Assessment Unique Taxpayer Reference
+bc.business-verification-error.psautr.length=Partnership Self Assessment Unique Taxpayer Reference must be 10 digits. If it is 13 digits only enter the last 10
+bc.business-verification-error.invalidSAUTR=The Self Assessment Unique Taxpayer Reference is not valid
+bc.business-verification-error.invalidCOUTR=The Corporation Tax Unique Taxpayer Reference is not valid
+bc.business-verification-error.invalidPSAUTR=The Partnership Self Assessment Unique Taxpayer Reference is not valid
 bc.business-verification-error.not-found=Your business details have not been found. Check that your details are correct and try again.
 bc.business-registration-error.hasBusinessUniqueId.not-selected=You must select one option
 bc.business-registration-error.businessUniqueId.select=You must enter an overseas company registration number
 bc.business-registration-error.issuingCountry.select=You must enter a country that issued the overseas company registration number
 bc.business-registration-error.issuingInstitution.select= You must enter an institution that issued the overseas company registration number
-bc.business-registration-error.duplicate.identifier.header = Somebody has already registered from your agency.
-bc.business-registration-error.duplicate.identifier.title = Somebody has already registered from your agency.
-bc.business-registration-error.duplicate.identifier.message = If you require access you need to <a href="https://myaccount.gateway.gov.uk/Pages/Credentials/Admin/List.aspx" target="_blank">add administrators to your account in Government Gateway </a>
+bc.business-registration-error.duplicate.identifier.header = Somebody has already registered from your agency
+bc.business-registration-error.duplicate.identifier.title = Somebody has already registered from your agency
+bc.business-registration-error.duplicate.identifier.message = If you require access you need to <a href="https://myaccount.gateway.gov.uk/Pages/Credentials/Admin/List.aspx" target="_blank">add administrators to your account in Government Gateway.</a>
 
 
-bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters.
+bc.business-verification-error.registeredName.length=The registered company name cannot be more than 105 characters
 
 
 
@@ -159,7 +159,7 @@ bc.business-registration.hasBusinessUniqueId = Do you have an overseas company r
 bc.business-registration.hasBusinessUniqueId.help.question = What is an overseas Tax Reference?
 bc.business-registration.hasBusinessUniqueId.help.answer = Enter any overseas reference related to the property (for example the company registration number or tax reference from an overseas country).
 bc.business-registration.businessUniqueId = Tax Reference
-bc.business-registration.businessUniqueId.hint = Example, the number on the document
+bc.business-registration.businessUniqueId.hint = For example, the number on the document
 bc.business-registration.issuingInstitution = Institution of issue
 bc.business-registration.issuingInstitution.hint = For example, an overseas tax department
 bc.business-registration.issuingCountry = Country of issue
@@ -169,25 +169,25 @@ bc.business-registration.back= Back
 bc.business-registration.search= Match
 
 bc.business-registration-error.businessName = You must enter a business name
-bc.business-registration-error.line_1 = You must enter an address into Address line 1.
-bc.business-registration-error.line_2 = You must enter an address into Address line 2.
+bc.business-registration-error.line_1 = You must enter an address into Address line 1
+bc.business-registration-error.line_2 = You must enter an address into Address line 2
 bc.business-registration-error.country = You must enter a country
-bc.business-registration-error.businessName.length = The business name cannot be more than {0} characters.
-bc.business-registration-error.line_1.length = Address line 1 cannot be more than {0} characters.
-bc.business-registration-error.line_2.length = Address line 2 cannot be more than {0} characters.
-bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
-bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters.
-bc.business-registration-error.line_4.length = Address line 4 cannot be more than {0} characters.
-bc.business-registration-error.postcode.length = The postcode cannot be more than {0} characters.
-bc.business-registration-error.businessUniqueId.length = The overseas company registration number cannot be more than {0} characters.
-bc.business-registration-error.utr.length = The Unique Taxpayer Reference cannot be more than {0} characters.
-bc.business-registration-error.issuingInstitution.length = The institution that issued the overseas company registration number cannot be more than {0} characters.
-bc.business-registration-error.summaryHeader = There is a problem with the form
+bc.business-registration-error.businessName.length = The business name cannot be more than {0} characters
+bc.business-registration-error.line_1.length = Address line 1 cannot be more than {0} characters
+bc.business-registration-error.line_2.length = Address line 2 cannot be more than {0} characters
+bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters
+bc.business-registration-error.line_3.length = Address line 3 cannot be more than {0} characters
+bc.business-registration-error.line_4.length = Address line 4 cannot be more than {0} characters
+bc.business-registration-error.postcode.length = The postcode cannot be more than {0} characters
+bc.business-registration-error.businessUniqueId.length = The overseas company registration number cannot be more than {0} characters
+bc.business-registration-error.utr.length = The Unique Taxpayer Reference cannot be more than {0} characters
+bc.business-registration-error.issuingInstitution.length = The institution that issued the overseas company registration number cannot be more than {0} characters
+bc.business-registration-error.summaryHeader = There is a problem with this page
 bc.business-registration-error.non-uk = You cannot select United Kingdom when entering an overseas address
 
 
 
-bc.business-registration-error.postcode = You must enter a postcode.
+bc.business-registration-error.postcode = You must enter a postcode
 bc.business-registration-error.postcode.invalid = The postcode is invalid
 bc.business-registration-error.businessUniqueId = You must enter an overseas company registration number
 
@@ -207,19 +207,19 @@ bc.agent-service.error.no-registration-details=No Registration Details found
 
 
 bc.business-registration-error.general.businessName = There is a problem with the business name
-bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1.
-bc.business-registration-error.general.businessAddress.line_2  = There is a problem with address line 2.
-bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field.
-bc.business-registration-error.general.businessAddress.postcode = There is a problem with the postal code.
+bc.business-registration-error.general.businessAddress.line_1  = There is a problem with address line 1
+bc.business-registration-error.general.businessAddress.line_2  = There is a problem with address line 2
+bc.business-registration-error.general.businessAddress.country  = There is a problem with the country field
+bc.business-registration-error.general.businessAddress.postcode = There is a problem with the postal code
 
 
-bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1.
-bc.business-verification-error.general.businessAddress.line_2  = There is a problem with address line 2.
-bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3.
-bc.business-registration-error.general.businessAddress.line_4 = There is a problem with address line 4.
+bc.business-verification-error.general.businessAddress.line_1  = There is a problem with address line 1
+bc.business-verification-error.general.businessAddress.line_2  = There is a problem with address line 2
+bc.business-registration-error.general.businessAddress.line_3 = There is a problem with address line 3
+bc.business-registration-error.general.businessAddress.line_4 = There is a problem with address line 4
 bc.business-verification-error.general.businessAddress.postcode  = There is a problem with the postal code
 bc.business-registration-error.general.businessUniqueId = There is a problem with the overseas company registration number
-bc.business-registration-error.general.issuingInstitution = There is a problem with the institution of issue.
+bc.business-registration-error.general.issuingInstitution = There is a problem with the institution of issue
 bc.business-registration-error.general.issuingCountry =  There is a problem with the country of issue
 bc.business-verification-error.general.business-type-sop-form =Your business details have not been found. Check that your details are correct and try again.
 bc.business-verification-error.general.business-type-nrl-form =Your business details have not been found. Check that your details are correct and try again.
@@ -255,8 +255,8 @@ bc.business-verification-error.general.saUTR = There is a problem with the Self-
 
 bc.business-verification-error.general.businessName = There is a problem with the business name
 
-bc.business-verification-error.summaryHeader=There is a problem with the form
-bc.business-verification-error.general.businessType=There is a problem with the type of business question.
+bc.business-verification-error.summaryHeader=There is a problem with this page
+bc.business-verification-error.general.businessType=There is a problem with the type of business question
 bc.business-verification-error.not-selected=Please select a type of business
 bc.business-verification-error.general.business-type-llp-form=Your business details have not been found. Please check that your details are correct and try again
 
@@ -302,15 +302,15 @@ feedback.redirect-startpage= Please return to start page
 bc.nrl.subheader = {0} registration
 bc.nrl.header = Do you live outside of the UK for 6 months or more a year and receive rental income from the property?
 bc.nrl.title = Do you live outside of the UK for 6 months or more a year and receive rental income from the property?
-bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question.
-bc.nrl.paysSA.not-selected.error = You must select an option.
+bc.nrl-error.general.paysSA = There is a problem with the non-resident landlord question
+bc.nrl.paysSA.not-selected.error = You must select an option
 
 # non-uk client - paySA question page
 bc.nonuk.paySA.subheader = {0} registration
 bc.nonuk.paySA.header = Do you pay tax in the UK through self assessment?
 bc.nonuk.paySA.title = Do you pay tax in the UK through self assessment?
-bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question.
-bc.nonuk.paySA.not-selected.error = You must answer the self assessment question.
+bc.nonuk.paySA.error.general.paySA = There is a problem with the do you pay self assessment question
+bc.nonuk.paySA.not-selected.error = You must answer the self assessment question
 
 # non-uk client - Overseas Company Identification
 bc.nonuk.overseas.agent.title = Do you have an overseas company registration number?
@@ -358,18 +358,18 @@ bc.non-uk-reg.country = Country
 bc.non-uk-reg.postcode = Postal code
 bc.non-uk-reg.postcode.help.question = I don't have a postal code
 bc.non-uk-reg.postcode.help.answer = If you don't have an overseas postal code enter the postcode of one of your UK based ATED properties.
-bc.non-uk-reg-error.general.businessName = There is a problem with the business name.
-bc.non-uk-reg-error.general.businessAddress.line_1 = There is a problem with the address line 1.
-bc.non-uk-reg-error.general.businessAddress.line_2 = There is a problem with the address line 2.
-bc.non-uk-reg-error.general.businessAddress.line_3 = There is a problem with the address line 3.
-bc.non-uk-reg-error.general.businessAddress.line_4 = There is a problem with the address line 4.
-bc.non-uk-reg-error.general.businessAddress.country = There is a problem with the country field.
-bc.non-uk-reg-error.general.businessAddress.postcode = There is a problem with the postal code.
+bc.non-uk-reg-error.general.businessName = There is a problem with the business name
+bc.non-uk-reg-error.general.businessAddress.line_1 = There is a problem with the address line 1
+bc.non-uk-reg-error.general.businessAddress.line_2 = There is a problem with the address line 2
+bc.non-uk-reg-error.general.businessAddress.line_3 = There is a problem with the address line 3
+bc.non-uk-reg-error.general.businessAddress.line_4 = There is a problem with the address line 4
+bc.non-uk-reg-error.general.businessAddress.country = There is a problem with the country field
+bc.non-uk-reg-error.general.businessAddress.postcode = There is a problem with the postal code
 bc.non-uk-reg.issuingCountry = Country of issue
 bc.non-uk-reg.country.select = please select one country
 bc.non-uk-reg-error.general.businessUniqueId = There is a problem with the overseas company registration number
 bc.non-uk-reg-error.general.issuingCountry = There is a problem with the country of issue
-bc.non-uk-reg-error.general.issuingInstitution = There is a problem with the institution of issue.
+bc.non-uk-reg-error.general.issuingInstitution = There is a problem with the institution of issue
 bc.non-uk-reg-error.general.hasBusinessUniqueId = There is a problem with the overseas company registration number
 bc.non-uk-reg-error.hasBusinessUniqueId.not-selected = You must select one option
 bc.non-uk-reg.hasBusinessUniqueId = Do they have an overseas company registration number?
