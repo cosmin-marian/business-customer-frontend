@@ -166,19 +166,6 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         thrown.getMessage must include("Not Found")
       }
 
-      "for InternalServerException, throw an exception" in {
-        val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
-
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-
-        when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(matchFailureResponse))))
-
-        val result = TestBusinessCustomerConnector.register(businessRequestData, service)
-        val thrown = the[InternalServerException] thrownBy await(result)
-        thrown.getMessage must include("Bad Request or Internal server error")
-      }
-
       "for Unknown Error, throw an exception" in {
         val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
 
@@ -271,19 +258,6 @@ class BusinessCustomerConnectorSpec extends PlaySpec with OneServerPerSuite with
         val result = TestBusinessCustomerConnector.updateRegistrationDetails(safeId, updateRequestData)
         val thrown = the[InternalServerException] thrownBy await(result)
         thrown.getMessage must include("Not Found")
-      }
-
-      "for InternalServerException, throw an exception" in {
-        val matchFailureResponse = Json.parse( """{"error": "Sorry. Business details not found."}""")
-
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(s"session-${UUID.randomUUID}")))
-
-        when(mockWSHttp.POST[BusinessRegistration, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, Some(matchFailureResponse))))
-
-        val result = TestBusinessCustomerConnector.updateRegistrationDetails(safeId, updateRequestData)
-        val thrown = the[InternalServerException] thrownBy await(result)
-        thrown.getMessage must include("Bad Request or Internal server error")
       }
 
       "for Unknown Error, throw an exception" in {

@@ -109,9 +109,6 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
         case SERVICE_UNAVAILABLE =>
           Logger.warn(s"[BusinessCustomerConnector][register] - Service Unavailable Exception ${registerData.organisation.organisationName}")
           throw new ServiceUnavailableException(s"${Messages("bc.connector.error.service-unavailable")}  Exception ${response.body}")
-        case BAD_REQUEST | INTERNAL_SERVER_ERROR =>
-          Logger.warn(s"[BusinessCustomerConnector][register] - Bad Request Exception ${registerData.organisation.organisationName}")
-          throw new InternalServerException(s"${Messages("bc.connector.error.bad-request")}  Exception ${response.body}")
         case status =>
           Logger.warn(s"[BusinessCustomerConnector][register] - $status Exception ${registerData.organisation.organisationName}")
           throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)}  Exception ${response.body}")
@@ -133,9 +130,6 @@ trait BusinessCustomerConnector extends ServicesConfig with RawResponseReads wit
         case SERVICE_UNAVAILABLE =>
           Logger.warn(s"[BusinessCustomerConnector][updateRegistrationDetails] - Service Unavailable Exception ${updateRegistrationDetails.organisation.map(_.organisationName)}")
           throw new ServiceUnavailableException(s"${Messages("bc.connector.error.service-unavailable")}  Exception ${response.body}")
-        case BAD_REQUEST | INTERNAL_SERVER_ERROR =>
-          Logger.warn(s"[BusinessCustomerConnector][updateRegistrationDetails] - Bad Request Exception ${updateRegistrationDetails.organisation.map(_.organisationName)}")
-          throw new InternalServerException(s"${Messages("bc.connector.error.bad-request")}  Exception ${response.body}")
         case status =>
           Logger.warn(s"[BusinessCustomerConnector][updateRegistrationDetails] - $status Exception ${updateRegistrationDetails.organisation.map(_.organisationName)}")
           throw new InternalServerException(s"${Messages("bc.connector.error.unknown-response", status)}  Exception ${response.body}")
