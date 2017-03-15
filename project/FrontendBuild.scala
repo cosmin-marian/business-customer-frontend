@@ -13,20 +13,18 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "2.0.0"
+  private val playHealthVersion = "2.1.0"
 
-  private val frontendBootstrapVersion = "7.11.0"
-  private val govukTemplateVersion = "5.0.0"
-  private val playUiVersion = "5.4.0"
-  private val httpCachingClientVersion = "6.1.0"
-  private val playAuthorisedFrontendVersion = "6.2.0"
-  private val playPartialsVersion = "5.2.0"
+  private val frontendBootstrapVersion = "7.16.0"
+  private val govukTemplateVersion = "5.1.0"
+  private val playUiVersion = "7.0.0"
+  private val httpCachingClientVersion = "6.2.0"
+  private val playAuthorisedFrontendVersion = "6.3.0"
+  private val playPartialsVersion = "5.3.0"
   private val logbackJsonLoggerVersion = "3.1.0"
-  private val playConfigVersion = "3.0.0"
-  private val urlBuilderVersion = "2.0.0"
-  private val domainVersion = "4.0.0"
-
-  private val hmrcTestVersion = "2.1.0"
+  private val playConfigVersion = "4.3.0"
+  private val domainVersion = "4.1.0"
+  private val hmrcTestVersion = "2.3.0"
   private val scalaTestVersion = "2.2.6"
   private val scalaTestPlusVersion = "1.5.1"
   private val pegdownVersion = "1.6.0"
@@ -38,7 +36,6 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
-    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
     "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
