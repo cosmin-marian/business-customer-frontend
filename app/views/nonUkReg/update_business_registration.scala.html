@@ -34,7 +34,7 @@
 @bcErrorSummary(businessRegistrationForm, "bc.non-uk-reg-error.general")
 
 @displayDetails.businessRegLede.map { businessRegLede =>
-  <p class="lede" id="business-reg-lede">@Html(businessRegLede)</p>
+  <p class="paragraph" id="business-reg-lede">@Html(businessRegLede)</p>
 }
 
 @form(action = controllers.nonUKReg.routes.UpdateNonUKBusinessRegistrationController.update(service, redirectUrl, isRegisterClient)) {
