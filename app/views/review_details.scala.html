@@ -7,10 +7,10 @@
 @bcMain(title = if (isAgent) { Messages("business-review.agent.title", service) } else {Messages("business-review.user.title", service) }, service = Some(service)) {
 
   @if(isAgent){
-    @backLinkAndSubHeader(backLink, "bc.business-registration-agent.text", Messages("bc.business-registration.text.agent", service.toUpperCase))
+    @pageHeadersAndError(backLink, "bc.business-registration-agent.text", Messages("bc.business-registration.text.agent", service.toUpperCase))
     <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.agent.title"))</h1>
   } else {
-    @backLinkAndSubHeader(backLink, "bc.business-registration.text", Messages("bc.business-registration.text.client", service.toUpperCase))
+    @pageHeadersAndError(backLink, "bc.business-registration.text", Messages("bc.business-registration.text.client", service.toUpperCase))
     <h1 class="heading-xlarge" aria-level="1" role="heading">@Html(Messages("business-review.user.title"))</h1>
   }
 
