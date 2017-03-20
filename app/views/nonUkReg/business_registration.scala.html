@@ -28,7 +28,7 @@
   @bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")
 
   @displayDetails.businessRegLede.map { businessRegLede =>
-    <p class="lede" id="business-registration-lede">@Html(businessRegLede)</p>
+    <p class="paragraph" id="business-registration-lede">@Html(businessRegLede)</p>
   }
 
   @form(action = controllers.nonUKReg.routes.BusinessRegController.send(service, displayDetails.businessType)) {
