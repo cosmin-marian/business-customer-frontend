@@ -13,13 +13,15 @@
 @bcMain(title = if(isAgent) {Messages("bc.business-verification-selected-agent-header")} else {Messages("bc.business-verification-selected-user-header")}, service = Some(service)) {
 
   @if(isAgent) {
-    @backLinkAndSubHeader(backLink, "business-verification-agent-text", Messages("bc.business-verification.agent.text", service.toUpperCase))
+    @pageHeadersAndError(backLink, "business-verification-agent-text", Messages("bc.business-verification.agent.text", service.toUpperCase),
+      Some(bcErrorSummary(limitedCompanyForm, "bc.business-verification-error.general.ltd")))
     <h1 class="heading-xlarge" id="business-type-agent-header"> @Messages("bc.business-verification-selected-agent-header") </h1>
   } else {
-    @backLinkAndSubHeader(backLink, "business-verification-text", Messages("bc.business-verification.client.text", service.toUpperCase))
+    @pageHeadersAndError(backLink, "business-verification-text", Messages("bc.business-verification.client.text", service.toUpperCase),
+      Some(bcErrorSummary(limitedCompanyForm, "bc.business-verification-error.general.ltd")))
     <h1 class="heading-xlarge" id="business-type-header"> @Messages("bc.business-verification-selected-user-header") </h1>
   }
-  @bcErrorSummary(limitedCompanyForm, "bc.business-verification-error.general.ltd")
+
 
   <div class="form-group">
    <span class="paragraph" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </span>
