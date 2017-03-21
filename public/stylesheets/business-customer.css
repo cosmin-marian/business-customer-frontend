@@ -143,7 +143,6 @@ select {
     color: #0b0c0c;
 }
 
-@media (min-width: 641px)
 .link-back {
     font-size: 16px;
     line-height: 1.25;
@@ -202,12 +201,11 @@ select {
 /* Timeout Modal */
 
 
-@media (max-width: 640px){
-  .timeout-dialog {
-    width: 280px !important;
-  }
+@media (max-width: 640px) {
+    .timeout-dialog {
+        width: 280px !important;
+    }
 }
-
 .timeout-dialog  ~ .ui-widget-overlay {
 
   top: 0;
@@ -308,19 +306,39 @@ html.noScroll {
 .confirmation-notice {
 }
 
-/* error red */
-.error-notification {
-    color: #B10E1E;
-}
+    /* errors */
+    .validation-summary h1 {
+        margin-top: 10px;
+    }
 
-.validation-summary a:link {
-    color: #B10E1E;
-}
+    .validation-summary {
+        border: 5px solid #b10e1e;
+        margin-bottom: 30px;
+        margin-top: 30px;
+        padding: 20px 15px 15px;
+    }
 
-.validation-summary {
-    border: 3px solid #B10E1E;
-}
+    .validation-summary-message a, .validation-message a, p.field-error {
+        color: #b10e1e;
+        font-weight: 700;
+        font-size: 19px;
+    }
 
-.form-field--error {
-    border-left: 3px solid #B10E1E;
-}
+    .form-field--error .form-control {
+        border: 4px solid #b10e1e;
+    }
+
+    .form-control.error {
+        border: 5px solid #b10e1e;
+        margin-left:2px;
+    }
+
+    .form-field--error .error-notification {
+        font-weight: 700;
+    }
+
+
+    .validation-summary:focus {
+        outline: 3px solid #ffbf47;
+    }
+
