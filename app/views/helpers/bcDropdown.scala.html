@@ -37,14 +37,14 @@
   </label>
 
   <select id="@elements.field.name" name="@elements.field.name"
-          class="@if(elements.hasErrors){error } @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }"
+          class="@if(elements.hasErrors){ error } form-control @if( elements.args.get('_inputClass) ){ @elements.args.get('_inputClass) }"
           @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes) } >
     @if(displayEmptyValue) { <option value="">@elements.args.get('_emptyValueText)</option> }
     @for(option <- elementOptions) {
       <option id="@elements.field.name-@option._1" value="@option._1" @if(value==option._1) { selected="selected" } > @option._2 </option>
     }
   </select>
-  @if(elements.hasErrors) {
+  @if(elements.hasErrors)  {
     </div>
   }
 </div>
