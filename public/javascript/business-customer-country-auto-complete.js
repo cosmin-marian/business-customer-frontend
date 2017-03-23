@@ -7,6 +7,8 @@ function trimCountry(countryVal) {
     return trimmedCountry
 }
 
+
+
 function createLabelForHiddenSelect(divId, fieldId, labelText) {
     var selectDiv = $('#' + divId)
     var newLabel = $("<label>").attr('for', fieldId).text(labelText).attr('class', "visuallyhidden");
@@ -21,7 +23,6 @@ function countryCodeAutoComplete(selectId) {
     $.widget( "custom.combobox", {
       _create: function() {
         this.wrapper = $( "<span>" )
-//          .addClass( "custom-combobox" )
           .insertAfter( this.element );
 
         this.element.hide();
@@ -34,17 +35,33 @@ function countryCodeAutoComplete(selectId) {
         var selected = this.element.children( ":selected" ),
           value = selected.val() ? trimCountry(selected.text()): "";
 
-        this.input = $( "<input>" )
-          .appendTo( this.wrapper )
-          .val( value )
-          .attr( "title", "" )
-          .attr( "id", this.element.attr("id") )
-          .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left form-control" )
-          .autocomplete({
-            delay: 0,
-            minLength: 2,
-            source: $.proxy( this, "_source" )
-          });
+        if (this.element.hasClass("error")) {
+            this.input = $( "<input>" )
+                .appendTo( this.wrapper )
+                .val( value )
+                .attr( "title", "" )
+                .attr( "id", this.element.attr("id") )
+                .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left form-control error")
+                .autocomplete({
+                    delay: 0,
+                    minLength: 2,
+                    source: $.proxy( this, "_source" )
+                });
+        }
+        else {
+            this.input = $( "<input>" )
+                .appendTo( this.wrapper )
+                .val( value )
+                .attr( "title", "" )
+                .attr( "id", this.element.attr("id") )
+                .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left form-control")
+                .autocomplete({
+                    delay: 0,
+                    minLength: 2,
+                    source: $.proxy( this, "_source" )
+                });
+        }
+
 
         this._on( this.input, {
           autocompleteselect: function( event, ui ) {
