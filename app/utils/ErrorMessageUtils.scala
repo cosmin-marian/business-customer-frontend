@@ -9,9 +9,9 @@ object ErrorMessageUtils {
   val uniqueAgentErrorMsg = "The service HMRC-AGENT-AGENT requires unique identifiers"
   val uniqueAgentErrorNum = "9001"
 
-  def parseErrorResp(resp: HttpResponse, errorNumber: String, errorMsg: String): Boolean = {
+  def parseErrorResp(resp: HttpResponse, errorNumber: String): Boolean = {
      val msgToXml = scala.xml.XML.loadString((resp.json \ "message").as[String])
-       (msgToXml \\ "Message").text == errorMsg && (msgToXml \\ "ErrorNumber").text == errorNumber
+       (msgToXml \\ "ErrorNumber").text == errorNumber
   }
 
 }
