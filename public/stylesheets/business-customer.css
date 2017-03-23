@@ -202,10 +202,10 @@ select {
 /* Timeout Modal */
 
 
-@media (max-width: 640px){
-  .timeout-dialog {
-    width: 280px !important;
-  }
+@media (max-width: 640px) {
+    .timeout-dialog {
+        width: 280px !important;
+    }
 }
 
 .timeout-dialog  ~ .ui-widget-overlay {
