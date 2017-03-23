@@ -34,12 +34,14 @@
 
         @bcInput(unincorporatedBodyForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessName",
           '_hintText -> Messages("bc.business-verification.registered-name.hint"),
           '_showConstraints -> false)
 
         @bcInput(unincorporatedBodyForm("cotaxUTR"),
           '_label -> Html(Messages("bc.business-verification.coUTRField")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.utr.hint"),
           '_id -> "cotaxUTR",
           '_type -> "text",

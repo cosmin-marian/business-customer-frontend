@@ -22,7 +22,7 @@
 
         @bcInput(businessRegistrationForm("businessName"),
           '_label ->  Html(Messages("bc.business-registration.group.businessName")),
-          '_labelClass -> "form-label",
+          '_labelClass -> "form-label-bold",
           '_id -> "businessName",
           '_showConstraints -> false,
           '_hintText -> Messages("bc.business-registration.group.businessName.hintText"),
@@ -30,12 +30,14 @@
 
         @bcInput(businessRegistrationForm("businessAddress.line_1"),
           '_label ->  Html(Messages("bc.business-registration.line_1")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessAddress.line_1",
           '_maxLength -> 35,
           '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_2"),
           '_label ->  Html(Messages("bc.business-registration.line_2")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessAddress.line_2",
           '_maxLength -> 35,
           '_showConstraints -> false)
@@ -54,6 +56,7 @@
 
         @bcInput(businessRegistrationForm("businessAddress.postcode"),
           '_label ->  Html(Messages("bc.business-registration.postcode")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessAddress.postcode",
           '_maxLength -> 10,
           '_showConstraints -> false)

@@ -38,12 +38,14 @@
 
         @bcInput(nrlForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.registered-name.hint"),
           '_id -> "businessName",
           '_showConstraints -> false)
 
         @bcInput(nrlForm("saUTR"),
         '_label -> Html(Messages("bc.business-verification.saUTRField")),
+        '_labelClass -> "form-label-bold",
         '_hintText -> Messages("bc.business-verification.utr.hint"),
         '_id -> "saUTR",
         '_type -> "text",

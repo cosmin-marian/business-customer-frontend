@@ -65,7 +65,8 @@
 
         @bcInput(overseasCompanyForm("businessUniqueId"),
         '_label ->  Html(Messages("bc.non-uk-reg.businessUniqueId")),
-        '_id -> "businessUniqueId",
+        '_labelClass -> "form-label-bold",
+      '_id -> "businessUniqueId",
         '_showConstraints -> false)
 
         @bcDropdown(overseasCompanyForm("issuingCountry"),
@@ -73,10 +74,12 @@
         displayEmptyValue = true,
         '_id -> "issuingCountry",
         '_emptyValueText -> Messages("bc.non-uk-reg.country.select"),
+        '_labelClass -> "form-label-bold",
         '_label -> Html(Messages("bc.non-uk-reg.issuingCountry")))
 
         @bcInput(overseasCompanyForm("issuingInstitution"),
         '_label ->  Html(Messages("bc.non-uk-reg.issuingInstitution")),
+         '_labelClass -> "form-label-bold",
         '_id -> "issuingInstitution",
         '_hintText -> Messages("bc.non-uk-reg.issuingInstitution.hint"),
         '_showConstraints -> false)
