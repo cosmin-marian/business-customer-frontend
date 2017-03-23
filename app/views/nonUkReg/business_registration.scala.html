@@ -41,12 +41,13 @@
 
         @bcInput(businessRegistrationForm("businessName"),
           '_label ->  Html(Messages("bc.business-registration.businessName")),
-          '_labelClass -> "form-label",
+          '_labelClass -> "form-label-bold",
           '_id -> "businessName",
           '_showConstraints -> false)
 
         @bcInput(businessRegistrationForm("businessAddress.line_1"),
           '_label ->  Html(Messages("bc.business-registration.address")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessAddress.line_1",
           '_showConstraints -> false)
 
@@ -71,6 +72,7 @@
         @if(!isAgent) {
           @bcInput(businessRegistrationForm("businessAddress.postcode"),
           '_label ->  Html(Messages("bc.non-uk-reg.postcode")),
+          '_labelClass -> "form-label-bold",
           '_id -> "businessAddress.postcode",
           '_inputClass -> "input--small",
           '_maxLength -> 10,
@@ -91,6 +93,7 @@
           displayEmptyValue = true,
           '_id -> "businessAddress.country",
           '_emptyValueText -> Messages("bc.business-registration.country.select"),
+          '_labelClass -> "form-label-bold",
           '_label -> Html(Messages("bc.business-registration.country")))
 
       </div>

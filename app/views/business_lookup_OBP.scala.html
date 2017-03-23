@@ -34,12 +34,14 @@
 
         @bcInput(ordinaryBusinessPartnershipForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.partnerNameField")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.partnerNameHint"),
           '_id -> "businessName",
           '_showConstraints -> false)
 
         @bcInput(ordinaryBusinessPartnershipForm("psaUTR"),
           '_label -> Html(Messages("bc.business-verification.partnerUTRField")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.utr.hint"),
           '_id -> "psaUTR",
           '_type -> "text",

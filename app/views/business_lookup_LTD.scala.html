@@ -35,12 +35,14 @@
 
         @bcInput(limitedCompanyForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.businessNamefield")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.registered-name.hint"),
           '_id -> "businessName",
           '_showConstraints -> false)
 
         @bcInput(limitedCompanyForm("cotaxUTR"),
           '_label -> Html(Messages("bc.business-verification.coUTRField")),
+          '_labelClass -> "form-label-bold",
           '_hintText -> Messages("bc.business-verification.utr.hint"),
           '_id -> "cotaxUTR",
           '_type -> "text",
