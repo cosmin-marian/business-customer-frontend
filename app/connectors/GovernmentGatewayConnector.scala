@@ -39,7 +39,7 @@ trait GovernmentGatewayConnector extends ServicesConfig with RawResponseReads wi
 
     val timerContext = metrics.startTimer(MetricsEnum.GG_AGENT_ENROL)
     http.POST[JsValue, HttpResponse](postUrl, jsonData) map { response =>
-      val stopContext = timerContext.stop()
+      timerContext.stop()
       auditEnrolCall(enrolRequest, response)
       response.status match {
         case OK =>
