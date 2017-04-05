@@ -25,17 +25,16 @@
   @pageHeadersAndError(backLink, "business-verification-text", displayDetails.businessRegSubHeader,
     Some(bcErrorSummary(businessRegistrationForm, "bc.business-registration-error.general")))
 
-  <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader) </h1>
+  <h1 class="heading-xlarge" id="business-registration-header" aria-level="1" role="heading"> @Html(displayDetails.businessRegHeader)</h1>
 
-
-
-  @displayDetails.businessRegLede.map { businessRegLede =>
-    <p class="paragraph" id="business-registration-lede">@Html(businessRegLede)</p>
-  }
+  <div class="form-group">
+    @displayDetails.businessRegLede.map { businessRegLede =>
+      <p class="paragraph" id="business-registration-lede">@Html(businessRegLede)</p>
+    }
+  </div>
 
   @form(action = controllers.nonUKReg.routes.BusinessRegController.send(service, displayDetails.businessType)) {
 
-    <div class="form-group">
 
       <div id="business-registration-form">
 
@@ -100,7 +99,6 @@
 
       <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
-    </div>
   }
 
 }

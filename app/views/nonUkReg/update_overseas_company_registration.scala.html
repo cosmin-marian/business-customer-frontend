@@ -29,19 +29,16 @@
 }
 
 @bcMain(title = displayDetails.title, service = Some(service), pageScripts = Some(pageScripts)) {
-
-<div class="form-group">
-  @pageHeadersAndError(backLink, "overseas-subheader", displayDetails.subHeader),
-    Some(bcErrorSummary(overseasCompanyForm, "bc.non-uk-reg-error.general"))
+  @pageHeadersAndError(backLink, "overseas-subheader", displayDetails.subHeader,
+    Some(bcErrorSummary(overseasCompanyForm, "bc.non-uk-reg-error.general")))
   <h1 class="heading-xlarge" id="overseas-header">@displayDetails.header</h1>
 
 
 
-
 @form(action = controllers.nonUKReg.routes.UpdateOverseasCompanyRegController.update(service, displayDetails.addClient, redirectUrl)) {
-</div>
 
-<div class="form-group">
+
+
 
   <div id="non-uk-reg-form">
 
@@ -91,7 +88,7 @@
 
   <button class="button" id="submit" type="submit">@Messages("bc.continue")</button>
 
-</div>
+
 }
 
 }

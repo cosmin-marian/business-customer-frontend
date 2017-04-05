@@ -28,9 +28,8 @@
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
-    <div class="form-group">
 
-      <div id="business-type-uib-form" class="form-field">
+      <div id="business-type-uib-form">
 
         @bcInput(unincorporatedBodyForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.businessNamefield")),
@@ -54,7 +53,6 @@
 
       <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
-    </div>
 
   }
 }
