@@ -28,9 +28,8 @@
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
-    <div class="form-group">
 
-      <div id="business-type-sop-form" class="form-field">
+      <div id="business-type-sop-form">
 
         @bcInput(soleTraderForm("firstName"),
           '_label -> Html(Messages("bc.business-verification.firstNameField")),
@@ -59,7 +58,6 @@
 
       <button class="button" id="submit" type="submit">@Messages("bc.business-registration.submit")</button>
 
-    </div>
 
   }
 

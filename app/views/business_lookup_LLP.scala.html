@@ -23,15 +23,13 @@
   }
 
 
-
   <p class="lede" id="business-type-paragraph"> @Messages("bc.business-verification-lede") </p>
 
 
   @form(action = controllers.routes.BusinessVerificationController.submit(service,businessType)) {
 
-    <div class="form-group">
 
-      <div id="business-type-llp-form" class="form-field">
+      <div id="business-type-llp-form">
 
         @bcInput(limitedLiabilityPartnershipForm("businessName"),
           '_label -> Html(Messages("bc.business-verification.businessNamefield")),
@@ -55,7 +53,6 @@
 
       <button class="button" id="submit" type="submit"> @Messages("bc.business-registration.submit") </button>
 
-    </div>
 
   }
 
