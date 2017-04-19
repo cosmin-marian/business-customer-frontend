@@ -6,12 +6,12 @@ import uk.gov.hmrc.play.http.HttpResponse
 
 object ErrorMessageUtils {
 
-  val uniqueAgentErrorMsg = "The service HMRC-AGENT-AGENT requires unique identifiers"
   val uniqueAgentErrorNum = "9001"
+  val multipleAgentErrorNum = "10004"
 
-  def parseErrorResp(resp: HttpResponse, errorNumber: String): Boolean = {
+  def matchErrorResponse(resp: HttpResponse): Boolean = {
      val msgToXml = scala.xml.XML.loadString((resp.json \ "message").as[String])
-       (msgToXml \\ "ErrorNumber").text == errorNumber
+       (msgToXml \\ "ErrorNumber").text == uniqueAgentErrorNum || (msgToXml \\ "ErrorNumber").text == multipleAgentErrorNum
   }
 
 }
