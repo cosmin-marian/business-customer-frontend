@@ -349,3 +349,31 @@ html.noScroll {
 .validation-summary:focus {
     outline: 3px solid #ffbf47;
 }
+
+.content__body{
+    width: 66.6666666667%;
+}
+
+.related {
+    box-sizing: border-box;
+    margin-top: 5px;
+    padding: 0 0 0 30px;
+    padding-top:5px;
+    float:right;
+    width:33.3333333333%;
+}
+
+@media screen and (max-width: 640px) {
+
+    .related {
+        float:None;
+        width:100%;
+        padding: 0;
+    }
+
+    .content__body {
+        width:100%;
+    }
+}
+
+
