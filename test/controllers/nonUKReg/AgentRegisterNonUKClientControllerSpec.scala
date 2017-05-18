@@ -29,6 +29,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
   val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
   val mockBackLinkCache = mock[BackLinkCacheConnector]
 
+
   object TestAgentRegisterNonUKClientController extends AgentRegisterNonUKClientController {
     override val authConnector = mockAuthConnector
     override val businessRegistrationCache = mockBusinessRegistrationCache
@@ -108,9 +109,33 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("submit").text() must be("Continue")
 
           document.getElementById("backLinkHref").text() must be("Back")
-          document.getElementById("backLinkHref").attr("href") must be("http://backLink")
+          document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
         }
       }
+
+
+      "return business registration view for a Non-UK based client by agent with some saved data" in {
+        val regAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+        val businessReg = BusinessRegistration("ACME", regAddress)
+        when(mockBackLinkCache.saveBackLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some("http://backLink")))
+        viewWithAuthorisedUserWithSomeData(serviceName,Some(businessReg), "NUK", Some("http://backLink"), Some("http://cachedBackLink")) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
+
+          document.title() must be("What is your client's overseas registered business name and address?")
+          document.getElementById("business-verification-text").text() must be("Add a client")
+          document.getElementById("non-uk-reg-header").text() must be("What is your client's overseas registered business name and address?")
+          document.getElementById("businessName").`val`() must be("ACME")
+          document.getElementById("businessAddress.line_1").`val`() must be("23 High Street")
+          document.getElementById("businessAddress.line_2").`val`() must be("Park View")
+          document.getElementById("submit").text() must be("Continue")
+
+          document.getElementById("backLinkHref").text() must be("Back")
+          document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
+        }
+      }
+
     }
 
     "send" must {
@@ -234,6 +259,8 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(cachedBackLink))
+    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
@@ -242,6 +269,25 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     test(result)
   }
+
+  def viewWithAuthorisedUserWithSomeData(service: String, businessRegistration: Option[BusinessRegistration],businessType: String, backLink: Option[String] = None, cachedBackLink: Option[String] = None)(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val successModel = BusinessRegistration("ACME", address)
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(cachedBackLink))
+    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+
+    val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
 
   def submitWithUnAuthorisedUser(businessType: String = "NUK", redirectUrl: Option[String] = Some("http://"))(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
@@ -268,7 +314,10 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+    when(mockBusinessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+      .thenReturn(Future.successful(successModel))
+
+
     val result = TestAgentRegisterNonUKClientController.submit(service).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",

@@ -5,7 +5,7 @@ import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import controllers.{BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{OverseasCompany, BusinessRegistrationDisplayDetails}
+import models.{BusinessRegistration, BusinessRegistrationDisplayDetails, OverseasCompany}
 import play.api.{Logger, Play}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -14,6 +14,7 @@ import services.BusinessRegistrationService
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import utils.BCUtils
+import utils.BusinessCustomerConstants.businessRegDetailsId
 
 import scala.concurrent.Future
 
@@ -33,20 +34,22 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def view(service: String, backLinkUrl: Option[String]) = AuthAction(service).async { implicit bcContext =>
-    backLinkUrl match {
-      case Some(backLink) => {
-        setBackLink(controllerId, backLinkUrl).map(backLink =>
-          Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
-        )
-      }
-      case None => {
-        currentBackLink.map(backLink =>
-          Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
-        )
+
+    for {
+      backLink <- currentBackLink
+      businessRegistration <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
+    } yield {
+      businessRegistration match {
+        case Some(busninessReg) =>
+            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm.fill(busninessReg), service, displayDetails, backLink))
+
+        case None =>
+            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
+
+        }
       }
     }
 
-  }
 
   def submit(service: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, service, true).fold(
@@ -56,7 +59,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
         )
       },
       registerData => {
-        businessRegistrationCache.saveBusinessRegDetails(registerData).flatMap {
+        businessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](businessRegDetailsId,registerData).flatMap {
           registrationSuccessResponse =>
             val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
             serviceRedirectUrl match {

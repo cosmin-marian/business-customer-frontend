@@ -5,12 +5,12 @@ import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
 import controllers.{BackLinkController, BaseController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
-import models.{OverseasCompany, BusinessCustomerContext, BusinessRegistrationDisplayDetails}
+import models.{BusinessCustomerContext, BusinessRegistration, BusinessRegistrationDisplayDetails}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
-import services.BusinessRegistrationService
 import utils.BCUtils
+import utils.BusinessCustomerConstants.businessRegDetailsId
 
 import scala.concurrent.Future
 
@@ -26,11 +26,18 @@ trait BusinessRegController extends BackLinkController {
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
-    currentBackLink.map(backLink =>
-      Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
-    )
+    for {
+      backLink <- currentBackLink
+      businessRegistration <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
+    } yield {
+      businessRegistration match {
+        case Some(businessReg) =>
+          Ok(views.html.nonUkReg.business_registration(businessRegistrationForm.fill(businessReg), service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
+        case None =>
+          Ok(views.html.nonUkReg.business_registration(businessRegistrationForm, service, displayDetails(businessType, service), backLink, bcContext.user.isAgent))
+      }
+    }
   }
-
 
   def send(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     BusinessRegistrationForms.validateCountryNonUKAndPostcode(businessRegistrationForm.bindFromRequest, service, bcContext.user.isAgent).fold(
@@ -40,12 +47,13 @@ trait BusinessRegController extends BackLinkController {
         )
       },
       registrationData => {
-        businessRegistrationCache.saveBusinessRegDetails(registrationData).flatMap {
-          registrationSuccessResponse => RedirectWithBackLink(
-            OverseasCompanyRegController.controllerId,
-            controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false),
-            Some(controllers.nonUKReg.routes.BusinessRegController.register(service, businessType).url)
-          )
+        businessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](businessRegDetailsId,registrationData).flatMap {
+          registrationSuccessResponse =>
+            RedirectWithBackLink(
+              OverseasCompanyRegController.controllerId,
+              controllers.nonUKReg.routes.OverseasCompanyRegController.view(service, false),
+              Some(controllers.nonUKReg.routes.BusinessRegController.register(service, businessType).url)
+            )
         }
       }
     )

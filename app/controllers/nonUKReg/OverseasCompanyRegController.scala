@@ -2,16 +2,18 @@ package controllers.nonUKReg
 
 import config.FrontendAuthConnector
 import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
-import controllers.{ReviewDetailsController, BackLinkController, BaseController}
+import controllers.{BackLinkController, BaseController, ReviewDetailsController}
 import forms.BusinessRegistrationForms
 import forms.BusinessRegistrationForms._
+import models.{BusinessRegistration, OverseasCompany}
 import play.api.{Logger, Play}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.i18n.Messages
 import services.BusinessRegistrationService
 import uk.gov.hmrc.play.config.RunMode
-import utils.{OverseasCompanyUtils, BCUtils}
+import utils.{BCUtils, OverseasCompanyUtils}
+import utils.BusinessCustomerConstants.{businessRegDetailsId, overseasRegDetailsId}
 
 import scala.concurrent.Future
 
@@ -29,10 +31,18 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
   def businessRegistrationCache: BusinessRegCacheConnector
 
   def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
-    currentBackLink.map(backLink =>
-      Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
-        OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
-    )
+    for {
+      backLink <- currentBackLink
+      overseasNumber <- businessRegistrationCache.fetchAndGetBusinessRegForSession[OverseasCompany](overseasRegDetailsId)
+    }yield {
+      overseasNumber match {
+        case Some(oversea) =>
+          Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm.fill(oversea), service,
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
+        case None => Ok(views.html.nonUkReg.overseas_company_registration(overseasCompanyForm, service,
+          OverseasCompanyUtils.displayDetails(bcContext.user.isAgent, addClient, service), BCUtils.getIsoCodeTupleList, redirectUrl, backLink))
+      }
+    }
   }
 
 
@@ -45,7 +55,8 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
       },
       overseasCompany => {
         for {
-          cachedBusinessReg <- businessRegistrationCache.fetchAndGetBusinessRegForSession
+          cachedBusinessReg <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
+          _<-  businessRegistrationCache.saveBusinessRegDetails[OverseasCompany](overseasRegDetailsId,overseasCompany)
           reviewDetails <-
             cachedBusinessReg match {
               case Some(businessReg) =>
