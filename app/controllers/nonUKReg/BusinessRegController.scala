@@ -28,7 +28,7 @@ trait BusinessRegController extends BackLinkController {
   def register(service: String, businessType: String) = AuthAction(service).async { implicit bcContext =>
     for {
       backLink <- currentBackLink
-      businessRegistration <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
+      businessRegistration <- businessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](businessRegDetailsId)
     } yield {
       businessRegistration match {
         case Some(businessReg) =>
@@ -47,7 +47,7 @@ trait BusinessRegController extends BackLinkController {
         )
       },
       registrationData => {
-        businessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](businessRegDetailsId,registrationData).flatMap {
+        businessRegistrationCache.cacheDetails[BusinessRegistration](businessRegDetailsId,registrationData).flatMap {
           registrationSuccessResponse =>
             RedirectWithBackLink(
               OverseasCompanyRegController.controllerId,

@@ -273,7 +273,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
@@ -291,7 +291,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
@@ -310,7 +310,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
@@ -346,7 +346,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+    when(mockBusinessRegistrationCache.cacheDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
       .thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
@@ -365,7 +365,7 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+    when(mockBusinessRegistrationCache.cacheDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
       .thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(

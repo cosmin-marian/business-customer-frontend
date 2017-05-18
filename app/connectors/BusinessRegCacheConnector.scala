@@ -20,10 +20,10 @@ trait BusinessRegCacheConnector {
 
   def sourceId: String
 
-  def fetchAndGetBusinessRegForSession[T](formId: String)(implicit hc: HeaderCarrier, formats: Format[T]): Future[Option[T]] =
+  def fetchAndGetCachedDetails[T](formId: String)(implicit hc: HeaderCarrier, formats: Format[T]): Future[Option[T]] =
     sessionCache.fetchAndGetEntry[T](key = formId)
 
-  def saveBusinessRegDetails[T](formId: String, formData: T)(implicit hc: HeaderCarrier, formats: Format[T]): Future[T] = {
+  def cacheDetails[T](formId: String, formData: T)(implicit hc: HeaderCarrier, formats: Format[T]): Future[T] = {
     sessionCache.cache[T](formId, formData).map(cacheMap => formData)
   }
 }

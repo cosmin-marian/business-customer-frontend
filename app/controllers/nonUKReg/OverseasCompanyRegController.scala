@@ -33,7 +33,7 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
   def view(service: String, addClient: Boolean, redirectUrl: Option[String] = None) = AuthAction(service).async { implicit bcContext =>
     for {
       backLink <- currentBackLink
-      overseasNumber <- businessRegistrationCache.fetchAndGetBusinessRegForSession[OverseasCompany](overseasRegDetailsId)
+      overseasNumber <- businessRegistrationCache.fetchAndGetCachedDetails[OverseasCompany](overseasRegDetailsId)
     }yield {
       overseasNumber match {
         case Some(oversea) =>
@@ -55,8 +55,8 @@ trait OverseasCompanyRegController extends BackLinkController with RunMode {
       },
       overseasCompany => {
         for {
-          cachedBusinessReg <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
-          _<-  businessRegistrationCache.saveBusinessRegDetails[OverseasCompany](overseasRegDetailsId,overseasCompany)
+          cachedBusinessReg <- businessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](businessRegDetailsId)
+          _<-  businessRegistrationCache.cacheDetails[OverseasCompany](overseasRegDetailsId,overseasCompany)
           reviewDetails <-
             cachedBusinessReg match {
               case Some(businessReg) =>

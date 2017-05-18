@@ -57,7 +57,7 @@ class BusinessRegCacheConnectorSpec extends PlaySpec with OneServerPerSuite with
           when(mockSessionCache.fetchAndGetEntry[FormData](key = Matchers.eq(formIdNotExist))(Matchers.any(), Matchers.any())) thenReturn {
             Future.successful(Some(formData))
           }
-          await(TestDataCacheConnector.fetchAndGetBusinessRegForSession[FormData](formIdNotExist)) must be(Some(formData))
+          await(TestDataCacheConnector.fetchAndGetCachedDetails[FormData](formIdNotExist)) must be(Some(formData))
         }
       }
     }
@@ -67,7 +67,7 @@ class BusinessRegCacheConnectorSpec extends PlaySpec with OneServerPerSuite with
         when(mockSessionCache.cache[FormData](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())) thenReturn {
           Future.successful(cacheMap)
         }
-        await(TestDataCacheConnector.saveBusinessRegDetails[FormData](formId, formData)) must be(formData)
+        await(TestDataCacheConnector.cacheDetails[FormData](formId, formData)) must be(formData)
       }
     }
   }

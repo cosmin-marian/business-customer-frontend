@@ -190,7 +190,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestController.view(service, true).apply(FakeRequest().withSession(
@@ -208,7 +208,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[OverseasCompany](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[OverseasCompany](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(OverseasCompany(Some((true))))))
 
     val result = TestController.view(service, true).apply(FakeRequest().withSession(
@@ -227,7 +227,7 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestController.view(service, true).apply(FakeRequest().withSession(
@@ -250,10 +250,10 @@ class OverseasCompanyRegControllerSpec extends PlaySpec with OneServerPerSuite w
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
 
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](Matchers.any())(Matchers.any(),(Matchers.any())))
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](Matchers.any())(Matchers.any(),(Matchers.any())))
       .thenReturn(Future.successful(busRegCache))
 
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails[OverseasCompany](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+    when(mockBusinessRegistrationCache.cacheDetails[OverseasCompany](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
       .thenReturn(Future.successful(overseasSave))
 
     when(mockBusinessRegistrationService.registerBusiness(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(reviewDetails))

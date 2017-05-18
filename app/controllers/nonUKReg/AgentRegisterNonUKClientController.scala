@@ -37,7 +37,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
 
     for {
       backLink <- currentBackLink
-      businessRegistration <- businessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](businessRegDetailsId)
+      businessRegistration <- businessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](businessRegDetailsId)
     } yield {
       businessRegistration match {
         case Some(busninessReg) =>
@@ -59,7 +59,7 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
         )
       },
       registerData => {
-        businessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](businessRegDetailsId,registerData).flatMap {
+        businessRegistrationCache.cacheDetails[BusinessRegistration](businessRegDetailsId,registerData).flatMap {
           registrationSuccessResponse =>
             val serviceRedirectUrl: Option[String] = Play.configuration.getString(s"govuk-tax.$env.services.${service.toLowerCase}.serviceRedirectUrl")
             serviceRedirectUrl match {

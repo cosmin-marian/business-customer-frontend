@@ -259,7 +259,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(cachedBackLink))
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[String](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
 
     val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
@@ -277,7 +277,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val successModel = BusinessRegistration("ACME", address)
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(cachedBackLink))
-    when(mockBusinessRegistrationCache.fetchAndGetBusinessRegForSession[BusinessRegistration](Matchers.any())
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](Matchers.any())
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestAgentRegisterNonUKClientController.view(service, backLink).apply(FakeRequest().withSession(
@@ -314,7 +314,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+    when(mockBusinessRegistrationCache.cacheDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
       .thenReturn(Future.successful(successModel))
 
 
