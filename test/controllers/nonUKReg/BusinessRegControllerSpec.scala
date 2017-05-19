@@ -4,7 +4,7 @@ import java.util.UUID
 
 import config.ApplicationConfig
 import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
-import models.{BusinessRegistration, Address, ReviewDetails}
+import models.{Address, BusinessRegistration, ReviewDetails}
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -83,6 +83,24 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           document.getElementById("businessAddress.line_3_field").text() must be("Address line 3 (optional)")
           document.getElementById("businessAddress.line_4_field").text() must be("Address line 4 (optional)")
           document.getElementById("businessAddress.country_field").text() must include("Country")
+          document.getElementById("submit").text() must be("Continue")
+        }
+      }
+
+
+      "return business registration view for a user for Non-UK with saved data" in {
+        val regAddress = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+        val businessReg = BusinessRegistration("ACME", regAddress)
+        registerWithAuthorisedUserWithSomeData(serviceName, "NUK", Some(businessReg)) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+
+          document.title() must be("What is your overseas business registered name and address?")
+          document.getElementById("business-verification-text").text() must be("ATED registration")
+          document.getElementById("business-registration-header").text() must be("What is your overseas business registered name and address?")
+          document.getElementById("businessName").`val`() must be("ACME")
+          document.getElementById("businessAddress.line_1").`val`() must be("23 High Street")
+          document.getElementById("businessAddress.line_2").`val`() must be("Park View")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -255,6 +273,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedAgent(userId, mockAuthConnector)
 
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -270,6 +291,9 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
 
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+
     val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",
@@ -277,6 +301,26 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     test(result)
   }
+
+  def registerWithAuthorisedUserWithSomeData(service: String, businessType: String, businessRegistration: Option[BusinessRegistration])(test: Future[Result] => Any) {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
+    val successModel = BusinessRegistration("ACME", address)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+
+    val result = TestBusinessRegController.register(service, businessType).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+
+    test(result)
+  }
+
 
   def submitWithUnAuthorisedUser(service: String, businessType: String = "NUK")(test: Future[Result] => Any) {
     val sessionId = s"session-${UUID.randomUUID}"
@@ -302,7 +346,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
 
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+    when(mockBusinessRegistrationCache.cacheDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+      .thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,
@@ -320,8 +365,8 @@ class BusinessRegControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     val address = Address("23 High Street", "Park View", Some("Gloucester"), Some("Gloucestershire, NE98 1ZZ"), Some("NE98 1ZZ"), "U.K.")
     val successModel = BusinessRegistration("ACME", address)
-
-    when(mockBusinessRegistrationCache.saveBusinessRegDetails(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Some(successModel)))
+    when(mockBusinessRegistrationCache.cacheDetails[BusinessRegistration](Matchers.any(), Matchers.any())(Matchers.any(),(Matchers.any())))
+      .thenReturn(Future.successful(successModel))
 
     val result = TestBusinessRegController.send(service, businessType).apply(fakeRequest.withSession(
       SessionKeys.sessionId -> sessionId,

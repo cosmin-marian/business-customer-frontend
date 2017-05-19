@@ -2,6 +2,7 @@ package connectors
 
 import config.BusinessCustomerSessionCache
 import models.{BusinessRegistration, ReviewDetails}
+import play.api.libs.json.Format
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
@@ -19,12 +20,10 @@ trait BusinessRegCacheConnector {
 
   def sourceId: String
 
-  def fetchAndGetBusinessRegForSession(implicit hc: HeaderCarrier): Future[Option[BusinessRegistration]] = sessionCache.fetchAndGetEntry[BusinessRegistration](sourceId)
+  def fetchAndGetCachedDetails[T](formId: String)(implicit hc: HeaderCarrier, formats: Format[T]): Future[Option[T]] =
+    sessionCache.fetchAndGetEntry[T](key = formId)
 
-  def saveBusinessRegDetails(businessReg: BusinessRegistration)(implicit hc: HeaderCarrier): Future[Option[BusinessRegistration]] = {
-    val result = sessionCache.cache[BusinessRegistration](sourceId, businessReg)
-    result flatMap {
-      data => Future.successful(data.getEntry[BusinessRegistration](sourceId))
-    }
+  def cacheDetails[T](formId: String, formData: T)(implicit hc: HeaderCarrier, formats: Format[T]): Future[T] = {
+    sessionCache.cache[T](formId, formData).map(cacheMap => formData)
   }
 }
