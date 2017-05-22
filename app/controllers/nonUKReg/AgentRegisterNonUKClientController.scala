@@ -39,12 +39,12 @@ trait AgentRegisterNonUKClientController extends BackLinkController with RunMode
       backLink <- currentBackLink
       businessRegistration <- businessRegistrationCache.fetchAndGetCachedDetails[BusinessRegistration](businessRegDetailsId)
     } yield {
+      val backlinkOption = if (backLinkUrl.isDefined) backLinkUrl else backLink
       businessRegistration match {
         case Some(busninessReg) =>
-            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm.fill(busninessReg), service, displayDetails, backLink))
-
+            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm.fill(busninessReg), service, displayDetails, backlinkOption))
         case None =>
-            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backLink))
+            Ok(views.html.nonUkReg.nonuk_business_registration(businessRegistrationForm, service, displayDetails, backlinkOption))
 
         }
       }
