@@ -109,7 +109,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("submit").text() must be("Continue")
 
           document.getElementById("backLinkHref").text() must be("Back")
-          document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
+          document.getElementById("backLinkHref").attr("href") must be("http://backLink")
         }
       }
 
@@ -132,7 +132,7 @@ class AgentRegisterNonUKClientControllerSpec extends PlaySpec with OneServerPerS
           document.getElementById("submit").text() must be("Continue")
 
           document.getElementById("backLinkHref").text() must be("Back")
-          document.getElementById("backLinkHref").attr("href") must be("http://cachedBackLink")
+          document.getElementById("backLinkHref").attr("href") must be("http://backLink")
         }
       }
 
