@@ -4,7 +4,8 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
-import connectors.BackLinkCacheConnector
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
+import models.PaySAQuestion
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,11 +27,13 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
   val mockAuthConnector = mock[AuthConnector]
   val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "serviceName"
+  val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
   object TestPaySaQuestionController extends PaySAQuestionController {
     override val authConnector = mockAuthConnector
     override val controllerId = "test"
     override val backLinkCacheConnector = mockBackLinkCache
+    override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
   override def beforeEach = {
@@ -52,6 +55,17 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
           document.title must be("Do you pay tax in the UK through self assessment?")
           document.select(".block-label").text() must include("Yes")
           document.select(".block-label").text() must include("No")
+          document.getElementById("submit").text() must be("Continue")
+        }
+      }
+      "redirect present user to Pay SA question page, if user is not an agent and showed cached data if we have some" in {
+        viewWithAuthorisedClientWistSavedData(service) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+          document.title must be("Do you pay tax in the UK through self assessment?")
+          document.select(".block-label").text() must include("Yes")
+          document.select(".block-label").text() must include("No")
+          document.getElementById("paySA-false").attr("checked") must be("checked")
           document.getElementById("submit").text() must be("Continue")
         }
       }
@@ -114,6 +128,24 @@ class PaySAQuestionControllerSpec extends PlaySpec with OneServerPerSuite with M
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+    val result = TestPaySaQuestionController.view(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+    test(result)
+  }
+
+  def viewWithAuthorisedClientWistSavedData(serviceName: String)(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    val successModel = PaySAQuestion(Some(false))
+
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[PaySAQuestion](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
     val result = TestPaySaQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
       "token" -> "RANDOMTOKEN",

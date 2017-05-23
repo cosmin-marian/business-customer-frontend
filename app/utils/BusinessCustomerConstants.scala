@@ -12,4 +12,5 @@ object BusinessCustomerConstants {
   val IdentifierSafeId = "safeid"
   val businessRegDetailsId = "BC_NonUK_Business_Details"
   val overseasRegDetailsId = "Overseas_Business_Details"
+  val paySaDetailsId = "Pay_Sa_Details"
 }
