@@ -111,12 +111,12 @@ class BusinessCustomerControllerSpec extends PlaySpec with OneServerPerSuite wit
         status(result) must be(OK)
       }
 
-      "getReviewDetails gives error" in {
+      "getReviewDetails cannot find details" in {
         val userId = s"user-${UUID.randomUUID}"
         builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
         when(mockDataCacheConnector.fetchAndGetBusinessDetailsForSession(Matchers.any())) thenReturn Future.successful(None)
         val result = TestBusinessCustomerController.getReviewDetails(service).apply(fakeRequestWithSession(userId))
-        status(result) must be(INTERNAL_SERVER_ERROR)
+        status(result) must be(NOT_FOUND)
       }
     }
   }
