@@ -35,8 +35,8 @@ trait BusinessCustomerController extends BaseController {
       case Some(businessDetails) =>
         Ok(Json.toJson(businessDetails))
       case _ =>
-        Logger.error(s"could not retrieve business details for $service")
-        InternalServerError
+        Logger.warn(s"could not retrieve business details for $service")
+        NotFound
     }
   }
 
