@@ -50,6 +50,10 @@ object MatchSuccessResponse {
 }
 
 case class NRLQuestion(paysSA: Option[Boolean] = None)
+object NRLQuestion {
+  implicit val formats = Json.format[NRLQuestion]
+}
+
 
 case class PaySAQuestion(paySA: Option[Boolean] = None)
 object PaySAQuestion {

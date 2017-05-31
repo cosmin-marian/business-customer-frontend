@@ -4,7 +4,8 @@ import java.util.UUID
 
 import builders.SessionBuilder
 import config.FrontendAuthConnector
-import connectors.BackLinkCacheConnector
+import connectors.{BackLinkCacheConnector, BusinessRegCacheConnector}
+import models.NRLQuestion
 import org.jsoup.Jsoup
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,11 +27,13 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
   val mockAuthConnector = mock[AuthConnector]
   val mockBackLinkCache = mock[BackLinkCacheConnector]
   val service = "serviceName"
+  val mockBusinessRegistrationCache = mock[BusinessRegCacheConnector]
 
   object TestNRLQuestionController extends NRLQuestionController {
     override val authConnector = mockAuthConnector
     override val controllerId = "test"
     override val backLinkCacheConnector = mockBackLinkCache
+    override val businessRegistrationCache = mockBusinessRegistrationCache
   }
 
   override def beforeEach = {
@@ -50,6 +53,17 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
           document.title must be("Do you live outside of the UK for 6 months or more a year and receive rental income from the property?")
+        }
+      }
+
+      "Show the NRL page with saved data if we have some" in {
+        viewWithAuthorisedClientWithSavedData(service) { result =>
+          status(result) must be(OK)
+          val document = Jsoup.parse(contentAsString(result))
+          document.title must be("Do you live outside of the UK for 6 months or more a year and receive rental income from the property?")
+          document.select(".block-label").text() must include("Yes")
+          document.select(".block-label").text() must include("No")
+          document.getElementById("paysSA-false").attr("checked") must be("checked")
         }
       }
 
@@ -110,6 +124,25 @@ class NRLQuestionControllerSpec extends PlaySpec with OneServerPerSuite with Moc
 
     builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
     when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[String](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+    val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      "token" -> "RANDOMTOKEN",
+      SessionKeys.userId -> userId))
+    test(result)
+  }
+
+
+  def viewWithAuthorisedClientWithSavedData(serviceName: String)(test: Future[Result] => Any) = {
+    val sessionId = s"session-${UUID.randomUUID}"
+    val userId = s"user-${UUID.randomUUID}"
+    val successModel = NRLQuestion(Some(false))
+
+    builders.AuthBuilder.mockAuthorisedUser(userId, mockAuthConnector)
+    when(mockBackLinkCache.fetchAndGetBackLink(Matchers.any())(Matchers.any())).thenReturn(Future.successful(None))
+    when(mockBusinessRegistrationCache.fetchAndGetCachedDetails[NRLQuestion](Matchers.any())
+      (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(successModel)))
 
     val result = TestNRLQuestionController.view(serviceName).apply(FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
