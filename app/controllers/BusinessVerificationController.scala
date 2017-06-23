@@ -83,7 +83,7 @@ trait BusinessVerificationController extends BackLinkController {
         case "LLP" => Ok(views.html.business_lookup_LLP(limitedLiabilityPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
         case "LP" => Ok(views.html.business_lookup_LP(limitedPartnershipForm, bcContext.user.isAgent, service, businessType, backLink))
         case "UT" => Ok(views.html.business_lookup_LTD(limitedCompanyForm, bcContext.user.isAgent, service, businessType, backLink))
-        case "NRL" => Ok(views.html.business_lookup_NRL(nonResidentLandlordForm, bcContext.user.isAgent, service, businessType, backLink))
+        case "NRL" => Ok(views.html.business_lookup_NRL(nonResidentLandlordForm, bcContext.user.isAgent, service, businessType, getNrlBackLink(service)))
       }
   }
 
@@ -97,7 +97,7 @@ trait BusinessVerificationController extends BackLinkController {
       case "OBP" => obpFormHandling(ordinaryBusinessPartnershipForm, businessType, service, backLink)
       case "LTD" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
       case "UT" => ltdFormHandling(limitedCompanyForm, businessType, service, backLink)
-      case "NRL" => nrlFormHandling(nonResidentLandlordForm, businessType, service, backLink)
+      case "NRL" => nrlFormHandling(nonResidentLandlordForm, businessType, service, getNrlBackLink(service))
     }
   }
 
@@ -277,4 +277,6 @@ trait BusinessVerificationController extends BackLinkController {
       }
     )
   }
+
+  private def getNrlBackLink(service: String) = Some(controllers.nonUKReg.routes.PaySAQuestionController.view(service).url)
 }
